@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Delete, Check } from 'lucide-vue-next'
+import { useSound } from '../composables/useSound'
 
 const props = defineProps({
   disabled: {
@@ -10,18 +11,22 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['input', 'delete', 'submit'])
+const { playSound } = useSound()
 
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 function handleInput(num) {
+  playSound('click')
   emit('input', num)
 }
 
 function handleDelete() {
+  playSound('click')
   emit('delete')
 }
 
 function handleSubmit() {
+  playSound('click')
   emit('submit')
 }
 </script>

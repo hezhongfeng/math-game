@@ -5,6 +5,7 @@ import { X } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
+import { useSound } from '../composables/useSound'
 import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
@@ -19,6 +20,7 @@ const props = defineProps({
 const router = useRouter()
 const difficulty = getDifficultyById(parseInt(props.id))
 const { updateBestScore } = useStorage()
+const { playSound } = useSound()
 
 // 游戏状态
 const game = useGame(difficulty)
@@ -70,19 +72,22 @@ function initGame() {
 // 提交答案
 function submitAnswer() {
   if (isWaiting.value || !userAnswer.value) return
-  
+
   const answer = parseInt(userAnswer.value)
   const isCorrect = game.submitAnswer(answer)
-  
+
   showAnswer.value = true
   isWaiting.value = true
-  
+
+  // 播放音效
   if (isCorrect) {
     feedbackMessage.value = '正确！'
+    playSound('correct')
   } else {
     feedbackMessage.value = '错误！'
+    playSound('wrong')
   }
-  
+
   // 延迟后进入下一题
   setTimeout(() => {
     if (isComplete.value) {
@@ -118,6 +123,9 @@ function handleDelete() {
 function handleGameComplete() {
   const result = game.getResult()
   const isNewBest = updateBestScore(parseInt(props.id), result)
+
+  // 播放胜利音效
+  playSound('win')
 
   // 跳转到结果页（使用弹窗方式）
   showResultModal(result, isNewBest)
@@ -185,13 +193,6 @@ function showResultModal(result, isNewBest) {
 function goHome() {
   router.push('/')
 }
-
-// 重玩游戏
-function replay() {
-  initGame()
-}
-
-
 
 onMounted(() => {
   initGame()
@@ -341,7 +342,7 @@ onMounted(() => {
     <!-- 数字键盘 -->
     <div class="max-w-md mx-auto w-full mt-6 relative z-10">
       <NumberPad
-        :disabled="isWaiting.value || isComplete.value"
+        :disabled="isWaiting.value || isComplete"
         @input="handleInput"
         @delete="handleDelete"
         @submit="submitAnswer"
