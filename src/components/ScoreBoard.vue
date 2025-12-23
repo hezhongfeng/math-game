@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Target, Clock, CheckCircle, TrendingUp } from 'lucide-vue-next'
+import { Target, Clock, CheckCircle, TrendingUp, Star } from 'lucide-vue-next'
 
 const props = defineProps({
   score: {
@@ -42,16 +42,16 @@ const formatTime = computed(() => {
 </script>
 
 <template>
-  <div class="score-board bg-white rounded-2xl shadow-lg p-4 md:p-6">
+  <div class="score-board bg-white rounded-cute-xl shadow-cute p-4 md:p-6 border-2 border-peppa-blue-light">
     <!-- 顶部：进度条和统计 -->
     <div class="mb-4">
       <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-medium text-gray-600">进度</span>
-        <span class="text-sm font-bold text-indigo-600">{{ currentIndex }} / {{ totalQuestions }}</span>
+        <span class="text-sm font-medium text-peppa-blue-dark font-rounded">进度</span>
+        <span class="text-sm font-bold text-peppa-blue-dark font-rounded">{{ currentIndex }} / {{ totalQuestions }}</span>
       </div>
-      <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
-        <div 
-          class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-300 ease-out"
+      <div class="h-3 bg-peppa-blue-light/30 rounded-cute-full overflow-hidden">
+        <div
+          class="h-full bg-gradient-to-r from-peppa-blue to-peppa-blue-dark rounded-cute-full transition-all duration-300 ease-out animate-pulse-slow"
           :style="{ width: `${progress}%` }"
         ></div>
       </div>
@@ -60,31 +60,31 @@ const formatTime = computed(() => {
     <!-- 数据统计网格 -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <!-- 得分 -->
-      <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-3 text-center">
-        <Target :size="24" class="text-indigo-500 mx-auto mb-2" />
-        <p class="text-2xl md:text-3xl font-bold text-indigo-600">{{ score }}</p>
-        <p class="text-xs text-gray-500 mt-1">得分</p>
+      <div class="bg-gradient-to-br from-peppa-blue/20 to-peppa-blue-dark/20 rounded-cute-lg p-3 text-center border-2 border-peppa-blue-light/50">
+        <Star :size="24" class="text-peppa-blue mx-auto mb-2 animate-wiggle" />
+        <p class="text-2xl md:text-3xl font-bold text-peppa-blue-dark font-rounded">{{ score }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-rounded">得分</p>
       </div>
-      
+
       <!-- 正确数 -->
-      <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-3 text-center">
-        <CheckCircle :size="24" class="text-green-500 mx-auto mb-2" />
-        <p class="text-2xl md:text-3xl font-bold text-green-600">{{ correctCount }}</p>
-        <p class="text-xs text-gray-500 mt-1">正确</p>
+      <div class="bg-gradient-to-br from-peppa-green/20 to-[#388E3C]/20 rounded-cute-lg p-3 text-center border-2 border-peppa-green/50">
+        <CheckCircle :size="24" class="text-peppa-green mx-auto mb-2 animate-pulse-slow" />
+        <p class="text-2xl md:text-3xl font-bold text-peppa-green-dark font-rounded">{{ correctCount }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-rounded">正确</p>
       </div>
-      
+
       <!-- 用时 -->
-      <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-3 text-center">
-        <Clock :size="24" class="text-blue-500 mx-auto mb-2" />
-        <p class="text-xl md:text-2xl font-bold text-blue-600">{{ formatTime }}</p>
-        <p class="text-xs text-gray-500 mt-1">用时</p>
+      <div class="bg-gradient-to-br from-peppa-cyan/20 to-[#0097A7]/20 rounded-cute-lg p-3 text-center border-2 border-peppa-cyan/50">
+        <Clock :size="24" class="text-peppa-cyan mx-auto mb-2 animate-wiggle" />
+        <p class="text-xl md:text-2xl font-bold text-peppa-cyan-dark font-rounded">{{ formatTime }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-rounded">用时</p>
       </div>
-      
+
       <!-- 正确率 -->
-      <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-3 text-center">
-        <TrendingUp :size="24" class="text-orange-500 mx-auto mb-2" />
-        <p class="text-2xl md:text-3xl font-bold text-orange-600">{{ accuracy }}%</p>
-        <p class="text-xs text-gray-500 mt-1">正确率</p>
+      <div class="bg-gradient-to-br from-peppa-yellow/20 to-peppa-yellow-dark/20 rounded-cute-lg p-3 text-center border-2 border-peppa-yellow/50">
+        <TrendingUp :size="24" class="text-peppa-yellow-dark mx-auto mb-2 animate-bounce-slow" />
+        <p class="text-2xl md:text-3xl font-bold text-peppa-yellow-dark font-rounded">{{ accuracy }}%</p>
+        <p class="text-xs text-gray-500 mt-1 font-rounded">正确率</p>
       </div>
     </div>
   </div>
@@ -92,6 +92,6 @@ const formatTime = computed(() => {
 
 <style scoped>
 .score-board {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #E3F2FD 100%);
 }
 </style>

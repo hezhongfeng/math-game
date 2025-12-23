@@ -11,6 +11,10 @@ const { getBestScore, getCompletedDifficulties } = useStorage()
 
 const completedDifficulties = computed(() => getCompletedDifficulties())
 
+function getDifficultyById(id) {
+  return DIFFICULTY_LEVELS.find(d => d.id === id)
+}
+
 function goBack() {
   router.push('/')
 }
@@ -31,33 +35,57 @@ function isDifficultyLocked(difficulty) {
   return !completedDifficulties.value.includes(previousId)
 }
 
+// 装饰元素（使用emoji）
+const decorations = [
+  { emoji: '☀️', class: 'top-12 right-12 animate-float', size: 40 },
+  { emoji: '☁️', class: 'top-20 left-16 animate-wiggle', size: 28 },
+  { emoji: '☁️', class: 'top-28 right-32 animate-wiggle', size: 20 },
+  { emoji: '⚽', class: 'bottom-32 left-12 animate-bounce-slow', size: 24 },
+  { emoji: '⚽', class: 'bottom-28 right-20 animate-bounce-slow', size: 20 },
+  { emoji: '✨', class: 'top-40 left-1/4 animate-pulse-slow', size: 16 },
+]
+
 onMounted(() => {
   window.scrollTo(0, 0)
 })
 </script>
 
 <template>
-  <div class="min-h-screen p-4 md:p-6 pb-20">
+  <div class="min-h-screen relative overflow-hidden p-4 md:p-6 pb-20">
+    <!-- 装饰背景元素 -->
+    <div v-for="(deco, index) in decorations" :key="index"
+         :class="['absolute decoration', deco.class]"
+         :style="{ fontSize: `${deco.size}px`, animationDelay: `${index * 0.3}s` }">
+      {{ deco.emoji }}
+    </div>
+
     <!-- 顶部导航 -->
-    <div class="max-w-6xl mx-auto mb-8">
+    <div class="max-w-6xl mx-auto mb-8 relative z-10">
       <button
         @click="goBack"
-        class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/60 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg hover:scale-105 transition-all"
       >
         <ArrowLeft :size="24" />
         返回主页
       </button>
-      
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mt-4">选择难度</h1>
-      <p class="text-gray-600 mt-2">选择一个难度开始挑战</p>
+
+      <div class="mt-6 text-center">
+        <div class="inline-block mb-3">
+          <span class="text-5xl animate-float">⚽</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-peppa-blue-dark font-rounded">选择难度</h1>
+        <p class="text-peppa-blue-dark/80 mt-2 font-rounded">选择一个难度开始挑战吧！</p>
+      </div>
     </div>
     
     <!-- 难度列表 -->
-    <div class="max-w-6xl mx-auto space-y-8">
-      <div v-for="group in DIFFICULTY_GROUPS" :key="group.name" class="difficulty-group">
-        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
-          <span class="inline-block w-3 h-3 rounded-full" :class="`bg-${group.color}-500`"></span>
+    <div class="max-w-6xl mx-auto space-y-8 relative z-10">
+      <div v-for="(group, groupIndex) in DIFFICULTY_GROUPS" :key="group.name" class="difficulty-group">
+        <h2 class="text-2xl font-bold text-peppa-blue-dark mb-4 flex items-center gap-2 font-rounded">
+          <span class="inline-block w-4 h-4 rounded-cute"
+                :style="{ backgroundColor: group.color }"></span>
           {{ group.name }}阶段
+          <span class="text-3xl ml-2 animate-wiggle" style="animation-delay: 0.2s">⚽</span>
         </h2>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -73,13 +101,32 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- 底部小猪脚印装饰 -->
+    <div class="absolute bottom-0 left-0 right-0 h-16 flex justify-around items-end opacity-30 pointer-events-none">
+      <span class="text-2xl">⚽</span>
+      <span class="text-2xl">⚽</span>
+      <span class="text-2xl">⚽</span>
+      <span class="text-2xl">⚽</span>
+      <span class="text-2xl">⚽</span>
+      <span class="text-2xl">⚽</span>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.decoration {
+  z-index: 0;
+  opacity: 0.6;
+}
+
 .difficulty-group {
   animation: slideIn 0.5s ease-out;
 }
+
+.difficulty-group:nth-child(1) { animation-delay: 0.1s; }
+.difficulty-group:nth-child(2) { animation-delay: 0.2s; }
+.difficulty-group:nth-child(3) { animation-delay: 0.3s; }
 
 @keyframes slideIn {
   from {

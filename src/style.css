@@ -4,10 +4,21 @@
 
 @layer base {
   :root {
-    --background: 240 24% 15%;
-    --foreground: 210 40% 98%;
-    --card: 240 24% 15%;
-    --card-foreground: 210 40% 98%;
+    --background: 210 30% 98%;
+    --foreground: 210 10% 20%;
+    --card: 210 30% 98%;
+    --card-foreground: 210 10% 20%;
+
+    /* 男孩蓝色主题色变量 */
+    --peppa-blue: #4A90E2;
+    --peppa-blue-light: #7AB8FF;
+    --peppa-blue-dark: #2A70C2;
+    --peppa-cyan: #00BCD4;
+    --peppa-green: #4CAF50;
+    --peppa-yellow: #FFD93D;
+    --peppa-orange: #FF9800;
+    --peppa-purple: #9C27B0;
+    --peppa-bg: #E3F2FD;
   }
 
   * {
@@ -17,8 +28,8 @@
   }
 
   body {
-    font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #F0F9FF 0%, #DBEAFE 100%);
+    font-family: 'Alimama FangYuanTi VF', 'Nunito', 'Comic Sans MS', cursive, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
     min-height: 100vh;
   }
 
@@ -27,6 +38,7 @@
   }
 }
 
+/* 小猪佩奇主题动画 */
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -38,10 +50,10 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
   }
   50% {
-    box-shadow: 0 0 40px rgba(79, 70, 229, 0.6);
+    box-shadow: 0 0 40px rgba(74, 144, 226, 0.6);
   }
 }
 
@@ -67,6 +79,130 @@
   }
 }
 
+@keyframes bounceCute {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wiggleX {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes wiggleY {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  75% {
+    transform: translateY(5px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceHappy {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateY(-15px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 动画类 */
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -81,4 +217,208 @@
 
 .animate-scaleIn {
   animation: scaleIn 0.3s ease-out;
+}
+
+.animate-bounce-cute {
+  animation: bounceCute 0.5s ease-in-out;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-pop {
+  animation: pop 0.3s ease-out;
+}
+
+.animate-wiggle-x {
+  animation: wiggleX 2s ease-in-out infinite;
+}
+
+.animate-wiggle-y {
+  animation: wiggleY 2s ease-in-out infinite;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideFromLeft {
+  animation: slideFromLeft 0.5s ease-out;
+}
+
+.animate-slideFromRight {
+  animation: slideFromRight 0.5s ease-out;
+}
+
+.animate-bounce-happy {
+  animation: bounceHappy 1s ease-in-out;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-bounce-slow {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+/* 答案正确/错误的突出动画 */
+@keyframes correctPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wrongShake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-15px) rotate(-3deg);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(15px) rotate(3deg);
+  }
+}
+
+@keyframes starBurst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes correctGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(76, 175, 80, 0.8), 0 0 80px rgba(76, 175, 80, 0.4);
+  }
+}
+
+@keyframes wrongGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(244, 67, 54, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(244, 67, 54, 0.8), 0 0 80px rgba(244, 67, 54, 0.4);
+  }
+}
+
+.animate-correct-pop {
+  animation: correctPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animate-wrong-shake {
+  animation: wrongShake 0.6s ease-in-out;
+}
+
+.animate-star-burst {
+  animation: starBurst 0.8s ease-out forwards;
+}
+
+.animate-correct-glow {
+  animation: correctGlow 1s ease-in-out infinite;
+}
+
+.animate-wrong-glow {
+  animation: wrongGlow 0.5s ease-in-out infinite;
+}
+
+/* 男孩蓝色主题组件样式 */
+@layer components {
+  .btn-peppa {
+    @apply rounded-cute-lg px-6 py-3 font-bold transition-all duration-300 shadow-cute;
+    @apply hover:scale-105 hover:shadow-cute-lg active:scale-95;
+  }
+
+  .btn-peppa-blue {
+    @apply btn-peppa bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white;
+  }
+
+  .btn-peppa-cyan {
+    @apply btn-peppa bg-gradient-to-r from-peppa-cyan to-[#0097A7] text-white;
+  }
+
+  .btn-peppa-green {
+    @apply btn-peppa bg-gradient-to-r from-peppa-green to-[#388E3C] text-white;
+  }
+
+  .btn-peppa-yellow {
+    @apply btn-peppa bg-gradient-to-r from-peppa-yellow to-peppa-yellow-dark text-gray-800;
+  }
+
+  .btn-peppa-orange {
+    @apply btn-peppa bg-gradient-to-r from-peppa-orange to-[#E65100] text-white;
+  }
+
+  .card-peppa {
+    @apply bg-white rounded-cute-xl shadow-cute border-4 border-peppa-blue-light;
+  }
+
+  .input-peppa {
+    @apply rounded-cute-lg border-2 border-peppa-blue-light px-4 py-3;
+    @apply focus:outline-none focus:border-peppa-blue focus:ring-4 focus:ring-peppa-blue/20;
+    @apply transition-all duration-300;
+  }
+
+  .bg-peppa-gradient {
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
+  }
+
+  .text-peppa-gradient {
+    background: linear-gradient(135deg, #4A90E2, #00BCD4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-peppa-cute {
+    border: 4px dashed #4A90E2;
+    border-radius: 20px;
+  }
+
+  .decoration-cloud {
+    position: absolute;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .decoration-star {
+    position: absolute;
+    color: #FFD93D;
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .decoration-heart {
+    position: absolute;
+    color: #4CAF50;
+    animation: wiggle 1s ease-in-out infinite;
+  }
 }

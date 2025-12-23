@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Volume2 } from 'lucide-vue-next'
+import { Star, Heart } from 'lucide-vue-next'
 
 const props = defineProps({
   question: {
@@ -13,74 +13,72 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['speak'])
+// 调试输出
+console.log('QuestionCard props:', props.question)
 
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
-
-function handleSpeak() {
-  emit('speak', props.question)
-}
 </script>
 
 <template>
-  <div 
-    class="question-card p-8 bg-white rounded-3xl shadow-lg animate-scaleIn"
+  <div
+    class="question-card p-6 md:p-8 rounded-cute-xl shadow-cute-lg animate-scaleIn border-4"
     :class="{
-      'border-4 border-green-400': isCorrect,
-      'border-4 border-red-400': isIncorrect,
-      'border-4 border-transparent': !isCorrect && !isIncorrect
+      'bg-white border-peppa-green': isCorrect,
+      'bg-white border-peppa-orange': isIncorrect,
+      'bg-white border-peppa-blue-dark': !isCorrect && !isIncorrect
     }"
   >
     <!-- 题目内容 -->
     <div class="text-center">
-      <div class="flex items-center justify-center gap-4 mb-4">
-        <span 
-          class="text-6xl md:text-8xl font-bold text-indigo-600"
-          :class="{ 'animate-bounce': !question.isCorrect }"
-        >
-          {{ question.operand1 }}
-        </span>
-        <span class="text-5xl md:text-7xl font-bold text-gray-600">
-          {{ question.operator }}
-        </span>
-        <span class="text-6xl md:text-8xl font-bold text-indigo-600">
-          {{ question.operand2 }}
-        </span>
-        <span class="text-5xl md:text-7xl font-bold text-gray-600">
-          =
-        </span>
-        <span class="text-6xl md:text-8xl font-bold text-gray-400">
-          ?
-        </span>
+      <!-- 装饰 -->
+      <div class="flex justify-center gap-4 mb-4">
+        <span class="text-3xl animate-wiggle" style="animation-delay: 0s">⚽</span>
+        <span class="text-3xl animate-float">⭐</span>
+        <span class="text-3xl animate-wiggle" style="animation-delay: 0.2s">⚽</span>
       </div>
-      
-      <!-- 语音按钮 -->
-      <button 
-        @click="handleSpeak"
-        class="mt-4 p-3 bg-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-200 transition-all active:scale-95"
-        :class="{ 'animate-pulse': showAnswer }"
-      >
-        <Volume2 :size="28" />
-      </button>
+
+      <div class="bg-peppa-blue-light/30 rounded-cute-lg p-4 mb-4">
+        <div class="flex items-center justify-center gap-3 md:gap-4">
+          <span
+            class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded"
+          >
+            {{ question.operand1 }}
+          </span>
+          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
+            {{ question.operator }}
+          </span>
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
+            {{ question.operand2 }}
+          </span>
+          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
+            =
+          </span>
+          <span class="text-5xl md:text-7xl font-bold text-peppa-cyan font-rounded animate-wiggle">
+            ?
+          </span>
+        </div>
+      </div>
     </div>
-    
-    <!-- 答案显示 -->
-    <div 
+
+<!-- 答案显示 -->
+    <div
       v-if="showAnswer && (isCorrect || isIncorrect)"
       class="mt-6 text-center"
     >
-      <p 
-        class="text-3xl font-bold animate-slideIn"
-        :class="isCorrect ? 'text-green-500' : 'text-red-500'"
+      <p
+        class="text-2xl md:text-3xl font-bold animate-slideIn font-rounded flex items-center justify-center gap-2"
+        :class="isCorrect ? 'text-peppa-green' : 'text-peppa-orange'"
       >
-        {{ isCorrect ? '答对了！' : '答错了' }}
+        <Star v-if="isCorrect" :size="24" class="animate-spin-slow" />
+        {{ isCorrect ? '答对了！太棒了！' : '答错了' }}
+        <Heart v-if="isCorrect" :size="24" class="animate-wiggle" />
       </p>
-      <p 
+      <p
         v-if="isIncorrect"
-        class="text-2xl text-gray-600 mt-2 animate-slideIn"
+        class="text-xl md:text-2xl text-gray-600 mt-2 animate-slideIn font-rounded"
       >
-        正确答案是：{{ question.answer }}
+        正确答案是：<span class="text-peppa-blue-dark font-bold">{{ question.answer }}</span>
       </p>
     </div>
   </div>
@@ -88,6 +86,16 @@ function handleSpeak() {
 
 <style scoped>
 .question-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(255, 183, 197, 0.3);
+  min-width: 320px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.question-card .text-5xl,
+.question-card .text-6xl,
+.question-card .text-7xl {
+  min-height: 1em;
 }
 </style>
