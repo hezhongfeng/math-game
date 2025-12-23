@@ -101,6 +101,10 @@ function handleInput(num) {
   if (isWaiting.value) return
   if (userAnswer.value.length < 3) {
     userAnswer.value += num
+    // 输入满3位自动提交
+    if (userAnswer.value.length === 3) {
+      setTimeout(() => submitAnswer(), 300)
+    }
   }
 }
 
@@ -302,10 +306,25 @@ onMounted(() => {
         :show-answer="showAnswer"
       />
 
-      <!-- 用户答案显示 -->
-      <div v-if="userAnswer && !showAnswer" class="mt-6 text-center">
-        <p class="text-peppa-blue-dark/70 text-sm mb-2 font-rounded">你的答案</p>
-        <p class="text-4xl md:text-6xl font-bold text-peppa-blue-dark font-rounded">{{ userAnswer }}</p>
+      <!-- 答案输入框 -->
+      <div v-if="!showAnswer" class="w-full max-w-md mt-6">
+        <div class="bg-white rounded-cute-xl shadow-cute-lg border-4 border-peppa-blue-light p-6">
+          <p class="text-peppa-blue-dark/70 text-sm mb-3 font-rounded text-center">输入答案</p>
+          <!-- 答案显示区 -->
+          <div class="bg-gradient-to-r from-peppa-blue-light/30 to-peppa-cyan/30 rounded-cute-lg p-4 mb-4 border-3 border-dashed border-peppa-blue-light min-h-[80px] flex items-center justify-center">
+            <p v-if="userAnswer" class="text-5xl md:text-6xl font-bold text-peppa-blue-dark font-rounded animate-pop">
+              {{ userAnswer }}
+            </p>
+            <p v-else class="text-2xl text-peppa-blue-light font-rounded animate-pulse-slow">
+              请输入数字...
+            </p>
+          </div>
+          <!-- 输入提示 -->
+          <div class="flex justify-between items-center text-xs text-peppa-blue-dark/60 font-rounded">
+            <span>最多3位数字</span>
+            <span>点击"确认"或输入满3位自动提交</span>
+          </div>
+        </div>
       </div>
 
       <!-- 反馈消息文字 -->

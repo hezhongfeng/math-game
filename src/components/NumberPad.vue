@@ -27,7 +27,7 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="number-pad bg-white rounded-cute-xl shadow-cute-lg p-5 border-4 border-peppa-blue-light relative overflow-hidden">
+  <div class="number-pad bg-white rounded-cute-xl shadow-cute-lg p-4 md:p-5 border-4 border-peppa-blue-light relative overflow-hidden">
     <!-- 装饰元素 -->
     <div class="absolute top-2 left-3 text-2xl opacity-60 animate-float" style="animation-delay: 0s;">⚽</div>
     <div class="absolute top-3 right-4 text-xl opacity-50 animate-float" style="animation-delay: 0.5s;">🚀</div>
@@ -35,47 +35,45 @@ function handleSubmit() {
     <div class="absolute bottom-3 right-3 text-2xl opacity-60 animate-wiggle">⚽</div>
 
     <!-- 数字键盘 -->
-    <div class="grid grid-cols-3 gap-3">
+    <div class="grid grid-cols-3 gap-2 md:gap-3">
       <!-- 数字键 1-9 -->
       <button
         v-for="num in numbers"
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light/50 to-peppa-blue-light/70 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-3xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-3 border-peppa-blue-light"
+        class="aspect-square md:aspect-auto md:h-[70px] rounded-cute-lg bg-gradient-to-br from-peppa-blue-light/50 to-peppa-blue-light/70 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-3xl md:text-4xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-3 border-peppa-blue-light"
       >
         {{ num }}
-        <span class="absolute text-xs opacity-0 hover:opacity-100 transition-opacity duration-200">⚽</span>
       </button>
 
       <!-- 清除按钮 -->
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-orange/50 to-peppa-orange/70 hover:from-peppa-orange hover:to-[#E65100] active:scale-95 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-3 border-peppa-orange"
+        class="aspect-square md:aspect-auto md:h-[70px] rounded-cute-lg bg-gradient-to-br from-peppa-orange/50 to-peppa-orange/70 hover:from-peppa-orange hover:to-[#E65100] active:scale-95 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-3 border-peppa-orange"
       >
         <Delete :size="28" class="text-peppa-orange-dark" />
-        <span class="absolute text-sm opacity-0 hover:opacity-100 transition-opacity duration-200">🗑️</span>
+        <span class="ml-1 text-sm font-bold text-peppa-orange-dark">清除</span>
       </button>
 
       <!-- 数字键 0 -->
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light/50 to-peppa-blue-light/70 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-3xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-3 border-peppa-blue-light"
+        class="aspect-square md:aspect-auto md:h-[70px] rounded-cute-lg bg-gradient-to-br from-peppa-blue-light/50 to-peppa-blue-light/70 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-3xl md:text-4xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-3 border-peppa-blue-light"
       >
         0
-        <span class="absolute text-xs opacity-0 hover:opacity-100 transition-opacity duration-200">⚽</span>
       </button>
 
       <!-- 确认按钮 -->
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-green to-[#388E3C] hover:from-[#66BB6A] hover:to-[#388E3C] active:scale-95 transition-all duration-200 flex items-center justify-center shadow-glow-yellow disabled:opacity-50 disabled:cursor-not-allowed border-3 border-peppa-green"
+        class="aspect-square md:aspect-auto md:h-[70px] rounded-cute-lg bg-gradient-to-br from-peppa-green to-[#388E3C] hover:from-[#66BB6A] hover:to-[#388E3C] active:scale-95 transition-all duration-200 flex items-center justify-center shadow-glow-yellow disabled:opacity-50 disabled:cursor-not-allowed border-3 border-peppa-green"
       >
         <Check :size="28" class="text-white" />
-        <span class="absolute text-sm opacity-0 hover:opacity-100 transition-opacity duration-200">⭐</span>
+        <span class="ml-1 text-sm font-bold text-white">确认</span>
       </button>
     </div>
 
