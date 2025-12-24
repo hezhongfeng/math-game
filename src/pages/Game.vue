@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { X } from 'lucide-vue-next'
+import { ArrowLeft } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
@@ -29,44 +29,13 @@ const feedbackMessage = ref('')
 const isWaiting = ref(false)
 const userAnswer = ref('')
 
-// 调试信息 - 立即打印
-console.log('=== Game.vue mounted ===')
-console.log('props.id:', props.id)
-console.log('difficulty:', difficulty)
-console.log('game.questions:', game.questions.value)
-console.log('game.currentIndex:', game.currentIndex.value)
-console.log('game.currentQuestion:', game.currentQuestion.value)
-
-// 调试信息
-const debugInfo = computed(() => {
-  return {
-    difficultyId: props.id,
-    hasDifficulty: !!difficulty,
-    difficultyName: difficulty?.name,
-    questionCount: game.questions.value?.length || 0,
-    currentIndex: game.currentIndex.value,
-    currentQuestion: game.currentQuestion.value
-  }
-})
-
-// 在控制台打印调试信息
-watch(() => game.currentQuestion.value, (q) => {
-  console.log('Current question changed:', q)
-  console.log('Debug info:', debugInfo.value)
-}, { immediate: true })
-
-watch(() => game.questions.value, (q) => {
-  console.log('Questions changed:', q)
-}, { deep: true, immediate: true })
+// 调试代码已移除
 
 const isComplete = computed(() => game.isComplete.value)
 
 // 初始化游戏
 function initGame() {
-  console.log('Initializing game with difficulty:', difficulty)
   game.startGame()
-  console.log('Game started. Questions:', game.questions.value)
-  console.log('Current question:', game.currentQuestion.value)
 }
 
 // 提交答案
@@ -106,10 +75,6 @@ function handleInput(num) {
   if (isWaiting.value) return
   if (userAnswer.value.length < 3) {
     userAnswer.value += num
-    // 输入满3位自动提交
-    if (userAnswer.value.length === 3) {
-      setTimeout(() => submitAnswer(), 300)
-    }
   }
 }
 
@@ -189,9 +154,9 @@ function showResultModal(result, isNewBest) {
   }
 }
 
-// 返回主页
-function goHome() {
-  router.push('/')
+// 返回难度选择
+function goBack() {
+  router.push('/difficulty')
 }
 
 onMounted(() => {
@@ -218,87 +183,43 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen flex flex-col p-4 md:p-6 pb-8 relative overflow-hidden">
-    <!-- 装饰背景元素 -->
-    <div class="absolute top-8 right-8 text-peppa-yellow animate-float opacity-40 pointer-events-none text-5xl">
+    <!-- 装饰背景元素 - 精简版 -->
+    <div class="absolute top-8 right-8 text-peppa-yellow animate-float opacity-20 pointer-events-none text-4xl">
       ☀️
     </div>
-    <div class="absolute top-20 left-12 text-peppa-cyan animate-wiggle opacity-40 pointer-events-none text-4xl">
-      ☁️
-    </div>
-    <div class="absolute bottom-32 left-8 text-peppa-green animate-float opacity-30 pointer-events-none text-3xl" style="animation-delay: 0.5s;">
+    <div class="absolute bottom-32 left-8 text-peppa-green animate-float opacity-20 pointer-events-none text-2xl" style="animation-delay: 0.5s;">
       ⚽
-    </div>
-    <div class="absolute bottom-20 right-10 text-peppa-blue animate-float opacity-30 pointer-events-none text-2xl" style="animation-delay: 1s;">
-      ⭐
     </div>
 
     <!-- 顶部导航 -->
-    <div class="flex items-center justify-between mb-6 relative z-10">
+    <div class="flex items-center justify-between mb-4 relative z-10">
       <button
-        @click="goHome"
-        class="p-3 bg-white rounded-cute-full shadow-cute hover:shadow-cute-lg hover:scale-110 transition-all duration-300"
+        @click="goBack"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/60 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg hover:scale-105 transition-all"
       >
-        <X :size="24" class="text-peppa-blue-dark" />
+        <ArrowLeft :size="24" />
+        返回
       </button>
 
       <div class="text-center">
-        <div class="text-3xl mb-1 animate-float">⚽</div>
-        <h2 class="text-xl font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
-        <p class="text-sm text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
+        <div class="text-2xl mb-1 animate-float">⚽</div>
+        <h2 class="text-lg font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
+        <p class="text-xs text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
       </div>
 
-      <div class="w-12"></div>
+      <div class="w-24"></div>
     </div>
-    
-    <!-- 得分板 -->
-    <div class="max-w-2xl mx-auto w-full mb-6 relative z-10">
-      <ScoreBoard
-        :score="game.score.value"
-        :current-index="game.currentIndex.value"
-        :total-questions="game.questions.value.length"
-        :correct-count="game.correctCount.value"
-        :duration="game.duration.value"
-        :accuracy="game.accuracy.value"
-      />
-    </div>
-    
+
     <!-- 题目卡片区 -->
-    <div class="flex-1 flex flex-col items-center justify-center py-4 relative z-10">
+    <div class="flex-1 flex flex-col items-center justify-center py-2 relative z-10">
       <!-- 正确/错误反馈动画区 -->
-      <div v-if="feedbackMessage" class="mb-6 relative">
-        <!-- 粒子效果容器 -->
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span
-            v-for="i in 8"
-            :key="`star-${i}`"
-            class="absolute animate-star-burst text-2xl"
-            :style="{
-              animationDelay: `${i * 0.1}s`,
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
-            }"
-          >
-            ⭐
-          </span>
-        </div>
+      <div v-if="feedbackMessage" class="mb-4 relative">
         <div
-          class="relative z-10 text-9xl font-bold rounded-full p-4 transition-all duration-300"
+          class="relative z-10 text-6xl font-bold rounded-full p-3 transition-all duration-300"
           :class="feedbackMessage === '正确！' ? 'animate-correct-pop animate-correct-glow text-white bg-gradient-to-br from-peppa-green to-[#388E3C]' : 'animate-wrong-shake animate-wrong-glow text-white bg-gradient-to-br from-peppa-orange to-[#E65100]'"
         >
           {{ feedbackMessage === '正确！' ? '✓' : '✗' }}
         </div>
-      </div>
-
-      <!-- 调试信息 -->
-      <div v-if="!game.currentQuestion.value" class="text-center bg-white/80 p-4 rounded-cute-lg">
-        <p class="text-peppa-blue-dark/70 font-bold font-rounded">正在加载题目...</p>
-        <p class="text-sm text-gray-600 font-rounded mt-2">
-          题目数量: {{ game.questions.value.length }} | 当前索引: {{ game.currentIndex.value }}
-        </p>
-        <p class="text-sm text-gray-600 font-rounded">
-          难度: {{ difficulty?.name }} | ID: {{ props.id }}
-        </p>
       </div>
 
       <QuestionCard
@@ -308,44 +229,40 @@ onMounted(() => {
       />
 
       <!-- 答案输入框 -->
-      <div v-if="!showAnswer" class="w-full max-w-md mt-6">
-        <div class="bg-white rounded-cute-xl shadow-cute-lg border-4 border-peppa-blue-light p-6">
-          <p class="text-peppa-blue-dark/70 text-sm mb-3 font-rounded text-center">输入答案</p>
+      <div v-if="!showAnswer" class="w-full max-w-xs mt-3">
+        <div class="rounded-cute-xl shadow-cute-lg p-4 border-4 border-white bg-transparent">
           <!-- 答案显示区 -->
-          <div class="bg-gradient-to-r from-peppa-blue-light/30 to-peppa-cyan/30 rounded-cute-lg p-4 mb-4 border-3 border-dashed border-peppa-blue-light min-h-[80px] flex items-center justify-center">
-            <p v-if="userAnswer" class="text-5xl md:text-6xl font-bold text-peppa-blue-dark font-rounded animate-pop">
+          <div class="rounded-cute-lg p-4 h-[60px] flex items-center justify-center bg-transparent">
+            <span v-if="userAnswer" class="text-5xl font-bold text-peppa-blue-dark font-rounded animate-pop">
               {{ userAnswer }}
-            </p>
-            <p v-else class="text-2xl text-peppa-blue-light font-rounded animate-pulse-slow">
-              请输入数字...
-            </p>
-          </div>
-          <!-- 输入提示 -->
-          <div class="flex justify-between items-center text-xs text-peppa-blue-dark/60 font-rounded">
-            <span>最多3位数字</span>
-            <span>点击"确认"或输入满3位自动提交</span>
+            </span>
+            <span v-else class="text-2xl text-peppa-blue-dark/40 font-rounded">
+              请输入答案
+            </span>
           </div>
         </div>
       </div>
-
-      <!-- 反馈消息文字 -->
-      <div v-if="feedbackMessage" class="mt-6">
-        <p
-          class="text-3xl md:text-5xl font-bold font-rounded"
-          :class="feedbackMessage === '正确！' ? 'text-peppa-green animate-correct-pop' : 'text-peppa-orange animate-wrong-shake'"
-        >
-          {{ feedbackMessage }}
-        </p>
-      </div>
     </div>
-    
+
     <!-- 数字键盘 -->
-    <div class="max-w-md mx-auto w-full mt-6 relative z-10">
+    <div class="max-w-md mx-auto w-full mb-4 relative z-10">
       <NumberPad
         :disabled="isWaiting.value || isComplete"
         @input="handleInput"
         @delete="handleDelete"
         @submit="submitAnswer"
+      />
+    </div>
+
+    <!-- 得分板 -->
+    <div class="max-w-2xl mx-auto w-full relative z-10">
+      <ScoreBoard
+        :score="game.score.value"
+        :current-index="game.currentIndex.value"
+        :total-questions="game.questions.value.length"
+        :correct-count="game.correctCount.value"
+        :duration="game.duration.value"
+        :accuracy="game.accuracy.value"
       />
     </div>
   </div>
