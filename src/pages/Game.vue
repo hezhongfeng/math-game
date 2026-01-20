@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
@@ -37,8 +37,19 @@ const resultData = ref(null)
 const isNewBest = ref(false)
 
 const decorations = DECORATIONS.game
+const questionKey = ref(0) // 用于强制重新渲染题目卡片
 
 const isComplete = computed(() => game.isComplete.value)
+
+// 监听题目变化，更新 key
+watch(() => game.currentIndex.value, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    questionKey.value++ // 切换题目时改变 key
+    userAnswer.value = '' // 立即清空答案
+    showAnswer.value = false // 隐藏答案反馈
+    isWaiting.value = false // 取消等待状态
+  }
+})
 
 // 初始化游戏
 function initGame() {
@@ -67,9 +78,8 @@ function submitAnswer() {
     if (isComplete.value) {
       handleGameComplete()
     } else {
-      showAnswer.value = false
-      userAnswer.value = ''
-      isWaiting.value = false
+      // 切换到下一题（这会触发 watch，重置状态）
+      game.nextQuestion()
     }
   }, GAME_CONFIG.FEEDBACK_DELAY)
 
@@ -185,13 +195,19 @@ onMounted(() => {
 
     <!-- 题目卡片区 -->
     <div class="flex-1 flex flex-col items-center justify-center py-4">
-      <QuestionCard
-        v-if="game.currentQuestion.value"
-        :question="game.currentQuestion.value"
-        :show-answer="showAnswer"
-        :user-answer="userAnswer"
-        @submit="submitAnswer"
-      />
+      <Transition
+        name="question"
+        mode="out-in"
+      >
+        <QuestionCard
+          v-if="game.currentQuestion.value"
+          :key="questionKey"
+          :question="game.currentQuestion.value"
+          :show-answer="showAnswer"
+          :user-answer="userAnswer"
+          @submit="submitAnswer"
+        />
+      </Transition>
     </div>
 
     <!-- 数字键盘 -->
@@ -200,7 +216,6 @@ onMounted(() => {
         :disabled="isWaiting.value || isComplete"
         @input="handleInput"
         @delete="handleDelete"
-        @submit="submitAnswer"
       />
     </div>
 
@@ -224,6 +239,24 @@ onMounted(() => {
       :is-new-best="isNewBest"
       @retry="handleRetry"
       @home="handleHome"
-    />
-  </div>
+     />
+   </div>
 </template>
+
+<style scoped>
+.question-enter-active,
+.question-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.question-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+
+.question-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+}
+</style>
+

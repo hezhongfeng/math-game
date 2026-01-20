@@ -56,24 +56,29 @@ export function useGame(difficulty) {
   function submitAnswer(answer) {
     const question = currentQuestion.value
     if (!question) return
-    
+
     const isCorrect = checkAnswer(question, answer)
     question.userAnswer = answer
     question.isCorrect = isCorrect
-    
+
     if (isCorrect) {
       score.value += 10
       correctCount.value++
     }
-    
-    // 判断是否完成
+
+    // 不在这里切换到下一题，由外部控制
+    return isCorrect
+  }
+
+  /**
+   * 切换到下一题
+   */
+  function nextQuestion() {
     if (currentIndex.value >= questions.value.length - 1) {
       completeGame()
     } else {
       currentIndex.value++
     }
-    
-    return isCorrect
   }
   
   /**
