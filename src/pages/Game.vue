@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw, Check, X, Sparkles } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -158,34 +158,26 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col px-3 py-4 pb-8">
+  <div class="page">
     <!-- 顶部导航 -->
-    <div class="flex items-center justify-between mb-3">
-      <button
-        @click="goBack"
-        class="btn-secondary flex items-center gap-2 px-4 py-2.5 text-sm font-medium font-rounded"
-      >
-        <ArrowLeft :size="20" />
-        返回
+    <header class="header">
+      <button @click="goBack" class="back-btn">
+        <ArrowLeft :size="22" />
+        <span>返回</span>
       </button>
 
-      <div class="text-center px-2">
-        <h2 class="text-lg font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
-        <p class="text-xs text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
+      <div class="title-group">
+        <h2 class="title">{{ difficulty.name }}</h2>
+        <p class="subtitle">{{ difficulty.description }}</p>
       </div>
 
-      <button
-        @click="handleRetry"
-        class="btn-secondary flex items-center gap-2 px-4 py-2.5 text-sm font-medium font-rounded"
-        title="重新开始"
-      >
-        <RotateCcw :size="20" />
-        重来
+      <button @click="handleRetry" class="retry-btn" title="重新开始">
+        <RotateCcw :size="22" />
       </button>
-    </div>
+    </header>
 
     <!-- 题目卡片区 -->
-    <div class="flex-1 flex flex-col items-center justify-center py-3">
+    <main class="main">
       <Transition name="question" mode="out-in">
         <QuestionCard
           v-if="game.currentQuestion.value"
@@ -196,19 +188,19 @@ onMounted(() => {
           @submit="submitAnswer"
         />
       </Transition>
-    </div>
+    </main>
 
     <!-- 数字键盘 -->
-    <div class="max-w-md mx-auto w-full mb-3">
+    <section class="numpad-section">
       <NumberPad
         :disabled="isWaiting || isComplete"
         @input="handleInput"
         @delete="handleDelete"
       />
-    </div>
+    </section>
 
     <!-- 得分板 -->
-    <div class="max-w-2xl mx-auto w-full">
+    <footer class="footer">
       <ScoreBoard
         :score="game.score.value"
         :current-index="game.currentIndex.value"
@@ -217,7 +209,7 @@ onMounted(() => {
         :duration="game.duration.value"
         :accuracy="game.accuracy.value"
       />
-    </div>
+    </footer>
 
     <!-- 结果弹窗 -->
     <ResultModal
@@ -232,19 +224,106 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.page {
+  min-height: 100vh;
+  background: #f0f7ff;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: white;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4A90E2;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.back-btn:active {
+  background: #f0f7ff;
+}
+
+.title-group {
+  text-align: center;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e3a5f;
+  font-family: inherit;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #5a7a9a;
+  font-family: inherit;
+}
+
+.retry-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #4A90E2;
+  background: #f0f7ff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.retry-btn:active {
+  background: #e0efff;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.numpad-section {
+  margin: 8px 0;
+}
+
+.footer {
+  margin-top: auto;
+}
+
 .question-enter-active,
 .question-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s ease;
 }
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(30px);
 }
 
 .question-leave-to {
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-10px) scale(0.97);
 }
 </style>
 

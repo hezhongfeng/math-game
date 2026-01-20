@@ -1,10 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { Calculator, Trophy, Play, Star, Heart } from 'lucide-vue-next'
+import { Trophy, Play, Star } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { DIFFICULTY_GROUPS } from '../config/difficulty'
-import { DECORATIONS } from '../config/constants'
 
 const router = useRouter()
 const { getAllBestScores } = useStorage()
@@ -22,71 +21,48 @@ function viewAchievements() {
   playSound('click')
   router.push('/difficulty')
 }
-
-const decorations = DECORATIONS.home
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center px-4 py-6 bg-gradient-flow">
-    <!-- 浮动装饰元素 -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      <div
-        v-for="(decoration, index) in decorations"
-        :key="index"
-        class="absolute animate-float"
-        :style="decoration.style"
-      >
-        {{ decoration.emoji }}
-      </div>
-    </div>
-    
+  <div class="page">
     <!-- 主内容区 -->
-    <div class="w-full max-w-lg relative z-10">
+    <div class="content">
       <!-- 标题区 -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-peppa-blue to-peppa-blue-dark rounded-cute-xl shadow-cute-xl mb-5 animate-pulse-gentle">
-          <div class="text-6xl">⚽</div>
+      <div class="header">
+        <div class="logo-wrapper">
+          <div class="logo">
+            <span class="logo-emoji">⚽</span>
+          </div>
+
+          <h1 class="title">快乐数学</h1>
+          <p class="subtitle">趣味学习，快乐成长！</p>
         </div>
-
-        <h1 class="text-3xl md:text-5xl font-bold text-peppa-blue-dark mb-3 font-rounded animate-title-glow">
-          快乐数学
-        </h1>
-
-        <p class="text-base md:text-lg text-peppa-cyan-dark/80 font-rounded animate-fade-in-up">
-          趣味学习，快乐成长！
-        </p>
       </div>
       
       <!-- 统计卡片 -->
-      <div class="grid grid-cols-2 gap-4 mb-8">
-        <div class="bg-gradient-to-br from-peppa-blue to-peppa-blue-dark rounded-cute-xl py-5 px-4 text-center text-white shadow-cute card-entrance">
-          <Trophy :size="36" class="mx-auto mb-2" />
-          <p class="text-3xl font-bold">{{ completedCount }}</p>
-          <p class="text-sm opacity-90 font-rounded">已完成关卡</p>
+      <div class="stats">
+        <div class="stat-card stat-card-blue">
+          <Trophy :size="32" class="stat-icon" />
+          <p class="stat-value">{{ completedCount }}</p>
+          <p class="stat-label">已完成关卡</p>
         </div>
 
-        <div class="bg-gradient-to-br from-peppa-yellow to-peppa-yellow-dark rounded-cute-xl py-5 px-4 text-center text-gray-800 shadow-cute card-entrance" style="animation-delay: 0.15s">
-          <Star :size="36" class="mx-auto mb-2" />
-          <p class="text-3xl font-bold">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
-          <p class="text-sm opacity-90 font-rounded">总关卡数</p>
+        <div class="stat-card stat-card-yellow">
+          <Star :size="32" class="stat-icon" />
+          <p class="stat-value">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
+          <p class="stat-label">总关卡数</p>
         </div>
       </div>
       
       <!-- 主按钮 -->
-      <div class="flex flex-col gap-4">
-        <button
-          @click="startGame"
-          class="btn-primary text-xl py-5 px-8 flex items-center justify-center gap-3 font-rounded w-full"
-        >
-          <Play :size="26" />
+      <div class="buttons">
+        <button @click="startGame" class="btn btn-primary">
+          <Play :size="24" />
           开始游戏
         </button>
 
-        <button
-          @click="viewAchievements"
-          class="btn-secondary text-xl py-5 px-8 flex items-center justify-center gap-3 font-rounded w-full"
-        >
-          <Trophy :size="26" />
+        <button @click="viewAchievements" class="btn btn-secondary">
+          <Trophy :size="24" />
           查看成就
         </button>
       </div>
@@ -95,65 +71,153 @@ const decorations = DECORATIONS.home
 </template>
 
 <style scoped>
-/* 背景渐变流动动画 */
-.bg-gradient-flow {
-  background: linear-gradient(-45deg, #E3F2FD, #F5F9FF, #E8F5E9, #FFF3E0);
-  background-size: 400% 400%;
-  animation: gradientFlow 15s ease infinite;
+.page {
+  min-height: 100vh;
+  background: #f0f7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
 }
 
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.content {
+  width: 100%;
+  max-width: 360px;
 }
 
-.animate-title-glow {
-  animation: titleGlow 3s ease-in-out infinite;
+.header {
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-@keyframes titleGlow {
-  0%, 100% { text-shadow: 0 0 10px rgba(74, 144, 226, 0.3); }
-  50% { text-shadow: 0 0 25px rgba(74, 144, 226, 0.6), 0 0 35px rgba(74, 144, 226, 0.4); }
+.logo-wrapper {
+  margin-bottom: 20px;
 }
 
-.animate-pulse-gentle {
-  animation: pulseGentle 2.5s ease-in-out infinite;
+.logo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, #4A90E2, #2A70C2);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
 }
 
-@keyframes pulseGentle {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+.logo-emoji {
+  font-size: 52px;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out;
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin-bottom: 8px;
+  font-family: inherit;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+.subtitle {
+  font-size: 16px;
+  color: #5a7a9a;
+  font-family: inherit;
 }
 
-.card-entrance {
-  animation: cardEntrance 0.6s ease-out both;
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
-@keyframes cardEntrance {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 2px solid transparent;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-  opacity: 0.6;
+.stat-card-blue {
+  border-color: #4A90E2;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  25% { transform: translateY(-15px); }
-  50% { transform: translateY(0); }
-  75% { transform: translateY(-10px); }
+.stat-card-yellow {
+  border-color: #FFD54F;
+}
+
+.stat-icon {
+  margin-bottom: 8px;
+}
+
+.stat-card-blue .stat-icon {
+  color: #4A90E2;
+}
+
+.stat-card-yellow .stat-icon {
+  color: #FFB300;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e3a5f;
+  font-family: inherit;
+}
+
+.stat-card-blue .stat-value {
+  color: #2A70C2;
+}
+
+.stat-card-yellow .stat-value {
+  color: #FF8F00;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #6b7c93;
+  margin-top: 4px;
+  font-family: inherit;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4A90E2, #2A70C2);
+  color: white;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.35);
+}
+
+.btn-secondary {
+  background: white;
+  color: #2A70C2;
+  border: 2px solid #4A90E2;
 }
 </style>
 
