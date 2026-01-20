@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG, DECORATIONS } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -12,6 +12,7 @@ import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
 import ResultModal from '../components/ResultModal.vue'
+import SettingsPanel from '../components/SettingsPanel.vue'
 
 const props = defineProps({
   id: {
@@ -22,13 +23,13 @@ const props = defineProps({
 
 const router = useRouter()
 const difficulty = getDifficultyById(parseInt(props.id))
+const settingsStore = useSettingsStore()
 const { updateBestScore } = useStorage()
 const { playSound } = useSound()
 
 // 游戏状态
 const game = useGame(difficulty)
 const showAnswer = ref(false)
-const feedbackMessage = ref('')
 const isWaiting = ref(false)
 const userAnswer = ref('')
 const showModal = ref(false)
@@ -56,10 +57,8 @@ function submitAnswer() {
 
   // 播放音效
   if (isCorrect) {
-    feedbackMessage.value = '正确！'
     playSound('correct')
   } else {
-    feedbackMessage.value = '错误！'
     playSound('wrong')
   }
 
@@ -69,11 +68,12 @@ function submitAnswer() {
       handleGameComplete()
     } else {
       showAnswer.value = false
-      feedbackMessage.value = ''
       userAnswer.value = ''
       isWaiting.value = false
     }
   }, GAME_CONFIG.FEEDBACK_DELAY)
+
+  return isCorrect
 }
 
 // 处理输入
@@ -121,7 +121,6 @@ function goBack() {
 
 onMounted(() => {
   // 加载设置
-  const settingsStore = useSettingsStore()
   settingsStore.loadSettings()
 
   initGame()
@@ -148,69 +147,55 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col p-4 md:p-6 pb-8 relative overflow-hidden">
-    <!-- 装饰背景元素 - 精简版 -->
-    <div v-for="(deco, index) in decorations" :key="index"
-         :class="['absolute decoration', deco.class]"
-         :style="{ fontSize: `${deco.size}px`, opacity: 0.2 }">
-      {{ deco.emoji }}
-    </div>
-
+  <div class="min-h-screen flex flex-col p-4 md:p-6 pb-8">
     <!-- 顶部导航 -->
-    <div class="flex items-center justify-between mb-4 relative z-10">
+    <div class="flex items-center justify-between mb-3">
       <button
         @click="goBack"
-        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/60 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg hover:scale-105 transition-all"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all"
       >
         <ArrowLeft :size="24" />
         返回
       </button>
 
       <div class="text-center">
-        <div class="text-2xl mb-1 animate-float">⚽</div>
-        <h2 class="text-lg font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
-        <p class="text-xs text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
+        <h2 class="text-xl font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
+        <p class="text-sm text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
       </div>
 
-      <div class="w-24"></div>
+      <button
+        @click="handleRetry"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all"
+        title="重新开始"
+      >
+        <RotateCcw :size="24" />
+        重来
+      </button>
+    </div>
+
+    <!-- 设置面板 -->
+    <div class="flex justify-center mb-6">
+      <SettingsPanel
+        :sound-enabled="settingsStore.soundEnabled"
+        :speech-enabled="settingsStore.speechEnabled"
+        @toggle-sound="settingsStore.toggleSound"
+        @toggle-speech="settingsStore.toggleSpeech"
+      />
     </div>
 
     <!-- 题目卡片区 -->
-    <div class="flex-1 flex flex-col items-center justify-center py-2 relative z-10">
-      <!-- 正确/错误反馈动画区 -->
-      <div v-if="feedbackMessage" class="mb-4 relative">
-        <div
-          class="relative z-10 text-6xl font-bold rounded-full p-3 transition-all duration-300"
-          :class="feedbackMessage === '正确！' ? 'animate-correct-pop animate-correct-glow text-white bg-gradient-to-br from-peppa-green to-[#388E3C]' : 'animate-wrong-shake animate-wrong-glow text-white bg-gradient-to-br from-peppa-orange to-[#E65100]'"
-        >
-          {{ feedbackMessage === '正确！' ? '✓' : '✗' }}
-        </div>
-      </div>
-
+    <div class="flex-1 flex flex-col items-center justify-center py-4">
       <QuestionCard
         v-if="game.currentQuestion.value"
         :question="game.currentQuestion.value"
         :show-answer="showAnswer"
+        :user-answer="userAnswer"
+        @submit="submitAnswer"
       />
-
-      <!-- 答案输入框 -->
-      <div v-if="!showAnswer" class="w-full max-w-xs mt-3">
-        <div class="rounded-cute-xl shadow-cute-lg p-4 border-4 border-white bg-transparent">
-          <!-- 答案显示区 -->
-          <div class="rounded-cute-lg p-4 h-[60px] flex items-center justify-center bg-transparent">
-            <span v-if="userAnswer" class="text-5xl font-bold text-peppa-blue-dark font-rounded animate-pop">
-              {{ userAnswer }}
-            </span>
-            <span v-else class="text-2xl text-peppa-blue-dark/40 font-rounded">
-              请输入答案
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- 数字键盘 -->
-    <div class="max-w-md mx-auto w-full mb-4 relative z-10">
+    <div class="max-w-md mx-auto w-full mb-4">
       <NumberPad
         :disabled="isWaiting.value || isComplete"
         @input="handleInput"

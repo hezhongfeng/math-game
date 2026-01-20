@@ -51,38 +51,38 @@ const formatTime = computed(() => {
       </div>
       <div class="h-3 bg-peppa-blue-light/30 rounded-cute-full overflow-hidden">
         <div
-          class="h-full bg-gradient-to-r from-peppa-blue to-peppa-blue-dark rounded-cute-full transition-all duration-300 ease-out animate-pulse-slow"
+          class="h-full bg-gradient-to-r from-peppa-blue to-peppa-blue-dark rounded-cute-full transition-all duration-300 ease-out"
           :style="{ width: `${progress}%` }"
         ></div>
       </div>
     </div>
-    
+
     <!-- 数据统计网格 -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <!-- 得分 -->
       <div class="bg-gradient-to-br from-peppa-blue/20 to-peppa-blue-dark/20 rounded-cute-lg p-3 text-center border-2 border-peppa-blue-light/50">
-        <Star :size="24" class="text-peppa-blue mx-auto mb-2 animate-wiggle" />
+        <Star :size="24" class="text-peppa-blue mx-auto mb-2" />
         <p class="text-2xl md:text-3xl font-bold text-peppa-blue-dark font-rounded">{{ score }}</p>
         <p class="text-xs text-gray-500 mt-1 font-rounded">得分</p>
       </div>
 
       <!-- 正确数 -->
       <div class="bg-gradient-to-br from-peppa-green/20 to-[#388E3C]/20 rounded-cute-lg p-3 text-center border-2 border-peppa-green/50">
-        <CheckCircle :size="24" class="text-peppa-green mx-auto mb-2 animate-pulse-slow" />
+        <CheckCircle :size="24" class="text-peppa-green mx-auto mb-2" />
         <p class="text-2xl md:text-3xl font-bold text-peppa-green-dark font-rounded">{{ correctCount }}</p>
         <p class="text-xs text-gray-500 mt-1 font-rounded">正确</p>
       </div>
 
       <!-- 用时 -->
       <div class="bg-gradient-to-br from-peppa-cyan/20 to-[#0097A7]/20 rounded-cute-lg p-3 text-center border-2 border-peppa-cyan/50">
-        <Clock :size="24" class="text-peppa-cyan mx-auto mb-2 animate-wiggle" />
+        <Clock :size="24" class="text-peppa-cyan mx-auto mb-2" />
         <p class="text-xl md:text-2xl font-bold text-peppa-cyan-dark font-rounded">{{ formatTime }}</p>
         <p class="text-xs text-gray-500 mt-1 font-rounded">用时</p>
       </div>
 
       <!-- 正确率 -->
       <div class="bg-gradient-to-br from-peppa-yellow/20 to-peppa-yellow-dark/20 rounded-cute-lg p-3 text-center border-2 border-peppa-yellow/50">
-        <TrendingUp :size="24" class="text-peppa-yellow-dark mx-auto mb-2 animate-bounce-slow" />
+        <TrendingUp :size="24" class="text-peppa-yellow-dark mx-auto mb-2" />
         <p class="text-2xl md:text-3xl font-bold text-peppa-yellow-dark font-rounded">{{ accuracy }}%</p>
         <p class="text-xs text-gray-500 mt-1 font-rounded">正确率</p>
       </div>
@@ -95,3 +95,4 @@ const formatTime = computed(() => {
   background: linear-gradient(135deg, #ffffff 0%, #E3F2FD 100%);
 }
 </style>
+
