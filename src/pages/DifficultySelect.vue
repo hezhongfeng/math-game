@@ -87,13 +87,13 @@ onMounted(() => {
 
     <!-- 统计卡片 -->
     <div class="w-full mb-4 grid grid-cols-2 gap-3 relative z-10">
-      <div class="bg-gradient-to-br from-peppa-green to-peppa-green-dark rounded-cute-xl py-4 px-3 text-center text-white shadow-cute animate-card-entrance" style="animation-delay: 0.1s">
+      <div class="bg-gradient-to-br from-peppa-green to-peppa-green-dark rounded-cute-xl py-4 px-3 text-center text-white shadow-cute">
         <Trophy :size="32" class="mx-auto mb-1" />
         <p class="text-2xl font-bold">{{ completedCount }}</p>
         <p class="text-xs opacity-90 font-rounded">已完成关卡</p>
       </div>
 
-      <div class="bg-gradient-to-br from-peppa-purple to-peppa-purple-dark rounded-cute-xl py-4 px-3 text-center text-white shadow-cute animate-card-entrance" style="animation-delay: 0.2s">
+      <div class="bg-gradient-to-br from-peppa-purple to-peppa-purple-dark rounded-cute-xl py-4 px-3 text-center text-white shadow-cute">
         <Star :size="32" class="mx-auto mb-1" />
         <p class="text-2xl font-bold">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
         <p class="text-xs opacity-90 font-rounded">总关卡数</p>
@@ -130,86 +130,45 @@ onMounted(() => {
 <style scoped>
 /* 背景渐变流动动画 */
 .bg-gradient-flow {
-  background: linear-gradient(-45deg, #E3F2FD, #F0F9FF, #E8F5E9, #FFF3E0, #FCE4EC);
+  background: linear-gradient(-45deg, #E3F2FD, #F5F9FF, #E8F5E9, #FFF3E0);
   background-size: 400% 400%;
   animation: gradientFlow 20s ease infinite;
 }
 
 @keyframes gradientFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* 标题发光动画 */
 .animate-title-glow {
   animation: titleGlow 3s ease-in-out infinite;
 }
 
 @keyframes titleGlow {
-  0%, 100% {
-    text-shadow: 0 0 10px rgba(156, 39, 176, 0.3);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(156, 39, 176, 0.6), 0 0 30px rgba(156, 39, 176, 0.4);
-  }
+  0%, 100% { text-shadow: 0 0 10px rgba(156, 39, 176, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(156, 39, 176, 0.6), 0 0 30px rgba(156, 39, 176, 0.4); }
 }
 
-/* 温柔脉冲动画 */
 .animate-pulse-gentle {
   animation: pulseGentle 3s ease-in-out infinite;
 }
 
 @keyframes pulseGentle {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
-/* 卡片入场动画 */
-.animate-card-entrance {
-  animation: cardEntrance 0.6s ease-out both;
-}
-
-@keyframes cardEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 浮动动画 */
 .animate-float {
   animation: float 8s ease-in-out infinite;
   opacity: 0.5;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-15px) rotate(5deg);
-  }
-  50% {
-    transform: translateY(0) rotate(0deg);
-  }
-  75% {
-    transform: translateY(-10px) rotate(-5deg);
-  }
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-12px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-8px); }
 }
 
 .difficulty-group {
@@ -217,13 +176,7 @@ onMounted(() => {
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

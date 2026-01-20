@@ -158,38 +158,35 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col p-4 md:p-6 pb-8">
+  <div class="min-h-screen flex flex-col px-3 py-4 pb-8">
     <!-- 顶部导航 -->
     <div class="flex items-center justify-between mb-3">
       <button
         @click="goBack"
-        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all border-4 border-peppa-blue-light/30 hover:border-peppa-blue-light/60"
+        class="btn-secondary flex items-center gap-2 px-4 py-2.5 text-sm font-medium font-rounded"
       >
-        <ArrowLeft :size="24" />
+        <ArrowLeft :size="20" />
         返回
       </button>
 
-      <div class="text-center">
-        <h2 class="text-xl font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
-        <p class="text-sm text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
+      <div class="text-center px-2">
+        <h2 class="text-lg font-bold text-peppa-blue-dark font-rounded">{{ difficulty.name }}</h2>
+        <p class="text-xs text-peppa-blue-dark/70 font-rounded">{{ difficulty.description }}</p>
       </div>
 
       <button
         @click="handleRetry"
-        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all border-4 border-peppa-blue-light/30 hover:border-peppa-blue-light/60"
+        class="btn-secondary flex items-center gap-2 px-4 py-2.5 text-sm font-medium font-rounded"
         title="重新开始"
       >
-        <RotateCcw :size="24" />
+        <RotateCcw :size="20" />
         重来
       </button>
     </div>
 
     <!-- 题目卡片区 -->
-    <div class="flex-1 flex flex-col items-center justify-center py-4">
-      <Transition
-        name="question"
-        mode="out-in"
-      >
+    <div class="flex-1 flex flex-col items-center justify-center py-3">
+      <Transition name="question" mode="out-in">
         <QuestionCard
           v-if="game.currentQuestion.value"
           :key="questionKey"
@@ -202,7 +199,7 @@ onMounted(() => {
     </div>
 
     <!-- 数字键盘 -->
-    <div class="max-w-md mx-auto w-full mb-4">
+    <div class="max-w-md mx-auto w-full mb-3">
       <NumberPad
         :disabled="isWaiting || isComplete"
         @input="handleInput"
@@ -211,7 +208,7 @@ onMounted(() => {
     </div>
 
     <!-- 得分板 -->
-    <div class="max-w-2xl mx-auto w-full relative z-10">
+    <div class="max-w-2xl mx-auto w-full">
       <ScoreBoard
         :score="game.score.value"
         :current-index="game.currentIndex.value"
@@ -231,7 +228,7 @@ onMounted(() => {
       @retry="handleRetry"
       @home="handleHome"
      />
-   </div>
+  </div>
 </template>
 
 <style scoped>
@@ -242,12 +239,12 @@ onMounted(() => {
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(30px) scale(0.95);
+  transform: translateY(20px) scale(0.95);
 }
 
 .question-leave-to {
   opacity: 0;
-  transform: translateY(-30px) scale(0.95);
+  transform: translateY(-20px) scale(0.95);
 }
 </style>
 

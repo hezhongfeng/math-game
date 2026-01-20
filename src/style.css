@@ -6,19 +6,19 @@
   :root {
     --background: 210 30% 98%;
     --foreground: 210 10% 20%;
-    --card: 210 30% 98%;
+    --card: 0 0% 100%;
     --card-foreground: 210 10% 20%;
 
-    /* 男孩蓝色主题色变量 */
+    /* 主题色变量 */
     --peppa-blue: #4A90E2;
     --peppa-blue-light: #7AB8FF;
     --peppa-blue-dark: #2A70C2;
-    --peppa-cyan: #00BCD4;
+    --peppa-cyan: #26C6DA;
     --peppa-green: #4CAF50;
-    --peppa-yellow: #FFD93D;
+    --peppa-yellow: #FFD54F;
     --peppa-orange: #FF9800;
-    --peppa-purple: #9C27B0;
-    --peppa-bg: #E3F2FD;
+    --peppa-purple: #AB47BC;
+    --peppa-red: #EF5350;
   }
 
   * {
@@ -29,8 +29,10 @@
 
   body {
     font-family: 'Alimama FangYuanTi VF', 'Nunito', 'Comic Sans MS', cursive, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
+    background: linear-gradient(135deg, #E3F2FD 0%, #F5F9FF 50%, #E8F5E9 100%);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   #app {
@@ -38,121 +40,39 @@
   }
 }
 
-/* 自定义动画 - 不在 tailwind.config.js 中定义的动画 */
+/* 通用动画 */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes slideFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideFromRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes rainbow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* 动画类 - 只定义 tailwind.config.js 中没有的 */
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slideFromLeft {
-  animation: slideFromLeft 0.5s ease-out;
-}
-
-.animate-slideFromRight {
-  animation: slideFromRight 0.5s ease-out;
-}
-
-/* 答案正确/错误的突出动画 */
 @keyframes correctPop {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes wrongShake {
-  0%, 100% {
-    transform: translateX(0) rotate(0deg);
-  }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-15px) rotate(-3deg);
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(15px) rotate(3deg);
-  }
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
 }
 
-@keyframes starBurst {
-  0% {
-    transform: scale(0) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.5) rotate(180deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0) rotate(360deg);
-    opacity: 0;
-  }
+@keyframes answerPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes correctGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 50px rgba(76, 175, 80, 0.8), 0 0 80px rgba(76, 175, 80, 0.4);
-  }
+@keyframes answerShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
 }
 
-@keyframes wrongGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(244, 67, 54, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 50px rgba(244, 67, 54, 0.8), 0 0 80px rgba(244, 67, 54, 0.4);
-  }
+/* 动画类 */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
 
 .animate-correct-pop {
@@ -163,98 +83,97 @@
   animation: wrongShake 0.6s ease-in-out;
 }
 
-.animate-star-burst {
-  animation: starBurst 0.8s ease-out forwards;
+.animate-answer-pop {
+  animation: answerPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.animate-correct-glow {
-  animation: correctGlow 1s ease-in-out infinite;
+.animate-answer-shake {
+  animation: answerShake 0.6s ease-in-out;
 }
 
-.animate-wrong-glow {
-  animation: wrongGlow 0.5s ease-in-out infinite;
+/* 过渡效果 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-/* 男孩蓝色主题组件样式 */
-/* 注意：以下动画类已在 tailwind.config.js 中定义，请使用 Tailwind 类：
-   - animate-float (3s)
-   - animate-pulse-slow (3s)
-   - animate-bounce-slow (2s)
-   - animate-spin-slow (3s)
-   - animate-wiggle (1s)
-   - animate-pop (0.3s)
-   - animate-slideIn (0.5s)
-   - animate-scaleIn (0.3s)
-   - animate-bounce-happy (1s)
-   - animate-shake (0.5s)
-*/
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* 题目切换过渡 */
+.question-enter-active,
+.question-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.question-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+
+.question-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+}
+
 @layer components {
-  .btn-peppa {
-    @apply rounded-cute-lg px-6 py-3 font-bold transition-all duration-300 shadow-cute;
-    @apply hover:scale-105 hover:shadow-cute-lg active:scale-95;
+  /* 统一的按钮样式 - 主按钮 */
+  .btn-primary {
+    @apply bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white font-bold rounded-cute-xl shadow-cute;
+    @apply hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95;
+    @apply transition-all duration-200;
+    @apply border-4 border-transparent;
   }
 
-  .btn-peppa-blue {
-    @apply btn-peppa bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white;
+  /* 统一的按钮样式 - 次按钮 */
+  .btn-secondary {
+    @apply bg-white text-peppa-blue-dark font-bold rounded-cute-xl shadow-cute;
+    @apply hover:bg-peppa-blue-light/20 active:scale-95;
+    @apply transition-all duration-200;
+    @apply border-4 border-peppa-blue-light/30;
   }
 
-  .btn-peppa-cyan {
-    @apply btn-peppa bg-gradient-to-r from-peppa-cyan to-[#0097A7] text-white;
+  /* 统一的按钮样式 - 成功按钮 */
+  .btn-success {
+    @apply bg-gradient-to-r from-peppa-green to-peppa-green-dark text-white font-bold rounded-cute-xl shadow-cute;
+    @apply hover:from-peppa-green-light hover:to-peppa-green active:scale-95;
+    @apply transition-all duration-200;
   }
 
-  .btn-peppa-green {
-    @apply btn-peppa bg-gradient-to-r from-peppa-green to-[#388E3C] text-white;
+  /* 统一的卡片样式 */
+  .card {
+    @apply bg-white rounded-cute-xl shadow-card;
+    @apply border-2 border-peppa-blue/20;
   }
 
-  .btn-peppa-yellow {
-    @apply btn-peppa bg-gradient-to-r from-peppa-yellow to-peppa-yellow-dark text-gray-800;
+  /* 统一的数据卡片样式 */
+  .stat-card {
+    @apply bg-white rounded-cute-lg shadow-card p-4 text-center;
+    @apply border-2;
   }
 
-  .btn-peppa-orange {
-    @apply btn-peppa bg-gradient-to-r from-peppa-orange to-[#E65100] text-white;
+  /* 统一的内容块样式 */
+  .content-block {
+    @apply bg-white/90 backdrop-blur-sm rounded-cute-lg shadow-cute;
+    @apply border-4 border-peppa-blue-light/20;
   }
 
-  .card-peppa {
-    @apply bg-white rounded-cute-xl shadow-cute border-4 border-peppa-blue-light;
+  /* 进度条样式 */
+  .progress-bar {
+    @apply h-3 bg-peppa-blue/20 rounded-full overflow-hidden;
   }
 
-  .input-peppa {
-    @apply rounded-cute-lg border-2 border-peppa-blue-light px-4 py-3;
+  .progress-bar-fill {
+    @apply h-full bg-gradient-to-r from-peppa-blue to-peppa-blue-dark rounded-full;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* 输入框样式 */
+  .input-field {
+    @apply rounded-cute-lg border-2 border-peppa-blue-light/50 px-4 py-3;
     @apply focus:outline-none focus:border-peppa-blue focus:ring-4 focus:ring-peppa-blue/20;
-    @apply transition-all duration-300;
-  }
-
-  .bg-peppa-gradient {
-    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
-  }
-
-  .text-peppa-gradient {
-    background: linear-gradient(135deg, #4A90E2, #00BCD4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .border-peppa-cute {
-    border: 4px dashed #4A90E2;
-    border-radius: 20px;
-  }
-
-  .decoration-cloud {
-    position: absolute;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-
-  .decoration-star {
-    position: absolute;
-    color: #FFD93D;
-    animation: float 2s ease-in-out infinite;
-  }
-
-  .decoration-heart {
-    position: absolute;
-    color: #4CAF50;
-    animation: wiggle 1s ease-in-out infinite;
+    @apply transition-all duration-200;
   }
 }

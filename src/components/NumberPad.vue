@@ -27,16 +27,16 @@ function handleDelete() {
 </script>
 
 <template>
-  <div class="number-pad bg-white rounded-cute-2xl shadow-cute-lg p-5 md:p-6 border-2 md:border-3 border-peppa-blue-light/40">
+  <div class="number-pad bg-white rounded-cute-xl shadow-cute p-4 border-2 border-peppa-blue/20">
     <!-- 数字键盘 -->
-    <div class="grid grid-cols-3 gap-4 md:gap-5">
+    <div class="grid grid-cols-3 gap-3">
       <!-- 数字键 1-9 -->
       <button
         v-for="num in numbers"
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-xl bg-gradient-to-br from-peppa-blue-light/70 to-peppa-blue-light/90 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue-light/80 hover:border-peppa-blue-light touch-manipulation"
+        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-4xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
       >
         {{ num }}
       </button>
@@ -45,38 +45,29 @@ function handleDelete() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-xl bg-gradient-to-br from-peppa-orange/70 to-peppa-orange/90 hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-orange/80 hover:border-peppa-orange touch-manipulation"
+        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-orange/80 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-orange/30"
       >
-        <Delete :size="32" class="text-peppa-orange-dark" />
+        <Delete :size="28" class="text-peppa-orange-dark" />
       </button>
 
       <!-- 数字键 0 -->
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-xl bg-gradient-to-br from-peppa-blue-light/70 to-peppa-blue-light/90 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue-light/80 hover:border-peppa-blue-light touch-manipulation"
+        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-4xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
       >
         0
       </button>
-    </div>
-
-    <!-- 键盘提示 -->
-    <div class="mt-5 text-center">
-      <p class="text-sm text-peppa-blue-dark/70 font-rounded">
-        键盘：数字键输入，Enter/空格 确认，Backspace 删除
-      </p>
     </div>
   </div>
 </template>
 
 <style scoped>
 .number-pad {
-  background: linear-gradient(135deg, #ffffff 0%, #F0F9FF 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #F5F9FF 100%);
 }
 
 button {
-  position: relative;
-  overflow: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 </style>
