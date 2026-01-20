@@ -1,3 +1,5 @@
+import { useToast } from './useToast'
+
 const STORAGE_KEY = 'math-game-data'
 
 /**
