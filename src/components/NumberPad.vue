@@ -36,7 +36,7 @@ function handleDelete() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-4xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
+        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
       >
         {{ num }}
       </button>
@@ -47,14 +47,14 @@ function handleDelete() {
         :disabled="disabled"
         class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-orange/80 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-orange/30"
       >
-        <Delete :size="28" class="text-peppa-orange-dark" />
+        <Delete :size="32" class="text-peppa-orange-dark" />
       </button>
 
       <!-- 数字键 0 -->
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-4xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
+        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
       >
         0
       </button>

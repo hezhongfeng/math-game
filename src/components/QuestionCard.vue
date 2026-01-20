@@ -36,21 +36,21 @@ const shouldShowFeedback = computed(() => props.showAnswer && (isCorrect.value |
     <!-- 题目内容 -->
     <div class="text-center">
       <div class="bg-peppa-blue/10 rounded-cute-lg p-4 mb-4 border-2 border-peppa-blue/20">
-        <div class="flex items-center justify-center gap-3 flex-wrap">
-          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark font-rounded">
+        <div class="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
             {{ question.operand1 }}
           </span>
-          <span class="text-3xl md:text-5xl font-bold text-peppa-blue-dark/70 font-rounded">
+          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
             {{ question.operator }}
           </span>
-          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark font-rounded">
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
             {{ question.operand2 }}
           </span>
-          <span class="text-3xl md:text-5xl font-bold text-peppa-blue-dark/70 font-rounded">
+          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
             =
           </span>
           <span
-            class="text-4xl md:text-6xl font-bold font-rounded min-w-[3ch] text-center inline-block transition-all duration-300"
+            class="text-5xl md:text-7xl font-bold font-rounded min-w-[3ch] text-center inline-block transition-all duration-300"
             :class="{
               'text-peppa-cyan': !shouldShowFeedback,
               'text-peppa-green animate-answer-pop': shouldShowFeedback && isCorrect,

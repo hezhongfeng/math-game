@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Lock, Star, Trophy, Play } from 'lucide-vue-next'
+import { Lock, Star, Trophy, Check, ChevronRight } from 'lucide-vue-next'
 import { CUTE_EMOJIS } from '../config/constants'
 import { useSound } from '../composables/useSound'
 
@@ -37,6 +37,13 @@ const stars = computed(() => {
 
 const cuteEmoji = computed(() => CUTE_EMOJIS[props.difficulty.id % CUTE_EMOJIS.length])
 
+const accuracyColor = computed(() => {
+  if (!props.bestScore) return ''
+  if (props.bestScore.accuracy >= 80) return 'text-peppa-green'
+  if (props.bestScore.accuracy >= 60) return 'text-peppa-yellow-dark'
+  return 'text-peppa-orange'
+})
+
 function handleSelect() {
   if (!props.isLocked) {
     playSound('click')
@@ -47,112 +54,93 @@ function handleSelect() {
 
 <template>
   <div
-    class="difficulty-card relative overflow-hidden rounded-cute-2xl cursor-pointer transition-all duration-300 shadow-cute border-4"
+    class="group relative flex items-center gap-3 p-3 rounded-xl transition-all duration-200 touch-feedback"
     :class="[
-      isLocked ? 'opacity-60 cursor-not-allowed grayscale bg-gray-50' : 'hover:scale-[1.02] hover:-translate-y-1 hover:shadow-cute-xl bg-white',
-      isCompleted ? 'ring-4 ring-peppa-yellow' : ''
+      isLocked 
+        ? 'bg-gray-100 cursor-not-allowed' 
+        : 'bg-white hover:bg-gray-50 active:scale-[0.98] cursor-pointer shadow-sm border border-gray-100'
     ]"
-    :style="{
-      borderColor: isLocked ? undefined : `${difficulty.color}40`,
-      background: isLocked ? 'linear-gradient(135deg, #fafafa, #f0f0f0)' : `linear-gradient(135deg, ${difficulty.color}08, white)`
-    }"
+    :style="{ borderLeft: isLocked ? undefined : `4px solid ${difficulty.color}` }"
     @click="handleSelect"
   >
-    <!-- 顶部装饰条 -->
+    <!-- 左侧图标 -->
     <div 
-      class="h-1.5 w-full"
-      :style="{ backgroundColor: isLocked ? '#ccc' : difficulty.color }"
-    ></div>
+      class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 transition-transform duration-200"
+      :class="isLocked ? 'bg-gray-200' : 'bg-white shadow-sm'"
+      :style="{ border: isLocked ? undefined : `2px solid ${difficulty.color}40` }"
+    >
+      {{ cuteEmoji }}
+    </div>
 
-    <!-- 内容 -->
-    <div class="relative p-4">
-      <!-- 标题行 -->
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-12 h-12 rounded-cute-xl flex items-center justify-center text-2xl shadow-cute"
-             :style="{ backgroundColor: isLocked ? '#e8e8e8' : `${difficulty.color}20` }">
-          {{ cuteEmoji }}
-        </div>
-        <div class="flex-1 min-w-0">
-          <h3 class="text-lg font-bold font-rounded truncate"
-              :style="{ color: isLocked ? '#999' : difficulty.color }">
-            {{ difficulty.name }}
-          </h3>
-          <p class="text-gray-500 text-xs font-rounded truncate">{{ difficulty.level }}</p>
-        </div>
-        <div v-if="isLocked" class="w-9 h-9 bg-gray-200 rounded-cute-full flex items-center justify-center flex-shrink-0 shadow-cute">
-          <Lock :size="18" class="text-gray-500" />
-        </div>
-        <div v-else-if="isCompleted" class="w-9 h-9 rounded-cute-full flex items-center justify-center flex-shrink-0 shadow-cute"
-             :style="{ backgroundColor: '#FFF9C4' }">
-          <Trophy :size="18" class="text-peppa-yellow" />
-        </div>
+    <!-- 中间内容 -->
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 mb-0.5">
+        <h3 
+          class="text-base font-bold font-rounded truncate"
+          :class="isLocked ? 'text-gray-400' : ''"
+          :style="isLocked ? {} : { color: difficulty.color }"
+        >
+          {{ difficulty.name }}
+        </h3>
+        <!-- 完成标记 -->
+        <Check v-if="isCompleted && !isLocked" :size="14" class="text-peppa-green flex-shrink-0" />
+        <!-- 锁定标记 -->
+        <Lock v-else-if="isLocked" :size="14" class="text-gray-400 flex-shrink-0" />
       </div>
-
-      <!-- 描述 -->
-      <p class="text-gray-700 font-medium font-rounded text-sm mb-3 line-clamp-2">{{ difficulty.description }}</p>
-
-      <!-- 标签行 -->
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="px-2.5 py-1 rounded-cute-full text-xs font-medium"
-              :style="{ backgroundColor: `${difficulty.color}20`, color: difficulty.color }">
-          {{ difficulty.questionCount }}题
+      
+      <p class="text-xs font-rounded truncate" :class="isLocked ? 'text-gray-300' : 'text-gray-500'">{{ difficulty.level }}</p>
+      
+      <!-- 已完成显示成绩 -->
+      <div v-if="bestScore && !isLocked" class="flex items-center gap-3 mt-1.5">
+        <span class="text-xs text-gray-400">{{ bestScore.correctCount }}/{{ bestScore.totalCount }}</span>
+        <span 
+          class="text-sm font-bold"
+          :class="accuracyColor"
+        >
+          {{ bestScore.accuracy }}%
         </span>
-        <span v-if="isCompleted && stars.length > 0" class="flex items-center gap-1 px-2.5 py-1 rounded-cute-full text-xs font-medium bg-peppa-yellow/20 text-peppa-yellow-dark">
-          <Star :size="12" :fill="stars.length === 3 ? 'currentColor' : 'none'" />
-          {{ stars.length }}星
+        <!-- 星级 -->
+        <div class="flex items-center gap-0.5">
+          <Star 
+            v-for="n in 3" 
+            :key="n"
+            :size="14" 
+            :fill="n <= stars.length ? 'currentColor' : 'none'"
+            class="text-peppa-yellow"
+            :style="{ opacity: n <= stars.length ? 1 : 0.2 }"
+          />
+        </div>
+      </div>
+      
+      <!-- 未完成且未锁定 -->
+      <div v-else-if="!isLocked" class="flex items-center gap-1.5 mt-1">
+        <span class="text-xs font-bold" :style="{ color: difficulty.color }">{{ difficulty.questionCount }}题</span>
+        <span class="text-xs px-1.5 py-0.5 rounded font-medium"
+              :style="{ backgroundColor: `${difficulty.color}15`, color: difficulty.color }">
+          点击挑战
         </span>
       </div>
-
-      <!-- 成绩/状态 -->
-      <div v-if="bestScore" class="pt-2.5 border-t-2 border-dashed rounded-b-cute-lg -mx-4 px-4 pb-1"
-           :style="{ borderColor: `${difficulty.color}30`, backgroundColor: `${difficulty.color}08` }">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="text-gray-600 text-xs font-rounded">最佳成绩</span>
-            <div class="text-gray-500 text-xs">{{ bestScore.correctCount }}/{{ bestScore.totalCount }}</div>
-          </div>
-          <div class="text-right">
-            <span class="text-gray-600 text-xs font-rounded">正确率</span>
-            <div class="font-bold text-lg leading-none"
-                 :style="{ color: difficulty.color }">
-              {{ bestScore.accuracy }}%
-            </div>
-          </div>
-        </div>
-        <!-- 进度条 -->
-        <div class="mt-2 h-1.5 bg-gray-200 rounded-cute-full overflow-hidden">
-          <div 
-            class="h-full rounded-cute-full transition-all duration-500"
-            :style="{ 
-              width: `${bestScore.accuracy}%`,
-              backgroundColor: bestScore.accuracy >= 80 ? '#4CAF50' : bestScore.accuracy >= 60 ? '#FFC107' : '#FF9800'
-            }"
-          ></div>
-        </div>
-      </div>
-
-      <!-- 未挑战状态 -->
-      <div v-else-if="!isLocked" class="pt-2.5 border-t-2 border-dashed rounded-b-cute-lg -mx-4 px-4 pb-1"
-           :style="{ borderColor: `${difficulty.color}30` }">
-        <div class="flex items-center justify-center gap-1.5 text-gray-400">
-          <Play :size="14" />
-          <span class="font-rounded text-xs">还没挑战过</span>
-        </div>
+      
+      <!-- 锁定状态 -->
+      <div v-else class="flex items-center gap-1.5 mt-1 text-gray-400">
+        <Lock :size="12" />
+        <span class="text-xs">完成上一关解锁</span>
       </div>
     </div>
 
-    <!-- 完成徽章 -->
-    <div v-if="isCompleted && !isLocked" 
-         class="absolute top-1.5 right-1.5 w-7 h-7 bg-peppa-yellow rounded-cute-full flex items-center justify-center shadow-cute text-sm"
-         :style="{ transform: 'rotate(12deg)' }">
-      ✓
+    <!-- 右侧箭头 -->
+    <div 
+      class="flex-shrink-0 transition-transform duration-200"
+      :class="isLocked ? 'opacity-30' : 'group-hover:translate-x-1'"
+    >
+      <ChevronRight :size="20" class="text-gray-300" />
     </div>
   </div>
 </template>
 
 <style scoped>
-.difficulty-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.touch-feedback {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 </style>
-
