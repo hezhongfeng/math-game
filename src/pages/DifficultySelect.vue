@@ -5,10 +5,12 @@ import { ArrowLeft } from 'lucide-vue-next'
 import { DIFFICULTY_LEVELS, DIFFICULTY_GROUPS } from '../config/difficulty'
 import { DECORATIONS, CUTE_EMOJIS } from '../config/constants'
 import { useStorage } from '../composables/useStorage'
+import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
 
 const router = useRouter()
 const { getBestScore, getCompletedDifficulties } = useStorage()
+const { playSound } = useSound()
 
 const completedDifficulties = computed(() => getCompletedDifficulties())
 
@@ -17,10 +19,12 @@ function getDifficultyById(id) {
 }
 
 function goBack() {
+  playSound('click')
   router.push('/')
 }
 
 function selectDifficulty(difficulty) {
+  playSound('click')
   router.push(`/game/${difficulty.id}`)
 }
 
@@ -50,7 +54,7 @@ onMounted(() => {
     <div class="max-w-6xl mx-auto mb-8">
       <button
         @click="goBack"
-        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all border-4 border-peppa-blue-light/30 hover:border-peppa-blue-light/60"
       >
         <ArrowLeft :size="24" />
         返回主页

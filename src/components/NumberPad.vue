@@ -36,7 +36,7 @@ function handleDelete() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-2xl bg-gradient-to-br from-peppa-blue-light/70 to-peppa-blue-light/90 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-4 border-peppa-blue-light touch-manipulation"
+        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-2xl bg-gradient-to-br from-peppa-blue-light/70 to-peppa-blue-light/90 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-4 border-peppa-blue-light/80 hover:border-peppa-blue-light touch-manipulation"
       >
         {{ num }}
       </button>
@@ -45,7 +45,7 @@ function handleDelete() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-2xl bg-gradient-to-br from-peppa-orange/70 to-peppa-orange/90 hover:from-peppa-orange hover:to-[#E65100] active:scale-95 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-4 border-peppa-orange touch-manipulation"
+        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-2xl bg-gradient-to-br from-peppa-orange/70 to-peppa-orange/90 hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-4 border-peppa-orange/80 hover:border-peppa-orange touch-manipulation"
       >
         <Delete :size="36" class="text-peppa-orange-dark" />
       </button>
@@ -54,7 +54,7 @@ function handleDelete() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-2xl bg-gradient-to-br from-peppa-blue-light/70 to-peppa-blue-light/90 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-4 border-peppa-blue-light touch-manipulation"
+        class="aspect-square md:aspect-auto md:h-[90px] rounded-cute-2xl bg-gradient-to-br from-peppa-blue-light/70 to-peppa-blue-light/90 hover:from-peppa-blue-light hover:to-peppa-blue active:scale-95 transition-all duration-200 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-4 border-peppa-blue-light/80 hover:border-peppa-blue-light touch-manipulation"
       >
         0
       </button>

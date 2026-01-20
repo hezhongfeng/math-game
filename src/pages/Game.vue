@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
-import { GAME_CONFIG, DECORATIONS } from '../config/constants'
+import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
@@ -13,6 +13,7 @@ import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
 import ResultModal from '../components/ResultModal.vue'
 import SettingsPanel from '../components/SettingsPanel.vue'
+import BackgroundMusic from '../components/BackgroundMusic.vue'
 
 const props = defineProps({
   id: {
@@ -36,7 +37,6 @@ const showModal = ref(false)
 const resultData = ref(null)
 const isNewBest = ref(false)
 
-const decorations = DECORATIONS.game
 const questionKey = ref(0) // 用于强制重新渲染题目卡片
 
 const isComplete = computed(() => game.isComplete.value)
@@ -66,7 +66,7 @@ function submitAnswer() {
   showAnswer.value = true
   isWaiting.value = true
 
-  // 播放音效
+  // 播放反馈音效（不播放点击音效）
   if (isCorrect) {
     playSound('correct')
   } else {
@@ -114,19 +114,22 @@ function handleGameComplete() {
   showModal.value = true
 }
 
+// 返回难度选择
+function goBack() {
+  playSound('click')
+  router.push('/difficulty')
+}
+
 function handleRetry() {
+  playSound('click')
   showModal.value = false
   initGame()
 }
 
 function handleHome() {
+  playSound('click')
   showModal.value = false
   router.push('/')
-}
-
-// 返回难度选择
-function goBack() {
-  router.push('/difficulty')
 }
 
 onMounted(() => {
@@ -162,7 +165,7 @@ onMounted(() => {
     <div class="flex items-center justify-between mb-3">
       <button
         @click="goBack"
-        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all border-4 border-peppa-blue-light/30 hover:border-peppa-blue-light/60"
       >
         <ArrowLeft :size="24" />
         返回
@@ -175,7 +178,7 @@ onMounted(() => {
 
       <button
         @click="handleRetry"
-        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all"
+        class="flex items-center gap-2 text-peppa-blue-dark hover:text-peppa-blue font-medium transition-colors font-rounded px-4 py-2 bg-white/80 backdrop-blur-sm rounded-cute-lg shadow-cute hover:shadow-cute-lg active:scale-95 transition-all border-4 border-peppa-blue-light/30 hover:border-peppa-blue-light/60"
         title="重新开始"
       >
         <RotateCcw :size="24" />
@@ -188,10 +191,19 @@ onMounted(() => {
       <SettingsPanel
         :sound-enabled="settingsStore.soundEnabled"
         :speech-enabled="settingsStore.speechEnabled"
+        :music-enabled="settingsStore.musicEnabled"
         @toggle-sound="settingsStore.toggleSound"
         @toggle-speech="settingsStore.toggleSpeech"
+        @toggle-music="settingsStore.toggleMusic"
       />
     </div>
+    
+    <!-- 背景音乐控制 -->
+    <BackgroundMusic
+      :enabled="settingsStore.musicEnabled"
+      @toggle="settingsStore.toggleMusic"
+      @volumeChange="settingsStore.setMusicVolume"
+    />
 
     <!-- 题目卡片区 -->
     <div class="flex-1 flex flex-col items-center justify-center py-4">
@@ -213,7 +225,7 @@ onMounted(() => {
     <!-- 数字键盘 -->
     <div class="max-w-md mx-auto w-full mb-4">
       <NumberPad
-        :disabled="isWaiting.value || isComplete"
+        :disabled="isWaiting || isComplete"
         @input="handleInput"
         @delete="handleDelete"
       />

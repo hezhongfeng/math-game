@@ -1,4 +1,6 @@
 <script setup>
+import { useSound } from '../composables/useSound'
+
 const props = defineProps({
   show: {
     type: Boolean,
@@ -15,6 +17,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['retry', 'home'])
+const { playSound } = useSound()
 
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60)
@@ -64,7 +67,7 @@ function handleHome() {
           <div class="flex gap-3">
             <button
               @click="handleRetry"
-              class="flex-1 bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white font-bold py-4 px-6 rounded-cute-lg hover:from-peppa-blue-dark hover:to-[#2A70C2] transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg"
+              class="flex-1 bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white font-bold py-4 px-6 rounded-cute-lg hover:from-peppa-blue-dark hover:to-[#2A70C2] transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg border-4 border-transparent hover:border-peppa-blue/30"
             >
               🔄 再玩一次
             </button>

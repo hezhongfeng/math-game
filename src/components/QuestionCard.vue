@@ -22,7 +22,6 @@ defineEmits(['submit'])
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
 const shouldShowFeedback = computed(() => props.showAnswer && (isCorrect.value || isIncorrect.value) && props.question.userAnswer !== null)
-const shouldShowInput = computed(() => !shouldShowFeedback.value)
 </script>
 
 <template>
@@ -125,7 +124,7 @@ const shouldShowInput = computed(() => !shouldShowFeedback.value)
         <div v-if="!shouldShowFeedback" key="button" class="mt-6">
           <button
             @click="$emit('submit')"
-            class="w-full bg-gradient-to-r from-peppa-green to-[#388E3C] hover:from-[#66BB6A] hover:to-[#388E3C] text-white font-bold py-5 px-8 rounded-cute-2xl shadow-cute hover:shadow-cute-xl active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 font-rounded text-xl"
+            class="w-full bg-gradient-to-r from-peppa-green to-peppa-green-dark hover:from-[#66BB6A] hover:to-[#388E3C] text-white font-bold py-5 px-8 rounded-cute-2xl shadow-cute hover:shadow-cute-xl active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 font-rounded text-xl border-4 border-transparent hover:border-peppa-green/30"
           >
             <Check :size="28" />
             确认答案

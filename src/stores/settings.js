@@ -7,6 +7,12 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // 语音开关
   const speechEnabled = ref(true)
+  
+  // 背景音乐开关
+  const musicEnabled = ref(true)
+  
+  // 背景音乐音量
+  const musicVolume = ref(0.3)
 
   // 切换音效开关
   function toggleSound() {
@@ -16,6 +22,16 @@ export const useSettingsStore = defineStore('settings', () => {
   // 切换语音开关
   function toggleSpeech() {
     speechEnabled.value = !speechEnabled.value
+  }
+  
+  // 切换背景音乐开关
+  function toggleMusic() {
+    musicEnabled.value = !musicEnabled.value
+  }
+  
+  // 设置背景音乐音量
+  function setMusicVolume(value) {
+    musicVolume.value = Math.max(0, Math.min(1, value))
   }
 
   // 设置音效开关
@@ -27,6 +43,11 @@ export const useSettingsStore = defineStore('settings', () => {
   function setSpeechEnabled(enabled) {
     speechEnabled.value = enabled
   }
+  
+  // 设置背景音乐开关
+  function setMusicEnabled(enabled) {
+    musicEnabled.value = enabled
+  }
 
   // 从 localStorage 加载设置
   function loadSettings() {
@@ -36,6 +57,8 @@ export const useSettingsStore = defineStore('settings', () => {
         const settings = JSON.parse(saved)
         soundEnabled.value = settings.soundEnabled ?? true
         speechEnabled.value = settings.speechEnabled ?? true
+        musicEnabled.value = settings.musicEnabled ?? true
+        musicVolume.value = settings.musicVolume ?? 0.3
       }
     } catch (error) {
       console.error('加载设置失败:', error)
@@ -47,7 +70,9 @@ export const useSettingsStore = defineStore('settings', () => {
     try {
       localStorage.setItem('math-game-settings', JSON.stringify({
         soundEnabled: soundEnabled.value,
-        speechEnabled: speechEnabled.value
+        speechEnabled: speechEnabled.value,
+        musicEnabled: musicEnabled.value,
+        musicVolume: musicVolume.value
       }))
     } catch (error) {
       console.error('保存设置失败:', error)
@@ -58,15 +83,22 @@ export const useSettingsStore = defineStore('settings', () => {
   function $reset() {
     soundEnabled.value = true
     speechEnabled.value = true
+    musicEnabled.value = true
+    musicVolume.value = 0.3
   }
 
   return {
     soundEnabled,
     speechEnabled,
+    musicEnabled,
+    musicVolume,
     toggleSound,
     toggleSpeech,
+    toggleMusic,
+    setMusicVolume,
     setSoundEnabled,
     setSpeechEnabled,
+    setMusicEnabled,
     loadSettings,
     saveSettings,
     $reset

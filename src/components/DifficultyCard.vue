@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Lock, Star, Trophy, Heart } from 'lucide-vue-next'
 import { CUTE_EMOJIS } from '../config/constants'
+import { useSound } from '../composables/useSound'
 
 const props = defineProps({
   difficulty: {
@@ -23,6 +24,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['select'])
+const { playSound } = useSound()
 
 const stars = computed(() => {
   if (!props.bestScore) return []
@@ -34,6 +36,13 @@ const stars = computed(() => {
 })
 
 const cuteEmoji = computed(() => CUTE_EMOJIS[props.difficulty.id % CUTE_EMOJIS.length])
+
+function handleSelect() {
+  if (!props.isLocked) {
+    playSound('click')
+    emit('select', props.difficulty)
+  }
+}
 </script>
 
 <template>
@@ -43,7 +52,7 @@ const cuteEmoji = computed(() => CUTE_EMOJIS[props.difficulty.id % CUTE_EMOJIS.l
       isLocked ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:scale-102 hover:-translate-y-1 hover:shadow-cute-lg',
       isCompleted ? 'ring-3 ring-peppa-yellow' : ''
     ]"
-    @click="!isLocked && $emit('select', difficulty)"
+    @click="handleSelect"
     :style="{
       background: isLocked ? 'linear-gradient(135deg, #e0e0e0, #d0d0d0)' : `linear-gradient(135deg, ${difficulty.color}10, ${difficulty.color}30)`
     }"
