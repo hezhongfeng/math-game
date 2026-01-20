@@ -31,40 +31,74 @@ let audioBuffer = null
 let sourceNode = null
 let gainNode = null
 
-// 生成简单的背景音乐（C大调和弦进行）
+// 生成欢快的背景音乐（明亮的大调进行 + 活泼旋律）
 function createBackgroundMusic() {
   if (!audioContext) return
 
-  const duration = 8 // 8秒循环
+  const duration = 6 // 6秒循环，更快节奏
   const sampleRate = audioContext.sampleRate
   const buffer = audioContext.createBuffer(2, duration * sampleRate, sampleRate)
 
-  // 和弦进行: C - G - Am - F
+  // 明亮的和弦进行: C - F - G - C (I-IV-V-I 非常欢快)
   const chords = [
-    { freq: [261.63, 329.63, 392.00], time: 0 },   // C
-    { freq: [392.00, 493.88, 587.33], time: 2 },   // G
-    { freq: [220.00, 261.63, 329.63], time: 4 },   // Am
-    { freq: [174.61, 220.00, 261.63], time: 6 }    // F
+    { freq: [261.63, 329.63, 392.00], time: 0 },    // C
+    { freq: [349.23, 440.00, 523.25], time: 1.5 },  // F
+    { freq: [392.00, 493.88, 587.33], time: 3 },    // G
+    { freq: [261.63, 329.63, 392.00], time: 4.5 }   // C
+  ]
+
+  // 活泼的旋律音符
+  const melody = [
+    { freq: 523.25, time: 0.2 },    // C5
+    { freq: 587.33, time: 0.5 },    // D5
+    { freq: 659.25, time: 0.8 },    // E5
+    { freq: 523.25, time: 1.2 },    // C5
+    { freq: 783.99, time: 1.7 },    // G5
+    { freq: 659.25, time: 2.0 },    // E5
+    { freq: 523.25, time: 2.5 },    // C5
+    { freq: 440.00, time: 3.2 },    // A4
+    { freq: 493.88, time: 3.5 },    // B4
+    { freq: 523.25, time: 3.8 },    // C5
+    { freq: 587.33, time: 4.2 },    // D5
+    { freq: 659.25, time: 4.7 },    // E5
+    { freq: 698.46, time: 5.0 },    // F5
+    { freq: 659.25, time: 5.3 },    // E5
+    { freq: 523.25, time: 5.6 },    // C5
   ]
 
   for (let channel = 0; channel < 2; channel++) {
     const channelData = buffer.getChannelData(channel)
-    
+
+    // 播放和弦（背景）
     chords.forEach(chord => {
       const startSample = Math.floor(chord.time * sampleRate)
-      const endSample = Math.floor((chord.time + 1.5) * sampleRate)
-      
+      const endSample = Math.floor((chord.time + 1.4) * sampleRate)
+
       for (let i = startSample; i < endSample && i < channelData.length; i++) {
         let sample = 0
-        
-        // 混合三个音符
+
         chord.freq.forEach((freq, index) => {
-          const amplitude = 0.1 / (index + 1) // 音量递减
+          const amplitude = 0.08 / (index + 1)
           sample += Math.sin(2 * Math.PI * freq * i / sampleRate) * amplitude
         })
-        
-        // 应用包络
-        const envelope = Math.exp(-(i - startSample) / (sampleRate * 0.8))
+
+        // 更活泼的包络 - 快速起音，轻柔衰减
+        const t = (i - startSample) / sampleRate
+        const envelope = Math.exp(-t * 0.8) * (0.5 + 0.5 * Math.sin(t * Math.PI * 3))
+        channelData[i] += sample * envelope
+      }
+    })
+
+    // 播放旋律（前景）
+    melody.forEach(note => {
+      const startSample = Math.floor(note.time * sampleRate)
+      const noteDuration = 0.25 // 每个音符的持续时间
+
+      for (let i = startSample; i < startSample + noteDuration * sampleRate && i < channelData.length; i++) {
+        const t = (i - startSample) / sampleRate
+        // 欢快的旋律包络 - 短促清脆
+        const envelope = Math.exp(-t * 5) * (1 - t * 0.3)
+        const sample = Math.sin(2 * Math.PI * note.freq * i / sampleRate) * 0.15
         channelData[i] += sample * envelope
       }
     })

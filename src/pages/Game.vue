@@ -12,8 +12,6 @@ import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
 import ResultModal from '../components/ResultModal.vue'
-import SettingsPanel from '../components/SettingsPanel.vue'
-import BackgroundMusic from '../components/BackgroundMusic.vue'
 
 const props = defineProps({
   id: {
@@ -185,25 +183,6 @@ onMounted(() => {
         重来
       </button>
     </div>
-
-    <!-- 设置面板 -->
-    <div class="flex justify-center mb-6">
-      <SettingsPanel
-        :sound-enabled="settingsStore.soundEnabled"
-        :speech-enabled="settingsStore.speechEnabled"
-        :music-enabled="settingsStore.musicEnabled"
-        @toggle-sound="settingsStore.toggleSound"
-        @toggle-speech="settingsStore.toggleSpeech"
-        @toggle-music="settingsStore.toggleMusic"
-      />
-    </div>
-    
-    <!-- 背景音乐控制 -->
-    <BackgroundMusic
-      :enabled="settingsStore.musicEnabled"
-      @toggle="settingsStore.toggleMusic"
-      @volumeChange="settingsStore.setMusicVolume"
-    />
 
     <!-- 题目卡片区 -->
     <div class="flex-1 flex flex-col items-center justify-center py-4">

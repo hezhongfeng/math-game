@@ -70,7 +70,7 @@ const formatTime = computed(() => {
       <div class="bg-gradient-to-br from-peppa-green/20 to-[#388E3C]/20 rounded-cute-xl p-4 text-center border-2 border-peppa-green/40">
         <CheckCircle :size="24" class="text-peppa-green mx-auto mb-2" />
         <p class="text-2xl md:text-3xl font-bold text-peppa-green-dark font-rounded">{{ correctCount }}</p>
-="text-sm text-gray-600 mt-1 font-semibold font-rounded">正确</p>
+        <p class="text-sm text-gray-600 mt-1 font-semibold font-rounded">正确</p>
       </div>
 
       <!-- 用时 -->
