@@ -1,11 +1,15 @@
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useSettingsStore } from '../stores/settings'
+import { useToast } from './useToast'
 
 /**
  * 音效播放 Composable
  * 使用 Web Audio API 生成音效
  */
 export function useSound() {
-  const isEnabled = ref(true)
+  const settingsStore = useSettingsStore()
+  const isEnabled = computed(() => settingsStore.soundEnabled)
+  const { error: showError } = useToast()
   let audioContext = null
 
   /**
@@ -13,7 +17,13 @@ export function useSound() {
    */
   function initAudioContext() {
     if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)()
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)()
+      } catch (error) {
+        console.error('AudioContext 初始化失败:', error)
+        showError('音频功能初始化失败')
+        return null
+      }
     }
     return audioContext
   }
@@ -26,10 +36,15 @@ export function useSound() {
     if (!isEnabled.value) return
 
     const ctx = initAudioContext()
+    if (!ctx) return
 
     // 恢复 AudioContext（某些浏览器需要用户交互后才能播放）
-    if (ctx.state === 'suspended') {
-      ctx.resume()
+    try {
+      if (ctx.state === 'suspended') {
+        ctx.resume()
+      }
+    } catch (error) {
+      console.error('恢复 AudioContext 失败:', error)
     }
 
     const oscillator = ctx.createOscillator()
@@ -159,7 +174,7 @@ export function useSound() {
    * 切换音效开关
    */
   function toggle() {
-    isEnabled.value = !isEnabled.value
+    settingsStore.toggleSound()
   }
 
   /**

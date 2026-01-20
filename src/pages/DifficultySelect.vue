@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from 'lucide-vue-next'
 import { DIFFICULTY_LEVELS, DIFFICULTY_GROUPS } from '../config/difficulty'
+import { DECORATIONS, CUTE_EMOJIS } from '../config/constants'
 import { useStorage } from '../composables/useStorage'
 import DifficultyCard from '../components/DifficultyCard.vue'
 
@@ -35,15 +36,8 @@ function isDifficultyLocked(difficulty) {
   return !completedDifficulties.value.includes(previousId)
 }
 
-// 装饰元素（使用emoji）
-const decorations = [
-  { emoji: '☀️', class: 'top-12 right-12 animate-float', size: 40 },
-  { emoji: '☁️', class: 'top-20 left-16 animate-wiggle', size: 28 },
-  { emoji: '☁️', class: 'top-28 right-32 animate-wiggle', size: 20 },
-  { emoji: '⚽', class: 'bottom-32 left-12 animate-bounce-slow', size: 24 },
-  { emoji: '⚽', class: 'bottom-28 right-20 animate-bounce-slow', size: 20 },
-  { emoji: '✨', class: 'top-40 left-1/4 animate-pulse-slow', size: 16 },
-]
+const decorations = DECORATIONS.difficulty
+const cuteEmojis = CUTE_EMOJIS
 
 onMounted(() => {
   window.scrollTo(0, 0)

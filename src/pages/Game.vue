@@ -3,12 +3,15 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
+import { GAME_CONFIG, DECORATIONS } from '../config/constants'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
+import { useSettingsStore } from '../stores/settings'
 import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
+import ResultModal from '../components/ResultModal.vue'
 
 const props = defineProps({
   id: {
@@ -28,8 +31,11 @@ const showAnswer = ref(false)
 const feedbackMessage = ref('')
 const isWaiting = ref(false)
 const userAnswer = ref('')
+const showModal = ref(false)
+const resultData = ref(null)
+const isNewBest = ref(false)
 
-// 调试代码已移除
+const decorations = DECORATIONS.game
 
 const isComplete = computed(() => game.isComplete.value)
 
@@ -67,13 +73,13 @@ function submitAnswer() {
       userAnswer.value = ''
       isWaiting.value = false
     }
-  }, 1500)
+  }, GAME_CONFIG.FEEDBACK_DELAY)
 }
 
 // 处理输入
 function handleInput(num) {
   if (isWaiting.value) return
-  if (userAnswer.value.length < 3) {
+  if (userAnswer.value.length < GAME_CONFIG.MAX_ANSWER_LENGTH) {
     userAnswer.value += num
   }
 }
@@ -87,71 +93,25 @@ function handleDelete() {
 // 游戏完成处理
 function handleGameComplete() {
   const result = game.getResult()
-  const isNewBest = updateBestScore(parseInt(props.id), result)
+  const best = updateBestScore(parseInt(props.id), result)
 
   // 播放胜利音效
   playSound('win')
 
-  // 跳转到结果页（使用弹窗方式）
-  showResultModal(result, isNewBest)
+  // 设置结果数据并显示弹窗
+  resultData.value = result
+  isNewBest.value = best
+  showModal.value = true
 }
 
-// 显示结果弹窗
-function showResultModal(result, isNewBest) {
-  const modal = document.createElement('div')
-  modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn'
-  modal.innerHTML = `
-    <div class="bg-gradient-to-br from-[#E3F2FD] to-[#BBDEFB] rounded-cute-xl p-8 max-w-md w-full animate-scaleIn shadow-cute-lg border-4 border-peppa-blue-light">
-      <div class="text-center mb-6">
-        <div class="text-6xl mb-3 animate-bounce-happy">⚽</div>
-        <h2 class="text-3xl font-bold text-peppa-blue-dark font-rounded mb-2">游戏结束！</h2>
-        ${isNewBest ? '<div class="inline-block bg-gradient-to-r from-yellow-300 to-yellow-400 text-yellow-900 px-4 py-2 rounded-full font-bold text-lg shadow-cute mb-4">🏆 新纪录！</div>' : ''}
-      </div>
+function handleRetry() {
+  showModal.value = false
+  initGame()
+}
 
-      <div class="space-y-3 mb-6">
-        <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-3 border-peppa-blue-light shadow-cute">
-          <span class="text-peppa-blue-dark font-rounded flex items-center gap-2">⭐ 得分</span>
-          <span class="text-2xl font-bold text-peppa-blue-dark font-rounded">${result.score}</span>
-        </div>
-        <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-3 border-peppa-green shadow-cute">
-          <span class="text-peppa-green-dark font-rounded flex items-center gap-2">✅ 正确数</span>
-          <span class="text-2xl font-bold text-peppa-green font-rounded">${result.correctCount}/${result.totalCount}</span>
-        </div>
-        <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-3 border-peppa-cyan shadow-cute">
-          <span class="text-peppa-cyan-dark font-rounded flex items-center gap-2">📊 正确率</span>
-          <span class="text-2xl font-bold text-peppa-cyan font-rounded">${result.accuracy}%</span>
-        </div>
-        <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-3 border-peppa-yellow shadow-cute">
-          <span class="text-peppa-yellow-dark font-rounded flex items-center gap-2">⏱️ 用时</span>
-          <span class="text-xl font-bold text-peppa-yellow-dark font-rounded">${Math.floor(result.duration / 60)}:${(result.duration % 60).toString().padStart(2, '0')}</span>
-        </div>
-      </div>
-
-      <div class="flex gap-3">
-        <button onclick="this.closest('.fixed').remove(); window.gameRetry();" class="flex-1 bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white font-bold py-4 px-6 rounded-cute-lg hover:from-peppa-blue-dark hover:to-[#2A70C2] transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg">
-          🔄 再玩一次
-        </button>
-        <button onclick="this.closest('.fixed').remove(); window.gameHome();" class="flex-1 bg-white text-peppa-blue-dark border-3 border-peppa-blue-light font-bold py-4 px-6 rounded-cute-lg hover:bg-[#E3F2FD]/30 transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg">
-          🏠 返回主页
-        </button>
-      </div>
-
-      <div class="mt-4 text-center text-sm text-peppa-blue-dark/50 font-rounded">
-        ⚽ 快乐学习数学 ⚽
-      </div>
-    </div>
-  `
-
-  document.body.appendChild(modal)
-
-  // 绑定全局函数
-  window.gameRetry = () => {
-    initGame()
-  }
-
-  window.gameHome = () => {
-    router.push('/')
-  }
+function handleHome() {
+  showModal.value = false
+  router.push('/')
 }
 
 // 返回难度选择
@@ -160,9 +120,13 @@ function goBack() {
 }
 
 onMounted(() => {
+  // 加载设置
+  const settingsStore = useSettingsStore()
+  settingsStore.loadSettings()
+
   initGame()
-  
-    // 监听键盘输入
+
+  // 监听键盘输入
   const handleKeyPress = (e) => {
     if (e.key >= '0' && e.key <= '9') {
       handleInput(parseInt(e.key))
@@ -172,11 +136,13 @@ onMounted(() => {
       submitAnswer()
     }
   }
-  
+
   window.addEventListener('keydown', handleKeyPress)
-  
+
   onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyPress)
+    // 保存设置
+    settingsStore.saveSettings()
   })
 })
 </script>
@@ -184,11 +150,10 @@ onMounted(() => {
 <template>
   <div class="min-h-screen flex flex-col p-4 md:p-6 pb-8 relative overflow-hidden">
     <!-- 装饰背景元素 - 精简版 -->
-    <div class="absolute top-8 right-8 text-peppa-yellow animate-float opacity-20 pointer-events-none text-4xl">
-      ☀️
-    </div>
-    <div class="absolute bottom-32 left-8 text-peppa-green animate-float opacity-20 pointer-events-none text-2xl" style="animation-delay: 0.5s;">
-      ⚽
+    <div v-for="(deco, index) in decorations" :key="index"
+         :class="['absolute decoration', deco.class]"
+         :style="{ fontSize: `${deco.size}px`, opacity: 0.2 }">
+      {{ deco.emoji }}
     </div>
 
     <!-- 顶部导航 -->
@@ -265,20 +230,15 @@ onMounted(() => {
         :accuracy="game.accuracy.value"
       />
     </div>
+
+    <!-- 结果弹窗 -->
+    <ResultModal
+      v-if="resultData"
+      :show="showModal"
+      :result="resultData"
+      :is-new-best="isNewBest"
+      @retry="handleRetry"
+      @home="handleHome"
+    />
   </div>
 </template>
-
-<style scoped>
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
-}
-</style>

@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { Calculator, Trophy, Play, Star, Heart } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { DIFFICULTY_GROUPS } from '../config/difficulty'
+import { DECORATIONS } from '../config/constants'
 
 const router = useRouter()
 const { getAllBestScores } = useStorage()
@@ -18,16 +19,7 @@ function viewAchievements() {
   router.push('/difficulty')
 }
 
-// 装饰元素（使用emoji）
-const decorations = [
-  { emoji: '☀️', class: 'top-8 right-8 animate-float', size: 48 },
-  { emoji: '☁️', class: 'top-16 left-12 animate-wiggle', size: 32 },
-  { emoji: '☁️', class: 'top-24 right-24 animate-wiggle', size: 24 },
-  { emoji: '⚽', class: 'bottom-20 left-8 animate-bounce-slow', size: 28 },
-  { emoji: '⚽', class: 'bottom-16 right-12 animate-bounce-slow', size: 24 },
-  { emoji: '✨', class: 'top-32 left-1/4 animate-pulse-slow', size: 20 },
-  { emoji: '⭐', class: 'top-40 right-1/3 animate-pulse-slow', size: 16 },
-]
+const decorations = DECORATIONS.home
 </script>
 
 <template>

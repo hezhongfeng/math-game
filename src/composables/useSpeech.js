@@ -1,11 +1,14 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { SPEECH_MESSAGES, OPERATOR_TEXT } from '../config/constants'
+import { useSettingsStore } from '../stores/settings'
 
 /**
  * 语音播报 Composable
  * 使用浏览器原生的 Speech Synthesis API
  */
 export function useSpeech() {
-  const isEnabled = ref(true)
+  const settingsStore = useSettingsStore()
+  const isEnabled = computed(() => settingsStore.speechEnabled)
   const isSpeaking = ref(false)
   const synthesis = window.speechSynthesis
   
@@ -66,7 +69,7 @@ export function useSpeech() {
    * 播报正确反馈
    */
   function speakCorrect() {
-    const messages = ['答对了！', '太棒了！', '你真聪明！', '非常正确！']
+    const messages = SPEECH_MESSAGES.correct
     const message = messages[Math.floor(Math.random() * messages.length)]
     speak(message, { rate: 1, pitch: 1.4 })
   }
@@ -76,7 +79,7 @@ export function useSpeech() {
    * @param {number} correctAnswer - 正确答案
    */
   function speakIncorrect(correctAnswer) {
-    const messages = ['不对哦', '再想想', '加油', '继续努力']
+    const messages = SPEECH_MESSAGES.incorrect
     const message = messages[Math.floor(Math.random() * messages.length)]
     speak(`${message}，正确答案是 ${correctAnswer}`, { rate: 0.9, pitch: 1.2 })
   }
@@ -88,18 +91,7 @@ export function useSpeech() {
    */
   function speakEncouragement(correctCount, totalCount) {
     const accuracy = Math.round((correctCount / totalCount) * 100)
-    let message = ''
-    
-    if (accuracy === 100) {
-      message = '完美！你太厉害了！'
-    } else if (accuracy >= 80) {
-      message = '做得很好！继续加油！'
-    } else if (accuracy >= 60) {
-      message = '还不错！再接再厉！'
-    } else {
-      message = '继续努力，你会越来越棒！'
-    }
-    
+    const message = SPEECH_MESSAGES.encouragement(accuracy)
     speak(message, { rate: 1, pitch: 1.3 })
   }
   
@@ -117,8 +109,8 @@ export function useSpeech() {
    * 切换语音开关
    */
   function toggle() {
-    isEnabled.value = !isEnabled.value
-    if (!isEnabled.value) {
+    settingsStore.toggleSpeech()
+    if (!settingsStore.speechEnabled) {
       stop()
     }
   }
@@ -129,13 +121,7 @@ export function useSpeech() {
    * @returns {string} 中文表示
    */
   function getOperatorText(operator) {
-    const operators = {
-      '+': '加',
-      '-': '减',
-      '×': '乘',
-      '÷': '除'
-    }
-    return operators[operator] || operator
+    return OPERATOR_TEXT[operator] || operator
   }
   
   /**

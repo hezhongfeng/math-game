@@ -13,9 +13,6 @@ const props = defineProps({
   }
 })
 
-// 调试输出
-console.log('QuestionCard props:', props.question)
-
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
 </script>

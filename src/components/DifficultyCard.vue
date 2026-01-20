@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Lock, Star, Trophy, Heart } from 'lucide-vue-next'
+import { CUTE_EMOJIS } from '../config/constants'
 
 const props = defineProps({
   difficulty: {
@@ -32,9 +33,7 @@ const stars = computed(() => {
   return []
 })
 
-// 可爱表情映射
-const cuteEmojis = ['⚽', '⭐', '🌈', '🚀', '🏆', '✨']
-const cuteEmoji = computed(() => cuteEmojis[props.difficulty.id % cuteEmojis.length])
+const cuteEmoji = computed(() => CUTE_EMOJIS[props.difficulty.id % CUTE_EMOJIS.length])
 </script>
 
 <template>

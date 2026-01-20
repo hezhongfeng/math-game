@@ -5,6 +5,7 @@ const STORAGE_KEY = 'math-game-data'
  * 用于保存和读取游戏进度和最佳成绩
  */
 export function useStorage() {
+  const { error: showError } = useToast()
   // 从 localStorage 读取数据
   function loadData() {
     try {
@@ -12,6 +13,7 @@ export function useStorage() {
       return data ? JSON.parse(data) : { bestScores: {}, progress: {} }
     } catch (error) {
       console.error('读取本地存储失败:', error)
+      showError('读取游戏数据失败，请检查浏览器存储设置')
       return { bestScores: {}, progress: {} }
     }
   }
@@ -22,6 +24,7 @@ export function useStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
     } catch (error) {
       console.error('保存到本地存储失败:', error)
+      showError('保存游戏数据失败，存储空间可能已满')
     }
   }
   
