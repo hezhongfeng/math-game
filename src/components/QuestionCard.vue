@@ -26,31 +26,31 @@ const shouldShowFeedback = computed(() => props.showAnswer && (isCorrect.value |
 
 <template>
   <div
-    class="question-card p-8 md:p-10 rounded-cute-2xl shadow-cute-xl border-5 transition-all duration-300"
+    class="question-card p-6 md:p-8 rounded-cute-2xl shadow-cute-lg border-2 md:border-3 transition-all duration-300"
     :class="{
       'bg-white border-peppa-green animate-correct-glow': isCorrect,
       'bg-white border-peppa-orange animate-wrong-glow': isIncorrect,
-      'bg-white border-peppa-blue-dark': !isCorrect && !isIncorrect
+      'bg-white border-peppa-blue-dark/40': !isCorrect && !isIncorrect
     }"
   >
     <!-- 题目内容 -->
     <div class="text-center">
-      <div class="bg-peppa-blue-light/40 rounded-cute-2xl p-8 mb-6 border-3 border-peppa-blue-light/50">
-        <div class="flex items-center justify-center gap-4 md:gap-6">
-          <span class="text-7xl md:text-9xl font-bold text-peppa-blue-dark font-rounded">
+      <div class="bg-peppa-blue-light/30 rounded-cute-xl p-4 md:p-6 mb-4 border-2 border-peppa-blue-light/40">
+        <div class="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
+          <span class="text-5xl md:text-7xl lg:text-8xl font-bold text-peppa-blue-dark font-rounded">
             {{ question.operand1 }}
           </span>
-          <span class="text-6xl md:text-8xl font-bold text-peppa-blue-dark/80 font-rounded">
+          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
             {{ question.operator }}
           </span>
-          <span class="text-7xl md:text-9xl font-bold text-peppa-blue-dark font-rounded">
+          <span class="text-5xl md:text-7xl lg:text-8xl font-bold text-peppa-blue-dark font-rounded">
             {{ question.operand2 }}
           </span>
-          <span class="text-6xl md:text-8xl font-bold text-peppa-blue-dark/80 font-rounded">
+          <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
             =
           </span>
           <span
-            class="text-7xl md:text-9xl font-bold font-rounded min-w-[4ch] text-center inline-block transition-all duration-300 px-4"
+            class="text-5xl md:text-7xl lg:text-8xl font-bold font-rounded min-w-[3ch] md:min-w-[4ch] text-center inline-block transition-all duration-300 px-2 md:px-4"
             :class="{
               'text-peppa-cyan': !shouldShowFeedback,
               'text-peppa-green animate-answer-pop': shouldShowFeedback && isCorrect,
@@ -64,17 +64,17 @@ const shouldShowFeedback = computed(() => props.showAnswer && (isCorrect.value |
 
       <!-- 答案输入提示 -->
       <Transition name="fade" mode="out-in">
-        <div v-if="!shouldShowFeedback" key="input" class="mt-6">
-          <p class="text-base text-peppa-blue-dark/70 font-rounded font-medium">输入答案，点击确认按钮提交</p>
+        <div v-if="!shouldShowFeedback" key="input" class="mt-4">
+          <p class="text-sm md:text-base text-peppa-blue-dark/70 font-rounded font-medium">输入答案，点击确认按钮提交</p>
         </div>
 
         <!-- 正确反馈 -->
-        <div v-else-if="isCorrect" key="correct" class="mt-8">
+        <div v-else-if="isCorrect" key="correct" class="mt-6">
           <!-- 正确图标和星星特效 -->
-          <div class="flex justify-center mb-6 relative">
+          <div class="flex justify-center mb-4 relative">
             <!-- 星星特效 -->
-            <div class="absolute inset-0 overflow-hidden">
-              <Star v-for="i in 5" :key="i" :size="28" class="text-peppa-yellow absolute animate-star-pulse" :style="{
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+              <Star v-for="i in 5" :key="i" :size="20" class="text-peppa-yellow absolute animate-star-pulse" :style="{
                 left: `${10 + i * 15}%`,
                 top: `${20 + (i % 2) * 30}%`,
                 animationDelay: `${i * 0.2}s`
@@ -84,49 +84,49 @@ const shouldShowFeedback = computed(() => props.showAnswer && (isCorrect.value |
             <!-- 主图标 -->
             <div class="relative z-10">
               <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-36 h-36 rounded-full bg-peppa-green/20 animate-ping"></div>
+                <div class="w-28 h-28 rounded-full bg-peppa-green/20 animate-ping"></div>
               </div>
-              <div class="w-24 h-24 rounded-full bg-gradient-to-br from-peppa-green to-[#388E3C] flex items-center justify-center shadow-xl animate-scale-in">
-                <Check :size="48" class="text-white" />
+              <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-peppa-green to-[#388E3C] flex items-center justify-center shadow-lg animate-scale-in">
+                <Check :size="36" class="text-white" />
               </div>
             </div>
           </div>
 
           <!-- 庆祝文字 -->
-          <p class="text-4xl md:text-5xl font-bold text-peppa-green font-rounded animate-slide-up flex items-center justify-center gap-3">
-            <Sparkles :size="32" class="animate-spin-slow" />
+          <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-peppa-green font-rounded animate-slide-up flex items-center justify-center gap-2">
+            <Sparkles :size="24" class="animate-spin-slow" />
             太棒了！答对了！
-            <Sparkles :size="32" class="animate-spin-slow" style="animation-delay: 0.5s" />
+            <Sparkles :size="24" class="animate-spin-slow" style="animation-delay: 0.5s" />
           </p>
         </div>
 
         <!-- 错误反馈 -->
-        <div v-else key="wrong" class="mt-8">
+        <div v-else key="wrong" class="mt-6">
           <!-- 错误图标 -->
-          <div class="flex justify-center mb-6">
-            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-peppa-orange to-[#E65100] flex items-center justify-center shadow-xl animate-scale-in">
-              <X :size="48" class="text-white" />
+          <div class="flex justify-center mb-4">
+            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-peppa-orange to-[#E65100] flex items-center justify-center shadow-lg animate-scale-in">
+              <X :size="36" class="text-white" />
             </div>
           </div>
 
           <!-- 错误文字 -->
-          <p class="text-3xl md:text-4xl font-bold text-peppa-orange font-rounded animate-slide-up">
+          <p class="text-xl md:text-2xl font-bold text-peppa-orange font-rounded animate-slide-up">
             答错了，继续努力！
           </p>
-          <p class="text-xl text-gray-600 mt-3 font-rounded">
-            正确答案是：<span class="text-peppa-blue-dark font-bold text-2xl">{{ question.answer }}</span>
+          <p class="text-base md:text-lg text-gray-600 mt-2 font-rounded">
+            正确答案是：<span class="text-peppa-blue-dark font-bold text-xl">{{ question.answer }}</span>
           </p>
         </div>
       </Transition>
 
       <!-- 快速确认按钮 -->
       <Transition name="fade" mode="out-in">
-        <div v-if="!shouldShowFeedback" key="button" class="mt-6">
+        <div v-if="!shouldShowFeedback" key="button" class="mt-4">
           <button
             @click="$emit('submit')"
-            class="w-full bg-gradient-to-r from-peppa-green to-peppa-green-dark hover:from-[#66BB6A] hover:to-[#388E3C] text-white font-bold py-5 px-8 rounded-cute-2xl shadow-cute hover:shadow-cute-xl active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 font-rounded text-xl border-4 border-transparent hover:border-peppa-green/30"
+            class="w-full bg-gradient-to-r from-peppa-green to-peppa-green-dark hover:from-[#66BB6A] hover:to-[#388E3C] text-white font-bold py-4 px-6 rounded-cute-xl shadow-cute hover:shadow-cute-lg active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 font-rounded text-lg border-3 border-transparent hover:border-peppa-green/30"
           >
-            <Check :size="28" />
+            <Check :size="24" />
             确认答案
           </button>
         </div>
@@ -138,8 +138,8 @@ const shouldShowFeedback = computed(() => props.showAnswer && (isCorrect.value |
 <style scoped>
 .question-card {
   background: #ffffff;
-  min-width: 300px;
-  max-width: 600px;
+  min-width: 280px;
+  max-width: 95vw;
   width: 100%;
 }
 
