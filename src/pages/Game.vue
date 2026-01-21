@@ -38,6 +38,9 @@ const isNewBest = ref(false)
 const questionKey = ref(0) // 用于强制重新渲染题目卡片
 
 const isComplete = computed(() => game.isComplete.value)
+const isCorrect = computed(() => game.currentQuestion.value?.isCorrect === true)
+const isIncorrect = computed(() => game.currentQuestion.value?.isCorrect === false)
+const shouldShowFeedback = computed(() => showAnswer.value && game.currentQuestion.value?.userAnswer !== null)
 
 // 监听题目变化，更新 key
 watch(() => game.currentIndex.value, (newVal, oldVal) => {
@@ -177,7 +180,7 @@ onMounted(() => {
     </header>
 
     <!-- 题目卡片区 -->
-    <main class="main">
+    <main class="main relative">
       <Transition name="question" mode="out-in">
         <QuestionCard
           v-if="game.currentQuestion.value"
@@ -188,6 +191,35 @@ onMounted(() => {
           @submit="submitAnswer"
         />
       </Transition>
+
+      <!-- 悬浮反馈动画 -->
+      <Transition name="feedback">
+        <div v-if="shouldShowFeedback && isCorrect" class="feedback-overlay">
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-peppa-green to-peppa-green-dark flex items-center justify-center shadow-cute-lg animate-bounce-happy">
+              <Check :size="40" class="text-white" />
+            </div>
+            <p class="mt-3 text-2xl font-bold text-peppa-green font-rounded flex items-center gap-2">
+              <Sparkles :size="24" class="animate-spin-slow" />
+              太棒了！
+              <Sparkles :size="24" class="animate-spin-slow" style="animation-delay: 0.3s" />
+            </p>
+          </div>
+        </div>
+        <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay">
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-peppa-orange to-peppa-orange-dark flex items-center justify-center shadow-cute-lg animate-bounce-happy">
+              <X :size="40" class="text-white" />
+            </div>
+            <p class="mt-3 text-xl font-bold text-peppa-orange font-rounded">
+              再接再厉！
+            </p>
+            <p class="text-base text-gray-600 mt-1 font-rounded">
+              正确答案是：<span class="text-peppa-blue-dark font-bold">{{ game.currentQuestion.value?.answer }}</span>
+            </p>
+          </div>
+        </div>
+      </Transition>
     </main>
 
     <!-- 数字键盘 -->
@@ -196,6 +228,7 @@ onMounted(() => {
         :disabled="isWaiting || isComplete"
         @input="handleInput"
         @delete="handleDelete"
+        @submit="submitAnswer"
       />
     </section>
 
@@ -324,6 +357,31 @@ onMounted(() => {
 .question-leave-to {
   opacity: 0;
   transform: translateY(-10px) scale(0.97);
+}
+
+/* 悬浮反馈动画 */
+.feedback-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.feedback-enter-active,
+.feedback-leave-active {
+  transition: all 0.3s ease;
+}
+
+.feedback-enter-from,
+.feedback-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
 }
 </style>
 

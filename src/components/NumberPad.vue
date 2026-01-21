@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Delete } from 'lucide-vue-next'
+import { Delete, Check } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -10,7 +10,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['input', 'delete'])
+const emit = defineEmits(['input', 'delete', 'submit'])
 const { playSound } = useSound()
 
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -23,6 +23,11 @@ function handleInput(num) {
 function handleDelete() {
   playSound('click')
   emit('delete')
+}
+
+function handleSubmit() {
+  playSound('click')
+  emit('submit')
 }
 </script>
 
@@ -57,6 +62,15 @@ function handleDelete() {
         class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
       >
         0
+      </button>
+
+      <!-- 确认按钮 -->
+      <button
+        @click="handleSubmit"
+        :disabled="disabled"
+        class="aspect-square rounded-cute-lg bg-gradient-to-br from-peppa-green to-peppa-green-dark hover:from-peppa-green-light hover:to-peppa-green active:scale-95 transition-all duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-green/30"
+      >
+        <Check :size="36" class="text-white" />
       </button>
     </div>
   </div>
