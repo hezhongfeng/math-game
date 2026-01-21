@@ -103,15 +103,6 @@ export function useGame(difficulty) {
   }
   
   /**
-   * 跳到下一题
-   */
-  function nextQuestion() {
-    if (currentIndex.value < questions.value.length - 1) {
-      currentIndex.value++
-    }
-  }
-  
-  /**
    * 获取游戏结果
    */
   function getResult() {

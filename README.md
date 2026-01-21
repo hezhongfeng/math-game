@@ -6,6 +6,15 @@
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwind-css)
 
+## 🎯 特性亮点
+
+- 🎨 **精美界面**：采用 Peppa Pig 风格配色，圆润可爱的设计风格
+- 🎮 **渐进式学习**：15 个难度等级循序渐进，从 1-3 到 1-100
+- 🎉 **丰富反馈**：粒子效果、音效、触觉反馈多维度激励
+- 📱 **移动优先**：专为触摸屏优化，支持手机和平板
+- 💾 **进度保存**：自动保存学习进度和最佳成绩
+- 🔒 **关卡解锁**：通过前一关才能挑战更高难度
+
 ## ✨ 功能特性
 
 | 功能 | 描述 |
@@ -41,6 +50,8 @@ yarn install
 pnpm dev
 ```
 
+开发服务器将在 `http://localhost:5173` 启动（端口可能不同）。
+
 ### 构建生产版本
 
 ```bash
@@ -64,19 +75,28 @@ pnpm preview
 
 ## 🎮 操作说明
 
+### 桌面端
 1. 打开游戏主页，点击「开始游戏」
 2. 选择难度等级（需从第一关开始解锁）
-3. 使用数字键盘输入答案
-4. 点击 ✓ 按钮或按 Enter 确认
+3. 使用键盘输入数字答案
+4. 按 Enter 键或点击 ✓ 按钮确认
 5. 答对得 10 分，答错显示正确答案
 6. 完成所有题目后查看成绩
+
+### 移动端
+1. 打开游戏主页，点击「开始游戏」
+2. 选择难度等级（需从第一关开始解锁）
+3. 使用屏幕数字键盘输入答案
+4. 点击 ✓ 按钮确认
+5. 答对时手机会振动并显示粒子效果
+6. 完成所有题目后查看成绩和统计数据
 
 ## 🏗️ 项目结构
 
 ```
 math-game/
 ├── src/
-│   ├── assets/              # 静态资源
+│   ├── assets/              # 静态资源（预留目录）
 │   ├── components/          # 可复用组件
 │   │   ├── BackgroundMusic.vue   # 背景音乐控制
 │   │   ├── DifficultyCard.vue    # 难度卡片
@@ -93,8 +113,7 @@ math-game/
 │   │   ├── useSound.js      # 音效管理
 │   │   ├── useSpeech.js     # 语音播报
 │   │   ├── useStorage.js    # 本地存储
-│   │   ├── useToast.js      # 吐司提示
-│   │   └── useSettings.js   # 设置管理
+│   │   └── useToast.js      # 吐司提示
 │   ├── config/              # 配置文件
 │   │   ├── constants.js     # 游戏常量
 │   │   └── difficulty.js    # 难度配置
@@ -192,6 +211,14 @@ localStorage.removeItem('math-game-data')
 
 **注意**：语音功能需要浏览器支持 Speech Synthesis API；触觉反馈（振动）需要用户先与页面交互才能触发。
 
+## ⚠️ 注意事项
+
+- **数据存储**：游戏数据保存在浏览器 LocalStorage 中，清除浏览器数据会导致进度丢失
+- **音效系统**：使用 Web Audio API 动态生成音效，部分旧版浏览器可能不支持
+- **触觉反馈**：iOS 设备需要在用户交互后才能触发振动，且部分设备可能不支持
+- **语音播报**：依赖浏览器的语音合成功能，不同浏览器的语音质量可能有差异
+- **性能优化**：粒子效果在低端设备上可能影响性能，建议在中高端设备上使用
+
 ## 📝 开发说明
 
 ### 添加新难度
@@ -201,7 +228,7 @@ localStorage.removeItem('math-game-data')
 
 ### 自定义音效
 
-将音频文件放入 `src/assets/sounds/` 目录，然后在 `src/composables/useSound.js` 中引用。
+音效功能使用 Web Audio API 动态生成，无需外部音频文件。如需自定义音效，可在 `src/composables/useSound.js` 中修改音频参数。
 
 ### 修改配色
 
@@ -215,6 +242,18 @@ localStorage.removeItem('math-game-data')
   /* ...更多颜色 */
 }
 ```
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request 来改进这个项目！
+
+### 改进建议
+
+- 添加更多运算类型（乘法、除法）
+- 支持多语言（国际化）
+- 添加成就系统和排行榜
+- 支持 PWA 离线使用
+- 添加家长控制面板
 
 ## 📄 许可证
 
