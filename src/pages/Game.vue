@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw, Check, X, Sparkles, Heart } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw, Check, X } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -78,7 +78,7 @@ function submitAnswer() {
   showAnswer.value = true
   isWaiting.value = true
   particleType.value = isCorrect ? 'correct' : 'wrong'
-  showParticles.value = isCorrect
+  showParticles.value = true // 答对和答错都显示粒子
 
   // 播放反馈音效（不播放点击音效）
   if (isCorrect) {
@@ -214,50 +214,20 @@ onMounted(() => {
           <!-- 粒子效果 -->
           <ParticleEffects :show="showParticles" :type="particleType" />
 
-          <div class="flex flex-col items-center animate-bounce-happy">
-            <!-- 大对勾图标 -->
-            <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-peppa-green to-peppa-green-dark flex items-center justify-center shadow-cute-lg animate-scale-up">
-              <Check :size="52" class="text-white md:text-6xl" />
-            </div>
-            <!-- 星星装饰 -->
-            <div class="absolute -top-2 -right-2 animate-pulse">
-              <Sparkles :size="32" class="text-yellow-400 animate-spin-slow" />
-            </div>
-            <div class="absolute -bottom-2 -left-2 animate-pulse" style="animation-delay: 0.2s">
-              <Sparkles :size="28" class="text-yellow-400 animate-spin-slow" />
-            </div>
-            <!-- 鼓励文字 -->
-            <p class="mt-4 text-3xl md:text-4xl font-bold text-peppa-green font-rounded flex items-center gap-3 animate-bounce">
-              <Sparkles :size="32" class="animate-spin-slow text-yellow-400" />
-              太棒了！
-              <Sparkles :size="32" class="animate-spin-slow text-yellow-400" style="animation-delay: 0.3s" />
-            </p>
-            <!-- 爱心装饰 -->
-            <div class="mt-2 flex gap-1">
-              <Heart v-for="i in 3" :key="i" :size="20" class="text-peppa-red animate-pulse" :style="{ animationDelay: `${i * 0.1}s` }" fill="currentColor" />
-            </div>
+          <!-- 大对勾图标 -->
+          <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-peppa-green to-peppa-green-dark flex items-center justify-center shadow-cute-lg animate-scale-up">
+            <Check :size="52" class="text-white md:text-6xl" />
           </div>
         </div>
         <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay">
-          <div class="flex flex-col items-center animate-wiggle">
-            <!-- 大叉叉图标 -->
-            <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-peppa-orange to-peppa-orange-dark flex items-center justify-center shadow-cute-lg animate-scale-up">
-              <X :size="52" class="text-white md:text-6xl" />
-            </div>
-            <!-- 鼓励文字 -->
-            <p class="mt-4 text-2xl md:text-3xl font-bold text-peppa-orange font-rounded animate-bounce">
-              再接再厉！
-            </p>
-            <p class="text-lg md:text-xl text-gray-600 mt-2 font-rounded flex items-center gap-2">
-              正确答案是：
-              <span class="text-peppa-blue-dark font-bold text-2xl md:text-3xl animate-pulse">
-                {{ game.currentQuestion.value?.answer }}
-              </span>
-            </p>
-            <!-- 安慰表情 -->
-            <div class="mt-3 text-peppa-orange/60 text-sm font-rounded animate-pulse">
-              没关系，下一题加油！💪
-            </div>
+          <!-- 粒子效果 -->
+          <ParticleEffects :show="showParticles" :type="particleType" />
+
+          <!-- 正确答案大标签 -->
+          <div class="bg-white rounded-cute-xl px-6 py-4 shadow-cute-lg border-2 border-peppa-orange/50 animate-scale-up">
+            <span class="text-peppa-orange-dark font-bold text-4xl font-rounded">
+              {{ game.currentQuestion.value?.answer }}
+            </span>
           </div>
         </div>
       </Transition>
@@ -458,6 +428,18 @@ onMounted(() => {
   50% { transform: translateY(-10px); }
 }
 
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  10% { transform: translateX(-8px) rotate(-5deg); }
+  20% { transform: translateX(8px) rotate(5deg); }
+  30% { transform: translateX(-8px) rotate(-5deg); }
+  40% { transform: translateX(8px) rotate(5deg); }
+  50% { transform: translateX(-4px) rotate(-3deg); }
+  60% { transform: translateX(4px) rotate(3deg); }
+  70% { transform: translateX(-2px) rotate(-1deg); }
+  80% { transform: translateX(2px) rotate(1deg); }
+}
+
 .animate-scale-up {
   animation: scaleUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
@@ -468,6 +450,10 @@ onMounted(() => {
 
 .animate-bounce-happy {
   animation: bounceHappy 0.6s ease-in-out infinite;
+}
+
+.animate-wrong-shake {
+  animation: wrongShake 0.6s ease-in-out;
 }
 </style>
 

@@ -78,7 +78,7 @@ onUnmounted(() => {
 // 监听 show 属性变化
 import { watch } from 'vue'
 watch(() => props.show, (newVal) => {
-  if (newVal && props.type === 'correct') {
+  if (newVal) {
     createParticles()
   } else if (!newVal) {
     particles.value = []
