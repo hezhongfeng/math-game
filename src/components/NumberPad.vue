@@ -54,7 +54,7 @@ function handleSubmit() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark border-2 border-peppa-blue/30"
+        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark border-2 border-peppa-blue/30 min-h-[64px] md:min-h-[72px] min-w-[64px] md:min-w-[72px]"
         :class="{ 'num-btn-disabled': disabled }"
       >
         {{ num }}
@@ -64,7 +64,7 @@ function handleSubmit() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-orange/90 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center border-2 border-peppa-orange/30"
+        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-orange/90 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center border-2 border-peppa-orange/30 min-h-[64px] md:min-h-[72px] min-w-[64px] md:min-w-[72px]"
         :class="{ 'num-btn-disabled': disabled }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-peppa-orange-dark" :class="{ 'opacity-50': disabled }">
@@ -76,7 +76,7 @@ function handleSubmit() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark border-2 border-peppa-blue/30"
+        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark border-2 border-peppa-blue/30 min-h-[64px] md:min-h-[72px] min-w-[64px] md:min-w-[72px]"
         :class="{ 'num-btn-disabled': disabled }"
       >
         0
@@ -86,7 +86,7 @@ function handleSubmit() {
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="confirm-btn aspect-square rounded-cute-xl flex items-center justify-center bg-gradient-to-b from-peppa-green to-peppa-green-dark hover:from-peppa-green-light hover:to-peppa-green active:translate-y-0.5 transition-all duration-150 border-2 border-peppa-green/30"
+        class="confirm-btn aspect-square rounded-cute-xl flex items-center justify-center bg-gradient-to-b from-peppa-green to-peppa-green-dark hover:from-peppa-green-light hover:to-peppa-green active:translate-y-0.5 transition-all duration-150 border-2 border-peppa-green/30 min-h-[64px] md:min-h-[72px] min-w-[64px] md:min-w-[72px]"
         :class="{ 'confirm-btn-disabled': disabled }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="text-white" :class="{ 'opacity-50': disabled }">

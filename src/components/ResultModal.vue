@@ -37,7 +37,7 @@ function handleHome() {
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div v-if="show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" style="touch-action: manipulation;">
         <div class="bg-gradient-to-br from-[#E3F2FD] to-[#BBDEFB] rounded-cute-xl p-8 max-w-md w-full shadow-cute-lg border-3 border-peppa-blue-light/40 animate-scaleIn">
           <div class="text-center mb-6">
             <div class="text-6xl mb-3 animate-bounce-happy">⚽</div>
@@ -67,13 +67,13 @@ function handleHome() {
           <div class="flex gap-3">
             <button
               @click="handleRetry"
-              class="flex-1 bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white font-bold py-4 px-6 rounded-cute-lg hover:from-peppa-blue-dark hover:to-[#2A70C2] transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg border-2 border-transparent hover:border-peppa-blue/30"
+              class="flex-1 bg-gradient-to-r from-peppa-blue to-peppa-blue-dark text-white font-bold py-4 px-6 rounded-cute-lg hover:from-peppa-blue-dark hover:to-[#2A70C2] transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg border-2 border-transparent hover:border-peppa-blue/30 touch-manipulation"
             >
               🔄 再玩一次
             </button>
             <button
               @click="handleHome"
-              class="flex-1 bg-white text-peppa-blue-dark border-2 border-peppa-blue-light/40 font-bold py-4 px-6 rounded-cute-lg hover:bg-[#E3F2FD]/30 transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg"
+              class="flex-1 bg-white text-peppa-blue-dark border-2 border-peppa-blue-light/40 font-bold py-4 px-6 rounded-cute-lg hover:bg-[#E3F2FD]/30 transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg touch-manipulation"
             >
               🏠 返回主页
             </button>

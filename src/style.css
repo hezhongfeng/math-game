@@ -33,10 +33,15 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent pull-to-refresh and overscroll effects on mobile */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   #app {
     min-height: 100vh;
+    /* Ensure app container handles mobile viewport properly */
+    overflow-x: hidden;
   }
 }
 

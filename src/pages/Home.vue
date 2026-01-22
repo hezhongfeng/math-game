@@ -145,8 +145,12 @@ function viewAchievements() {
   justify-content: center;
   padding: 24px 16px;
   position: relative;
-  overflow: hidden;
   background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #81ECEC 100%);
+  /* Allow scrolling on mobile while maintaining layout */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Safe area handling for notched devices */
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 /* 水母动画 */

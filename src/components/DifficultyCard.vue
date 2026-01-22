@@ -136,6 +136,8 @@ function handleSelect() {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   animation: cardSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  /* Improve touch target on mobile */
+  min-height: 88px;
 }
 
 .card-unlocked {

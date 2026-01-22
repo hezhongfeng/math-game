@@ -284,7 +284,11 @@ onMounted(() => {
   padding: 12px 12px 24px;
   touch-action: manipulation;
   position: relative;
-  overflow: hidden;
+  /* Allow scrolling on mobile while maintaining layout */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Safe area handling for notched devices */
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 .main {
@@ -318,6 +322,8 @@ onMounted(() => {
     0 4px 20px rgba(74, 144, 226, 0.15),
     0 2px 8px rgba(74, 144, 226, 0.08);
   margin: 0 12px 12px;
+  /* Safe area for notched devices */
+  padding-top: max(10px, env(safe-area-inset-top));
 }
 
 .back-btn {
