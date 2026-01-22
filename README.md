@@ -66,12 +66,29 @@ pnpm preview
 
 ## 📱 移动端使用
 
-本游戏专为移动端优化，支持以下特性：
+本游戏专为移动端优化，采用**移动优先（Mobile-First）**设计理念，支持以下特性：
 
-- **大尺寸按钮**：易于触摸点击
-- **数字键盘**：1-9 数字 + 0 + 删除 + 确认按钮
-- **触觉反馈**：答题时手机振动
-- **流畅动画**：粒子爆炸、缩放弹跳等视觉效果
+### 触摸优化
+
+| 特性 | 规格 | 说明 |
+|------|------|------|
+| **触摸目标** | ≥44×44px | 所有按钮满足 WCAG 无障碍标准 |
+| **数字键盘按钮** | 64×64px（移动端） | 易于手指点击，防止误触 |
+| **响应式间距** | Tailwind md: 前缀 | 桌面端自动放大按钮和间距 |
+| **触摸反馈** | active:scale 动画 | 即时视觉反馈确认点击 |
+
+### 移动端适配
+
+- **视口配置**：禁用用户缩放，防止游戏过程中误操作
+- **安全区域**：支持刘海屏/灵动岛设备（env(safe-area-inset-\*)）
+- **滚动优化**：允许页面滚动，禁止下拉刷新副作用
+- **PWA 就绪**：apple-mobile-web-app-capable 支持添加到主屏幕
+
+### 触觉与交互
+
+- **振动反馈**：使用 Vibration API 答对/答错时触发
+- **流畅动画**：粒子效果、缩放弹跳等视觉反馈
+- **iOS 优化**：-webkit-tap-highlight-color: transparent 去除默认高亮
 
 ## 🎮 操作说明
 
@@ -190,7 +207,7 @@ localStorage.removeItem('math-game-data')
 |------|------|
 | **Vue 3** | 前端框架（Composition API） |
 | **Vite** | 构建工具 |
-| **Tailwind CSS** | 原子化 CSS 样式 |
+| **Tailwind CSS** | 原子化 CSS 样式（响应式前缀：sm:, md:, lg:） |
 | **Vue Router** | 路由管理 |
 | **Pinia** | 状态管理 |
 | **Lucide Vue Next** | 图标库 |
@@ -198,16 +215,80 @@ localStorage.removeItem('math-game-data')
 | **Web Speech API** | 语音合成 |
 | **Vibration API** | 触觉反馈 |
 
+## 📱 移动端技术细节
+
+### 视口配置（index.html）
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+```
+
+### 触摸目标规格
+
+```css
+/* 数字键盘按钮 - 移动端 */
+.num-btn {
+  min-height: 64px;
+  min-width: 64px;
+}
+
+/* 难度卡片 - 最小触摸区域 */
+.card {
+  min-height: 88px;
+}
+```
+
+### 安全区域支持
+
+```css
+/* 支持刘海屏和灵动岛 */
+padding-bottom: max(24px, env(safe-area-inset-bottom));
+padding-top: max(10px, env(safe-area-inset-top));
+```
+
+### iOS 触摸优化
+
+```css
+/* 去除默认蓝色高亮 */
+-webkit-tap-highlight-color: transparent;
+
+/* 禁止双击缩放 */
+touch-action: manipulation;
+
+/* 流畅滚动 */
+-webkit-overflow-scrolling: touch;
+```
+
 ## 🌐 浏览器兼容性
 
 | 浏览器 | 状态 | 备注 |
 |--------|------|------|
-| Chrome | ✅ 完全支持 | 推荐使用 |
-| Edge | ✅ 完全支持 | 推荐使用 |
-| Firefox | ✅ 完全支持 | |
-| Safari | ✅ 完全支持 | iOS Safari 完整支持 |
-| iOS Safari | ✅ 完全支持 | 触觉反馈需用户交互触发 |
-| Android Chrome | ✅ 完全支持 | 触觉反馈支持 |
+| Chrome (Android) | ✅ 完全支持 | 推荐使用，触觉反馈完整支持 |
+| Safari (iOS) | ✅ 完全支持 | 触觉反馈需用户交互后触发 |
+| Safari (macOS) | ✅ 完全支持 | 触控板支持 |
+| Firefox (Android) | ✅ 完全支持 | |
+| Edge (iOS/Android) | ✅ 完全支持 | |
+
+### 响应式断点
+
+| 断点 | 前缀 | 典型设备 |
+|------|------|----------|
+| 默认 | 无 | 手机（320px+） |
+| md: | 768px+ | 平板横屏/桌面 |
+| lg: | 1024px+ | 桌面显示器 |
+
+### 移动端功能支持
+
+| 功能 | iOS Safari | Android Chrome |
+|------|------------|----------------|
+| 触摸事件 | ✅ | ✅ |
+| 触觉反馈 (Vibration) | ⚠️ 需交互后 | ✅ |
+| 语音合成 | ✅ | ✅ |
+| LocalStorage | ✅ | ✅ |
+| 安全区域 | ✅ iOS 11+ | ✅ Android 5+ |
+| 添加到主屏幕 | ✅ | ✅ |
 
 **注意**：语音功能需要浏览器支持 Speech Synthesis API；触觉反馈（振动）需要用户先与页面交互才能触发。
 
@@ -242,6 +323,15 @@ localStorage.removeItem('math-game-data')
   /* ...更多颜色 */
 }
 ```
+
+### 设计文档
+
+详细的设计规范和技术细节请参考 [DESIGN.md](./DESIGN.md)，包括：
+
+- 移动端适配规范
+- 响应式设计断点
+- 触摸目标尺寸要求
+- iOS/Android 兼容性说明
 
 ## 🤝 贡献
 

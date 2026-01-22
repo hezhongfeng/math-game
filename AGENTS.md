@@ -256,7 +256,35 @@ export function randomInt(min, max) {
 - Use semantic HTML elements
 - Add ARIA labels where appropriate
 - Ensure color contrast (using peppa theme colors)
-- Touch-friendly button sizes (minimum 44x44px)
+- Touch-friendly button sizes (minimum 44x44px, recommended 64x64px)
+
+### Mobile-First Requirements
+
+**All interactive elements MUST have:**
+```css
+-webkit-tap-highlight-color: transparent;
+touch-action: manipulation;
+```
+
+**Touch target sizes:**
+| Element | Minimum Size | Example |
+|---------|--------------|---------|
+| NumberPad buttons | 64×64px | `min-h-[64px] min-w-[64px]` |
+| Action buttons | 48px height | `py-4` or `h-12` |
+| Cards | 88px height | `min-height: 88px` |
+
+**Viewport config (index.html):**
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+```
+
+**Safe area support (for notched devices):**
+```css
+padding-bottom: max(24px, env(safe-area-inset-bottom));
+padding-top: max(10px, env(safe-area-inset-top));
+```
+
+**See [DESIGN.md](./DESIGN.md) for complete mobile specifications.**
 
 ### Storage Keys
 
@@ -274,6 +302,7 @@ export function randomInt(min, max) {
 4. **Mobile-first** - Design for touch screens first, then enhance for desktop
 5. **Progressive difficulty** - 15 levels, must complete previous to unlock next
 6. **Non-negative results** - Subtraction always ensures result ≥ 0
+7. **Mobile specifications** - See [DESIGN.md](./DESIGN.md) for detailed mobile-first design guidelines
 
 ---
 
