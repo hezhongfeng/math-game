@@ -454,19 +454,23 @@ onMounted(() => {
 
 /* 悬浮反馈层 */
 .feedback-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 20;
+  z-index: 9999;
   pointer-events: none;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 32px;
+  box-shadow: 0 20px 60px rgba(74, 144, 226, 0.2);
+  padding: 48px 24px;
 }
 
 /* 反馈内容容器 */

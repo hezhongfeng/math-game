@@ -34,13 +34,13 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
     <div class="text-center">
       <div class="bg-peppa-blue/10 rounded-cute-lg p-4 md:p-6 mb-3 border-2 border-peppa-blue/20">
         <div class="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
-          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded animate-float" style="animation-delay: 0s">
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
             {{ question.operand1 }}
           </span>
           <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
             {{ question.operator }}
           </span>
-          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded animate-float" style="animation-delay: 0.2s">
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
             {{ question.operand2 }}
           </span>
           <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
