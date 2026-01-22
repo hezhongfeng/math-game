@@ -96,12 +96,3 @@ export function generateQuestions(difficulty) {
 export function checkAnswer(question, userAnswer) {
   return question.answer === userAnswer
 }
-
-/**
- * 格式化题目显示文本
- * @param {Object} question - 题目对象
- * @returns {string} 格式化后的题目，如 "2 + 3 = ?"
- */
-export function formatQuestion(question) {
-  return `${question.operand1} ${question.operator} ${question.operand2} = ?`
-}

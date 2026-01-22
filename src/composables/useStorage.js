@@ -80,34 +80,6 @@ export function useStorage() {
   }
   
   /**
-   * 清除所有数据
-   */
-  function clearAllData() {
-    localStorage.removeItem(STORAGE_KEY)
-  }
-  
-  /**
-   * 获取某个难度的进度
-   * @param {number} difficultyId - 难度ID
-   * @returns {Object|null} 进度对象
-   */
-  function getProgress(difficultyId) {
-    const data = loadData()
-    return data.progress[difficultyId] || null
-  }
-  
-  /**
-   * 更新难度进度
-   * @param {number} difficultyId - 难度ID
-   * @param {Object} progress - 进度数据
-   */
-  function updateProgress(difficultyId, progress) {
-    const data = loadData()
-    data.progress[difficultyId] = progress
-    saveData(data)
-  }
-  
-  /**
    * 获取已完成的难度列表
    * @returns {Array} 已完成的难度ID列表
    */
@@ -117,14 +89,9 @@ export function useStorage() {
   }
   
   return {
-    loadData,
-    saveData,
     getBestScore,
     updateBestScore,
     getAllBestScores,
-    clearAllData,
-    getProgress,
-    updateProgress,
     getCompletedDifficulties
   }
 }

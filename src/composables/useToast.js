@@ -48,10 +48,6 @@ export function useToast() {
     return addToast(message, 'info', duration)
   }
 
-  function clear() {
-    toasts.value = []
-  }
-
   return {
     toasts,
     addToast,
@@ -59,7 +55,6 @@ export function useToast() {
     success,
     error,
     warning,
-    info,
-    clear
+    info
   }
 }

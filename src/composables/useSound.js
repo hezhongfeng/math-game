@@ -170,24 +170,8 @@ export function useSound() {
     oscillator.stop(now + 0.05)
   }
 
-  /**
-   * 切换音效开关
-   */
-  function toggle() {
-    settingsStore.toggleSound()
-  }
-
-  /**
-   * 检查浏览器是否支持 Web Audio API
-   */
-  function isSupported() {
-    return 'AudioContext' in window || 'webkitAudioContext' in window
-  }
-
   return {
     isEnabled,
-    playSound,
-    toggle,
-    isSupported
+    playSound
   }
 }

@@ -201,10 +201,3 @@ export const DIFFICULTY_GROUPS = [
 export function getDifficultyById(id) {
   return DIFFICULTY_LEVELS.find(d => d.id === parseInt(id))
 }
-
-// 获取难度列表
-export function getDifficultyLevelsByGroup(groupName) {
-  const group = DIFFICULTY_GROUPS.find(g => g.name === groupName)
-  if (!group) return []
-  return group.levels.map(id => getDifficultyById(id))
-}

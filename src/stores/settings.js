@@ -28,26 +28,6 @@ export const useSettingsStore = defineStore('settings', () => {
   function toggleMusic() {
     musicEnabled.value = !musicEnabled.value
   }
-  
-  // 设置背景音乐音量
-  function setMusicVolume(value) {
-    musicVolume.value = Math.max(0, Math.min(1, value))
-  }
-
-  // 设置音效开关
-  function setSoundEnabled(enabled) {
-    soundEnabled.value = enabled
-  }
-
-  // 设置语音开关
-  function setSpeechEnabled(enabled) {
-    speechEnabled.value = enabled
-  }
-  
-  // 设置背景音乐开关
-  function setMusicEnabled(enabled) {
-    musicEnabled.value = enabled
-  }
 
   // 从 localStorage 加载设置
   function loadSettings() {
@@ -79,14 +59,6 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  // 监听设置变化并自动保存
-  function $reset() {
-    soundEnabled.value = true
-    speechEnabled.value = true
-    musicEnabled.value = true
-    musicVolume.value = 0.3
-  }
-
   return {
     soundEnabled,
     speechEnabled,
@@ -95,12 +67,7 @@ export const useSettingsStore = defineStore('settings', () => {
     toggleSound,
     toggleSpeech,
     toggleMusic,
-    setMusicVolume,
-    setSoundEnabled,
-    setSpeechEnabled,
-    setMusicEnabled,
     loadSettings,
-    saveSettings,
-    $reset
+    saveSettings
   }
 })

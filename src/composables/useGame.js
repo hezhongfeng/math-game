@@ -22,10 +22,6 @@ export function useGame(difficulty) {
     return ((currentIndex.value) / questions.value.length) * 100
   })
   
-  const remainingCount = computed(() => {
-    return questions.value.length - currentIndex.value
-  })
-  
   const accuracy = computed(() => {
     if (!questions.value.length) return 0
     return Math.round((correctCount.value / questions.value.length) * 100)
@@ -129,14 +125,11 @@ export function useGame(difficulty) {
     // 计算属性
     currentQuestion,
     progress,
-    remainingCount,
     accuracy,
     duration,
     // 方法
     startGame,
     submitAnswer,
-    completeGame,
-    resetGame,
     nextQuestion,
     getResult
   }
