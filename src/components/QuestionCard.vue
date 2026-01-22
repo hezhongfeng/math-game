@@ -23,7 +23,7 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
 
 <template>
   <div
-    class="question-card p-4 md:p-6 rounded-cute-2xl shadow-cute-lg border-2 transition-all duration-300"
+    class="question-card p-4 md:p-6 rounded-cute-2xl shadow-cute-lg border-2 transition-all duration-300 animate-card-entrance"
     :class="{
       'bg-white border-peppa-green': isCorrect,
       'bg-white border-peppa-orange': isIncorrect,
@@ -34,13 +34,13 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
     <div class="text-center">
       <div class="bg-peppa-blue/10 rounded-cute-lg p-4 md:p-6 mb-3 border-2 border-peppa-blue/20">
         <div class="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
-          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded animate-float" style="animation-delay: 0s">
             {{ question.operand1 }}
           </span>
           <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
             {{ question.operator }}
           </span>
-          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
+          <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded animate-float" style="animation-delay: 0.2s">
             {{ question.operand2 }}
           </span>
           <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
@@ -49,7 +49,7 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
           <span
             class="text-5xl md:text-7xl font-bold font-rounded min-w-[4ch] text-center inline-block transition-all duration-300"
             :class="{
-              'text-peppa-cyan animate-pulse': !shouldShowFeedback,
+              'text-peppa-cyan animate-pulse-gentle': !shouldShowFeedback,
               'text-peppa-green animate-answer-pop': shouldShowFeedback && isCorrect,
               'text-peppa-orange animate-answer-shake': shouldShowFeedback && isIncorrect
             }"
@@ -68,6 +68,21 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
   max-width: 95vw;
   width: 100%;
   touch-action: manipulation;
+  animation: cardBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 @keyframes answerPop {

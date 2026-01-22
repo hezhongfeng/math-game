@@ -41,7 +41,7 @@ function handleSubmit() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
+        class="aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30 hover:shadow-cute-lg"
       >
         {{ num }}
       </button>
@@ -50,7 +50,7 @@ function handleSubmit() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-orange/80 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-orange/30"
+        class="aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-orange/80 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-150 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-orange/30 hover:shadow-cute-lg"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-peppa-orange-dark">
           <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6M14 11v6"/>
@@ -61,7 +61,7 @@ function handleSubmit() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30"
+        class="aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-blue/30 hover:shadow-cute-lg"
       >
         0
       </button>
@@ -70,7 +70,7 @@ function handleSubmit() {
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="confirm-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-yellow to-peppa-yellow-dark hover:from-peppa-yellow-light hover:to-peppa-yellow active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-yellow/50"
+        class="confirm-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-yellow to-peppa-yellow-dark hover:from-peppa-yellow-light hover:to-peppa-yellow active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-cute border-2 border-peppa-yellow/50 hover:shadow-cute-lg"
       >
         <div class="flex flex-col items-center justify-center gap-0.5">
           <Check :size="28" class="text-peppa-orange-dark md:mb-1" stroke-width="4" />
@@ -84,10 +84,12 @@ function handleSubmit() {
 <style scoped>
 .number-pad {
   background: linear-gradient(135deg, #ffffff 0%, #F5F9FF 100%);
+  box-shadow: 
+    0 8px 30px rgba(74, 144, 226, 0.15),
+    0 4px 15px rgba(74, 144, 226, 0.1);
 }
 
 .confirm-btn {
-  /* 确认按钮稍大，更醒目 */
   transform: scale(1.08);
   box-shadow: 0 8px 25px rgba(255, 213, 79, 0.4);
   animation: pulse-glow 2s ease-in-out infinite;
@@ -95,7 +97,7 @@ function handleSubmit() {
 
 .confirm-btn:hover:not(:disabled) {
   transform: scale(1.12);
-  box-shadow: 0 10px 30px rgba(255, 213, 79, 0.5);
+  box-shadow: 0 10px 35px rgba(255, 213, 79, 0.5);
 }
 
 .confirm-btn:active:not(:disabled) {
@@ -107,7 +109,7 @@ function handleSubmit() {
     box-shadow: 0 8px 25px rgba(255, 213, 79, 0.4);
   }
   50% {
-    box-shadow: 0 8px 35px rgba(255, 213, 79, 0.6);
+    box-shadow: 0 8px 40px rgba(255, 213, 79, 0.6);
   }
 }
 

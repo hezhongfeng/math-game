@@ -54,19 +54,29 @@ function handleSelect() {
 
 <template>
   <div
-    class="card"
-    :class="{ 'card-locked': isLocked, 'card-unlocked': !isLocked }"
+    class="card animate-card-entrance"
+    :class="{ 
+      'card-locked': isLocked, 
+      'card-unlocked': !isLocked,
+      'card-completed': isCompleted && !isLocked
+    }"
     @click="handleSelect"
   >
     <!-- 图标区域 -->
-    <div class="icon-wrapper" :style="{ backgroundColor: isLocked ? '#f1f5f9' : `${difficulty.color}15` }">
-      <span class="emoji">{{ cuteEmoji }}</span>
+    <div 
+      class="icon-wrapper" 
+      :style="{ backgroundColor: isLocked ? '#f1f5f9' : `${difficulty.color}15` }"
+    >
+      <span class="emoji animate-float">{{ cuteEmoji }}</span>
     </div>
 
     <!-- 中间内容 -->
     <div class="content">
       <div class="name-row">
-        <span class="name" :style="{ color: isLocked ? '#94a3b8' : difficulty.color }">
+        <span 
+          class="name" 
+          :style="{ color: isLocked ? '#94a3b8' : difficulty.color }"
+        >
           {{ difficulty.name }}
         </span>
         <span v-if="isCompleted && !isLocked" class="badge-success">
@@ -94,7 +104,10 @@ function handleSelect() {
 
       <div v-else-if="!isLocked" class="status-row">
         <span class="question-count" :style="{ color: difficulty.color }">{{ difficulty.questionCount }}题</span>
-        <span class="status-badge" :style="{ backgroundColor: `${difficulty.color}15`, color: difficulty.color }">
+        <span 
+          class="status-badge" 
+          :style="{ backgroundColor: `${difficulty.color}15`, color: difficulty.color }"
+        >
           点击挑战
         </span>
       </div>
@@ -116,42 +129,70 @@ function handleSelect() {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 16px;
-  border-radius: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  animation: cardSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .card-unlocked {
-  background: white;
-  border: 1.5px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid rgba(74, 144, 226, 0.2);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
+}
+
+.card-unlocked:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 
+    0 8px 25px rgba(74, 144, 226, 0.15),
+    0 4px 10px rgba(74, 144, 226, 0.1);
+  border-color: rgba(74, 144, 226, 0.4);
 }
 
 .card-unlocked:active {
   transform: scale(0.98);
-  background: #f8fafc;
+  transition: all 0.1s ease;
+}
+
+.card-completed {
+  border-color: rgba(76, 175, 80, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
 }
 
 .card-locked {
-  background: #f8fafc;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border: 2px dashed #cbd5e1;
+  opacity: 0.8;
+}
+
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 
 .icon-wrapper {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .emoji {
-  font-size: 28px;
+  font-size: 30px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .content {
@@ -167,7 +208,7 @@ function handleSelect() {
 }
 
 .name {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   font-family: inherit;
   letter-spacing: 0.3px;
@@ -177,10 +218,10 @@ function handleSelect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: #dcfce7;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
   color: #16a34a;
 }
 
@@ -188,8 +229,8 @@ function handleSelect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #e2e8f0;
   color: #94a3b8;
@@ -236,8 +277,8 @@ function handleSelect() {
 }
 
 .status-badge {
-  padding: 3px 10px;
-  border-radius: 12px;
+  padding: 4px 12px;
+  border-radius: 14px;
   font-size: 12px;
   font-weight: 600;
 }
@@ -256,12 +297,12 @@ function handleSelect() {
 .arrow {
   color: #cbd5e1;
   flex-shrink: 0;
-  transition: transform 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .card-unlocked:hover .arrow {
-  transform: translateX(2px);
-  color: #94a3b8;
+  transform: translateX(3px);
+  color: #4A90E2;
 }
 
 .arrow-locked {

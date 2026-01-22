@@ -42,23 +42,23 @@ function handleHome() {
           <div class="text-center mb-6">
             <div class="text-6xl mb-3 animate-bounce-happy">⚽</div>
             <h2 class="text-3xl font-bold text-peppa-blue-dark font-rounded mb-2">游戏结束！</h2>
-            <div v-if="isNewBest" class="inline-block bg-gradient-to-r from-yellow-300 to-yellow-400 text-yellow-900 px-4 py-2 rounded-full font-bold text-lg shadow-cute mb-4">🏆 新纪录！</div>
+            <div v-if="isNewBest" class="inline-block bg-gradient-to-r from-yellow-300 to-yellow-400 text-yellow-900 px-4 py-2 rounded-full font-bold text-lg shadow-cute animate-pulse-gentle">🏆 新纪录！</div>
           </div>
 
           <div class="space-y-3 mb-6">
-            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-blue-light/40 shadow-cute">
+            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-blue-light/40 shadow-cute hover:shadow-cute-lg transition-shadow">
               <span class="text-peppa-blue-dark font-rounded flex items-center gap-2">⭐ 得分</span>
               <span class="text-2xl font-bold text-peppa-blue-dark font-rounded">{{ result.score }}</span>
             </div>
-            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-green/40 shadow-cute">
+            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-green/40 shadow-cute hover:shadow-cute-lg transition-shadow">
               <span class="text-peppa-green-dark font-rounded flex items-center gap-2">✅ 正确数</span>
               <span class="text-2xl font-bold text-peppa-green font-rounded">{{ result.correctCount }}/{{ result.totalCount }}</span>
             </div>
-            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-cyan/40 shadow-cute">
+            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-cyan/40 shadow-cute hover:shadow-cute-lg transition-shadow">
               <span class="text-peppa-cyan-dark font-rounded flex items-center gap-2">📊 正确率</span>
               <span class="text-2xl font-bold text-peppa-cyan font-rounded">{{ result.accuracy }}%</span>
             </div>
-            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-yellow/40 shadow-cute">
+            <div class="flex justify-between items-center p-4 bg-white rounded-cute-lg border-2 border-peppa-yellow/40 shadow-cute hover:shadow-cute-lg transition-shadow">
               <span class="text-peppa-yellow-dark font-rounded flex items-center gap-2">⏱️ 用时</span>
               <span class="text-xl font-bold text-peppa-yellow-dark font-rounded">{{ formatTime(result.duration) }}</span>
             </div>
@@ -79,8 +79,10 @@ function handleHome() {
             </button>
           </div>
 
-          <div class="mt-4 text-center text-sm text-peppa-blue-dark/50 font-rounded">
-            ⚽ 快乐学习数学 ⚽
+          <div class="mt-4 text-center text-sm text-peppa-blue-dark/50 font-rounded flex items-center justify-center gap-2">
+            <span class="animate-float">⚽</span>
+            <span>快乐学习数学</span>
+            <span class="animate-float" style="animation-delay: 0.5s">⚽</span>
           </div>
         </div>
       </div>
@@ -108,5 +110,20 @@ function handleHome() {
 .modal-leave-to .bg-gradient-to-br {
   transform: scale(0.9);
   opacity: 0;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

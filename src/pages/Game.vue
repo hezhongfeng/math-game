@@ -178,6 +178,14 @@ onMounted(() => {
 
 <template>
   <div class="page">
+    <!-- 装饰星星 -->
+    <div class="stars">
+      <span class="star star-1">✨</span>
+      <span class="star star-2">⭐</span>
+      <span class="star star-3">✨</span>
+      <span class="star star-4">⭐</span>
+    </div>
+
     <!-- 顶部导航 -->
     <header class="header">
       <button @click="goBack" class="back-btn">
@@ -186,7 +194,9 @@ onMounted(() => {
       </button>
 
       <div class="title-group">
-        <h2 class="title">{{ difficulty.name }}</h2>
+        <h2 class="title bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
+          {{ difficulty.name }}
+        </h2>
         <p class="subtitle">{{ difficulty.description }}</p>
       </div>
 
@@ -282,6 +292,59 @@ onMounted(() => {
   flex-direction: column;
   padding: 12px 12px 24px;
   touch-action: manipulation;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 装饰星星 */
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  font-size: 20px;
+  opacity: 0.4;
+  animation: floatStar 4s ease-in-out infinite;
+}
+
+.star-1 {
+  top: 5%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.star-2 {
+  top: 8%;
+  right: 8%;
+  font-size: 16px;
+  animation-delay: 1s;
+}
+
+.star-3 {
+  bottom: 15%;
+  left: 5%;
+  animation-delay: 2s;
+}
+
+.star-4 {
+  bottom: 20%;
+  right: 8%;
+  font-size: 24px;
+  animation-delay: 1.5s;
+}
+
+@keyframes floatStar {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-10px) rotate(10deg) scale(1.1);
+    opacity: 0.6;
+  }
 }
 
 .header {
@@ -289,10 +352,12 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
   border-radius: 16px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
+  position: relative;
+  z-index: 10;
 }
 
 .back-btn {
@@ -303,15 +368,15 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 600;
   color: #4A90E2;
-  background: transparent;
-  border: none;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%);
+  border: 2px solid rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
 .back-btn:active {
-  background: #f0f7ff;
+  background: #e0efff;
   transform: scale(0.95);
 }
 
@@ -320,10 +385,10 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e3a5f;
+  font-size: 20px;
+  font-weight: 800;
   font-family: inherit;
+  filter: drop-shadow(0 2px 4px rgba(74, 144, 226, 0.2));
 }
 
 .subtitle {
@@ -339,8 +404,8 @@ onMounted(() => {
   width: 44px;
   height: 44px;
   color: #4A90E2;
-  background: #f0f7ff;
-  border: none;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%);
+  border: 2px solid rgba(74, 144, 226, 0.3);
   border-radius: 12px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
