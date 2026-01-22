@@ -42,49 +42,64 @@ const formatTime = computed(() => {
 </script>
 
 <template>
-  <div class="score-board bg-white rounded-cute-xl shadow-cute p-4 border-2 border-peppa-blue/20 animate-fade-in-up">
-    <!-- 顶部：进度条和统计 -->
-    <div class="mb-4">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-semibold text-peppa-blue-dark font-rounded">进度</span>
-        <span class="text-sm font-bold text-peppa-blue-dark font-rounded">{{ currentIndex }} / {{ totalQuestions }}</span>
+  <div class="score-board">
+    <!-- 进度条 -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">进度 {{ currentIndex }}/{{ totalQuestions }}</span>
+        <span class="progress-pct">{{ progress }}%</span>
       </div>
       <div class="progress-bar">
-        <div
-          class="progress-bar-fill"
+        <div 
+          class="progress-fill" 
           :style="{ width: `${progress}%` }"
         ></div>
       </div>
     </div>
 
-    <!-- 数据统计网格 -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <!-- 得分 -->
-      <div class="stat-card bg-gradient-to-br from-peppa-blue/10 to-peppa-blue-dark/10 border-peppa-blue/30 hover:shadow-cute-lg transition-shadow">
-        <Star :size="22" class="text-peppa-blue mx-auto mb-1 animate-float" />
-        <p class="text-2xl font-bold text-peppa-blue-dark font-rounded">{{ score }}</p>
-        <p class="text-xs text-gray-600 font-rounded">得分</p>
+    <!-- 第一行：得分、正确 -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-icon score-icon">
+          <Star :size="20" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ score }}</span>
+          <span class="stat-label">得分</span>
+        </div>
       </div>
 
-      <!-- 正确数 -->
-      <div class="stat-card bg-gradient-to-br from-peppa-green/10 to-peppa-green-dark/10 border-peppa-green/30 hover:shadow-cute-lg transition-shadow">
-        <CheckCircle :size="22" class="text-peppa-green mx-auto mb-1 animate-float" style="animation-delay: 0.1s" />
-        <p class="text-2xl font-bold text-peppa-green-dark font-rounded">{{ correctCount }}</p>
-        <p class="text-xs text-gray-600 font-rounded">正确</p>
+      <div class="stat-item">
+        <div class="stat-icon correct-icon">
+          <CheckCircle :size="20" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ correctCount }}</span>
+          <span class="stat-label">正确</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第二行：用时、正确率 -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-icon time-icon">
+          <Clock :size="20" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ formatTime }}</span>
+          <span class="stat-label">用时</span>
+        </div>
       </div>
 
-      <!-- 用时 -->
-      <div class="stat-card bg-gradient-to-br from-peppa-cyan/10 to-peppa-cyan-dark/10 border-peppa-cyan/30 hover:shadow-cute-lg transition-shadow">
-        <Clock :size="22" class="text-peppa-cyan mx-auto mb-1 animate-float" style="animation-delay: 0.2s" />
-        <p class="text-xl font-bold text-peppa-cyan-dark font-rounded">{{ formatTime }}</p>
-        <p class="text-xs text-gray-600 font-rounded">用时</p>
-      </div>
-
-      <!-- 正确率 -->
-      <div class="stat-card bg-gradient-to-br from-peppa-yellow/20 to-peppa-yellow-dark/20 border-peppa-yellow/30 hover:shadow-cute-lg transition-shadow">
-        <TrendingUp :size="22" class="text-peppa-yellow-dark mx-auto mb-1 animate-float" style="animation-delay: 0.3s" />
-        <p class="text-2xl font-bold text-peppa-yellow-dark font-rounded">{{ accuracy }}%</p>
-        <p class="text-xs text-gray-600 font-rounded">正确率</p>
+      <div class="stat-item">
+        <div class="stat-icon accuracy-icon">
+          <TrendingUp :size="20" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ accuracy }}%</span>
+          <span class="stat-label">正确率</span>
+        </div>
       </div>
     </div>
   </div>
@@ -92,18 +107,125 @@ const formatTime = computed(() => {
 
 <style scoped>
 .score-board {
-  background: linear-gradient(135deg, #ffffff 0%, #F5F9FF 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+  border-radius: 20px;
+  padding: 16px 20px;
   box-shadow: 
-    0 6px 20px rgba(74, 144, 226, 0.12),
-    0 3px 10px rgba(74, 144, 226, 0.08);
+    0 4px 20px rgba(74, 144, 226, 0.12),
+    0 2px 8px rgba(74, 144, 226, 0.08);
+  border: 2px solid rgba(74, 144, 226, 0.15);
 }
 
-.stat-card {
-  @apply rounded-cute-lg p-3 text-center border-2 transition-all duration-300;
+/* 进度条 */
+.progress-section {
+  margin-bottom: 16px;
 }
 
-.stat-card:hover {
-  transform: translateY(-2px);
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4A90E2;
+  font-family: inherit;
+}
+
+.progress-pct {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2A70C2;
+  font-family: inherit;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #E3F2FD;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90E2, #7AB8FF);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* 统计行 */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.stats-row:first-of-type {
+  margin-top: 0;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #F5F9FF;
+  border-radius: 16px;
+}
+
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon.score-icon {
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+  color: #1976D2;
+}
+
+.stat-icon.correct-icon {
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+  color: #388E3C;
+}
+
+.stat-icon.time-icon {
+  background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
+  color: #00838F;
+}
+
+.stat-icon.accuracy-icon {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  color: #F9A825;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e3a5f;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #64748b;
+  font-family: inherit;
+  font-weight: 500;
 }
 </style>
-

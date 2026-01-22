@@ -57,8 +57,7 @@ onMounted(() => {
     <!-- 顶部导航 -->
     <header class="header">
       <button @click="goBack" class="back-btn">
-        <ArrowLeft :size="24" />
-        <span>返回</span>
+        <ArrowLeft :size="22" />
       </button>
       
       <h1 class="title bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
@@ -109,6 +108,9 @@ onMounted(() => {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  padding: 12px 12px 24px;
+  background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #E8F5E9 100%);
+  touch-action: manipulation;
 }
 
 /* 装饰星星 */
@@ -169,53 +171,64 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
-  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 4px 20px rgba(74, 144, 226, 0.15),
+    0 2px 8px rgba(74, 144, 226, 0.08);
+  margin: 0 12px 16px;
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  font-size: 16px;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #4A90E2;
-  background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%);
+  background: linear-gradient(135deg, #e0efff 0%, #f0f7ff 100%);
   border: 2px solid rgba(74, 144, 226, 0.3);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .back-btn:active {
   transform: scale(0.95);
-  background: #e0efff;
+  background: #d0e4ff;
+}
+
+.back-btn span {
+  font-size: 14px;
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   font-family: inherit;
-  filter: drop-shadow(0 2px 4px rgba(74, 144, 226, 0.2));
+  color: #1e3a5f;
+  letter-spacing: 1px;
 }
 
 .progress-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  font-size: 14px;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
   font-weight: 700;
-  color: #FF8F00;
+  color: #E65100;
   background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
-  border-radius: 20px;
+  border-radius: 16px;
   border: 2px solid #FFD54F;
 }
 
 .progress-badge svg {
+  width: 16px;
+  height: 16px;
   color: #FFB300;
 }
 

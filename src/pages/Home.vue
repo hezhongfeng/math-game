@@ -12,6 +12,37 @@ const { playSound } = useSound()
 const bestScores = getAllBestScores()
 const completedCount = Object.keys(bestScores).length
 
+// 水母数据 - 从屏幕各个位置随机升起
+const jellyfishes = [
+  // 从左侧不同高度
+  { color: '#FF6B6B', delay: 0, left: '8%', startTop: '85%', size: 52 },
+  { color: '#4ECDC4', delay: 0.3, left: '5%', startTop: '70%', size: 44 },
+  { color: '#FFE66D', delay: 0.6, left: '12%', startTop: '55%', size: 48 },
+  { color: '#AA96DA', delay: 0.9, left: '3%', startTop: '40%', size: 42 },
+  { color: '#FCBAD3', delay: 1.2, left: '15%', startTop: '25%', size: 46 },
+  // 从中间偏左
+  { color: '#A8D8EA', delay: 1.5, left: '25%', startTop: '90%', size: 50 },
+  { color: '#FF9F43', delay: 1.8, left: '22%', startTop: '75%', size: 44 },
+  { color: '#6AB04C', delay: 2.1, left: '28%', startTop: '60%', size: 48 },
+  { color: '#B5838D', delay: 2.4, left: '18%', startTop: '45%', size: 42 },
+  { color: '#E8A87C', delay: 0.2, left: '32%', startTop: '35%', size: 46 },
+  // 从中间
+  { color: '#41B3A3', delay: 0.5, left: '45%', startTop: '95%', size: 54 },
+  { color: '#D65076', delay: 0.8, left: '42%', startTop: '80%', size: 48 },
+  { color: '#45B7D1', delay: 1.1, left: '48%', startTop: '65%', size: 44 },
+  { color: '#96CEB4', delay: 1.4, left: '52%', startTop: '50%', size: 50 },
+  { color: '#FFEAA7', delay: 1.7, left: '38%', startTop: '35%', size: 42 },
+  // 从右侧
+  { color: '#DFE6E9', delay: 2, left: '62%', startTop: '88%', size: 46 },
+  { color: '#81ECEC', delay: 2.3, left: '68%', startTop: '72%', size: 50 },
+  { color: '#74B9FF', delay: 0.1, left: '75%', startTop: '58%', size: 44 },
+  { color: '#A29BFE', delay: 0.4, left: '82%', startTop: '42%', size: 48 },
+  { color: '#FD79A8', delay: 0.7, left: '88%', startTop: '28%', size: 52 },
+  { color: '#00B894', delay: 1, left: '92%', startTop: '82%', size: 46 },
+  { color: '#E17055', delay: 1.3, left: '78%', startTop: '48%', size: 42 },
+  { color: '#FDCB6E', delay: 1.6, left: '95%', startTop: '15%', size: 48 },
+]
+
 function startGame() {
   playSound('click')
   router.push('/difficulty')
@@ -25,30 +56,42 @@ function viewAchievements() {
 
 <template>
   <div class="page">
-    <!-- 装饰星星 -->
-    <div class="stars">
-      <span class="star star-1">✨</span>
-      <span class="star star-2">⭐</span>
-      <span class="star star-3">✨</span>
-      <span class="star star-4">⭐</span>
+    <!-- 水母背景 -->
+    <div class="jellyfishes">
+      <div 
+        v-for="(jelly, index) in jellyfishes" 
+        :key="index"
+        class="jellyfish"
+        :style="{
+          left: jelly.left,
+          top: jelly.startTop,
+          width: `${jelly.size}px`,
+          height: `${jelly.size * 0.9}px`,
+          animationDelay: `${jelly.delay}s`
+        }"
+      >
+        <div class="jelly-head" :style="{ background: jelly.color }">
+          <div class="jelly-shine"></div>
+        </div>
+        <div class="jelly-tentacles">
+          <div class="tentacle" :style="{ background: jelly.color }"></div>
+          <div class="tentacle" :style="{ background: jelly.color }"></div>
+          <div class="tentacle" :style="{ background: jelly.color }"></div>
+          <div class="tentacle" :style="{ background: jelly.color }"></div>
+          <div class="tentacle" :style="{ background: jelly.color }"></div>
+        </div>
+      </div>
     </div>
 
     <!-- 主内容区 -->
     <div class="content">
       <!-- 标题区 -->
       <div class="header animate-fade-in-up">
-        <div class="logo-wrapper">
-          <!-- 活泼弹跳动画 Logo -->
-          <div class="logo">
-            <span class="logo-emoji">⚽</span>
-          </div>
-          
-          <!-- 渐变标题 -->
-          <h1 class="title bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
-            快乐数学
-          </h1>
-          <p class="subtitle animate-pulse-gentle">趣味学习，快乐成长！</p>
-        </div>
+        <!-- 渐变标题 -->
+        <h1 class="title bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
+          快乐数学
+        </h1>
+        <p class="subtitle animate-pulse-gentle">趣味学习，快乐成长！</p>
       </div>
       
       <!-- 统计卡片 -->
@@ -103,56 +146,98 @@ function viewAchievements() {
   padding: 24px 16px;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #81ECEC 100%);
 }
 
-/* 装饰星星 */
-.stars {
+/* 水母动画 */
+.jellyfishes {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
-.star {
+.jellyfish {
   position: absolute;
-  font-size: 24px;
-  opacity: 0.6;
-  animation: floatStar 4s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: floatJellyfish 20s ease-in-out infinite;
 }
 
-.star-1 {
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
+.jelly-head {
+  width: 100%;
+  height: 100%;
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  position: relative;
+  box-shadow: 
+    inset -6px -6px 16px rgba(0, 0, 0, 0.08),
+    inset 6px 6px 16px rgba(255, 255, 255, 0.4),
+    0 8px 25px rgba(0, 0, 0, 0.1);
+  animation: jellyPulse 3s ease-in-out infinite;
 }
 
-.star-2 {
+.jelly-shine {
+  position: absolute;
   top: 15%;
-  right: 15%;
-  font-size: 20px;
-  animation-delay: 1s;
+  left: 20%;
+  width: 25%;
+  height: 35%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent);
+  border-radius: 50%;
 }
 
-.star-3 {
-  bottom: 20%;
-  left: 8%;
-  animation-delay: 2s;
-}
-
-.star-4 {
-  bottom: 15%;
-  right: 10%;
-  font-size: 28px;
-  animation-delay: 1.5s;
-}
-
-@keyframes floatStar {
+@keyframes jellyPulse {
   0%, 100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-    opacity: 0.6;
+    transform: scale(1);
+    border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
   }
   50% {
-    transform: translateY(-10px) rotate(10deg) scale(1.1);
-    opacity: 0.8;
+    transform: scale(1.03);
+    border-radius: 52% 52% 48% 48% / 62% 62% 38% 38%;
+  }
+}
+
+.jelly-tentacles {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: -8px;
+}
+
+.tentacle {
+  width: 3px;
+  height: 30px;
+  border-radius: 0 0 50% 50%;
+  opacity: 0.6;
+  animation: tentacleWave 2s ease-in-out infinite;
+}
+
+.tentacle:nth-child(1) { animation-delay: 0s; }
+.tentacle:nth-child(2) { animation-delay: 0.2s; }
+.tentacle:nth-child(3) { animation-delay: 0.4s; }
+.tentacle:nth-child(4) { animation-delay: 0.1s; }
+.tentacle:nth-child(5) { animation-delay: 0.3s; }
+
+@keyframes tentacleWave {
+  0%, 100% { transform: translateX(0) rotate(-5deg); }
+  50% { transform: translateX(2px) rotate(5deg); }
+}
+
+@keyframes floatJellyfish {
+  0% {
+    transform: translateY(0) rotate(-3deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.85;
+  }
+  95% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-120vh) rotate(3deg);
+    opacity: 0;
   }
 }
 
@@ -165,69 +250,20 @@ function viewAchievements() {
 
 .header {
   text-align: center;
-  margin-bottom: 32px;
-}
-
-.logo-wrapper {
-  margin-bottom: 20px;
-}
-
-.logo {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 16px;
-  background: linear-gradient(135deg, #4A90E2 0%, #2A70C2 100%);
-  border-radius: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    0 12px 40px rgba(74, 144, 226, 0.35),
-    0 6px 20px rgba(74, 144, 226, 0.25),
-    0 0 0 4px rgba(255, 255, 255, 0.9);
-  animation: bounceBounce 1.5s ease-in-out infinite;
-}
-
-@keyframes bounceBounce {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-  15% {
-    transform: translateY(-20px) rotate(-8deg) scale(1.05);
-  }
-  30% {
-    transform: translateY(0) rotate(4deg) scale(0.98);
-  }
-  45% {
-    transform: translateY(-12px) rotate(-4deg) scale(1.02);
-  }
-  60% {
-    transform: translateY(0) rotate(2deg) scale(0.99);
-  }
-  75% {
-    transform: translateY(-6px) rotate(-1deg) scale(1.01);
-  }
-  90% {
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-}
-
-.logo-emoji {
-  font-size: 56px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  margin-bottom: 28px;
 }
 
 .title {
-  font-size: 36px;
+  font-size: 42px;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-family: inherit;
-  letter-spacing: 1px;
-  filter: drop-shadow(0 2px 4px rgba(74, 144, 226, 0.2));
+  letter-spacing: 2px;
+  filter: drop-shadow(0 3px 6px rgba(74, 144, 226, 0.25));
 }
 
 .subtitle {
-  font-size: 16px;
+  font-size: 17px;
   color: #5a7a9a;
   font-family: inherit;
 }
@@ -395,4 +431,3 @@ function viewAchievements() {
   }
 }
 </style>
-

@@ -178,19 +178,10 @@ onMounted(() => {
 
 <template>
   <div class="page">
-    <!-- 装饰星星 -->
-    <div class="stars">
-      <span class="star star-1">✨</span>
-      <span class="star star-2">⭐</span>
-      <span class="star star-3">✨</span>
-      <span class="star star-4">⭐</span>
-    </div>
-
     <!-- 顶部导航 -->
     <header class="header">
       <button @click="goBack" class="back-btn">
-        <ArrowLeft :size="24" />
-        <span>返回</span>
+        <ArrowLeft :size="22" />
       </button>
 
       <div class="title-group">
@@ -296,126 +287,6 @@ onMounted(() => {
   overflow: hidden;
 }
 
-/* 装饰星星 */
-.stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.star {
-  position: absolute;
-  font-size: 20px;
-  opacity: 0.4;
-  animation: floatStar 4s ease-in-out infinite;
-}
-
-.star-1 {
-  top: 5%;
-  left: 5%;
-  animation-delay: 0s;
-}
-
-.star-2 {
-  top: 8%;
-  right: 8%;
-  font-size: 16px;
-  animation-delay: 1s;
-}
-
-.star-3 {
-  bottom: 15%;
-  left: 5%;
-  animation-delay: 2s;
-}
-
-.star-4 {
-  bottom: 20%;
-  right: 8%;
-  font-size: 24px;
-  animation-delay: 1.5s;
-}
-
-@keyframes floatStar {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(-10px) rotate(10deg) scale(1.1);
-    opacity: 0.6;
-  }
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
-  border-radius: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
-  position: relative;
-  z-index: 10;
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #4A90E2;
-  background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%);
-  border: 2px solid rgba(74, 144, 226, 0.3);
-  border-radius: 12px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.back-btn:active {
-  background: #e0efff;
-  transform: scale(0.95);
-}
-
-.title-group {
-  text-align: center;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: 800;
-  font-family: inherit;
-  filter: drop-shadow(0 2px 4px rgba(74, 144, 226, 0.2));
-}
-
-.subtitle {
-  font-size: 13px;
-  color: #5a7a9a;
-  font-family: inherit;
-}
-
-.retry-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  color: #4A90E2;
-  background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%);
-  border: 2px solid rgba(74, 144, 226, 0.3);
-  border-radius: 12px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.retry-btn:active {
-  background: #e0efff;
-  transform: scale(0.95);
-}
-
 .main {
   flex: 1;
   display: flex;
@@ -430,6 +301,95 @@ onMounted(() => {
 
 .footer {
   margin-top: auto;
+}
+
+/* 顶部导航 - 统一卡片样式 */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 4px 20px rgba(74, 144, 226, 0.15),
+    0 2px 8px rgba(74, 144, 226, 0.08);
+  margin: 0 12px 12px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4A90E2;
+  background: linear-gradient(135deg, #e0efff 0%, #f0f7ff 100%);
+  border: 2px solid rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.back-btn:active {
+  transform: scale(0.95);
+  background: #d0e4ff;
+}
+
+.back-btn span {
+  font-size: 14px;
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 800;
+  font-family: inherit;
+  color: #1e3a5f;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: #5a7a9a;
+  font-family: inherit;
+  margin-top: 2px;
+}
+
+.retry-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: #4A90E2;
+  background: linear-gradient(135deg, #e0efff 0%, #f0f7ff 100%);
+  border: 2px solid rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.retry-btn:active {
+  background: #d0e4ff;
+  transform: scale(0.95);
+}
+
+.retry-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* 题目切换过渡 */
@@ -838,101 +798,6 @@ onMounted(() => {
 
 .feedback-leave-to {
   opacity: 0;
-}
-
-/* ========================================
-   页面基础样式
-   ======================================== */
-.page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #E8F5E9 100%);
-  display: flex;
-  flex-direction: column;
-  padding: 12px 12px 24px;
-  touch-action: manipulation;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  background: white;
-  border-radius: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #4A90E2;
-  background: transparent;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.back-btn:active {
-  background: #f0f7ff;
-  transform: scale(0.95);
-}
-
-.title-group {
-  text-align: center;
-}
-
-.title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e3a5f;
-  font-family: inherit;
-}
-
-.subtitle {
-  font-size: 13px;
-  color: #5a7a9a;
-  font-family: inherit;
-}
-
-.retry-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  color: #4A90E2;
-  background: #f0f7ff;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.retry-btn:active {
-  background: #e0efff;
-  transform: scale(0.95);
-}
-
-.main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 0;
-}
-
-.numpad-section {
-  margin: 12px 0;
-}
-
-.footer {
-  margin-top: auto;
 }
 
 /* 题目切换过渡 */

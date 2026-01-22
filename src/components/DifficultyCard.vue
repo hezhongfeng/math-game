@@ -80,10 +80,10 @@ function handleSelect() {
           {{ difficulty.name }}
         </span>
         <span v-if="isCompleted && !isLocked" class="badge-success">
-          <Check :size="14" />
+          <Check :size="16" />
         </span>
         <span v-else-if="isLocked" class="badge-locked">
-          <Lock :size="14" />
+          <Lock :size="16" />
         </span>
       </div>
 
@@ -94,7 +94,7 @@ function handleSelect() {
           <Star
             v-for="n in 3"
             :key="n"
-            :size="16"
+            :size="18"
             :fill="n <= stars.length ? 'currentColor' : 'none'"
             class="star"
             :class="{ 'star-active': n <= stars.length }"
@@ -113,14 +113,14 @@ function handleSelect() {
       </div>
 
       <div v-else class="status-row">
-        <Lock :size="14" class="lock-icon" />
+        <Lock :size="16" class="lock-icon" />
         <span class="locked-text">完成上一关解锁</span>
       </div>
     </div>
 
     <!-- 箭头 -->
-    <ChevronRight v-if="!isLocked" :size="22" class="arrow" />
-    <ChevronRight v-else :size="22" class="arrow arrow-locked" />
+    <ChevronRight v-if="!isLocked" :size="26" class="arrow" />
+    <ChevronRight v-else :size="26" class="arrow arrow-locked" />
   </div>
 </template>
 
@@ -128,9 +128,9 @@ function handleSelect() {
 .card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
-  border-radius: 16px;
+  gap: 16px;
+  padding: 18px 22px;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-tap-highlight-color: transparent;
@@ -180,9 +180,9 @@ function handleSelect() {
 }
 
 .icon-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,7 +191,7 @@ function handleSelect() {
 }
 
 .emoji {
-  font-size: 30px;
+  font-size: 36px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
@@ -203,12 +203,12 @@ function handleSelect() {
 .name-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .name {
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 700;
   font-family: inherit;
   letter-spacing: 0.3px;
@@ -218,8 +218,8 @@ function handleSelect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
   color: #16a34a;
@@ -229,8 +229,8 @@ function handleSelect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #e2e8f0;
   color: #94a3b8;
@@ -239,11 +239,11 @@ function handleSelect() {
 .stats-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .stat {
-  font-size: 14px;
+  font-size: 16px;
   color: #64748b;
   font-weight: 500;
 }
@@ -254,7 +254,7 @@ function handleSelect() {
 
 .stars {
   display: flex;
-  gap: 2px;
+  gap: 3px;
 }
 
 .star {
@@ -268,18 +268,18 @@ function handleSelect() {
 .status-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .question-count {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 .status-badge {
-  padding: 4px 12px;
-  border-radius: 14px;
-  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 16px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -289,7 +289,7 @@ function handleSelect() {
 }
 
 .locked-text {
-  font-size: 13px;
+  font-size: 14px;
   color: #94a3b8;
   font-weight: 500;
 }
