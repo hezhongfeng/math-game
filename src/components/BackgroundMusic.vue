@@ -239,13 +239,15 @@ defineExpose({
 </script>
 
 <template>
-  <div class="fixed bottom-4 right-4 z-50" ref="volumeControlRef">
+  <div class="music-control fixed bottom-6 right-6 z-50" ref="volumeControlRef">
     <!-- 音量控制面板 -->
-    <Transition name="fade">
-      <div v-if="showVolumeControl" class="absolute bottom-16 right-0 bg-white rounded-cute-xl shadow-cute-lg border-4 border-peppa-blue-light p-4 w-48">
-        <div class="flex items-center gap-3 mb-3">
-          <component :is="volumeIcon" :size="20" class="text-peppa-blue-dark" />
-          <span class="text-sm font-medium text-peppa-blue-dark font-rounded">
+    <Transition name="slide-up">
+      <div v-if="showVolumeControl" class="volume-panel absolute bottom-20 right-0 bg-white rounded-cute-xl shadow-cute-lg border-4 border-peppa-blue-light p-5 w-52">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="icon-bg bg-peppa-blue/10 rounded-full p-2">
+            <component :is="volumeIcon" :size="22" class="text-peppa-blue-dark" />
+          </div>
+          <span class="text-lg font-bold text-peppa-blue-dark font-rounded">
             {{ Math.round(volume * 100) }}%
           </span>
         </div>
@@ -256,10 +258,10 @@ defineExpose({
           max="100"
           :value="volume * 100"
           @input="setVolume($event.target.value / 100)"
-          class="w-full h-2 bg-peppa-blue-light/30 rounded-cute-lg appearance-none cursor-pointer slider"
+          class="w-full h-3 bg-peppa-blue-light/30 rounded-cute-lg appearance-none cursor-pointer slider"
         >
         
-        <div class="flex justify-between text-xs text-peppa-blue-dark/70 mt-2 font-rounded">
+        <div class="flex justify-between text-xs text-peppa-blue-dark/70 mt-3 font-rounded font-medium">
           <span>静音</span>
           <span>最大</span>
         </div>
@@ -267,28 +269,33 @@ defineExpose({
     </Transition>
 
     <!-- 音乐控制按钮 -->
-    <div class="flex gap-2">
+    <div class="button-group flex gap-3">
       <!-- 音量按钮 -->
       <button
         @click="showVolumeControl = !showVolumeControl"
-        class="bg-white rounded-cute-full shadow-cute-lg hover:shadow-cute-xl active:scale-95 transition-all p-3 border-4 border-peppa-blue-light"
-        :class="{ 'bg-peppa-blue-light/20': showVolumeControl }"
+        class="control-btn bg-white rounded-cute-full shadow-cute-lg hover:shadow-cute-xl active:scale-95 transition-all duration-300 p-4 border-4"
+        :class="[showVolumeControl ? 'bg-peppa-blue/20 border-peppa-blue' : 'border-peppa-blue-light/50']"
         title="音量控制"
       >
-        <component :is="volumeIcon" :size="24" 
-                   :class="volume > 0 ? 'text-peppa-blue-dark' : 'text-gray-400'" />
+        <component 
+          :is="volumeIcon" 
+          :size="26" 
+           :class="volume > 0 ? 'text-peppa-blue-dark animate-float' : 'text-gray-400'"
+           style="animation-duration: 3s"
+        />
       </button>
       
       <!-- 播放/暂停按钮 -->
       <button
         @click="togglePlay"
-        class="bg-white rounded-cute-full shadow-cute-lg hover:shadow-cute-xl active:scale-95 transition-all p-3 border-4 border-peppa-blue-light"
-        :class="props.enabled && isPlaying ? 'bg-peppa-green/20' : 'bg-gray-100'"
+        class="control-btn bg-white rounded-cute-full shadow-cute-lg hover:shadow-cute-xl active:scale-95 transition-all duration-300 p-4 border-4"
+        :class="[props.enabled && isPlaying ? 'bg-peppa-green/20 border-peppa-green' : 'border-peppa-blue-light/50']"
         :title="props.enabled && isPlaying ? '暂停音乐' : '播放音乐'"
       >
         <Music 
-          :size="24" 
-          :class="props.enabled && isPlaying ? 'text-peppa-green' : 'text-gray-400'"
+          :size="26" 
+          :class="props.enabled && isPlaying ? 'text-peppa-green animate-float' : 'text-gray-400'"
+          style="animation-duration: 3s"
         />
       </button>
     </div>
@@ -296,36 +303,70 @@ defineExpose({
 </template>
 
 <style scoped>
-/* 淡入淡出动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+/* 音量面板滑入动画 */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.slide-up-enter-from,
+.slide-up-leave-to {
   opacity: 0;
+  transform: translateY(20px) scale(0.9);
+}
+
+/* 控制按钮基础样式 */
+.control-btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.control-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* 音量面板样式 */
+.volume-panel {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.icon-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 滑块样式 */
 .slider::-webkit-slider-thumb {
   appearance: none;
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #42A5F5, #1976D2);
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #4A90E2, #2A70C2);
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.5);
 }
 
 .slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #42A5F5, #1976D2);
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #4A90E2, #2A70C2);
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
 }
 </style>

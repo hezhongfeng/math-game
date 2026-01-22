@@ -177,34 +177,73 @@ watch(() => props.show, (newVal) => {
 </script>
 
 <template>
-  <div class="particle-container">
-    <div
-      v-for="p in particles"
-      :key="p.id"
-      class="particle"
-      :class="[p.type, { 'star-particle': p.type === 'star', 'ring-particle': p.type === 'ring' }]"
-      :style="{
-        '--x': `${p.x}px`,
-        '--y': `${p.y}px`,
-        '--color': p.color,
-        '--size': `${p.size}px`,
-        '--rotation': `${p.rotation}deg`,
-        '--opacity': p.opacity,
-        '--scale': p.scale
-      }"
-    />
+  <div class="particle-wrapper">
+    <!-- 中心发光效果 -->
+    <div v-if="type === 'correct'" class="center-glow"></div>
+    
+    <!-- 粒子容器 -->
+    <div class="particle-container">
+      <div
+        v-for="p in particles"
+        :key="p.id"
+        class="particle"
+        :class="[p.type, { 'star-particle': p.type === 'star', 'ring-particle': p.type === 'ring' }]"
+        :style="{
+          '--x': `${p.x}px`,
+          '--y': `${p.y}px`,
+          '--color': p.color,
+          '--size': `${p.size}px`,
+          '--rotation': `${p.rotation}deg`,
+          '--opacity': p.opacity,
+          '--scale': p.scale
+        }"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.particle-container {
+.particle-wrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
-  overflow: visible;
+}
+
+/* 中心发光效果 - 仅正确反馈 */
+.center-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0) 70%);
+  animation: centerGlow 1.5s ease-out forwards;
+}
+
+@keyframes centerGlow {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.particle-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .particle {
@@ -217,20 +256,24 @@ watch(() => props.show, (newVal) => {
   border-radius: 50%;
   transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--rotation)) scale(var(--scale));
   opacity: var(--opacity);
-  box-shadow: 0 0 8px var(--color), 0 0 16px var(--color, 0.5);
+  box-shadow: 
+    0 0 8px var(--color),
+    0 0 16px var(--color, 0.5),
+    0 0 24px var(--color, 0.3);
 }
 
 /* 星星粒子 */
 .star-particle {
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   background: var(--color);
+  filter: drop-shadow(0 0 4px var(--color));
 }
 
 /* 环形粒子 */
 .ring-particle {
-  width: calc(var(--size) * 10);
-  height: calc(var(--size) * 10);
-  border: 3px solid var(--color);
+  width: calc(var(--size) * 12);
+  height: calc(var(--size) * 12);
+  border: 4px solid var(--color);
   background: transparent;
   border-radius: 50%;
   box-shadow: none;
@@ -250,7 +293,7 @@ watch(() => props.show, (newVal) => {
 
 /* 粒子出现动画 */
 .particle {
-  animation: particleAppear 0.3s ease-out backwards;
+  animation: particleAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
 }
 
 @keyframes particleAppear {
@@ -259,7 +302,7 @@ watch(() => props.show, (newVal) => {
     opacity: 0;
   }
   50% {
-    transform: translate(-50%, -50%) translate(calc(var(--x) * 0.3), calc(var(--y) * 0.3)) rotate(calc(var(--rotation) * 0.3)) scale(1.2);
+    transform: translate(-50%, -50%) translate(calc(var(--x) * 0.3), calc(var(--y) * 0.3)) rotate(calc(var(--rotation) * 0.3)) scale(1.3);
     opacity: 1;
   }
   100% {
