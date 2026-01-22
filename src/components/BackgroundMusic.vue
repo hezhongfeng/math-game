@@ -173,12 +173,6 @@ function setVolume(newVolume) {
   }
 }
 
-// 调整音量
-function adjustVolume(delta) {
-  const newVolume = volume.value + delta
-  setVolume(newVolume)
-}
-
 // 点击外部关闭音量控制
 function handleClickOutside(event) {
   if (volumeControlRef.value && !volumeControlRef.value.contains(event.target)) {
@@ -239,69 +233,356 @@ defineExpose({
 </script>
 
 <template>
-  <div class="music-control fixed bottom-6 right-6 z-50" ref="volumeControlRef">
+  <div class="music-control" ref="volumeControlRef">
     <!-- 音量控制面板 -->
     <Transition name="slide-up">
-      <div v-if="showVolumeControl" class="volume-panel absolute bottom-20 right-0 bg-white rounded-cute-xl shadow-cute-lg border-4 border-peppa-blue-light p-5 w-52">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="icon-bg bg-peppa-blue/10 rounded-full p-2">
-            <component :is="volumeIcon" :size="22" class="text-peppa-blue-dark" />
+      <div v-if="showVolumeControl" class="volume-panel">
+        <div class="volume-header">
+          <div class="volume-icon-bg">
+            <component :is="volumeIcon" :size="20" class="volume-icon" />
           </div>
-          <span class="text-lg font-bold text-peppa-blue-dark font-rounded">
-            {{ Math.round(volume * 100) }}%
-          </span>
+          <span class="volume-text">{{ Math.round(volume * 100) }}%</span>
         </div>
         
-        <input
-          type="range"
-          min="0"
-          max="100"
-          :value="volume * 100"
-          @input="setVolume($event.target.value / 100)"
-          class="w-full h-3 bg-peppa-blue-light/30 rounded-cute-lg appearance-none cursor-pointer slider"
-        >
+        <div class="volume-slider-container">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            :value="volume * 100"
+            @input="setVolume($event.target.value / 100)"
+            class="volume-slider"
+          >
+        </div>
         
-        <div class="flex justify-between text-xs text-peppa-blue-dark/70 mt-3 font-rounded font-medium">
-          <span>静音</span>
-          <span>最大</span>
+        <div class="volume-labels">
+          <span>🔇</span>
+          <span>🔊</span>
         </div>
       </div>
     </Transition>
 
     <!-- 音乐控制按钮 -->
-    <div class="button-group flex gap-3">
-      <!-- 音量按钮 -->
-      <button
-        @click="showVolumeControl = !showVolumeControl"
-        class="control-btn bg-white rounded-cute-full shadow-cute-lg hover:shadow-cute-xl active:scale-95 transition-all duration-300 p-4 border-4"
-        :class="[showVolumeControl ? 'bg-peppa-blue/20 border-peppa-blue' : 'border-peppa-blue-light/50']"
-        title="音量控制"
-      >
-        <component 
-          :is="volumeIcon" 
-          :size="26" 
-           :class="volume > 0 ? 'text-peppa-blue-dark' : 'text-gray-400'"
-        />
-      </button>
-      
-      <!-- 播放/暂停按钮 -->
-      <button
-        @click="togglePlay"
-        class="control-btn bg-white rounded-cute-full shadow-cute-lg hover:shadow-cute-xl active:scale-95 transition-all duration-300 p-4 border-4"
-        :class="[props.enabled && isPlaying ? 'bg-peppa-green/20 border-peppa-green' : 'border-peppa-blue-light/50']"
-        :title="props.enabled && isPlaying ? '暂停音乐' : '播放音乐'"
-      >
-        <Music 
-          :size="26" 
-          :class="props.enabled && isPlaying ? 'text-peppa-green' : 'text-gray-400'"
-        />
-      </button>
-    </div>
+    <button
+      @click="togglePlay"
+      class="music-btn"
+      :class="[props.enabled && isPlaying ? 'music-btn-active' : 'music-btn-inactive']"
+      :title="props.enabled && isPlaying ? '暂停音乐' : '播放音乐'"
+    >
+      <Music :size="28" />
+    </button>
+    
+    <!-- 音量按钮 -->
+    <button
+      @click="showVolumeControl = !showVolumeControl"
+      class="volume-btn"
+      :class="[showVolumeControl ? 'volume-btn-active' : 'volume-btn-inactive']"
+      title="音量控制"
+    >
+      <component 
+        :is="volumeIcon" 
+        :size="28"
+      />
+    </button>
   </div>
 </template>
 
 <style scoped>
-/* 音量面板滑入动画 */
+.music-control {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+/* 音量面板样式 */
+.volume-panel {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  background: linear-gradient(135deg, #fff 0%, #F5F9FF 100%);
+  border-radius: 24px;
+  padding: 16px 20px;
+  width: 160px;
+  box-shadow: 
+    0 8px 30px rgba(74, 144, 226, 0.2),
+    0 4px 15px rgba(74, 144, 226, 0.1);
+  border: 3px solid rgba(74, 144, 226, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin-bottom: 8px;
+  animation: panelBounce 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes panelBounce {
+  0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.volume-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.volume-icon-bg {
+  background: linear-gradient(135deg, #7AB8FF 0%, #4A90E2 100%);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 3px 0 rgba(42, 112, 194, 0.3),
+    0 4px 10px rgba(74, 144, 226, 0.3);
+}
+
+.volume-icon {
+  color: white;
+}
+
+.volume-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2A70C2;
+  font-family: inherit;
+}
+
+.volume-slider-container {
+  background: #E3F2FD;
+  border-radius: 12px;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+}
+
+.volume-slider {
+  width: 100%;
+  height: 8px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #4A90E2 0%, #2A70C2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 
+    0 3px 0 rgba(42, 112, 194, 0.4),
+    0 4px 8px rgba(74, 144, 226, 0.4);
+  transition: all 0.15s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 0 rgba(42, 112, 194, 0.4),
+    0 6px 12px rgba(74, 144, 226, 0.5);
+}
+
+.volume-slider::-webkit-slider-thumb:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 1px 0 rgba(42, 112, 194, 0.4),
+    0 2px 6px rgba(74, 144, 226, 0.3);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #4A90E2 0%, #2A70C2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 
+    0 3px 0 rgba(42, 112, 194, 0.4),
+    0 4px 8px rgba(74, 144, 226, 0.4);
+}
+
+.volume-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #4A90E2;
+  opacity: 0.7;
+}
+
+/* 音乐按钮 - 3D效果 */
+.music-btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.music-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* 激活状态 - 绿色 */
+.music-btn-active {
+  background: linear-gradient(180deg, #66BB6A 0%, #4CAF50 50%, #388E3C 100%);
+  box-shadow: 
+    0 6px 0 rgba(56, 142, 60, 0.5),
+    0 8px 20px rgba(76, 175, 80, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+}
+
+.music-btn-active:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 rgba(56, 142, 60, 0.5),
+    0 12px 30px rgba(76, 175, 80, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.music-btn-active:active {
+  transform: translateY(3px);
+  box-shadow: 
+    0 3px 0 rgba(56, 142, 60, 0.5),
+    0 5px 15px rgba(76, 175, 80, 0.3),
+    inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 未激活状态 - 蓝色 */
+.music-btn-inactive {
+  background: linear-gradient(180deg, #7AB8FF 0%, #4A90E2 50%, #2A70C2 100%);
+  box-shadow: 
+    0 6px 0 rgba(42, 112, 194, 0.5),
+    0 8px 20px rgba(74, 144, 226, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+}
+
+.music-btn-inactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 rgba(42, 112, 194, 0.5),
+    0 12px 30px rgba(74, 144, 226, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.music-btn-inactive:active {
+  transform: translateY(3px);
+  box-shadow: 
+    0 3px 0 rgba(42, 112, 194, 0.5),
+    0 5px 15px rgba(74, 144, 226, 0.3),
+    inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 音量按钮 - 3D效果 */
+.volume-btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.volume-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* 激活状态 - 蓝色 */
+.volume-btn-active {
+  background: linear-gradient(180deg, #7AB8FF 0%, #4A90E2 50%, #2A70C2 100%);
+  box-shadow: 
+    0 6px 0 rgba(42, 112, 194, 0.5),
+    0 8px 20px rgba(74, 144, 226, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+}
+
+.volume-btn-active:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 rgba(42, 112, 194, 0.5),
+    0 12px 30px rgba(74, 144, 226, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.volume-btn-active:active {
+  transform: translateY(3px);
+  box-shadow: 
+    0 3px 0 rgba(42, 112, 194, 0.5),
+    0 5px 15px rgba(74, 144, 226, 0.3),
+    inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 未激活状态 - 浅蓝色 */
+.volume-btn-inactive {
+  background: linear-gradient(180deg, #B3D4FF 0%, #7AB8FF 50%, #4A90E2 100%);
+  box-shadow: 
+    0 6px 0 rgba(42, 112, 194, 0.3),
+    0 8px 20px rgba(74, 144, 226, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: none;
+  color: #2A70C2;
+}
+
+.volume-btn-inactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 rgba(42, 112, 194, 0.4),
+    0 12px 30px rgba(74, 144, 226, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.volume-btn-inactive:active {
+  transform: translateY(3px);
+  box-shadow: 
+    0 3px 0 rgba(42, 112, 194, 0.3),
+    0 5px 15px rgba(74, 144, 226, 0.2),
+    inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 滑入动画 */
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -310,61 +591,6 @@ defineExpose({
 .slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateY(20px) scale(0.9);
-}
-
-/* 控制按钮基础样式 */
-.control-btn {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-.control-btn:hover {
-  transform: translateY(-3px);
-}
-
-/* 音量面板样式 */
-.volume-panel {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.icon-bg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 滑块样式 */
-.slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 24px;
-  height: 24px;
-  background: linear-gradient(135deg, #4A90E2, #2A70C2);
-  border-radius: 50%;
-  cursor: pointer;
-  border: 3px solid white;
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
-  transition: all 0.2s ease;
-}
-
-.slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.5);
-}
-
-.slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  background: linear-gradient(135deg, #4A90E2, #2A70C2);
-  border-radius: 50%;
-  cursor: pointer;
-  border: 3px solid white;
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
-  transition: all 0.2s ease;
-}
-
-.slider::-moz-range-thumb:hover {
-  transform: scale(1.1);
+  transform: translateY(15px) scale(0.9);
 }
 </style>

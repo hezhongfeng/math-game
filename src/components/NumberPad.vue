@@ -54,7 +54,7 @@ function handleSubmit() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark shadow-cute border-2 border-peppa-blue/30"
+        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark border-2 border-peppa-blue/30"
         :class="{ 'num-btn-disabled': disabled }"
       >
         {{ num }}
@@ -64,7 +64,7 @@ function handleSubmit() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-orange/80 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-150 flex items-center justify-center shadow-cute border-2 border-peppa-orange/30"
+        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-orange/90 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center border-2 border-peppa-orange/30"
         :class="{ 'num-btn-disabled': disabled }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-peppa-orange-dark" :class="{ 'opacity-50': disabled }">
@@ -76,7 +76,7 @@ function handleSubmit() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:scale-95 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark shadow-cute border-2 border-peppa-blue/30"
+        class="num-btn aspect-square rounded-cute-xl bg-gradient-to-b from-peppa-blue-light to-peppa-blue hover:from-peppa-blue hover:to-peppa-blue-dark active:translate-y-0.5 transition-all duration-150 flex items-center justify-center text-5xl md:text-6xl font-bold text-peppa-blue-dark border-2 border-peppa-blue/30"
         :class="{ 'num-btn-disabled': disabled }"
       >
         0
@@ -86,7 +86,7 @@ function handleSubmit() {
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="confirm-btn aspect-square rounded-cute-xl flex items-center justify-center bg-gradient-to-br from-peppa-green to-peppa-green-dark hover:from-peppa-green-light hover:to-peppa-green active:scale-95 transition-all duration-150 shadow-cute border-2 border-peppa-green/30"
+        class="confirm-btn aspect-square rounded-cute-xl flex items-center justify-center bg-gradient-to-b from-peppa-green to-peppa-green-dark hover:from-peppa-green-light hover:to-peppa-green active:translate-y-0.5 transition-all duration-150 border-2 border-peppa-green/30"
         :class="{ 'confirm-btn-disabled': disabled }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="text-white" :class="{ 'opacity-50': disabled }">
@@ -99,7 +99,6 @@ function handleSubmit() {
 
 <style scoped>
 .number-pad {
-  background: linear-gradient(135deg, #ffffff 0%, #F5F9FF 100%);
   border-radius: 32px;
   padding: 20px 16px;
   box-shadow: 
@@ -174,19 +173,46 @@ function handleSubmit() {
 .num-btn {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  position: relative;
+  box-shadow: 
+    0 4px 0 rgba(42, 112, 194, 0.3),
+    0 6px 15px rgba(74, 144, 226, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.num-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .num-btn:hover:not(:disabled) {
-  box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+  box-shadow: 
+    0 6px 0 rgba(42, 112, 194, 0.4),
+    0 10px 30px rgba(74, 144, 226, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
 }
 
-.num-btn:active:not(:disabled) {
-  transform: scale(0.95);
+.num-btn:active:not(:disabled),
+.num-btn.active-translate-y-0-5:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 rgba(42, 112, 194, 0.3),
+    0 3px 10px rgba(74, 144, 226, 0.2),
+    inset 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .num-btn-disabled {
-  background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%) !important;
+  background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 100%) !important;
   border-color: rgba(0, 0, 0, 0.1) !important;
   color: #999 !important;
   cursor: not-allowed;
@@ -196,21 +222,46 @@ function handleSubmit() {
 
 /* 确认按钮 */
 .confirm-btn {
-  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+  position: relative;
+  box-shadow: 
+    0 4px 0 rgba(56, 142, 60, 0.4),
+    0 6px 20px rgba(76, 175, 80, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   animation: pulse-glow-green 2s ease-in-out infinite;
+}
+
+.confirm-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .confirm-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 35px rgba(76, 175, 80, 0.5);
+  box-shadow: 
+    0 6px 0 rgba(56, 142, 60, 0.5),
+    0 10px 35px rgba(76, 175, 80, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .confirm-btn:active:not(:disabled) {
-  transform: scale(0.95);
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 rgba(56, 142, 60, 0.4),
+    0 3px 15px rgba(76, 175, 80, 0.3),
+    inset 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .confirm-btn-disabled {
-  background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%) !important;
+  background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 100%) !important;
   border-color: rgba(0, 0, 0, 0.1) !important;
   box-shadow: none !important;
   animation: none !important;
