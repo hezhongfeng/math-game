@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, onUnmounted } from 'vue'
+import { onMounted, ref, onUnmounted, watch } from 'vue'
 
 const props = defineProps({
   show: {
@@ -16,50 +16,138 @@ const particles = ref([])
 let animationFrame = null
 let particleId = 0
 
+// 粒子配置
+const particleConfigs = {
+  correct: {
+    colors: ['#4CAF50', '#66BB6A', '#81C784', '#FFD700', '#FFEB3B', '#00E676', '#00C853'],
+    count: 80,
+    velocity: { min: 100, max: 250 },
+    size: { min: 4, max: 12 },
+    gravity: -0.5,
+    duration: 1.2
+  },
+  wrong: {
+    colors: ['#FF9800', '#FF5722', '#FF7043', '#FFB74D', '#FFD54F', '#EF5350'],
+    count: 50,
+    velocity: { min: 80, max: 180 },
+    size: { min: 5, max: 14 },
+    gravity: 1.5,
+    duration: 1.0
+  }
+}
+
 function createParticles() {
-  const colors = props.type === 'correct' 
-    ? ['#4CAF50', '#8BC34A', '#CDDC39', '#FFD700', '#FFEB3B']
-    : ['#FF9800', '#FF5722', '#FFEB3B', '#FFC107']
+  const config = particleConfigs[props.type]
+  const isCorrect = props.type === 'correct'
 
   const newParticles = []
-  for (let i = 0; i < 30; i++) {
-    const angle = (Math.PI * 2 * i) / 30 + Math.random() * 0.5
-    const velocity = 80 + Math.random() * 120
+
+  // 主爆炸粒子
+  for (let i = 0; i < config.count; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const velocity = config.velocity.min + Math.random() * (config.velocity.max - config.velocity.min)
+    const size = config.size.min + Math.random() * (config.size.max - config.size.min)
+
+    // 随机延迟，让粒子不是同时发射
+    const delay = Math.random() * 0.15
+
     newParticles.push({
       id: particleId++,
+      type: 'circle',
       x: 0,
       y: 0,
       vx: Math.cos(angle) * velocity,
-      vy: Math.sin(angle) * velocity,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      size: 6 + Math.random() * 10,
+      vy: Math.sin(angle) * velocity - (isCorrect ? 50 : -30), // 正确向上，错误向下
+      color: config.colors[Math.floor(Math.random() * config.colors.length)],
+      size: size,
       rotation: Math.random() * 360,
-      scale: 1,
-      opacity: 1
+      rotationSpeed: (Math.random() - 0.5) * 20,
+      opacity: 1,
+      delay: delay,
+      duration: config.duration
     })
   }
+
+  // 添加星星粒子（仅正确反馈）
+  if (isCorrect) {
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 * i) / 12
+      const velocity = 150 + Math.random() * 100
+
+      newParticles.push({
+        id: particleId++,
+        type: 'star',
+        x: 0,
+        y: 0,
+        vx: Math.cos(angle) * velocity,
+        vy: Math.sin(angle) * velocity - 80,
+        color: config.colors[Math.floor(Math.random() * config.colors.length)],
+        size: 8 + Math.random() * 8,
+        rotation: 0,
+        rotationSpeed: 5,
+        opacity: 1,
+        delay: Math.random() * 0.1,
+        duration: 1.5
+      })
+    }
+  }
+
+  // 添加光环效果（仅正确反馈）
+  if (isCorrect) {
+    newParticles.push({
+      id: particleId++,
+      type: 'ring',
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      color: '#4CAF50',
+      size: 20,
+      opacity: 0.8,
+      delay: 0,
+      duration: 0.8
+    })
+  }
+
   particles.value = newParticles
   animateParticles()
 }
 
 function animateParticles() {
-  if (!props.show) {
-    particles.value = []
+  if (!props.show && particles.value.length === 0) {
     return
   }
 
-  particles.value = particles.value.map(p => ({
-    ...p,
-    x: p.x + p.vx * 0.05,
-    y: p.y + p.vy * 0.05,
-    vy: p.vy + 2, // 重力
-    opacity: p.opacity - 0.02,
-    scale: p.scale * 0.98,
-    rotation: p.rotation + 10
-  })).filter(p => p.opacity > 0)
+  if (!props.show) {
+    // 快速淡出
+    particles.value = particles.value.filter(p => {
+      p.opacity -= 0.1
+      return p.opacity > 0
+    })
+  } else {
+    particles.value = particles.value.map(p => {
+      const progress = Math.max(0, 1 - p.opacity)
+      const easedProgress = 1 - Math.pow(1 - progress, 3) // ease-out
+
+      // 根据进度计算位置
+      const currentVx = p.vx * (1 - easedProgress)
+      const currentVy = p.vy * (1 - easedProgress) + (particleConfigs[props.type].gravity * easedProgress * 100)
+
+      return {
+        ...p,
+        x: p.x + currentVx * 0.016,
+        y: p.y + currentVy * 0.016,
+        opacity: 1 - easedProgress,
+        rotation: p.rotation + (p.rotationSpeed || 0),
+        scale: 1 - easedProgress * 0.3
+      }
+    }).filter(p => p.opacity > 0)
+  }
 
   if (particles.value.length > 0) {
     animationFrame = requestAnimationFrame(animateParticles)
+  } else {
+    particles.value = []
   }
 }
 
@@ -75,12 +163,14 @@ onUnmounted(() => {
   }
 })
 
-// 监听 show 属性变化
-import { watch } from 'vue'
 watch(() => props.show, (newVal) => {
   if (newVal) {
     createParticles()
   } else if (!newVal) {
+    // 停止动画，快速清理
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame)
+    }
     particles.value = []
   }
 })
@@ -92,13 +182,15 @@ watch(() => props.show, (newVal) => {
       v-for="p in particles"
       :key="p.id"
       class="particle"
+      :class="[p.type, { 'star-particle': p.type === 'star', 'ring-particle': p.type === 'ring' }]"
       :style="{
         '--x': `${p.x}px`,
         '--y': `${p.y}px`,
         '--color': p.color,
         '--size': `${p.size}px`,
         '--rotation': `${p.rotation}deg`,
-        '--opacity': p.opacity
+        '--opacity': p.opacity,
+        '--scale': p.scale
       }"
     />
   </div>
@@ -125,18 +217,54 @@ watch(() => props.show, (newVal) => {
   border-radius: 50%;
   transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--rotation)) scale(var(--scale));
   opacity: var(--opacity);
-  box-shadow: 0 0 10px var(--color);
-  animation: particleBurst 0.8s ease-out forwards;
+  box-shadow: 0 0 8px var(--color), 0 0 16px var(--color, 0.5);
 }
 
-@keyframes particleBurst {
+/* 星星粒子 */
+.star-particle {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  background: var(--color);
+}
+
+/* 环形粒子 */
+.ring-particle {
+  width: calc(var(--size) * 10);
+  height: calc(var(--size) * 10);
+  border: 3px solid var(--color);
+  background: transparent;
+  border-radius: 50%;
+  box-shadow: none;
+  animation: ringExpand 0.8s ease-out forwards;
+}
+
+@keyframes ringExpand {
   0% {
-    transform: translate(-50%, -50%) translate(0, 0) rotate(0) scale(1);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+/* 粒子出现动画 */
+.particle {
+  animation: particleAppear 0.3s ease-out backwards;
+}
+
+@keyframes particleAppear {
+  0% {
+    transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--rotation)) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) translate(calc(var(--x) * 0.3), calc(var(--y) * 0.3)) rotate(calc(var(--rotation) * 0.3)) scale(1.2);
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--rotation)) scale(0);
-    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--rotation)) scale(1);
+    opacity: var(--opacity);
   }
 }
 </style>

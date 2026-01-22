@@ -214,20 +214,27 @@ onMounted(() => {
           <!-- 粒子效果 -->
           <ParticleEffects :show="showParticles" :type="particleType" />
 
-          <!-- 大对勾图标 -->
-          <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-peppa-green to-peppa-green-dark flex items-center justify-center shadow-cute-lg animate-scale-up">
-            <Check :size="52" class="text-white md:text-6xl" />
+          <!-- 大对勾图标 - 优化版 -->
+          <div class="correct-mark">
+            <div class="mark-circle">
+              <Check :size="56" class="mark-icon" />
+            </div>
+            <div class="mark-ring"></div>
+            <div class="mark-sparkles">
+              <span v-for="i in 8" :key="i" class="sparkle" :style="{ '--delay': `${i * 0.1}s`, '--angle': `${i * 45}deg` }">✨</span>
+            </div>
           </div>
         </div>
         <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay">
           <!-- 粒子效果 -->
           <ParticleEffects :show="showParticles" :type="particleType" />
 
-          <!-- 正确答案大标签 -->
-          <div class="bg-white rounded-cute-xl px-6 py-4 shadow-cute-lg border-2 border-peppa-orange/50 animate-scale-up">
-            <span class="text-peppa-orange-dark font-bold text-4xl font-rounded">
-              {{ game.currentQuestion.value?.answer }}
-            </span>
+          <!-- 正确答案 - 优化震动效果 -->
+          <div class="wrong-answer">
+            <div class="answer-card">
+              <span class="answer-label">正确答案</span>
+              <span class="answer-number animate-bounce-in">{{ game.currentQuestion.value?.answer }}</span>
+            </div>
           </div>
         </div>
       </Transition>
@@ -440,6 +447,39 @@ onMounted(() => {
   80% { transform: translateX(2px) rotate(1deg); }
 }
 
+@keyframes markPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes markBreath {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+  50% { box-shadow: 0 0 0 20px rgba(76, 175, 80, 0); }
+}
+
+@keyframes ringRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkleRotate {
+  0% { transform: rotate(var(--angle)) translateX(60px) rotate(calc(-1 * var(--angle))); }
+  100% { transform: rotate(calc(var(--angle) + 360deg)) translateX(60px) rotate(calc(-1 * calc(var(--angle) + 360deg))); }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.3); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .animate-scale-up {
   animation: scaleUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
@@ -454,6 +494,107 @@ onMounted(() => {
 
 .animate-wrong-shake {
   animation: wrongShake 0.6s ease-in-out;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* 正确反馈样式 - 优化版 */
+.correct-mark {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: markPulse 0.6s ease-in-out;
+}
+
+.mark-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4), 0 0 60px rgba(76, 175, 80, 0.2);
+  animation: markBreath 2s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+.mark-icon {
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  animation: scaleUp 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.1s backwards;
+}
+
+.mark-ring {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border: 4px solid #4CAF50;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: ringRipple 1s ease-out 0.2s backwards;
+}
+
+.mark-sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 20px;
+  animation: sparkleRotate 3s linear infinite;
+  animation-delay: var(--delay);
+  opacity: 0.9;
+}
+
+/* 错误反馈样式 - 优化版 */
+.wrong-answer {
+  animation: wrongShake 0.5s ease-in-out;
+}
+
+.answer-card {
+  background: linear-gradient(135deg, #ffffff 0%, #FFF8E1 100%);
+  border-radius: 24px;
+  padding: 20px 40px;
+  box-shadow: 0 10px 40px rgba(255, 152, 0, 0.25), 0 0 0 4px rgba(255, 152, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 3px solid rgba(255, 152, 0, 0.3);
+}
+
+.answer-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FF9800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: inherit;
+}
+
+.answer-number {
+  font-size: 48px;
+  font-weight: 800;
+  color: #E65100;
+  font-family: inherit;
+  line-height: 1;
 }
 </style>
 
