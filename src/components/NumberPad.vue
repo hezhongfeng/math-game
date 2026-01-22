@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Check, Clock } from 'lucide-vue-next'
+import { Clock } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -67,7 +67,7 @@ function handleSubmit() {
         class="num-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-orange/80 to-peppa-orange hover:from-peppa-orange hover:to-peppa-orange-dark active:scale-95 transition-all duration-150 flex items-center justify-center shadow-cute border-2 border-peppa-orange/30"
         :class="{ 'num-btn-disabled': disabled }"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-peppa-orange-dark" :class="{ 'opacity-50': disabled }">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-peppa-orange-dark" :class="{ 'opacity-50': disabled }">
           <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6M14 11v6"/>
         </svg>
       </button>
@@ -86,13 +86,12 @@ function handleSubmit() {
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="confirm-btn aspect-square rounded-cute-xl bg-gradient-to-br from-peppa-yellow to-peppa-yellow-dark hover:from-peppa-yellow-light hover:to-peppa-yellow active:scale-95 transition-all duration-150 shadow-cute border-2 border-peppa-yellow/50"
+        class="confirm-btn aspect-square rounded-cute-xl flex items-center justify-center bg-gradient-to-br from-peppa-green to-peppa-green-dark hover:from-peppa-green-light hover:to-peppa-green active:scale-95 transition-all duration-150 shadow-cute border-2 border-peppa-green/30"
         :class="{ 'confirm-btn-disabled': disabled }"
       >
-        <div class="flex flex-col items-center justify-center gap-0.5">
-          <Check :size="28" class="text-peppa-orange-dark md:mb-1" stroke-width="4" :class="{ 'opacity-50': disabled }" />
-          <span class="text-lg md:text-xl font-bold text-peppa-orange-dark font-rounded leading-none">确定</span>
-        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="text-white" :class="{ 'opacity-50': disabled }">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
       </button>
     </div>
   </div>
@@ -197,18 +196,17 @@ function handleSubmit() {
 
 /* 确认按钮 */
 .confirm-btn {
-  transform: scale(1.08);
-  box-shadow: 0 8px 25px rgba(255, 213, 79, 0.4);
-  animation: pulse-glow 2s ease-in-out infinite;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+  animation: pulse-glow-green 2s ease-in-out infinite;
 }
 
 .confirm-btn:hover:not(:disabled) {
-  transform: scale(1.12);
-  box-shadow: 0 10px 35px rgba(255, 213, 79, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(76, 175, 80, 0.5);
 }
 
 .confirm-btn:active:not(:disabled) {
-  transform: scale(0.95) scale(1.08);
+  transform: scale(0.95);
 }
 
 .confirm-btn-disabled {
@@ -216,16 +214,16 @@ function handleSubmit() {
   border-color: rgba(0, 0, 0, 0.1) !important;
   box-shadow: none !important;
   animation: none !important;
-  transform: scale(1.08) !important;
+  transform: none !important;
   cursor: not-allowed;
 }
 
-@keyframes pulse-glow {
+@keyframes pulse-glow-green {
   0%, 100% {
-    box-shadow: 0 8px 25px rgba(255, 213, 79, 0.4);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
   }
   50% {
-    box-shadow: 0 8px 40px rgba(255, 213, 79, 0.6);
+    box-shadow: 0 8px 40px rgba(76, 175, 80, 0.6);
   }
 }
 </style>

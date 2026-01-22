@@ -67,7 +67,7 @@ function handleSelect() {
       class="icon-wrapper" 
       :style="{ backgroundColor: isLocked ? '#f1f5f9' : `${difficulty.color}15` }"
     >
-      <span class="emoji animate-float">{{ cuteEmoji }}</span>
+      <span class="emoji">{{ cuteEmoji }}</span>
     </div>
 
     <!-- 中间内容 -->

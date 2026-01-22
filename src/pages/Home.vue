@@ -38,8 +38,8 @@ function viewAchievements() {
       <!-- 标题区 -->
       <div class="header animate-fade-in-up">
         <div class="logo-wrapper">
-          <!-- 浮动动画 Logo -->
-          <div class="logo animate-float">
+          <!-- 活泼弹跳动画 Logo -->
+          <div class="logo">
             <span class="logo-emoji">⚽</span>
           </div>
           
@@ -173,18 +173,43 @@ function viewAchievements() {
 }
 
 .logo {
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
   margin: 0 auto 16px;
   background: linear-gradient(135deg, #4A90E2 0%, #2A70C2 100%);
-  border-radius: 28px;
+  border-radius: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 
-    0 8px 24px rgba(74, 144, 226, 0.3),
-    0 4px 12px rgba(74, 144, 226, 0.2);
-  border: 4px solid rgba(255, 255, 255, 0.9);
+    0 12px 40px rgba(74, 144, 226, 0.35),
+    0 6px 20px rgba(74, 144, 226, 0.25),
+    0 0 0 4px rgba(255, 255, 255, 0.9);
+  animation: bounceBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounceBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  15% {
+    transform: translateY(-20px) rotate(-8deg) scale(1.05);
+  }
+  30% {
+    transform: translateY(0) rotate(4deg) scale(0.98);
+  }
+  45% {
+    transform: translateY(-12px) rotate(-4deg) scale(1.02);
+  }
+  60% {
+    transform: translateY(0) rotate(2deg) scale(0.99);
+  }
+  75% {
+    transform: translateY(-6px) rotate(-1deg) scale(1.01);
+  }
+  90% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
 }
 
 .logo-emoji {

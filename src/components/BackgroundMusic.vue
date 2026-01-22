@@ -280,8 +280,7 @@ defineExpose({
         <component 
           :is="volumeIcon" 
           :size="26" 
-           :class="volume > 0 ? 'text-peppa-blue-dark animate-float' : 'text-gray-400'"
-           style="animation-duration: 3s"
+           :class="volume > 0 ? 'text-peppa-blue-dark' : 'text-gray-400'"
         />
       </button>
       
@@ -294,8 +293,7 @@ defineExpose({
       >
         <Music 
           :size="26" 
-          :class="props.enabled && isPlaying ? 'text-peppa-green animate-float' : 'text-gray-400'"
-          style="animation-duration: 3s"
+          :class="props.enabled && isPlaying ? 'text-peppa-green' : 'text-gray-400'"
         />
       </button>
     </div>
