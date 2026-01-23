@@ -6,7 +6,7 @@ import { useSound } from '../composables/useSound'
 const props = defineProps({
   enabled: {
     type: Boolean,
-    default: true
+    default: false  // 默认关闭，避免浏览器阻止自动播放
   }
 })
 
@@ -14,7 +14,7 @@ const emit = defineEmits(['toggle', 'volumeChange'])
 
 const { playSound } = useSound()
 const isPlaying = ref(false)
-const volume = ref(0.3)
+const volume = ref(0.2) // 适中音量
 const showVolumeControl = ref(false)
 const volumeControlRef = ref(null)
 
@@ -32,65 +32,78 @@ let gainNode = null
 function createBackgroundMusic() {
   if (!audioContext) return
 
-  const duration = 6
+  const duration = 8 // 8秒循环，两段体
   const sampleRate = audioContext.sampleRate
   const buffer = audioContext.createBuffer(2, duration * sampleRate, sampleRate)
 
-  const chords = [
-    { freq: [261.63, 329.63, 392.00], time: 0 },
-    { freq: [349.23, 440.00, 523.25], time: 1.5 },
-    { freq: [392.00, 493.88, 587.33], time: 3 },
-    { freq: [261.63, 329.63, 392.00], time: 4.5 }
+  // A段 - 明亮上升 (前4秒)
+  const partA = [
+    { freq: 523.25, time: 0.0, dur: 0.5 },   // C5
+    { freq: 523.25, time: 0.5, dur: 0.5 },   // C5
+    { freq: 783.99, time: 1.0, dur: 0.5 },   // G5
+    { freq: 783.99, time: 1.5, dur: 0.5 },   // G5
+    { freq: 880.00, time: 2.0, dur: 0.5 },   // A5
+    { freq: 880.00, time: 2.5, dur: 0.5 },   // A5
+    { freq: 783.99, time: 3.0, dur: 0.5 },   // G5
+    { freq: 698.46, time: 3.5, dur: 0.5 },   // F5
   ]
 
-  const melody = [
-    { freq: 523.25, time: 0.2 },
-    { freq: 587.33, time: 0.5 },
-    { freq: 659.25, time: 0.8 },
-    { freq: 523.25, time: 1.2 },
-    { freq: 783.99, time: 1.7 },
-    { freq: 659.25, time: 2.0 },
-    { freq: 523.25, time: 2.5 },
-    { freq: 440.00, time: 3.2 },
-    { freq: 493.88, time: 3.5 },
-    { freq: 523.25, time: 3.8 },
-    { freq: 587.33, time: 4.2 },
-    { freq: 659.25, time: 4.7 },
-    { freq: 698.46, time: 5.0 },
-    { freq: 659.25, time: 5.3 },
-    { freq: 523.25, time: 5.6 },
+  // B段 - 柔和下落 (后4秒)
+  const partB = [
+    { freq: 659.25, time: 4.0, dur: 0.5 },   // E5
+    { freq: 659.25, time: 4.5, dur: 0.5 },   // E5
+    { freq: 587.33, time: 5.0, dur: 0.5 },   // D5
+    { freq: 587.33, time: 5.5, dur: 0.5 },   // D5
+    { freq: 523.25, time: 6.0, dur: 0.5 },   // C5
+    { freq: 523.25, time: 6.5, dur: 0.5 },   // C5
+    { freq: 659.25, time: 7.0, dur: 0.5 },   // E5
+    { freq: 523.25, time: 7.5, dur: 0.5 },   // C5
   ]
+
+  // 简单的低音
+  const bass = [
+    { freq: 196.00, time: 0 },   // G3
+    { freq: 196.00, time: 1 },   // G3
+    { freq: 220.00, time: 2 },   // A3
+    { freq: 220.00, time: 3 },   // A3
+    { freq: 196.00, time: 4 },   // G3
+    { freq: 196.00, time: 5 },   // G3
+    { freq: 164.81, time: 6 },   // E3
+    { freq: 196.00, time: 7 },   // G3
+  ]
+
+  const melody = [...partA, ...partB]
 
   for (let channel = 0; channel < 2; channel++) {
     const channelData = buffer.getChannelData(channel)
 
-    chords.forEach(chord => {
-      const startSample = Math.floor(chord.time * sampleRate)
-      const endSample = Math.floor((chord.time + 1.4) * sampleRate)
+    // 主旋律
+    melody.forEach(note => {
+      const startSample = Math.floor(note.time * sampleRate)
+      const noteDuration = Math.floor(note.dur * sampleRate)
 
-      for (let i = startSample; i < endSample && i < channelData.length; i++) {
-        let sample = 0
-
-        chord.freq.forEach((freq, index) => {
-          const amplitude = 0.08 / (index + 1)
-          sample += Math.sin(2 * Math.PI * freq * i / sampleRate) * amplitude
-        })
-
+      for (let i = startSample; i < startSample + noteDuration && i < channelData.length; i++) {
         const t = (i - startSample) / sampleRate
-        const envelope = Math.exp(-t * 0.8) * (0.5 + 0.5 * Math.sin(t * Math.PI * 3))
-        channelData[i] += sample * envelope
+        
+        const envelope = Math.exp(-t * 2.5) * (1 - t * 0.15)
+        const sample = Math.sin(2 * Math.PI * note.freq * i / sampleRate) * 0.15 * envelope
+        
+        channelData[i] += sample
       }
     })
 
-    melody.forEach(note => {
+    // 低音伴奏
+    bass.forEach(note => {
       const startSample = Math.floor(note.time * sampleRate)
-      const noteDuration = 0.25
+      const noteDur = 1.0
 
-      for (let i = startSample; i < startSample + noteDuration * sampleRate && i < channelData.length; i++) {
+      for (let i = startSample; i < startSample + noteDur * sampleRate && i < channelData.length; i++) {
         const t = (i - startSample) / sampleRate
-        const envelope = Math.exp(-t * 5) * (1 - t * 0.3)
-        const sample = Math.sin(2 * Math.PI * note.freq * i / sampleRate) * 0.15
-        channelData[i] += sample * envelope
+        const envelope = Math.exp(-t * 1.2)
+        const sample = Math.sin(2 * Math.PI * note.freq * i / sampleRate) * 0.06 * envelope
+        const sample2 = Math.sin(2 * Math.PI * note.freq * 2 * i / sampleRate) * 0.03 * envelope
+        
+        channelData[i] += sample + sample2
       }
     })
   }
@@ -112,13 +125,16 @@ function play() {
     sourceNode.loop = true
 
     gainNode = audioContext.createGain()
-    gainNode.gain.value = volume.value
+    gainNode.gain.value = 0 // 初始音量为0，用于淡入
 
     sourceNode.connect(gainNode)
     gainNode.connect(audioContext.destination)
 
     sourceNode.start()
     isPlaying.value = true
+
+    // 快速淡入
+    gainNode.gain.linearRampToValueAtTime(volume.value, audioContext.currentTime + 0.3)
   } catch (error) {
     console.warn('背景音乐播放失败:', error)
   }
@@ -127,8 +143,18 @@ function play() {
 function pause() {
   if (sourceNode && isPlaying.value) {
     try {
-      sourceNode.stop()
-      isPlaying.value = false
+      // 快速淡出
+      if (gainNode) {
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2)
+      }
+      
+      setTimeout(() => {
+        if (sourceNode) {
+          sourceNode.stop()
+          sourceNode.disconnect()
+        }
+        isPlaying.value = false
+      }, 250)
     } catch (error) {
       console.warn('背景音乐暂停失败:', error)
     }
