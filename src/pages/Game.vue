@@ -75,20 +75,23 @@ function submitAnswer() {
   // 触发触觉反馈
   triggerHapticFeedback()
 
-  // 延迟后进入下一题
-  setTimeout(() => {
-    // 检查是否最后一题
-    if (game.currentIndex.value >= game.questions.value.length - 1) {
-      handleGameComplete()
-    } else {
-      // 切换到下一题
-      questionKey.value++
-      userAnswer.value = ''
-      showAnswer.value = false
-      isWaiting.value = false
-      game.nextQuestion()
-    }
-  }, GAME_CONFIG.FEEDBACK_DELAY)
+  // 正确反馈：延迟后自动进入下一题
+  // 错误反馈：点击任意位置关闭
+  if (correct) {
+    setTimeout(() => {
+      if (game.currentIndex.value >= game.questions.value.length - 1) {
+        showAnswer.value = false
+        isWaiting.value = false
+        handleGameComplete()
+      } else {
+        questionKey.value++
+        userAnswer.value = ''
+        showAnswer.value = false
+        isWaiting.value = false
+        game.nextQuestion()
+      }
+    }, GAME_CONFIG.FEEDBACK_DELAY)
+  }
 }
 
 // 处理输入
@@ -103,6 +106,19 @@ function handleInput(num) {
 function handleDelete() {
   if (isWaiting.value) return
   userAnswer.value = userAnswer.value.slice(0, -1)
+}
+
+// 点击错误反馈关闭
+function handleWrongFeedbackClick() {
+  showAnswer.value = false
+  isWaiting.value = false
+  if (game.currentIndex.value >= game.questions.value.length - 1) {
+    handleGameComplete()
+  } else {
+    questionKey.value++
+    userAnswer.value = ''
+    game.nextQuestion()
+  }
 }
 
 // 游戏完成处理
@@ -132,7 +148,7 @@ function handleRetry() {
 function handleHome() {
   playSound('click')
   showModal.value = false
-  router.push('/')
+  router.push('/difficulty')
 }
 
 onMounted(() => {
@@ -203,7 +219,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong">
+        <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong" @click="handleWrongFeedbackClick">
           <div class="error-circle">
             <div class="orange-ring"></div>
             <div class="ripple-orange ripple-1"></div>
@@ -216,6 +232,7 @@ onMounted(() => {
             <span class="answer-label">正确答案</span>
             <span class="answer-number">{{ currentQuestion.answer }}</span>
           </div>
+          <div class="hint-text">点击任意位置继续</div>
         </div>
       </Transition>
     </main>
@@ -430,6 +447,7 @@ onMounted(() => {
 
 .feedback-overlay.wrong {
   box-shadow: 0 12px 40px rgba(255, 152, 0, 0.25);
+  cursor: pointer;
 }
 
 /* 成功圆圈 */
@@ -640,6 +658,19 @@ onMounted(() => {
   font-weight: 800;
   color: #E65100;
   line-height: 1.2;
+}
+
+/* 点击提示文字 */
+.hint-text {
+  font-size: 12px;
+  color: #999;
+  letter-spacing: 1px;
+  animation: hintPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 /* 反馈层过渡 */

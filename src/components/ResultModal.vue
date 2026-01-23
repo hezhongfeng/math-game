@@ -75,7 +75,7 @@ function handleHome() {
               @click="handleHome"
               class="flex-1 bg-white text-peppa-blue-dark border-2 border-peppa-blue-light/40 font-bold py-4 px-6 rounded-cute-lg hover:bg-[#E3F2FD]/30 transition-all shadow-cute hover:shadow-cute-lg active:scale-95 font-rounded text-lg touch-manipulation"
             >
-              🏠 返回主页
+              📋 返回选择
             </button>
           </div>
 

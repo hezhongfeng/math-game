@@ -107,14 +107,14 @@ onMounted(() => {
 .page {
   min-height: 100vh;
   position: relative;
-  padding: 12px 12px 100px;
+  padding: 12px 12px 60px;
   background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #E8F5E9 100%);
   touch-action: manipulation;
   /* Allow scrolling on mobile */
   overflow-y: auto;
   overflow-x: hidden;
   /* Safe area handling for notched devices */
-  padding-bottom: max(100px, calc(80px + env(safe-area-inset-bottom)));
+  padding-bottom: max(60px, calc(40px + env(safe-area-inset-bottom)));
 }
 
 /* 装饰星星 */
@@ -240,7 +240,7 @@ onMounted(() => {
 
 .main-content {
   padding: 20px;
-  padding-bottom: 140px;
+  padding-bottom: 40px;
 }
 
 .section {
@@ -289,11 +289,11 @@ onMounted(() => {
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px 20px;
+  padding: 12px 20px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 249, 255, 0.95) 100%);
   border-top: 2px solid rgba(74, 144, 226, 0.1);
   box-shadow: 0 -4px 20px rgba(74, 144, 226, 0.1);
@@ -301,7 +301,7 @@ onMounted(() => {
   -webkit-backdrop-filter: blur(10px);
   text-align: center;
   /* Safe area for notched devices */
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
 .footer p {
