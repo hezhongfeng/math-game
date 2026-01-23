@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import { Clock } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -36,16 +35,6 @@ function handleSubmit() {
 
 <template>
   <div class="number-pad" :class="{ 'number-pad-disabled': disabled }">
-    <!-- 禁用遮罩提示 -->
-    <Transition name="fade">
-      <div v-if="disabled" class="disabled-overlay">
-        <div class="disabled-content">
-          <Clock :size="32" class="disabled-icon" />
-          <span class="disabled-text">请等待...</span>
-        </div>
-      </div>
-    </Transition>
-
     <!-- 数字键盘 -->
     <div class="grid grid-cols-3 gap-3 md:gap-4">
       <!-- 数字键 1-9 -->
@@ -113,60 +102,6 @@ function handleSubmit() {
 .number-pad-disabled {
   opacity: 0.7;
   border-color: rgba(74, 144, 226, 0.1);
-}
-
-/* 禁用遮罩 */
-.disabled-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 249, 255, 0.95) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  backdrop-filter: blur(4px);
-}
-
-.disabled-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  animation: pulse-wait 1.5s ease-in-out infinite;
-}
-
-.disabled-icon {
-  color: #4A90E2;
-  animation: spin-wait 2s linear infinite;
-}
-
-.disabled-text {
-  font-size: 16px;
-  font-weight: 700;
-  color: #4A90E2;
-  font-family: inherit;
-  letter-spacing: 2px;
-}
-
-@keyframes pulse-wait {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@keyframes spin-wait {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* 淡入淡出动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 
 /* 数字按钮 */

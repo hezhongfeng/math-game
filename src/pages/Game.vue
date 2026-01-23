@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw, Check } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw, Check, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -12,7 +12,6 @@ import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
 import ResultModal from '../components/ResultModal.vue'
-import ParticleEffects from '../components/ParticleEffects.vue'
 
 const props = defineProps({
   id: {
@@ -35,15 +34,14 @@ const userAnswer = ref('')
 const showModal = ref(false)
 const resultData = ref(null)
 const isNewBest = ref(false)
-const showParticles = ref(false)
-const particleType = ref('correct')
 
-const questionKey = ref(0) // 用于强制重新渲染题目卡片
+const questionKey = ref(0)
 
 const isComplete = computed(() => game.isComplete.value)
-const isCorrect = computed(() => game.currentQuestion.value?.isCorrect === true)
-const isIncorrect = computed(() => game.currentQuestion.value?.isCorrect === false)
-const shouldShowFeedback = computed(() => showAnswer.value && game.currentQuestion.value?.userAnswer !== null)
+const currentQuestion = computed(() => game.currentQuestion.value)
+const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
+const isIncorrect = computed(() => currentQuestion.value?.isCorrect === false)
+const shouldShowFeedback = computed(() => showAnswer.value && currentQuestion.value?.userAnswer !== null)
 
 // 触发触觉反馈（振动）
 function triggerHapticFeedback() {
@@ -51,17 +49,6 @@ function triggerHapticFeedback() {
     navigator.vibrate(50)
   }
 }
-
-// 监听题目变化，更新 key
-watch(() => game.currentIndex.value, (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    questionKey.value++ // 切换题目时改变 key
-    userAnswer.value = '' // 立即清空答案
-    showAnswer.value = false // 隐藏答案反馈
-    isWaiting.value = false // 取消等待状态
-    showParticles.value = false // 隐藏粒子效果
-  }
-})
 
 // 初始化游戏
 function initGame() {
@@ -73,15 +60,13 @@ function submitAnswer() {
   if (isWaiting.value || !userAnswer.value) return
 
   const answer = parseInt(userAnswer.value)
-  const isCorrect = game.submitAnswer(answer)
+  const correct = game.submitAnswer(answer)
 
   showAnswer.value = true
   isWaiting.value = true
-  particleType.value = isCorrect ? 'correct' : 'wrong'
-  showParticles.value = true // 答对和答错都显示粒子
 
-  // 播放反馈音效（不播放点击音效）
-  if (isCorrect) {
+  // 播放反馈音效
+  if (correct) {
     playSound('correct')
   } else {
     playSound('wrong')
@@ -92,15 +77,18 @@ function submitAnswer() {
 
   // 延迟后进入下一题
   setTimeout(() => {
-    if (isComplete.value) {
+    // 检查是否最后一题
+    if (game.currentIndex.value >= game.questions.value.length - 1) {
       handleGameComplete()
     } else {
-      // 切换到下一题（这会触发 watch，重置状态）
+      // 切换到下一题
+      questionKey.value++
+      userAnswer.value = ''
+      showAnswer.value = false
+      isWaiting.value = false
       game.nextQuestion()
     }
   }, GAME_CONFIG.FEEDBACK_DELAY)
-
-  return isCorrect
 }
 
 // 处理输入
@@ -122,10 +110,8 @@ function handleGameComplete() {
   const result = game.getResult()
   const best = updateBestScore(parseInt(props.id), result)
 
-  // 播放胜利音效
   playSound('win')
 
-  // 设置结果数据并显示弹窗
   resultData.value = result
   isNewBest.value = best
   showModal.value = true
@@ -150,12 +136,9 @@ function handleHome() {
 }
 
 onMounted(() => {
-  // 加载设置
   settingsStore.loadSettings()
-
   initGame()
 
-  // 监听键盘输入
   const handleKeyPress = (e) => {
     if (e.key >= '0' && e.key <= '9') {
       handleInput(parseInt(e.key))
@@ -170,7 +153,6 @@ onMounted(() => {
 
   onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyPress)
-    // 保存设置
     settingsStore.saveSettings()
   })
 })
@@ -197,7 +179,7 @@ onMounted(() => {
     </header>
 
     <!-- 题目卡片区 -->
-    <main class="main relative">
+    <main class="main">
       <Transition name="question" mode="out-in">
         <QuestionCard
           v-if="game.currentQuestion.value"
@@ -209,33 +191,30 @@ onMounted(() => {
         />
       </Transition>
 
-      <!-- 悬浮反馈动画 -->
+      <!-- 答题反馈 -->
       <Transition name="feedback">
-        <div v-if="shouldShowFeedback && isCorrect" class="feedback-overlay">
-          <!-- 粒子效果 -->
-          <ParticleEffects :show="showParticles" :type="particleType" />
-
-          <!-- 大对勾图标 -->
-          <div class="correct-mark">
-            <div class="mark-circle">
-              <Check :size="56" class="mark-icon" />
-            </div>
-            <div class="mark-ring"></div>
-            <div class="mark-sparkles">
-              <span v-for="i in 8" :key="i" class="sparkle" :style="{ '--delay': `${i * 0.1}s`, '--angle': `${i * 45}deg` }">✨</span>
+        <div v-if="shouldShowFeedback && isCorrect" class="feedback-overlay correct">
+          <div class="success-circle">
+            <div class="green-ring"></div>
+            <div class="ripple-green ripple-1"></div>
+            <div class="ripple-green ripple-2"></div>
+            <div class="circle-bg">
+              <Check :size="40" />
             </div>
           </div>
         </div>
-        <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay">
-          <!-- 粒子效果 -->
-          <ParticleEffects :show="showParticles" :type="particleType" />
-
-          <!-- 正确答案 -->
-          <div class="wrong-answer">
-            <div class="answer-card">
-              <span class="answer-label">正确答案</span>
-              <span class="answer-number animate-bounce-in">{{ game.currentQuestion.value?.answer }}</span>
+        <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong">
+          <div class="error-circle">
+            <div class="orange-ring"></div>
+            <div class="ripple-orange ripple-1"></div>
+            <div class="ripple-orange ripple-2"></div>
+            <div class="circle-bg-error">
+              <span class="error-icon">✕</span>
             </div>
+          </div>
+          <div class="answer-card">
+            <span class="answer-label">正确答案</span>
+            <span class="answer-number">{{ currentQuestion.answer }}</span>
           </div>
         </div>
       </Transition>
@@ -284,10 +263,8 @@ onMounted(() => {
   padding: 12px 12px 24px;
   touch-action: manipulation;
   position: relative;
-  /* Allow scrolling on mobile while maintaining layout */
   overflow-y: auto;
   overflow-x: hidden;
-  /* Safe area handling for notched devices */
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
@@ -297,6 +274,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 8px 0;
+  position: relative;
 }
 
 .numpad-section {
@@ -307,7 +285,7 @@ onMounted(() => {
   margin-top: auto;
 }
 
-/* 顶部导航 - 统一卡片样式 */
+/* 顶部导航 */
 .header {
   position: sticky;
   top: 0;
@@ -322,7 +300,6 @@ onMounted(() => {
     0 4px 20px rgba(74, 144, 226, 0.15),
     0 2px 8px rgba(74, 144, 226, 0.08);
   margin: 0 12px 12px;
-  /* Safe area for notched devices */
   padding-top: max(10px, env(safe-area-inset-top));
 }
 
@@ -338,12 +315,10 @@ onMounted(() => {
   border: 2px solid rgba(74, 144, 226, 0.3);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .back-btn:active {
-  transform: scale(0.95);
   background: #d0e4ff;
 }
 
@@ -384,13 +359,11 @@ onMounted(() => {
   border: 2px solid rgba(74, 144, 226, 0.3);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .retry-btn:active {
   background: #d0e4ff;
-  transform: scale(0.95);
 }
 
 .retry-btn svg {
@@ -398,505 +371,32 @@ onMounted(() => {
   height: 20px;
 }
 
-/* 题目切换过渡 - 带弹跳效果 */
-.question-enter-active,
+/* 题目切换 - 弹性弹入 */
 .question-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s ease;
 }
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(60px) scale(0.9);
+  transform: translateY(40px) scale(0.9);
 }
 
 .question-leave-to {
   opacity: 0;
-  transform: translateY(-60px) scale(0.9);
+  transform: translateY(-40px) scale(0.9);
 }
 
 .question-enter-active {
-  animation: questionBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: questionBounce 0.5s ease-out;
 }
 
-@keyframes questionBounceIn {
-  0% { transform: translateY(60px) scale(0.9); opacity: 0; }
-  60% { transform: translateY(-15px) scale(1.03); }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-.question-leave-to {
-  opacity: 0;
-  transform: translateY(-40px) scale(0.95);
-}
-
-/* ========================================
-    反馈动画
-    ======================================== */
-
-/* 悬浮反馈层 */
-.feedback-overlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 380px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(74, 144, 226, 0.15);
-  padding: 40px 24px;
-}
-
-@keyframes rainbowRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* 柔和光晕 - 错误反馈 */
-.warm-glow {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 152, 0, 0.2) 0%, rgba(255, 152, 0, 0) 70%);
-  animation: warmPulse 2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes warmPulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.5; }
-}
-
-/* 飘分动画 */
-.score-popup {
-  position: absolute;
-  top: -20px;
-  right: 20px;
-  animation: scoreFloatUp 1.2s ease-out forwards;
-}
-
-.score-plus {
-  font-size: 32px;
-  font-weight: 800;
-  color: #FFD700;
-  text-shadow: 
-    0 0 10px rgba(255, 215, 0, 0.8),
-    0 0 20px rgba(255, 215, 0, 0.5),
-    2px 2px 0 #FF6B6B;
-  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
-}
-
-@keyframes scoreFloatUp {
+@keyframes questionBounce {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.5);
-  }
-  20% {
-    opacity: 1;
-    transform: translateY(0) scale(1.2);
+    transform: translateY(40px) scale(0.9);
   }
   60% {
-    opacity: 1;
-    transform: translateY(-10px) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-40px) scale(0.8);
-  }
-}
-
-/* 五彩纸屑 */
-.confetti-container {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 150px;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.confetti {
-  position: absolute;
-  font-size: 16px;
-  color: var(--color);
-  opacity: 0;
-  animation: confettiFall 1.5s ease-out forwards;
-  animation-delay: var(--delay);
-}
-
-@keyframes confettiFall {
-  0% {
-    opacity: 0;
-    transform: translateY(0) translateX(0) rotate(0deg) scale(0.5);
-  }
-  10% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(120px) translateX(var(--x)) rotate(360deg) scale(0.8);
-  }
-}
-
-/* 悬浮反馈层 */
-.feedback-overlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 380px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(74, 144, 226, 0.15);
-  padding: 40px 20px;
-}
-
-.feedback-overlay.wrong {
-  box-shadow: 0 20px 60px rgba(255, 152, 0, 0.15);
-}
-
-/* 反馈内容容器 */
-.feedback-content {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-/* ========================================
-   成功反馈样式
-   ======================================== */
-.feedback-success {
-  animation: successContainerEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes successContainerEnter {
-  0% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 背景光晕 */
-.success-glow {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0) 70%);
-  animation: glowPulse 2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes glowPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.4;
-  }
-}
-
-/* 成功圆圈 */
-.success-circle {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: circleEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
-}
-
-@keyframes circleEnter {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-/* 圆圈边框 - 多层效果 */
-.success-circle::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  background: linear-gradient(135deg, #4CAF50, #81C784, #4CAF50) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: borderRotate 3s linear infinite;
-}
-
-@keyframes borderRotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* 内圈 */
-.success-circle-inner {
-  position: absolute;
-  inset: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 50%, #81C784 100%);
-  box-shadow: 
-    inset 0 2px 8px rgba(255, 255, 255, 0.4),
-    0 4px 20px rgba(76, 175, 80, 0.4);
-}
-
-/* 对勾图标 */
-.success-icon {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  color: white;
-  stroke-dasharray: 30;
-  stroke-dashoffset: 30;
-  animation: checkDraw 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  z-index: 2;
-}
-
-@keyframes checkDraw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* 装饰光点 */
-.success-decorations {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.decoration-dot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin-left: -4px;
-  margin-top: -4px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FFD700, #FFEB3B);
-  box-shadow: 0 0 10px #FFD700, 0 0 20px rgba(255, 215, 0, 0.5);
-  transform: rotate(var(--angle)) translateX(var(--distance));
-  animation: dotFloat 2s ease-in-out infinite;
-  animation-delay: var(--delay);
-  opacity: 0;
-}
-
-@keyframes dotFloat {
-  0% {
-    opacity: 0;
-    transform: rotate(var(--angle)) translateX(var(--distance)) scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: rotate(calc(var(--angle) + 20deg)) translateX(calc(var(--distance) + 5px)) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: rotate(calc(var(--angle) + 40deg)) translateX(calc(var(--distance) + 10px)) scale(0);
-  }
-}
-
-/* 得分飘字 */
-.score-popup {
-  margin-top: 20px;
-  animation: scorePopup 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
-}
-
-@keyframes scorePopup {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-10px) scale(1.1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-30px) scale(1);
-  }
-}
-
-.score-plus {
-  font-size: 28px;
-  font-weight: 800;
-  color: #4CAF50;
-  font-family: inherit;
-  text-shadow: 0 2px 10px rgba(76, 175, 80, 0.4);
-}
-
-/* ========================================
-   错误反馈样式
-   ======================================== */
-.feedback-error {
-  animation: errorContainerEnter 0.4s ease-out forwards;
-}
-
-@keyframes errorContainerEnter {
-  0% {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* 背景光晕 */
-.error-glow {
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 152, 0, 0.25) 0%, rgba(255, 152, 0, 0) 70%);
-  animation: errorGlowPulse 0.8s ease-in-out;
-}
-
-@keyframes errorGlowPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-/* 错误圆圈 */
-.error-circle {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: errorCircleShake 0.5s ease-in-out;
-}
-
-@keyframes errorCircleShake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-4px);
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(4px);
-  }
-}
-
-.error-circle::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  background: linear-gradient(135deg, #FF9800, #FF5722, #FF9800) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-
-.error-circle-inner {
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);
-  box-shadow: 
-    inset 0 2px 8px rgba(255, 255, 255, 0.3),
-    0 4px 15px rgba(255, 152, 0, 0.3);
-}
-
-/* 错误图标 */
-.error-icon {
-  width: 36px;
-  height: 36px;
-  color: white;
-  position: relative;
-  z-index: 2;
-  animation: errorIconAppear 0.3s ease-out 0.15s both;
-}
-
-@keyframes errorIconAppear {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 正确答案卡片 */
-.answer-card-advanced {
-  margin-top: 24px;
-  padding: 16px 32px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 
-    0 10px 40px rgba(255, 152, 0, 0.2),
-    0 0 0 1px rgba(255, 152, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  animation: cardAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
-}
-
-@keyframes cardAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.9);
+    transform: translateY(-12px) scale(1.02);
   }
   100% {
     opacity: 1;
@@ -904,319 +404,125 @@ onMounted(() => {
   }
 }
 
-.answer-hint {
-  font-size: 13px;
-  font-weight: 600;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-family: inherit;
+/* 反馈层 */
+.feedback-overlay {
+  position: fixed;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  z-index: 9999;
+  background: white;
+  border-radius: 24px;
+  padding: 40px 32px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-.answer-value {
-  font-size: 42px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #FF9800 0%, #E65100 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-family: inherit;
-  line-height: 1;
+.feedback-overlay.correct {
+  box-shadow: 0 12px 40px rgba(76, 175, 80, 0.25);
 }
 
-/* ========================================
-   过渡动画
-   ======================================== */
-.feedback-enter-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.feedback-overlay.wrong {
+  box-shadow: 0 12px 40px rgba(255, 152, 0, 0.25);
 }
 
-.feedback-leave-active {
-  transition: all 0.25s ease-in;
-}
-
-.feedback-enter-from {
-  opacity: 0;
-}
-
-.feedback-leave-to {
-  opacity: 0;
-}
-
-/* 题目切换过渡 */
-.question-enter-active,
-.question-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.question-enter-from {
-  opacity: 0;
-  transform: translateY(40px) scale(0.95);
-}
-
-.question-leave-to {
-  opacity: 0;
-  transform: translateY(-40px) scale(0.95);
-}
-
-/* 增强动画效果 */
-@keyframes scaleUp {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0); }
-  25% { transform: rotate(-5deg); }
-  75% { transform: rotate(5deg); }
-}
-
-@keyframes bounceHappy {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes wrongShake {
-  0%, 100% { transform: translateX(0) rotate(0); }
-  10% { transform: translateX(-8px) rotate(-5deg); }
-  20% { transform: translateX(8px) rotate(5deg); }
-  30% { transform: translateX(-8px) rotate(-5deg); }
-  40% { transform: translateX(8px) rotate(5deg); }
-  50% { transform: translateX(-4px) rotate(-3deg); }
-  60% { transform: translateX(4px) rotate(3deg); }
-  70% { transform: translateX(-2px) rotate(-1deg); }
-  80% { transform: translateX(2px) rotate(1deg); }
-}
-
-@keyframes markPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@keyframes markBreath {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
-  50% { box-shadow: 0 0 0 20px rgba(76, 175, 80, 0); }
-}
-
-@keyframes ringRipple {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(2.5);
-    opacity: 0;
-  }
-}
-
-@keyframes sparkleRotate {
-  0% { transform: rotate(var(--angle)) translateX(60px) rotate(calc(-1 * var(--angle))); }
-  100% { transform: rotate(calc(var(--angle) + 360deg)) translateX(60px) rotate(calc(-1 * calc(var(--angle) + 360deg))); }
-}
-
-@keyframes bounceIn {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.3); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.animate-scale-up {
-  animation: scaleUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.animate-wiggle {
-  animation: wiggle 0.5s ease-in-out;
-}
-
-.animate-bounce-happy {
-  animation: bounceHappy 0.6s ease-in-out infinite;
-}
-
-.animate-wrong-shake {
-  animation: wrongShake 0.6s ease-in-out;
-}
-
-.animate-bounce-in {
-  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-/* 正确反馈样式 - 优化版 */
-.correct-mark {
+/* 成功圆圈 */
+.success-circle {
   position: relative;
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: markEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes markEnter {
-  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+.green-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 4px solid #66BB6A;
+  animation: ringPulse 2s ease-in-out infinite;
 }
 
-.mark-circle {
-  width: 90px;
-  height: 90px;
+@keyframes ringPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+.circle-bg {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 
-    0 8px 25px rgba(76, 175, 80, 0.4),
-    0 0 50px rgba(76, 175, 80, 0.2),
+    0 8px 25px rgba(76, 175, 80, 0.45),
     inset 0 2px 10px rgba(255, 255, 255, 0.3);
-  animation: markBreath 2s ease-in-out infinite;
-  position: relative;
-  z-index: 2;
+  animation: circlePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes markBreath {
-  0%, 100% { box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4), 0 0 50px rgba(76, 175, 80, 0.2); }
-  50% { box-shadow: 0 8px 35px rgba(76, 175, 80, 0.5), 0 0 70px rgba(76, 175, 80, 0.3); }
-}
-
-.mark-icon {
+.circle-bg svg {
   color: white;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  animation: iconPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s backwards;
 }
 
-@keyframes iconPop {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
+@keyframes circlePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.mark-ring {
+/* 绿色涟漪 */
+.ripple-green {
   position: absolute;
-  width: 110px;
-  height: 110px;
-  border: 3px solid #4CAF50;
   border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  border: 4px solid #4CAF50;
   opacity: 0;
-  animation: ringRipple 0.8s ease-out 0.15s backwards;
 }
 
-@keyframes ringRipple {
+.ripple-green.ripple-1 {
+  inset: -25px;
+  animation: rippleExpand 1.2s ease-out 0.2s;
+}
+
+.ripple-green.ripple-2 {
+  inset: -45px;
+  border-color: #66BB6A;
+  animation: rippleExpand 1.2s ease-out 0.5s;
+}
+
+@keyframes rippleExpand {
   0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0.8;
+    transform: scale(0.9);
+    opacity: 0.9;
   }
   100% {
-    transform: translate(-50%, -50%) scale(1.5);
+    transform: scale(1.3);
     opacity: 0;
   }
 }
 
-.mark-sparkles {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.sparkle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 18px;
-  animation: sparkleRotate 3s linear infinite;
-  animation-delay: var(--delay);
-  opacity: 0.9;
-  transform-origin: center;
-}
-
-@keyframes sparkleRotate {
-  0% { transform: rotate(var(--angle)) translateX(55px) rotate(calc(-1 * var(--angle))); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: rotate(calc(var(--angle) + 360deg)) translateX(55px) rotate(calc(-1 * calc(var(--angle) + 360deg))); opacity: 0; }
-}
-
-/* 错误反馈样式 - 温和版 */
-.wrong-answer {
-  animation: wrongGentleShake 0.6s ease-in-out;
-}
-
-@keyframes wrongGentleShake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-5px); }
-  40%, 80% { transform: translateX(5px); }
-}
-
-/* 过渡动画 */
-.feedback-enter-active,
-.feedback-leave-active {
-  transition: all 0.3s ease;
-}
-
-.feedback-enter-from,
-.feedback-leave-to {
-  opacity: 0;
-}
-
-/* 题目切换过渡 */
-.question-enter-active,
-.question-leave-active {
-  transition: all 0.3s ease;
-}
-
-.question-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.question-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-/* 动画效果 */
-@keyframes bounceIn {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes wrongShake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
-}
-
-@keyframes ringExpand {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes sparkleRotate {
-  0% { transform: rotate(var(--angle)) translateX(55px) rotate(calc(-1 * var(--angle))); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: rotate(calc(var(--angle) + 360deg)) translateX(55px) rotate(calc(-1 * calc(var(--angle) + 360deg))); opacity: 0; }
-}
-
-.animate-bounce-in {
-  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-/* 正确反馈样式 */
-.correct-mark {
+/* 错误圆圈 */
+.error-circle {
   position: relative;
   width: 100px;
   height: 100px;
@@ -1225,89 +531,133 @@ onMounted(() => {
   justify-content: center;
 }
 
-.mark-circle {
-  width: 80px;
-  height: 80px;
+.orange-ring {
+  position: absolute;
+  inset: -8px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  border: 4px solid #FFB74D;
+  animation: orangeRingPulse 2s ease-in-out infinite;
+}
+
+@keyframes orangeRingPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+.circle-bg-error {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF9800 0%, #FFB74D 50%, #FF9800 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-  position: relative;
-  z-index: 2;
+  box-shadow: 
+    0 6px 20px rgba(255, 152, 0, 0.4),
+    inset 0 2px 8px rgba(255, 255, 255, 0.3);
+  animation: errorPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.mark-icon {
+@keyframes errorPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.error-icon {
   color: white;
+  font-size: 40px;
+  font-weight: bold;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-.mark-ring {
+/* 橙色涟漪 */
+.ripple-orange {
   position: absolute;
-  width: 100px;
-  height: 100px;
-  border: 3px solid #4CAF50;
   border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  border: 3px solid #FF9800;
   opacity: 0;
-  animation: ringExpand 1s ease-out 0.2s backwards;
 }
 
-.mark-sparkles {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
+.ripple-orange.ripple-1 {
+  inset: -15px;
+  animation: rippleExpand 1.2s ease-out 0.2s;
 }
 
-.sparkle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 18px;
-  animation: sparkleRotate 3s linear infinite;
-  animation-delay: var(--delay);
-  opacity: 0.9;
-  transform-origin: center;
+.ripple-orange.ripple-2 {
+  inset: -38px;
+  border-color: #FFB74D;
+  animation: rippleExpand 1.2s ease-out 0.5s;
 }
 
-/* 错误反馈样式 */
-.wrong-answer {
-  animation: wrongShake 0.5s ease-in-out;
+@keyframes rippleExpand {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
 }
 
+/* 正确答案卡片 */
 .answer-card {
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
-  border-radius: 20px;
-  padding: 16px 32px;
-  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  border: 2px solid rgba(255, 152, 0, 0.3);
+  gap: 16px;
+  text-align: center;
+  padding: 32px 48px;
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  border-radius: 24px;
+  border: 4px solid #FFD54F;
+  min-width: 180px;
 }
 
 .answer-label {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
-  color: #E65100;
+  color: #999;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: inherit;
+  letter-spacing: 2px;
+  line-height: 1.2;
 }
 
 .answer-number {
-  font-size: 40px;
+  font-size: 56px;
   font-weight: 800;
   color: #E65100;
-  font-family: inherit;
-  line-height: 1;
+  line-height: 1.2;
+}
+
+/* 反馈层过渡 */
+.feedback-enter-active {
+  transition: all 0.4s ease;
+}
+
+.feedback-leave-active {
+  transition: all 0.25s ease;
+}
+
+.feedback-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+}
+
+.feedback-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
 }
 </style>
-

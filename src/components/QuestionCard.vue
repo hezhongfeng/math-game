@@ -23,7 +23,7 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
 
 <template>
   <div
-    class="question-card rounded-cute-2xl shadow-cute-lg border-2 transition-all duration-300 animate-card-entrance"
+    class="question-card rounded-cute-2xl shadow-cute-lg border-2 transition-all duration-300"
     :class="{
       'bg-peppa-green/10 border-peppa-green': isCorrect,
       'bg-peppa-orange/10 border-peppa-orange': isIncorrect,
@@ -65,7 +65,6 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
   max-width: 95vw;
   width: 100%;
   touch-action: manipulation;
-  animation: cardBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .question-content {
