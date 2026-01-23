@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# pre-commit hook - 检查文档是否需要更新
+
+DOC_FILES=(
+  "README.md"
+  "DESIGN.md"
+  "AGENTS.md"
+  "CHANGELOG.md"
+)
+
+# 检查是否有代码文件变更但文档未更新
+CODE_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -E '\.(vue|js|css|html)$' || true)
+
+if [ -n "$CODE_FILES" ]; then
+  echo "📝 检测到代码变更，请检查以下文档是否需要更新："
+  echo ""
+  for doc in "${DOC_FILES[@]}"; do
+    if git diff HEAD~1 HEAD -- "$doc" 2>/dev/null | grep -q .; then
+      echo "  ✅ $doc"
+    else
+      echo "  ⚠️  $doc - 可能需要更新"
+    fi
+  done
+  echo ""
+  echo "如需跳过此检查，使用: git commit --no-verify"
+fi
+
+exit 0
