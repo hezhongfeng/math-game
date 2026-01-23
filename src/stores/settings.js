@@ -11,8 +11,8 @@ export const useSettingsStore = defineStore('settings', () => {
   // 背景音乐开关 - 默认关闭，浏览器不允许自动播放
   const musicEnabled = ref(false)
   
-  // 背景音乐音量
-  const musicVolume = ref(0.2)
+  // 背景音乐音量 - 默认80%，确保能被听到
+  const musicVolume = ref(0.8)
 
   // 切换音效开关
   function toggleSound() {
@@ -38,7 +38,7 @@ export const useSettingsStore = defineStore('settings', () => {
         soundEnabled.value = settings.soundEnabled ?? true
         speechEnabled.value = settings.speechEnabled ?? true
         musicEnabled.value = settings.musicEnabled ?? false
-        musicVolume.value = settings.musicVolume ?? 0.2
+        musicVolume.value = settings.musicVolume ?? 0.8
       }
     } catch (error) {
       console.error('加载设置失败:', error)

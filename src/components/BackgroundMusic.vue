@@ -2,25 +2,27 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Music, Volume2, VolumeX, Volume1 } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
+import { useSettingsStore } from '../stores/settings'
 
 const props = defineProps({
   enabled: {
     type: Boolean,
-    default: false  // 默认关闭，避免浏览器阻止自动播放
+    default: false
   }
 })
 
-const emit = defineEmits(['toggle', 'volumeChange'])
-
 const { playSound } = useSound()
+const settingsStore = useSettingsStore()
 const isPlaying = ref(false)
-const volume = ref(0.2) // 适中音量
 const showVolumeControl = ref(false)
 const volumeControlRef = ref(null)
 
+const volumeValue = computed(() => settingsStore.musicVolume || 0.8)
+
 const volumeIcon = computed(() => {
-  if (volume.value === 0) return VolumeX
-  if (volume.value < 0.5) return Volume1
+  const vol = settingsStore.musicVolume || 0.8
+  if (vol === 0) return VolumeX
+  if (vol < 0.5) return Volume1
   return Volume2
 })
 
@@ -134,7 +136,7 @@ function play() {
     isPlaying.value = true
 
     // 快速淡入
-    gainNode.gain.linearRampToValueAtTime(volume.value, audioContext.currentTime + 0.3)
+    gainNode.gain.linearRampToValueAtTime(settingsStore.musicVolume, audioContext.currentTime + 0.3)
   } catch (error) {
     console.warn('背景音乐播放失败:', error)
   }
@@ -163,21 +165,23 @@ function pause() {
 
 function togglePlay() {
   playSound('click')
-  emit('toggle', !isPlaying.value)
   
+  // 切换播放状态
   if (isPlaying.value) {
     pause()
   } else {
     play()
   }
+  
+  // 同步更新 store 中的音乐开关状态
+  settingsStore.toggleMusic()
 }
 
 function setVolume(newVolume) {
-  volume.value = Math.max(0, Math.min(1, newVolume))
-  emit('volumeChange', volume.value)
+  settingsStore.musicVolume = Math.max(0, Math.min(1, newVolume))
   
   if (gainNode) {
-    gainNode.gain.value = volume.value
+    gainNode.gain.value = settingsStore.musicVolume
   }
 }
 
@@ -187,7 +191,8 @@ function handleClickOutside(event) {
   }
 }
 
-watch(volume, (newVolume) => {
+// 监听 store 音量变化
+watch(() => settingsStore.musicVolume, (newVolume) => {
   if (gainNode) {
     gainNode.gain.value = newVolume
   }
@@ -240,7 +245,7 @@ defineExpose({
       <div v-if="showVolumeControl" class="volume-panel">
         <div class="volume-header">
           <component :is="volumeIcon" :size="20" class="volume-icon" />
-          <span class="volume-text">{{ Math.round(volume * 100) }}%</span>
+          <span class="volume-text">{{ Math.round((settingsStore.musicVolume || 0.8) * 100) }}%</span>
         </div>
         
         <div class="volume-slider-wrap">
@@ -248,7 +253,7 @@ defineExpose({
             type="range"
             min="0"
             max="100"
-            :value="volume * 100"
+            :value="(settingsStore.musicVolume || 0.8) * 100"
             @input="setVolume($event.target.value / 100)"
             class="volume-slider"
           >
