@@ -619,17 +619,6 @@ onMounted(() => {
   animation: rippleExpand 1.2s ease-out 0.5s;
 }
 
-@keyframes rippleExpand {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(1.3);
-    opacity: 0;
-  }
-}
-
 /* 正确答案卡片 */
 .answer-card {
   display: flex;

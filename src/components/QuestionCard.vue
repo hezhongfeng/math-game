@@ -75,20 +75,6 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
   flex-wrap: wrap;
 }
 
-@keyframes cardBounce {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(20px);
-  }
-  60% {
-    transform: scale(1.02) translateY(-3px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 @keyframes answerPop {
   0% { transform: scale(0.3); opacity: 0; }
   50% { transform: scale(1.25); }
