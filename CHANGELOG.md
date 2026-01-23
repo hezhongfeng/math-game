@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Background Music**:
+  - Redesigned melody with 8-second loop (ABA structure)
+  - Brighter, more cheerful children's song style
+  - Default volume increased to 80%
+  - Disabled by default (browsers block autoplay)
+  - Fixed volume sync with settings persistence
+
+### Fixed
+
+- **Background Music**:
+  - Resolved NaN display issue when volume is undefined
+  - Fixed music not playing when toggled on
+  - Settings now properly persist to LocalStorage
+
 ## [1.0.0] - 2026-01-22
 
 ### Added
