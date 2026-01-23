@@ -215,7 +215,7 @@ onMounted(() => {
           <!-- 粒子效果 -->
           <ParticleEffects :show="showParticles" :type="particleType" />
 
-          <!-- 大对勾图标 - 优化版 -->
+          <!-- 大对勾图标 -->
           <div class="correct-mark">
             <div class="mark-circle">
               <Check :size="56" class="mark-icon" />
@@ -230,7 +230,7 @@ onMounted(() => {
           <!-- 粒子效果 -->
           <ParticleEffects :show="showParticles" :type="particleType" />
 
-          <!-- 正确答案 - 优化震动效果 -->
+          <!-- 正确答案 -->
           <div class="wrong-answer">
             <div class="answer-card">
               <span class="answer-label">正确答案</span>
@@ -398,15 +398,30 @@ onMounted(() => {
   height: 20px;
 }
 
-/* 题目切换过渡 */
+/* 题目切换过渡 - 带弹跳效果 */
 .question-enter-active,
 .question-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(40px) scale(0.95);
+  transform: translateY(60px) scale(0.9);
+}
+
+.question-leave-to {
+  opacity: 0;
+  transform: translateY(-60px) scale(0.9);
+}
+
+.question-enter-active {
+  animation: questionBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes questionBounceIn {
+  0% { transform: translateY(60px) scale(0.9); opacity: 0; }
+  60% { transform: translateY(-15px) scale(1.03); }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 .question-leave-to {
@@ -415,8 +430,8 @@ onMounted(() => {
 }
 
 /* ========================================
-   高级反馈动画 - 移动端优化版
-   ======================================== */
+    反馈动画
+    ======================================== */
 
 /* 悬浮反馈层 */
 .feedback-overlay {
@@ -425,7 +440,7 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 400px;
+  max-width: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,9 +449,131 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-radius: 32px;
-  box-shadow: 0 20px 60px rgba(74, 144, 226, 0.2);
-  padding: 48px 24px;
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(74, 144, 226, 0.15);
+  padding: 40px 24px;
+}
+
+@keyframes rainbowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 柔和光晕 - 错误反馈 */
+.warm-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 152, 0, 0.2) 0%, rgba(255, 152, 0, 0) 70%);
+  animation: warmPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes warmPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 0.5; }
+}
+
+/* 飘分动画 */
+.score-popup {
+  position: absolute;
+  top: -20px;
+  right: 20px;
+  animation: scoreFloatUp 1.2s ease-out forwards;
+}
+
+.score-plus {
+  font-size: 32px;
+  font-weight: 800;
+  color: #FFD700;
+  text-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 20px rgba(255, 215, 0, 0.5),
+    2px 2px 0 #FF6B6B;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+@keyframes scoreFloatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1.2);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+}
+
+/* 五彩纸屑 */
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 150px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  font-size: 16px;
+  color: var(--color);
+  opacity: 0;
+  animation: confettiFall 1.5s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) rotate(0deg) scale(0.5);
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(120px) translateX(var(--x)) rotate(360deg) scale(0.8);
+  }
+}
+
+/* 悬浮反馈层 */
+.feedback-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(74, 144, 226, 0.15);
+  padding: 40px 20px;
+}
+
+.feedback-overlay.wrong {
+  box-shadow: 0 20px 60px rgba(255, 152, 0, 0.15);
 }
 
 /* 反馈内容容器 */
@@ -908,45 +1045,74 @@ onMounted(() => {
 /* 正确反馈样式 - 优化版 */
 .correct-mark {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: markPulse 0.6s ease-in-out;
+  animation: markEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes markEnter {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 .mark-circle {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4), 0 0 60px rgba(76, 175, 80, 0.2);
+  box-shadow: 
+    0 8px 25px rgba(76, 175, 80, 0.4),
+    0 0 50px rgba(76, 175, 80, 0.2),
+    inset 0 2px 10px rgba(255, 255, 255, 0.3);
   animation: markBreath 2s ease-in-out infinite;
   position: relative;
   z-index: 2;
 }
 
+@keyframes markBreath {
+  0%, 100% { box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4), 0 0 50px rgba(76, 175, 80, 0.2); }
+  50% { box-shadow: 0 8px 35px rgba(76, 175, 80, 0.5), 0 0 70px rgba(76, 175, 80, 0.3); }
+}
+
 .mark-icon {
   color: white;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  animation: scaleUp 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.1s backwards;
+  animation: iconPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s backwards;
+}
+
+@keyframes iconPop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
 }
 
 .mark-ring {
   position: absolute;
-  width: 130px;
-  height: 130px;
-  border: 4px solid #4CAF50;
+  width: 110px;
+  height: 110px;
+  border: 3px solid #4CAF50;
   border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0;
-  animation: ringRipple 1s ease-out 0.2s backwards;
+  animation: ringRipple 0.8s ease-out 0.15s backwards;
+}
+
+@keyframes ringRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
 }
 
 .mark-sparkles {
@@ -962,40 +1128,182 @@ onMounted(() => {
   position: absolute;
   top: 50%;
   left: 50%;
-  font-size: 20px;
+  font-size: 18px;
   animation: sparkleRotate 3s linear infinite;
   animation-delay: var(--delay);
   opacity: 0.9;
+  transform-origin: center;
 }
 
-/* 错误反馈样式 - 优化版 */
+@keyframes sparkleRotate {
+  0% { transform: rotate(var(--angle)) translateX(55px) rotate(calc(-1 * var(--angle))); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: rotate(calc(var(--angle) + 360deg)) translateX(55px) rotate(calc(-1 * calc(var(--angle) + 360deg))); opacity: 0; }
+}
+
+/* 错误反馈样式 - 温和版 */
+.wrong-answer {
+  animation: wrongGentleShake 0.6s ease-in-out;
+}
+
+@keyframes wrongGentleShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* 过渡动画 */
+.feedback-enter-active,
+.feedback-leave-active {
+  transition: all 0.3s ease;
+}
+
+.feedback-enter-from,
+.feedback-leave-to {
+  opacity: 0;
+}
+
+/* 题目切换过渡 */
+.question-enter-active,
+.question-leave-active {
+  transition: all 0.3s ease;
+}
+
+.question-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.question-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+/* 动画效果 */
+@keyframes bounceIn {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@keyframes ringExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkleRotate {
+  0% { transform: rotate(var(--angle)) translateX(55px) rotate(calc(-1 * var(--angle))); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: rotate(calc(var(--angle) + 360deg)) translateX(55px) rotate(calc(-1 * calc(var(--angle) + 360deg))); opacity: 0; }
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* 正确反馈样式 */
+.correct-mark {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mark-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  position: relative;
+  z-index: 2;
+}
+
+.mark-icon {
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.mark-ring {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 3px solid #4CAF50;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: ringExpand 1s ease-out 0.2s backwards;
+}
+
+.mark-sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 18px;
+  animation: sparkleRotate 3s linear infinite;
+  animation-delay: var(--delay);
+  opacity: 0.9;
+  transform-origin: center;
+}
+
+/* 错误反馈样式 */
 .wrong-answer {
   animation: wrongShake 0.5s ease-in-out;
 }
 
 .answer-card {
-  background: linear-gradient(135deg, #ffffff 0%, #FFF8E1 100%);
-  border-radius: 24px;
-  padding: 20px 40px;
-  box-shadow: 0 10px 40px rgba(255, 152, 0, 0.25), 0 0 0 4px rgba(255, 152, 0, 0.1);
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  border-radius: 20px;
+  padding: 16px 32px;
+  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  border: 3px solid rgba(255, 152, 0, 0.3);
+  gap: 6px;
+  border: 2px solid rgba(255, 152, 0, 0.3);
 }
 
 .answer-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #FF9800;
+  color: #E65100;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   font-family: inherit;
 }
 
 .answer-number {
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 800;
   color: #E65100;
   font-family: inherit;
