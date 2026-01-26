@@ -142,6 +142,10 @@ function goBack() {
 function handleRetry() {
   playSound('click')
   showModal.value = false
+  userAnswer.value = ''  // 重置用户输入
+  showAnswer.value = false  // 重置答案显示状态
+  isWaiting.value = false  // 重置等待状态
+  questionKey.value = 0    // 重置题目key确保重新渲染
   initGame()
 }
 
