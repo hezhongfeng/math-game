@@ -2,7 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Trophy, Star } from 'lucide-vue-next'
-import { DIFFICULTY_LEVELS, DIFFICULTY_GROUPS } from '../config/difficulty'
+import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
@@ -11,13 +11,9 @@ const router = useRouter()
 const { getBestScore, getCompletedDifficulties, getAllBestScores } = useStorage()
 const { playSound } = useSound()
 
-const completedDifficulties = computed(() => getCompletedDifficulties())
-const allBestScores = computed(() => getAllBestScores())
-const completedCount = computed(() => Object.keys(allBestScores.value).length)
-
-function getDifficultyById(id) {
-  return DIFFICULTY_LEVELS.find(d => d.id === id)
-}
+const completedDifficulties = getCompletedDifficulties()
+const allBestScores = getAllBestScores()
+const completedCount = computed(() => Object.keys(allBestScores).length)
 
 function goBack() {
   playSound('click')
@@ -36,7 +32,7 @@ function getDifficultyBestScore(difficultyId) {
 function isDifficultyLocked(difficulty) {
   if (difficulty.id === 1) return false
   const previousId = difficulty.id - 1
-  return !completedDifficulties.value.includes(previousId)
+  return !completedDifficulties.includes(previousId)
 }
 
 onMounted(() => {

@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Music, Volume2, VolumeX, Volume1 } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 import { useSettingsStore } from '../stores/settings'
+import { getAudioContext, ensureAudioContextRunning, closeAudioContext } from '../utils/audioContext'
+import { createBackgroundMusicBuffer } from '../utils/audioSynthesis'
 
 const props = defineProps({
   enabled: {
@@ -26,125 +28,48 @@ const volumeIcon = computed(() => {
   return Volume2
 })
 
-let audioContext = null
 let audioBuffer = null
 let sourceNode = null
 let gainNode = null
-let isAudioContextInitialized = false
 
 function createBackgroundMusic() {
-  if (!audioContext) return
-
-  const duration = 8 // 8秒循环，两段体
-  const sampleRate = audioContext.sampleRate
-  const buffer = audioContext.createBuffer(2, duration * sampleRate, sampleRate)
-
-  // A段 - 明亮上升 (前4秒)
-  const partA = [
-    { freq: 523.25, time: 0.0, dur: 0.5 },   // C5
-    { freq: 523.25, time: 0.5, dur: 0.5 },   // C5
-    { freq: 783.99, time: 1.0, dur: 0.5 },   // G5
-    { freq: 783.99, time: 1.5, dur: 0.5 },   // G5
-    { freq: 880.00, time: 2.0, dur: 0.5 },   // A5
-    { freq: 880.00, time: 2.5, dur: 0.5 },   // A5
-    { freq: 783.99, time: 3.0, dur: 0.5 },   // G5
-    { freq: 698.46, time: 3.5, dur: 0.5 },   // F5
-  ]
-
-  // B段 - 柔和下落 (后4秒)
-  const partB = [
-    { freq: 659.25, time: 4.0, dur: 0.5 },   // E5
-    { freq: 659.25, time: 4.5, dur: 0.5 },   // E5
-    { freq: 587.33, time: 5.0, dur: 0.5 },   // D5
-    { freq: 587.33, time: 5.5, dur: 0.5 },   // D5
-    { freq: 523.25, time: 6.0, dur: 0.5 },   // C5
-    { freq: 523.25, time: 6.5, dur: 0.5 },   // C5
-    { freq: 659.25, time: 7.0, dur: 0.5 },   // E5
-    { freq: 523.25, time: 7.5, dur: 0.5 },   // C5
-  ]
-
-  // 简单的低音
-  const bass = [
-    { freq: 196.00, time: 0 },   // G3
-    { freq: 196.00, time: 1 },   // G3
-    { freq: 220.00, time: 2 },   // A3
-    { freq: 220.00, time: 3 },   // A3
-    { freq: 196.00, time: 4 },   // G3
-    { freq: 196.00, time: 5 },   // G3
-    { freq: 164.81, time: 6 },   // E3
-    { freq: 196.00, time: 7 },   // G3
-  ]
-
-  const melody = [...partA, ...partB]
-
-  for (let channel = 0; channel < 2; channel++) {
-    const channelData = buffer.getChannelData(channel)
-
-    // 主旋律
-    melody.forEach(note => {
-      const startSample = Math.floor(note.time * sampleRate)
-      const noteDuration = Math.floor(note.dur * sampleRate)
-
-      for (let i = startSample; i < startSample + noteDuration && i < channelData.length; i++) {
-        const t = (i - startSample) / sampleRate
-        
-        const envelope = Math.exp(-t * 2.5) * (1 - t * 0.15)
-        const sample = Math.sin(2 * Math.PI * note.freq * i / sampleRate) * 0.15 * envelope
-        
-        channelData[i] += sample
-      }
-    })
-
-    // 低音伴奏
-    bass.forEach(note => {
-      const startSample = Math.floor(note.time * sampleRate)
-      const noteDur = 1.0
-
-      for (let i = startSample; i < startSample + noteDur * sampleRate && i < channelData.length; i++) {
-        const t = (i - startSample) / sampleRate
-        const envelope = Math.exp(-t * 1.2)
-        const sample = Math.sin(2 * Math.PI * note.freq * i / sampleRate) * 0.06 * envelope
-        const sample2 = Math.sin(2 * Math.PI * note.freq * 2 * i / sampleRate) * 0.03 * envelope
-        
-        channelData[i] += sample + sample2
-      }
-    })
-  }
-
-  return buffer
+  const ctx = getAudioContext()
+  if (!ctx) return null
+  return createBackgroundMusicBuffer(ctx)
 }
 
 async function play() {
-  if (!props.enabled || !audioBuffer || !audioContext) return
+  if (!props.enabled || !audioBuffer) return
+
+  const ctx = getAudioContext()
+  if (!ctx) return
 
   try {
     // 确保 AudioContext 已恢复（移动端需要用户交互）
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume()
-    }
+    await ensureAudioContextRunning()
 
     if (sourceNode) {
       sourceNode.stop()
       sourceNode.disconnect()
     }
 
-    sourceNode = audioContext.createBufferSource()
+    sourceNode = ctx.createBufferSource()
     sourceNode.buffer = audioBuffer
     sourceNode.loop = true
 
-    gainNode = audioContext.createGain()
+    gainNode = ctx.createGain()
     gainNode.gain.value = 0 // 初始音量为0，用于淡入
 
     sourceNode.connect(gainNode)
-    gainNode.connect(audioContext.destination)
+    gainNode.connect(ctx.destination)
 
     sourceNode.start()
     isPlaying.value = true
 
     // 快速淡入
-    gainNode.gain.linearRampToValueAtTime(settingsStore.musicVolume, audioContext.currentTime + 0.3)
+    gainNode.gain.linearRampToValueAtTime(settingsStore.musicVolume, ctx.currentTime + 0.3)
   } catch (error) {
-    console.warn('背景音乐播放失败:', error)
+    // 播放失败继续进行
   }
 }
 
@@ -153,9 +78,12 @@ function pause() {
     try {
       // 快速淡出
       if (gainNode) {
-        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2)
+        const ctx = getAudioContext()
+        if (ctx) {
+          gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2)
+        }
       }
-      
+
       setTimeout(() => {
         if (sourceNode) {
           sourceNode.stop()
@@ -164,59 +92,49 @@ function pause() {
         isPlaying.value = false
       }, 250)
     } catch (error) {
-      console.warn('背景音乐暂停失败:', error)
+      // 暂停失败继续进行
     }
   }
 }
 
 async function togglePlay() {
   playSound('click')
-  
-  // 首次点击时初始化 AudioContext
-  if (!isAudioContextInitialized) {
-    await initAudioContext()
+
+  // 初始化 AudioContext 和创建背景音乐
+  if (!audioBuffer) {
+    audioBuffer = createBackgroundMusic()
   }
-  
+
   // 切换播放状态
   if (isPlaying.value) {
     pause()
   } else {
     await play()
   }
-  
+
   // 同步更新 store 中的音乐开关状态
   settingsStore.toggleMusic()
 }
 
 function setVolume(newVolume) {
   settingsStore.musicVolume = Math.max(0, Math.min(1, newVolume))
-  
+
   if (gainNode) {
     gainNode.gain.value = settingsStore.musicVolume
   }
 }
 
-async function initAudioContext() {
-  if (isAudioContextInitialized) return true
-  
-  try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    
-    // 如果 AudioContext 被暂停，尝试恢复
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume()
+watch(() => props.enabled, async (enabled) => {
+  if (enabled && !isPlaying.value) {
+    // 确保音频缓冲区已创建
+    if (!audioBuffer) {
+      audioBuffer = createBackgroundMusic()
     }
-    
-    audioBuffer = createBackgroundMusic()
-    isAudioContextInitialized = true
-    
-    console.log('AudioContext 初始化成功，状态:', audioContext.state)
-    return true
-  } catch (error) {
-    console.warn('音频上下文初始化失败:', error)
-    return false
+    await play()
+  } else if (!enabled && isPlaying.value) {
+    pause()
   }
-}
+})
 
 function handleClickOutside(event) {
   if (volumeControlRef.value && !volumeControlRef.value.contains(event.target)) {
@@ -231,46 +149,32 @@ watch(() => settingsStore.musicVolume, (newVolume) => {
   }
 })
 
-watch(() => props.enabled, async (enabled) => {
-  if (enabled && !isPlaying.value) {
-    // 确保 AudioContext 已初始化
-    if (!isAudioContextInitialized) {
-      await initAudioContext()
-    }
-    await play()
-  } else if (!enabled && isPlaying.value) {
-    pause()
-  }
-})
-
 onMounted(() => {
-  // 在移动端不自动初始化 AudioContext，等待用户交互
-  // 在桌面端尝试初始化（因为桌面端自动播放限制较少）
+  // 在桌面端尝试初始化背景音乐缓冲区
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  
-  if (!isMobile) {
-    initAudioContext().then(success => {
-      if (success && props.enabled) {
-        play()
-      }
+
+  if (!isMobile && props.enabled) {
+    audioBuffer = createBackgroundMusic()
+    play().catch(() => {
+      // 初始化失败继续
     })
   }
 
   document.addEventListener('click', handleClickOutside)
-  
+
   // 添加全局用户交互监听器，用于初始化音频
   const handleFirstInteraction = async () => {
-    if (!isAudioContextInitialized) {
-      await initAudioContext()
-      if (props.enabled && !isPlaying.value) {
-        play()
+    if (!audioBuffer) {
+      audioBuffer = createBackgroundMusic()
+      if (props.enabled) {
+        await play()
       }
       // 移除监听器，只需要初始化一次
       document.removeEventListener('touchstart', handleFirstInteraction)
       document.removeEventListener('click', handleFirstInteraction)
     }
   }
-  
+
   // 监听首次用户交互
   document.addEventListener('touchstart', handleFirstInteraction, { once: true })
   document.addEventListener('click', handleFirstInteraction, { once: true })
@@ -278,11 +182,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   pause()
-  
-  if (audioContext) {
-    audioContext.close()
-  }
-  
+  closeAudioContext()
   document.removeEventListener('click', handleClickOutside)
 })
 

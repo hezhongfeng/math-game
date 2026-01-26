@@ -41,7 +41,7 @@ export const useSettingsStore = defineStore('settings', () => {
         musicVolume.value = settings.musicVolume ?? 0.8
       }
     } catch (error) {
-      console.error('加载设置失败:', error)
+      // 加载失败使用默认设置
     }
   }
 
@@ -55,7 +55,7 @@ export const useSettingsStore = defineStore('settings', () => {
         musicVolume: musicVolume.value
       }))
     } catch (error) {
-      console.error('保存设置失败:', error)
+      // 保存失败继续
     }
   }
 

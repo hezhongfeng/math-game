@@ -14,7 +14,6 @@ export function useStorage() {
       const data = localStorage.getItem(STORAGE_KEY)
       return data ? JSON.parse(data) : { bestScores: {}, progress: {} }
     } catch (error) {
-      console.error('读取本地存储失败:', error)
       showError('读取游戏数据失败，请检查浏览器存储设置')
       return { bestScores: {}, progress: {} }
     }
@@ -25,7 +24,6 @@ export function useStorage() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
     } catch (error) {
-      console.error('保存到本地存储失败:', error)
       showError('保存游戏数据失败，存储空间可能已满')
     }
   }
