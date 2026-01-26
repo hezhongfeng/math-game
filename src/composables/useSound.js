@@ -11,6 +11,7 @@ export function useSound() {
   const isEnabled = computed(() => settingsStore.soundEnabled)
   const { error: showError } = useToast()
   let audioContext = null
+  let isAudioContextSetup = false
 
   /**
    * 初始化 AudioContext
@@ -19,6 +20,7 @@ export function useSound() {
     if (!audioContext) {
       try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        setupAudioContextListeners()
       } catch (error) {
         console.error('AudioContext 初始化失败:', error)
         showError('音频功能初始化失败')
@@ -29,23 +31,49 @@ export function useSound() {
   }
 
   /**
-   * 播放音效
-   * @param {string} type - 音效类型: 'correct', 'wrong', 'win', 'click'
+   * 设置 AudioContext 用户交互监听器
    */
-  function playSound(type) {
-    if (!isEnabled.value) return
-
-    const ctx = initAudioContext()
-    if (!ctx) return
-
-    // 恢复 AudioContext（某些浏览器需要用户交互后才能播放）
-    try {
-      if (ctx.state === 'suspended') {
-        ctx.resume()
+  function setupAudioContextListeners() {
+    if (isAudioContextSetup || !audioContext) return
+    
+    isAudioContextSetup = true
+    
+    const handleUserInteraction = async () => {
+      if (audioContext && audioContext.state === 'suspended') {
+        try {
+          await audioContext.resume()
+          console.log('AudioContext 已恢复，状态:', audioContext.state)
+        } catch (error) {
+          console.error('恢复 AudioContext 失败:', error)
+        }
       }
-    } catch (error) {
-      console.error('恢复 AudioContext 失败:', error)
     }
+    
+    // 监听用户交互事件
+    const events = ['touchstart', 'touchend', 'click', 'keydown']
+    events.forEach(event => {
+      document.addEventListener(event, handleUserInteraction, { once: true })
+    })
+  }
+
+/**
+ * 播放音效
+ * @param {string} type - 音效类型: 'correct', 'wrong', 'win', 'click'
+ */
+async function playSound(type) {
+  if (!isEnabled.value) return
+
+  const ctx = initAudioContext()
+  if (!ctx) return
+
+  // 恢复 AudioContext（某些浏览器需要用户交互后才能播放）
+  try {
+    if (ctx.state === 'suspended') {
+      await ctx.resume()
+    }
+  } catch (error) {
+    console.error('恢复 AudioContext 失败:', error)
+  }
 
     const oscillator = ctx.createOscillator()
     const gainNode = ctx.createGain()

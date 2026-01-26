@@ -30,6 +30,7 @@ let audioContext = null
 let audioBuffer = null
 let sourceNode = null
 let gainNode = null
+let isAudioContextInitialized = false
 
 function createBackgroundMusic() {
   if (!audioContext) return
@@ -113,10 +114,15 @@ function createBackgroundMusic() {
   return buffer
 }
 
-function play() {
+async function play() {
   if (!props.enabled || !audioBuffer || !audioContext) return
 
   try {
+    // 确保 AudioContext 已恢复（移动端需要用户交互）
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume()
+    }
+
     if (sourceNode) {
       sourceNode.stop()
       sourceNode.disconnect()
@@ -163,14 +169,19 @@ function pause() {
   }
 }
 
-function togglePlay() {
+async function togglePlay() {
   playSound('click')
+  
+  // 首次点击时初始化 AudioContext
+  if (!isAudioContextInitialized) {
+    await initAudioContext()
+  }
   
   // 切换播放状态
   if (isPlaying.value) {
     pause()
   } else {
-    play()
+    await play()
   }
   
   // 同步更新 store 中的音乐开关状态
@@ -182,6 +193,28 @@ function setVolume(newVolume) {
   
   if (gainNode) {
     gainNode.gain.value = settingsStore.musicVolume
+  }
+}
+
+async function initAudioContext() {
+  if (isAudioContextInitialized) return true
+  
+  try {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    
+    // 如果 AudioContext 被暂停，尝试恢复
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume()
+    }
+    
+    audioBuffer = createBackgroundMusic()
+    isAudioContextInitialized = true
+    
+    console.log('AudioContext 初始化成功，状态:', audioContext.state)
+    return true
+  } catch (error) {
+    console.warn('音频上下文初始化失败:', error)
+    return false
   }
 }
 
@@ -198,27 +231,49 @@ watch(() => settingsStore.musicVolume, (newVolume) => {
   }
 })
 
-watch(() => props.enabled, (enabled) => {
+watch(() => props.enabled, async (enabled) => {
   if (enabled && !isPlaying.value) {
-    play()
+    // 确保 AudioContext 已初始化
+    if (!isAudioContextInitialized) {
+      await initAudioContext()
+    }
+    await play()
   } else if (!enabled && isPlaying.value) {
     pause()
   }
 })
 
 onMounted(() => {
-  try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    audioBuffer = createBackgroundMusic()
-    
-    if (props.enabled) {
-      play()
-    }
-  } catch (error) {
-    console.warn('音频上下文初始化失败:', error)
+  // 在移动端不自动初始化 AudioContext，等待用户交互
+  // 在桌面端尝试初始化（因为桌面端自动播放限制较少）
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  
+  if (!isMobile) {
+    initAudioContext().then(success => {
+      if (success && props.enabled) {
+        play()
+      }
+    })
   }
 
   document.addEventListener('click', handleClickOutside)
+  
+  // 添加全局用户交互监听器，用于初始化音频
+  const handleFirstInteraction = async () => {
+    if (!isAudioContextInitialized) {
+      await initAudioContext()
+      if (props.enabled && !isPlaying.value) {
+        play()
+      }
+      // 移除监听器，只需要初始化一次
+      document.removeEventListener('touchstart', handleFirstInteraction)
+      document.removeEventListener('click', handleFirstInteraction)
+    }
+  }
+  
+  // 监听首次用户交互
+  document.addEventListener('touchstart', handleFirstInteraction, { once: true })
+  document.addEventListener('click', handleFirstInteraction, { once: true })
 })
 
 onUnmounted(() => {
