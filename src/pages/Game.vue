@@ -24,7 +24,7 @@ const router = useRouter()
 const difficulty = getDifficultyById(parseInt(props.id))
 const settingsStore = useSettingsStore()
 const { updateBestScore } = useStorage()
-const { playSound } = useSound()
+const { playSound, forceInitializeAudioContext } = useSound()
 
 // 游戏状态
 const game = useGame(difficulty)
@@ -157,6 +157,14 @@ function handleHome() {
 
 onMounted(() => {
   settingsStore.loadSettings()
+
+  // iOS Safari 兼容性修复：在游戏开始前强制初始化 AudioContext
+  // 这会在用户看到游戏界面后立即尝试恢复 AudioContext
+  forceInitializeAudioContext().catch(() => {
+    // AudioContext 初始化或恢复失败，继续游戏
+    // 在第一次用户交互时会再次尝试
+  })
+
   initGame()
 
   const handleKeyPress = (e) => {

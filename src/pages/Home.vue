@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Trophy, Play, Star } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
@@ -7,7 +8,7 @@ import { DIFFICULTY_GROUPS } from '../config/difficulty'
 
 const router = useRouter()
 const { getAllBestScores } = useStorage()
-const { playSound } = useSound()
+const { playSound, forceInitializeAudioContext } = useSound()
 
 const bestScores = getAllBestScores()
 const completedCount = Object.keys(bestScores).length
@@ -52,6 +53,15 @@ function viewAchievements() {
   playSound('click')
   router.push('/difficulty')
 }
+
+// iOS Safari 兼容性修复：在应用加载时强制初始化 AudioContext
+// 这会在用户看到主页后立即尝试恢复 AudioContext，确保后续音频能够播放
+onMounted(() => {
+  forceInitializeAudioContext().catch(() => {
+    // AudioContext 初始化失败，继续进行
+    // 在用户首次交互时会重新尝试
+  })
+})
 </script>
 
 <template>
