@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Refactored
+
+- **Code Organization & Architecture**:
+  - Removed duplicate `getDifficultyById` function from DifficultySelect.vue
+  - Eliminated 12 console.log/error statements from production code
+  - Simplified unnecessary computed wrappers
+
+- **Audio Management**:
+  - Extracted AudioContext initialization to new `utils/audioContext.js`
+  - Avoided duplicate AudioContext setup code in useSound.js and BackgroundMusic.vue
+  - Created centralized audio context management with resume/close utilities
+
+- **Audio Synthesis**:
+  - Extracted background music synthesis to new `utils/audioSynthesis.js`
+  - Moved 100+ lines of audio buffer generation from BackgroundMusic.vue component
+  - Improved separation of concerns: UI logic vs. audio synthesis
+
+- **Configuration Management**:
+  - Extended `config/constants.js` with audio configurations
+  - Added `AUDIO_FREQUENCIES` object: musical notes for all sound effects
+  - Added `AUDIO_PARAMS` object: gain, duration, timing parameters
+  - Eliminated magic numbers and hardcoded frequency values
+
+- **Code Size Reduction**:
+  - BackgroundMusic.vue: 294 → 194 lines (-100 lines, -34%)
+  - useSound.js: cleaner with parametrized sound functions
+  - Better code maintainability and reusability
+
 ### Changed
 
 - **Background Music**:
