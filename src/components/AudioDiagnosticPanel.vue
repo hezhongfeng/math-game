@@ -135,7 +135,7 @@ onUnmounted(() => {
 
 <template>
   <Transition name="slide-in">
-    <div v-if="show && isDebugMode()" class="audio-diagnostic-panel">
+    <div v-if="show" class="audio-diagnostic-panel">
       <!-- 最小化状态 -->
       <div v-if="isMinimized" class="minimized-panel">
         <div class="minimized-content">
