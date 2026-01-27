@@ -8,6 +8,8 @@
  * - 需要主动处理状态恢复
  */
 
+import { logAudioEvent, recordUserInteraction, LOG_LEVELS, LOG_CATEGORIES } from './audioDebug.js'
+
 let audioContext = null
 let isAudioContextInitialized = false
 let hasUserInteracted = false
@@ -22,11 +24,34 @@ export function getAudioContext() {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext
       if (!AudioContextClass) {
         console.warn('AudioContext is not supported in this browser')
+        logAudioEvent(
+          LOG_LEVELS.ERROR,
+          LOG_CATEGORIES.CONTEXT,
+          'AudioContext 不支持',
+          { userAgent: navigator.userAgent }
+        )
         return null
       }
       audioContext = new AudioContextClass()
       setupAudioContextListeners()
+      
+      logAudioEvent(
+        LOG_LEVELS.SUCCESS,
+        LOG_CATEGORIES.CONTEXT,
+        'AudioContext 创建成功',
+        {
+          state: audioContext.state,
+          sampleRate: audioContext.sampleRate,
+          baseLatency: audioContext.baseLatency
+        }
+      )
     } catch (error) {
+      logAudioEvent(
+        LOG_LEVELS.ERROR,
+        LOG_CATEGORIES.CONTEXT,
+        'AudioContext 创建失败',
+        { error: error.message, stack: error.stack }
+      )
       return null
     }
   }
@@ -36,7 +61,7 @@ export function getAudioContext() {
 /**
  * 设置 AudioContext 用户交互监听器，用于恢复被暂停的音频
  * iOS Safari 在用户交互前不允许播放音频
- * 
+ *
  * iOS Safari 26.2 增强：扩大事件监听器覆盖范围
  */
 function setupAudioContextListeners() {
@@ -44,7 +69,7 @@ function setupAudioContextListeners() {
 
   isAudioContextInitialized = true
 
-  const handleUserInteraction = () => {
+  const handleUserInteraction = (event) => {
     if (!hasUserInteracted && audioContext) {
       hasUserInteracted = true
       // iOS Safari 必须：同步恢复 AudioContext
@@ -52,12 +77,31 @@ function setupAudioContextListeners() {
       // WebKit Bug 修复：在某些版本的 Safari 中，必须通过用户交互事件处理程序直接调用 resume()
       const resumeContext = () => {
         if (audioContext && audioContext.state === 'suspended') {
-          audioContext.resume().catch(() => {})
+          audioContext.resume()
+            .then(() => {
+              logAudioEvent(
+                LOG_LEVELS.SUCCESS,
+                LOG_CATEGORIES.CONTEXT,
+                'AudioContext 恢复成功',
+                { state: audioContext.state, event: event.type }
+              )
+            })
+            .catch((error) => {
+              logAudioEvent(
+                LOG_LEVELS.WARN,
+                LOG_CATEGORIES.CONTEXT,
+                'AudioContext 恢复失败',
+                { error: error.message, event: event.type }
+              )
+            })
         }
       }
 
       resumeContext()
     }
+    
+    // 记录用户交互
+    recordUserInteraction(event.type)
   }
 
   // iOS Safari 26.2 增强：监听更多事件类型，确保捕获早期交互
@@ -97,32 +141,81 @@ function setupAudioContextListeners() {
 /**
  * 确保 AudioContext 处于运行状态
  * 这是播放音频前的必要检查，特别是在 iOS 上
- * 
+ *
  * iOS Safari 26.2 关键修复：添加状态轮询，确保 resume 完成
  */
 export async function ensureAudioContextRunning() {
   const ctx = getAudioContext()
-  if (!ctx) return false
+  if (!ctx) {
+    logAudioEvent(
+      LOG_LEVELS.WARN,
+      LOG_CATEGORIES.CONTEXT,
+      'AudioContext 不存在，无法恢复'
+    )
+    return false
+  }
+
+  const initialState = ctx.state
+  logAudioEvent(
+    LOG_LEVELS.DEBUG,
+    LOG_CATEGORIES.CONTEXT,
+    '检查 AudioContext 状态',
+    { state: initialState }
+  )
 
   // iOS 上即使用户交互过，AudioContext 有时仍然处于 suspended
   // 需要再次尝试恢复
   if (ctx.state === 'suspended') {
     try {
+      logAudioEvent(
+        LOG_LEVELS.INFO,
+        LOG_CATEGORIES.CONTEXT,
+        '尝试恢复 AudioContext'
+      )
+      
       await ctx.resume()
       hasUserInteracted = true
       
+      logAudioEvent(
+        LOG_LEVELS.INFO,
+        LOG_CATEGORIES.CONTEXT,
+        'AudioContext.resume() 调用完成',
+        { state: ctx.state }
+      )
+
       // iOS Safari 26.2 关键修复：等待状态实际变为 running
       // 某些版本的 Safari 中，resume() 返回后状态可能不会立即变更
-      await waitForAudioContextRunning(ctx, 500)
+      const stateChanged = await waitForAudioContextRunning(ctx, 500)
       
-      return ctx.state === 'running'
+      const isRunning = ctx.state === 'running'
+      logAudioEvent(
+        isRunning ? LOG_LEVELS.SUCCESS : LOG_LEVELS.WARN,
+        LOG_CATEGORIES.CONTEXT,
+        `AudioContext 恢复${isRunning ? '成功' : '失败'}`,
+        { state: ctx.state, initialState, stateChanged }
+      )
+      
+      return isRunning
     } catch (error) {
+      logAudioEvent(
+        LOG_LEVELS.ERROR,
+        LOG_CATEGORIES.CONTEXT,
+        'AudioContext 恢复异常',
+        { error: error.message, stack: error.stack, state: ctx.state }
+      )
       // 恢复失败，返回 false 但继续允许播放
       // （某些情况下即使返回失败，音频仍可能播放）
       return false
     }
   }
 
+  logAudioEvent(
+    LOG_LEVELS.SUCCESS,
+    LOG_CATEGORIES.CONTEXT,
+    'AudioContext 已经在运行状态',
+    { state: ctx.state }
+  )
+  
   return true
 }
 
@@ -135,28 +228,56 @@ export async function ensureAudioContextRunning() {
 function waitForAudioContextRunning(ctx, timeout = 500) {
   return new Promise((resolve) => {
     const startTime = Date.now()
-    
+    const initialState = ctx.state
+
+    logAudioEvent(
+      LOG_LEVELS.DEBUG,
+      LOG_CATEGORIES.STATE,
+      `开始轮询 AudioContext 状态，超时: ${timeout}ms`,
+      { initialState }
+    )
+
     // 如果已经是 running，立即返回
     if (ctx.state === 'running') {
+      logAudioEvent(
+        LOG_LEVELS.SUCCESS,
+        LOG_CATEGORIES.STATE,
+        'AudioContext 已经是 running 状态'
+      )
       resolve(true)
       return
     }
-    
+
+    let checkCount = 0
+    const maxChecks = timeout / 10
+
     // 状态变化监听器
     const checkState = () => {
       const elapsed = Date.now() - startTime
-      
+      checkCount++
+
       if (ctx.state === 'running') {
+        logAudioEvent(
+          LOG_LEVELS.SUCCESS,
+          LOG_CATEGORIES.STATE,
+          `AudioContext 状态变为 running (轮询 ${checkCount} 次, 耗时 ${elapsed}ms)`
+        )
         resolve(true)
       } else if (elapsed >= timeout) {
         // 超时，但不一定失败
+        logAudioEvent(
+          LOG_LEVELS.WARN,
+          LOG_CATEGORIES.STATE,
+          `AudioContext 状态轮询超时 (检查 ${checkCount} 次, 耗时 ${elapsed}ms)`,
+          { finalState: ctx.state, initialState }
+        )
         resolve(false)
       } else {
         // 继续检查
         setTimeout(checkState, 10)
       }
     }
-    
+
     // 开始轮询
     checkState()
   })

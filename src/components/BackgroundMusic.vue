@@ -5,6 +5,7 @@ import { useSound } from '../composables/useSound'
 import { useSettingsStore } from '../stores/settings'
 import { getAudioContext, closeAudioContext } from '../utils/audioContext'
 import { createBackgroundMusicBuffer } from '../utils/audioSynthesis'
+import { logAudioEvent, LOG_LEVELS, LOG_CATEGORIES } from '../utils/audioDebug'
 
 const props = defineProps({
   enabled: {
@@ -34,23 +35,52 @@ let gainNode = null
 
 function createBackgroundMusic() {
   const ctx = getAudioContext()
-  if (!ctx) return null
-  return createBackgroundMusicBuffer(ctx)
+  if (!ctx) {
+    logAudioEvent(
+      LOG_LEVELS.ERROR,
+      LOG_CATEGORIES.PLAY,
+      '背景音乐缓冲区创建失败：AudioContext 不存在'
+    )
+    return null
+  }
+
+  logAudioEvent(
+    LOG_LEVELS.INFO,
+    LOG_CATEGORIES.PLAY,
+    '开始创建背景音乐缓冲区',
+    { contextState: ctx.state }
+  )
+
+  const buffer = createBackgroundMusicBuffer(ctx)
+
+  if (buffer) {
+    logAudioEvent(
+      LOG_LEVELS.SUCCESS,
+      LOG_CATEGORIES.PLAY,
+      '背景音乐缓冲区创建成功',
+      { duration: buffer.duration, sampleRate: buffer.sampleRate, channels: buffer.numberOfChannels }
+    )
+  } else {
+    logAudioEvent(
+      LOG_LEVELS.ERROR,
+      LOG_CATEGORIES.PLAY,
+      '背景音乐缓冲区创建失败'
+    )
+  }
+
+  return buffer
 }
 
 async function play() {
   if (!props.enabled || !audioBuffer) return
-
   const ctx = getAudioContext()
   if (!ctx) return
 
+  logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.PLAY, '开始播放背景音乐', { enabled: props.enabled })
+
   try {
-    // iOS Safari 关键修复：同步恢复 AudioContext
-    // 不能使用 await，必须在用户交互的同步调用栈中调用 resume()
     if (ctx.state === 'suspended') {
-      ctx.resume().catch(() => {
-        // 忽略恢复失败
-      })
+      ctx.resume().catch(() => {})
     }
 
     if (sourceNode) {
@@ -63,7 +93,7 @@ async function play() {
     sourceNode.loop = true
 
     gainNode = ctx.createGain()
-    gainNode.gain.value = 0 // 初始音量为0，用于淡入
+    gainNode.gain.value = 0
 
     sourceNode.connect(gainNode)
     gainNode.connect(ctx.destination)
@@ -71,17 +101,19 @@ async function play() {
     sourceNode.start()
     isPlaying.value = true
 
-    // 快速淡入
     gainNode.gain.linearRampToValueAtTime(settingsStore.musicVolume, ctx.currentTime + 0.3)
+
+    logAudioEvent(LOG_LEVELS.SUCCESS, LOG_CATEGORIES.PLAY, '背景音乐播放成功')
   } catch (error) {
-    // 播放失败继续进行
+    logAudioEvent(LOG_LEVELS.ERROR, LOG_CATEGORIES.PLAY, '背景音乐播放失败', { error: error.message })
   }
 }
 
 function pause() {
   if (sourceNode && isPlaying.value) {
+    logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.PLAY, '暂停背景音乐')
+
     try {
-      // 快速淡出
       if (gainNode) {
         const ctx = getAudioContext()
         if (ctx) {
@@ -95,9 +127,10 @@ function pause() {
           sourceNode.disconnect()
         }
         isPlaying.value = false
+        logAudioEvent(LOG_LEVELS.SUCCESS, LOG_CATEGORIES.PLAY, '背景音乐暂停成功')
       }, 250)
     } catch (error) {
-      // 暂停失败继续进行
+      logAudioEvent(LOG_LEVELS.ERROR, LOG_CATEGORIES.PLAY, '背景音乐暂停失败', { error: error.message })
     }
   }
 }
@@ -105,27 +138,29 @@ function pause() {
 async function togglePlay() {
   playSound('click')
 
-  // 初始化 AudioContext 和创建背景音乐
+  logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.PLAY, '用户切换背景音乐播放状态', { isPlaying: isPlaying.value })
+
   if (!audioBuffer) {
     audioBuffer = createBackgroundMusic()
   }
 
-  // 切换播放状态
   if (isPlaying.value) {
     pause()
   } else {
     await play()
   }
 
-  // 同步更新 store 中的音乐开关状态
   settingsStore.toggleMusic()
 }
 
 function setVolume(newVolume) {
-  settingsStore.musicVolume = Math.max(0, Math.min(1, newVolume))
+  const volume = Math.max(0, Math.min(1, newVolume))
+  settingsStore.musicVolume = volume
+
+  logAudioEvent(LOG_LEVELS.DEBUG, LOG_CATEGORIES.PLAY, '设置背景音乐音量', { volume })
 
   if (gainNode) {
-    gainNode.gain.value = settingsStore.musicVolume
+    gainNode.gain.value = volume
   }
 }
 
