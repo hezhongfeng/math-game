@@ -36,6 +36,8 @@ export function getAudioContext() {
 /**
  * 设置 AudioContext 用户交互监听器，用于恢复被暂停的音频
  * iOS Safari 在用户交互前不允许播放音频
+ * 
+ * iOS Safari 26.2 增强：扩大事件监听器覆盖范围
  */
 function setupAudioContextListeners() {
   if (isAudioContextInitialized || !audioContext) return
@@ -47,7 +49,7 @@ function setupAudioContextListeners() {
       hasUserInteracted = true
       // iOS Safari 必须：同步恢复 AudioContext
       // 注意：不能使用 await，必须在同步代码路径中调用 resume()
-      // WebKit Bug 修复：在某些版本的 Safari 中，必须通过用户交互事件处理程序直接调用 resume
+      // WebKit Bug 修复：在某些版本的 Safari 中，必须通过用户交互事件处理程序直接调用 resume()
       const resumeContext = () => {
         if (audioContext && audioContext.state === 'suspended') {
           audioContext.resume().catch(() => {})
@@ -58,25 +60,45 @@ function setupAudioContextListeners() {
     }
   }
 
-  // iOS Safari 优先监听 touchstart 事件（在捕获阶段）
-  // touchstart 比 click 更早触发，更适合音频初始化
-  // 使用 once: true 避免重复监听 touchstart
-  document.addEventListener('touchstart', handleUserInteraction, { 
-    capture: true, 
-    passive: true,
-    once: true 
+  // iOS Safari 26.2 增强：监听更多事件类型，确保捕获早期交互
+  // 使用 { once: false } 以便多次尝试恢复（某些 Safari 版本需要多次触发）
+  const events = [
+    'touchstart',  // 最早触发的触摸事件
+    'touchmove',   // 触摸移动也可能触发
+    'touchend',    // 触摸结束
+    'click',       // 点击事件
+    'mousedown',   // 鼠标按下（桌面模式）
+    'mouseup',     // 鼠标释放
+    'keydown',     // 键盘按下
+    'keyup',       // 键盘释放
+    'pointerdown', // 指针事件
+    'pointerup'    // 指针释放
+  ]
+  
+  // 在捕获阶段监听所有事件，passive: true 优化性能
+  events.forEach(event => {
+    document.addEventListener(event, handleUserInteraction, { 
+      capture: true, 
+      passive: true,
+      once: false  // 不设置 once，允许多次触发
+    })
   })
   
-  // 其他事件继续监听（不设置 once）
-  const events = ['touchend', 'click', 'keydown', 'pointerdown']
+  // iOS Safari 26.2 关键增强：在 window 上也监听，扩大覆盖范围
   events.forEach(event => {
-    document.addEventListener(event, handleUserInteraction, { capture: true, passive: true })
+    window.addEventListener(event, handleUserInteraction, { 
+      capture: true, 
+      passive: true,
+      once: false
+    })
   })
 }
 
 /**
  * 确保 AudioContext 处于运行状态
  * 这是播放音频前的必要检查，特别是在 iOS 上
+ * 
+ * iOS Safari 26.2 关键修复：添加状态轮询，确保 resume 完成
  */
 export async function ensureAudioContextRunning() {
   const ctx = getAudioContext()
@@ -88,7 +110,12 @@ export async function ensureAudioContextRunning() {
     try {
       await ctx.resume()
       hasUserInteracted = true
-      return true
+      
+      // iOS Safari 26.2 关键修复：等待状态实际变为 running
+      // 某些版本的 Safari 中，resume() 返回后状态可能不会立即变更
+      await waitForAudioContextRunning(ctx, 500)
+      
+      return ctx.state === 'running'
     } catch (error) {
       // 恢复失败，返回 false 但继续允许播放
       // （某些情况下即使返回失败，音频仍可能播放）
@@ -97,6 +124,42 @@ export async function ensureAudioContextRunning() {
   }
 
   return true
+}
+
+/**
+ * 等待 AudioContext 状态变为 running
+ * @param {AudioContext} ctx - AudioContext 实例
+ * @param {number} timeout - 超时时间（毫秒）
+ * @returns {Promise<boolean>} - 是否成功变为 running 状态
+ */
+function waitForAudioContextRunning(ctx, timeout = 500) {
+  return new Promise((resolve) => {
+    const startTime = Date.now()
+    
+    // 如果已经是 running，立即返回
+    if (ctx.state === 'running') {
+      resolve(true)
+      return
+    }
+    
+    // 状态变化监听器
+    const checkState = () => {
+      const elapsed = Date.now() - startTime
+      
+      if (ctx.state === 'running') {
+        resolve(true)
+      } else if (elapsed >= timeout) {
+        // 超时，但不一定失败
+        resolve(false)
+      } else {
+        // 继续检查
+        setTimeout(checkState, 10)
+      }
+    }
+    
+    // 开始轮询
+    checkState()
+  })
 }
 
 /**
@@ -133,4 +196,3 @@ export function closeAudioContext() {
     hasUserInteracted = false
   }
 }
-

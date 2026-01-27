@@ -57,7 +57,11 @@ function viewAchievements() {
 // iOS Safari 兼容性修复：在应用加载时强制初始化 AudioContext
 // 这会在用户看到主页后立即尝试恢复 AudioContext，确保后续音频能够播放
 onMounted(() => {
-  forceInitializeAudioContext()
+  // iOS Safari 关键修复：必须同步调用，不能是异步函数
+  // 虽然 forceInitializeAudioContext 返回 Promise，但我们不 await
+  forceInitializeAudioContext().catch(() => {
+    // 忽略初始化失败，用户交互时会再次尝试
+  })
 })
 </script>
 
