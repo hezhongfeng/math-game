@@ -17,10 +17,15 @@ export function createBackgroundMusicBuffer(audioContext) {
   const params = AUDIO_PARAMS.backgroundMusic
 
   const duration = params.duration
-  const sampleRate = audioContext.sampleRate
-  const buffer = audioContext.createBuffer(2, duration * sampleRate, sampleRate)
+  // Safari 修复：使用默认采样率以防 audioContext.sampleRate 为 0 或异常
+  const sampleRate = audioContext.sampleRate || 44100
 
-  // A段 - 明亮上升 (前4秒)
+  try {
+    // Safari/Webkit 要求缓冲区长度必须是整数
+    const bufferLength = Math.floor(duration * sampleRate)
+    const buffer = audioContext.createBuffer(2, bufferLength, sampleRate)
+
+    // A段 - 明亮上升 (前4秒)
   const partA = [
     { freq: freq.C5, time: 0.0, dur: 0.5 },
     { freq: freq.C5, time: 0.5, dur: 0.5 },
@@ -93,4 +98,8 @@ export function createBackgroundMusicBuffer(audioContext) {
   }
 
   return buffer
+  } catch (error) {
+    console.error('Failed to create background music buffer:', error)
+    return null
+  }
 }

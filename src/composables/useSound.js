@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useSettingsStore } from '../stores/settings'
 import { useToast } from './useToast'
-import { getAudioContext } from '../utils/audioContext'
+import { getAudioContext, forceInitializeAudioContext } from '../utils/audioContext'
 import { AUDIO_FREQUENCIES, AUDIO_PARAMS } from '../config/constants'
 
 /**
@@ -201,6 +201,7 @@ export function useSound() {
 
   return {
     isEnabled,
-    playSound
+    playSound,
+    forceInitializeAudioContext
   }
 }

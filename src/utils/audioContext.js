@@ -19,7 +19,12 @@ let hasUserInteracted = false
 export function getAudioContext() {
   if (!audioContext) {
     try {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)()
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext
+      if (!AudioContextClass) {
+        console.warn('AudioContext is not supported in this browser')
+        return null
+      }
+      audioContext = new AudioContextClass()
       setupAudioContextListeners()
     } catch (error) {
       return null
@@ -42,12 +47,14 @@ function setupAudioContextListeners() {
       hasUserInteracted = true
       // iOS Safari 必须：同步恢复 AudioContext
       // 注意：不能使用 await，必须在同步代码路径中调用 resume()
-      if (audioContext.state === 'suspended') {
-        // 使用 then/catch 而不是 await，避免阻塞事件处理
-        audioContext.resume().catch(() => {
-          // 恢复失败，继续尝试
-        })
+      // WebKit Bug 修复：在某些版本的 Safari 中，必须通过用户交互事件处理程序直接调用 resume
+      const resumeContext = () => {
+        if (audioContext && audioContext.state === 'suspended') {
+          audioContext.resume().catch(() => {})
+        }
       }
+
+      resumeContext()
     }
   }
 
