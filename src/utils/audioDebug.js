@@ -93,9 +93,17 @@ function getEnvironmentInfo() {
     platform: navigator.platform,
     vendor: navigator.vendor,
     isIOS: /iPad|iPhone|iPod/.test(ua) && !window.MSStream,
-    isSafari: /Safari/.test(ua) && !/Chrome/.test(ua),
+    isSafari: /Safari/.test(ua) && !/Chrome/.test(ua) && !/MicroMessenger/.test(ua),
+    isWeChat: /MicroMessenger/i.test(ua),
+    weChatVersion: null,
     safariVersion: null,
     iOSVersion: null
+  }
+  
+  // 提取微信版本
+  const weChatMatch = ua.match(/MicroMessenger\/(\d+\.\d+\.\d+)/)
+  if (weChatMatch) {
+    environmentInfo.weChatVersion = weChatMatch[1]
   }
   
   // 提取 Safari 版本

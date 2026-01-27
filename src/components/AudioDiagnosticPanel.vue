@@ -235,6 +235,12 @@ onUnmounted(() => {
                 <span class="status-value">{{ diagnostics?.state?.environment?.isIOS ? diagnostics.state.environment.iOSVersion : '否' }}</span>
               </div>
               <div class="status-row">
+                <span class="status-label">微信:</span>
+                <span class="status-value" :style="{ color: diagnostics?.state?.environment?.isWeChat ? '#4CAF50' : '#F44336' }">
+                  {{ diagnostics?.state?.environment?.isWeChat ? `是 (${diagnostics.state.environment.weChatVersion})` : '否' }}
+                </span>
+              </div>
+              <div class="status-row">
                 <span class="status-label">Safari:</span>
                 <span class="status-value">{{ diagnostics?.state?.environment?.isSafari ? diagnostics.state.environment.safariVersion : '否' }}</span>
               </div>

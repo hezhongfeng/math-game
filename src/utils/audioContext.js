@@ -77,23 +77,50 @@ function setupAudioContextListeners() {
       // WebKit Bug 修复：在某些版本的 Safari 中，必须通过用户交互事件处理程序直接调用 resume()
       const resumeContext = () => {
         if (audioContext && audioContext.state === 'suspended') {
-          audioContext.resume()
-            .then(() => {
-              logAudioEvent(
-                LOG_LEVELS.SUCCESS,
-                LOG_CATEGORIES.CONTEXT,
-                'AudioContext 恢复成功',
-                { state: audioContext.state, event: event.type }
-              )
-            })
-            .catch((error) => {
-              logAudioEvent(
-                LOG_LEVELS.WARN,
-                LOG_CATEGORIES.CONTEXT,
-                'AudioContext 恢复失败',
-                { error: error.message, event: event.type }
-              )
-            })
+          // 检测微信浏览器
+          const isWeChat = /MicroMessenger/i.test(navigator.userAgent)
+          
+          if (isWeChat) {
+            // 微信浏览器特殊处理：立即恢复 + 播放测试音
+            audioContext.resume()
+              .then(() => {
+                logAudioEvent(
+                  LOG_LEVELS.SUCCESS,
+                  LOG_CATEGORIES.CONTEXT,
+                  '微信浏览器 AudioContext 恢复成功',
+                  { state: audioContext.state, event: event.type }
+                )
+                // 微信需要立即播放一个声音才能解锁音频
+                playWeChatUnlockSound()
+              })
+              .catch((error) => {
+                logAudioEvent(
+                  LOG_LEVELS.WARN,
+                  LOG_CATEGORIES.CONTEXT,
+                  '微信浏览器 AudioContext 恢复失败',
+                  { error: error.message, event: event.type }
+                )
+              })
+          } else {
+            // 普通浏览器
+            audioContext.resume()
+              .then(() => {
+                logAudioEvent(
+                  LOG_LEVELS.SUCCESS,
+                  LOG_CATEGORIES.CONTEXT,
+                  'AudioContext 恢复成功',
+                  { state: audioContext.state, event: event.type }
+                )
+              })
+              .catch((error) => {
+                logAudioEvent(
+                  LOG_LEVELS.WARN,
+                  LOG_CATEGORIES.CONTEXT,
+                  'AudioContext 恢复失败',
+                  { error: error.message, event: event.type }
+                )
+              })
+          }
         }
       }
 
@@ -299,6 +326,43 @@ export async function forceInitializeAudioContext() {
     return true
   } catch (error) {
     return false
+  }
+}
+
+/**
+ * 微信浏览器解锁音频（必须播放一个声音）
+ */
+function playWeChatUnlockSound() {
+  try {
+    if (!audioContext || audioContext.state !== 'running') return
+    
+    // 创建一个极短的声音来解锁微信音频
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+    
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    // 设置频率（不可听范围或极短）
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
+    gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.01)
+    
+    oscillator.start(audioContext.currentTime)
+    oscillator.stop(audioContext.currentTime + 0.01) // 10ms，几乎不可听
+    
+    logAudioEvent(
+      LOG_LEVELS.DEBUG,
+      LOG_CATEGORIES.PLAY,
+      '微信音频解锁音已播放'
+    )
+  } catch (error) {
+    logAudioEvent(
+      LOG_LEVELS.WARN,
+      LOG_CATEGORIES.PLAY,
+      '微信音频解锁音播放失败',
+      { error: error.message }
+    )
   }
 }
 
