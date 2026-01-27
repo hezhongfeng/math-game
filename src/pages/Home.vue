@@ -54,6 +54,17 @@ function viewAchievements() {
   router.push('/difficulty')
 }
 
+// 计算水母样式，减少模板中的重复计算
+function jellyStyle(jelly) {
+  return {
+    left: jelly.left,
+    top: jelly.startTop,
+    width: `${jelly.size}px`,
+    height: `${jelly.size * 0.9}px`,
+    animationDelay: `${jelly.delay}s`
+  }
+}
+
 // iOS Safari 兼容性修复：在应用加载时强制初始化 AudioContext
 // 这会在用户看到主页后立即尝试恢复 AudioContext，确保后续音频能够播放
 onMounted(() => {
@@ -67,29 +78,19 @@ onMounted(() => {
 
 <template>
   <div class="page">
-    <!-- 水母背景 -->
+      <!-- 水母背景 -->
     <div class="jellyfishes">
       <div 
         v-for="(jelly, index) in jellyfishes" 
         :key="index"
         class="jellyfish"
-        :style="{
-          left: jelly.left,
-          top: jelly.startTop,
-          width: `${jelly.size}px`,
-          height: `${jelly.size * 0.9}px`,
-          animationDelay: `${jelly.delay}s`
-        }"
+        :style="jellyStyle(jelly)"
       >
         <div class="jelly-head" :style="{ background: jelly.color }">
           <div class="jelly-shine"></div>
         </div>
         <div class="jelly-tentacles">
-          <div class="tentacle" :style="{ background: jelly.color }"></div>
-          <div class="tentacle" :style="{ background: jelly.color }"></div>
-          <div class="tentacle" :style="{ background: jelly.color }"></div>
-          <div class="tentacle" :style="{ background: jelly.color }"></div>
-          <div class="tentacle" :style="{ background: jelly.color }"></div>
+          <div v-for="i in 5" :key="i" class="tentacle" :style="{ background: jelly.color }"></div>
         </div>
       </div>
     </div>
