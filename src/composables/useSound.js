@@ -103,17 +103,38 @@ export function useSound() {
     // 第二声
     setTimeout(() => {
       try {
-        const osc2 = ctx.createOscillator()
-        const gain2 = ctx.createGain()
-        osc2.connect(gain2)
-        gain2.connect(ctx.destination)
-        const t = ctx.currentTime
-        osc2.frequency.setValueAtTime(freq.note3, t)
-        osc2.frequency.setValueAtTime(freq.note4, t + 0.1)
-        gain2.gain.setValueAtTime(params.gain, t)
-        gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3)
-        osc2.start(t)
-        osc2.stop(t + 0.3)
+        // iOS Safari 修复：在 setTimeout 中再次确保 AudioContext 处于运行状态
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {})
+          // 等待一小段时间确保恢复
+          setTimeout(() => {
+            if (ctx.state === 'running') {
+              const osc2 = ctx.createOscillator()
+              const gain2 = ctx.createGain()
+              osc2.connect(gain2)
+              gain2.connect(ctx.destination)
+              const t = ctx.currentTime
+              osc2.frequency.setValueAtTime(freq.note3, t)
+              osc2.frequency.setValueAtTime(freq.note4, t + 0.1)
+              gain2.gain.setValueAtTime(params.gain, t)
+              gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3)
+              osc2.start(t)
+              osc2.stop(t + 0.3)
+            }
+          }, 50)
+        } else {
+          const osc2 = ctx.createOscillator()
+          const gain2 = ctx.createGain()
+          osc2.connect(gain2)
+          gain2.connect(ctx.destination)
+          const t = ctx.currentTime
+          osc2.frequency.setValueAtTime(freq.note3, t)
+          osc2.frequency.setValueAtTime(freq.note4, t + 0.1)
+          gain2.gain.setValueAtTime(params.gain, t)
+          gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3)
+          osc2.start(t)
+          osc2.stop(t + 0.3)
+        }
       } catch (error) {
         // 延时音效播放失败，继续进行
       }
@@ -122,17 +143,38 @@ export function useSound() {
     // 第三声
     setTimeout(() => {
       try {
-        const osc3 = ctx.createOscillator()
-        const gain3 = ctx.createGain()
-        osc3.connect(gain3)
-        gain3.connect(ctx.destination)
-        const t = ctx.currentTime
-        osc3.frequency.setValueAtTime(freq.note5, t)
-        osc3.type = 'sine'
-        gain3.gain.setValueAtTime(params.gain, t)
-        gain3.gain.exponentialRampToValueAtTime(0.01, t + params.envelope)
-        osc3.start(t)
-        osc3.stop(t + params.envelope)
+        // iOS Safari 修复：在 setTimeout 中再次确保 AudioContext 处于运行状态
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {})
+          // 等待一小段时间确保恢复
+          setTimeout(() => {
+            if (ctx.state === 'running') {
+              const osc3 = ctx.createOscillator()
+              const gain3 = ctx.createGain()
+              osc3.connect(gain3)
+              gain3.connect(ctx.destination)
+              const t = ctx.currentTime
+              osc3.frequency.setValueAtTime(freq.note5, t)
+              osc3.type = 'sine'
+              gain3.gain.setValueAtTime(params.gain, t)
+              gain3.gain.exponentialRampToValueAtTime(0.01, t + params.envelope)
+              osc3.start(t)
+              osc3.stop(t + params.envelope)
+            }
+          }, 50)
+        } else {
+          const osc3 = ctx.createOscillator()
+          const gain3 = ctx.createGain()
+          osc3.connect(gain3)
+          gain3.connect(ctx.destination)
+          const t = ctx.currentTime
+          osc3.frequency.setValueAtTime(freq.note5, t)
+          osc3.type = 'sine'
+          gain3.gain.setValueAtTime(params.gain, t)
+          gain3.gain.exponentialRampToValueAtTime(0.01, t + params.envelope)
+          osc3.start(t)
+          osc3.stop(t + params.envelope)
+        }
       } catch (error) {
         // 延时音效播放失败，继续进行
       }
@@ -166,17 +208,38 @@ export function useSound() {
     notes.forEach((noteFreq, index) => {
       setTimeout(() => {
         try {
-          const osc = ctx.createOscillator()
-          const gain = ctx.createGain()
-          osc.connect(gain)
-          gain.connect(ctx.destination)
-          const t = ctx.currentTime
-          osc.frequency.setValueAtTime(noteFreq, t)
-          osc.type = 'sine'
-          gain.gain.setValueAtTime(params.gain, t)
-          gain.gain.exponentialRampToValueAtTime(0.01, t + params.noteDuration)
-          osc.start(t)
-          osc.stop(t + params.noteDuration)
+          // iOS Safari 修复：在 setTimeout 中再次确保 AudioContext 处于运行状态
+          if (ctx.state === 'suspended') {
+            ctx.resume().catch(() => {})
+            // 等待一小段时间确保恢复
+            setTimeout(() => {
+              if (ctx.state === 'running') {
+                const osc = ctx.createOscillator()
+                const gain = ctx.createGain()
+                osc.connect(gain)
+                gain.connect(ctx.destination)
+                const t = ctx.currentTime
+                osc.frequency.setValueAtTime(noteFreq, t)
+                osc.type = 'sine'
+                gain.gain.setValueAtTime(params.gain, t)
+                gain.gain.exponentialRampToValueAtTime(0.01, t + params.noteDuration)
+                osc.start(t)
+                osc.stop(t + params.noteDuration)
+              }
+            }, 50)
+          } else {
+            const osc = ctx.createOscillator()
+            const gain = ctx.createGain()
+            osc.connect(gain)
+            gain.connect(ctx.destination)
+            const t = ctx.currentTime
+            osc.frequency.setValueAtTime(noteFreq, t)
+            osc.type = 'sine'
+            gain.gain.setValueAtTime(params.gain, t)
+            gain.gain.exponentialRampToValueAtTime(0.01, t + params.noteDuration)
+            osc.start(t)
+            osc.stop(t + params.noteDuration)
+          }
         } catch (error) {
           // 延时音效播放失败，继续进行
         }

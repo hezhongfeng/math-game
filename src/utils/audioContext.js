@@ -60,7 +60,15 @@ function setupAudioContextListeners() {
 
   // iOS Safari 优先监听 touchstart 事件（在捕获阶段）
   // touchstart 比 click 更早触发，更适合音频初始化
-  const events = ['touchstart', 'touchend', 'click', 'keydown', 'pointerdown']
+  // 使用 once: true 避免重复监听 touchstart
+  document.addEventListener('touchstart', handleUserInteraction, { 
+    capture: true, 
+    passive: true,
+    once: true 
+  })
+  
+  // 其他事件继续监听（不设置 once）
+  const events = ['touchend', 'click', 'keydown', 'pointerdown']
   events.forEach(event => {
     document.addEventListener(event, handleUserInteraction, { capture: true, passive: true })
   })
