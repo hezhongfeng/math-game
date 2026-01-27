@@ -46,9 +46,13 @@ window.toggleAudioDiagnosticPanel = () => {
 }
 
 // 添加全局日志函数，方便在控制台调试
-window.logAudioEvent = (message) => {
-  const { logAudioEvent, LOG_LEVELS, LOG_CATEGORIES } = require('./utils/audioDebug')
-  logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.DIAGNOSTIC, message)
+window.logAudioEvent = async (message) => {
+  try {
+    const module = await import('./utils/audioDebug.js')
+    module.logAudioEvent(module.LOG_LEVELS.INFO, module.LOG_CATEGORIES.DIAGNOSTIC, message)
+  } catch (error) {
+    console.error('日志函数加载失败:', error)
+  }
 }
 </script>
 

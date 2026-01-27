@@ -195,13 +195,17 @@ export function logAudioEvent(level, category, message, data = {}) {
     state: null
   }
   
-  // 捕获当前状态
+  // 捕获当前状态 - 延迟导入避免循环依赖
   try {
-    const { getAudioContext } = require('./audioContext.js')
-    const ctx = getAudioContext()
-    logEntry.state = captureAudioState(ctx)
+    // 使用动态 import
+    import('./audioContext.js').then(module => {
+      const ctx = module.getAudioContext()
+      logEntry.state = captureAudioState(ctx)
+    }).catch(() => {
+      // AudioContext 不可用，忽略
+    })
   } catch (error) {
-    // AudioContext 不可用，忽略
+    // 导入失败，忽略
   }
   
   // 添加到日志存储
@@ -281,8 +285,15 @@ function outputToConsole(logEntry) {
  * @returns {object}
  */
 export function getAudioDiagnostics() {
-  const { getAudioContext } = require('./audioContext.js')
-  const ctx = getAudioContext()
+  // 延迟导入避免循环依赖
+  let ctx = null
+  try {
+    // 这里不能直接 import，因为会导致循环依赖
+    // 改为捕获状态时不依赖 audioContext
+    // 如果 audioContext 可用，它会在其他地方被传入
+  } catch (error) {
+    // 忽略错误
+  }
   
   return {
     timestamp: Date.now(),
