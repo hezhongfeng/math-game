@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Music, Volume2, VolumeX, Volume1 } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 import { useSettingsStore } from '../stores/settings'
-import { getAudioContext, ensureAudioContextRunning, closeAudioContext } from '../utils/audioContext'
+import { getAudioContext, closeAudioContext } from '../utils/audioContext'
 import { createBackgroundMusicBuffer } from '../utils/audioSynthesis'
 
 const props = defineProps({
@@ -45,8 +45,13 @@ async function play() {
   if (!ctx) return
 
   try {
-    // 确保 AudioContext 已恢复（移动端需要用户交互）
-    await ensureAudioContextRunning()
+    // iOS Safari 关键修复：同步恢复 AudioContext
+    // 不能使用 await，必须在用户交互的同步调用栈中调用 resume()
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {
+        // 忽略恢复失败
+      })
+    }
 
     if (sourceNode) {
       sourceNode.stop()

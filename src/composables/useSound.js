@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useSettingsStore } from '../stores/settings'
 import { useToast } from './useToast'
-import { getAudioContext, ensureAudioContextRunning, forceInitializeAudioContext } from '../utils/audioContext'
+import { getAudioContext } from '../utils/audioContext'
 import { AUDIO_FREQUENCIES, AUDIO_PARAMS } from '../config/constants'
 
 /**
@@ -10,7 +10,8 @@ import { AUDIO_FREQUENCIES, AUDIO_PARAMS } from '../config/constants'
  *
  * iOS Safari 兼容性说明：
  * - 在 iOS 上，AudioContext 需要在用户交互后才能播放声音
- * - 使用 await ensureAudioContextRunning() 确保播放前恢复
+ * - 使用 ensureAudioContextRunning() 确保播放前恢复
+ * - 必须在同步代码路径中调用 resume()，不能使用 await
  */
 export function useSound() {
   const settingsStore = useSettingsStore()
@@ -18,22 +19,36 @@ export function useSound() {
   const { error: showError } = useToast()
 
   /**
+   * 同步恢复 AudioContext
+   * iOS Safari 要求必须在同步代码中调用 resume()
+   */
+  function ensureAudioContextSync() {
+    const ctx = getAudioContext()
+    if (!ctx) return false
+
+    if (ctx.state === 'suspended') {
+      // 同步调用 resume，不等待结果
+      // iOS Safari 要求 resume() 在用户交互的同步调用栈中
+      ctx.resume().catch(() => {
+        // 忽略恢复失败
+      })
+      return true
+    }
+    return true
+  }
+
+  /**
    * 播放音效
    * @param {string} type - 音效类型: 'correct', 'wrong', 'win', 'click'
    */
-  async function playSound(type) {
+  function playSound(type) {
     if (!isEnabled.value) return
 
     const ctx = getAudioContext()
     if (!ctx) return
 
-    // iOS Safari 必须：确保 AudioContext 处于运行状态
-    // 这会再次尝试恢复，确保音频能在用户交互后播放
-    const contextReady = await ensureAudioContextRunning()
-
-    // 即使 contextReady 为 false，仍然尝试播放音频
-    // 因为在某些情况下即使返回失败，音频仍然可能播放
-    if (!ctx) return
+    // iOS Safari 关键修复：必须在同步代码中恢复 AudioContext
+    ensureAudioContextSync()
 
     try {
       const oscillator = ctx.createOscillator()
@@ -186,7 +201,6 @@ export function useSound() {
 
   return {
     isEnabled,
-    playSound,
-    forceInitializeAudioContext
+    playSound
   }
 }

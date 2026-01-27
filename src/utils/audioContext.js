@@ -37,24 +37,25 @@ function setupAudioContextListeners() {
 
   isAudioContextInitialized = true
 
-  const handleUserInteraction = async () => {
+  const handleUserInteraction = () => {
     if (!hasUserInteracted && audioContext) {
       hasUserInteracted = true
-      // 主动尝试恢复 AudioContext（iOS Safari 必须）
+      // iOS Safari 必须：同步恢复 AudioContext
+      // 注意：不能使用 await，必须在同步代码路径中调用 resume()
       if (audioContext.state === 'suspended') {
-        try {
-          await audioContext.resume()
-        } catch (error) {
+        // 使用 then/catch 而不是 await，避免阻塞事件处理
+        audioContext.resume().catch(() => {
           // 恢复失败，继续尝试
-        }
+        })
       }
     }
   }
 
-  // 监听多个用户交互事件，确保能够捕获
+  // iOS Safari 优先监听 touchstart 事件（在捕获阶段）
+  // touchstart 比 click 更早触发，更适合音频初始化
   const events = ['touchstart', 'touchend', 'click', 'keydown', 'pointerdown']
   events.forEach(event => {
-    document.addEventListener(event, handleUserInteraction, { capture: true })
+    document.addEventListener(event, handleUserInteraction, { capture: true, passive: true })
   })
 }
 
