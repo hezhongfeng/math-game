@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Trophy, Play, Star, Bug } from 'lucide-vue-next'
+import { Trophy, Play, Star } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { DIFFICULTY_GROUPS } from '../config/difficulty'
@@ -52,15 +52,6 @@ function startGame() {
 function viewAchievements() {
   playSound('click')
   router.push('/difficulty')
-}
-
-function openDebugPanel() {
-  playSound('click')
-  if (window.showAudioDiagnosticPanel) {
-    window.showAudioDiagnosticPanel()
-  } else {
-    alert('调试面板未加载完成，请刷新页面重试')
-  }
 }
 
 // iOS Safari 兼容性修复：在应用加载时强制初始化 AudioContext
@@ -151,17 +142,6 @@ onMounted(() => {
         >
           <Trophy :size="24" />
           查看成就
-        </button>
-
-        <!-- 调试按钮 -->
-        <button 
-          @click="openDebugPanel" 
-          class="btn btn-debug animate-button-entrance"
-          style="animation-delay: 500ms"
-          title="打开音频调试面板"
-        >
-          <Bug :size="24" />
-          音频调试
         </button>
       </div>
     </div>
@@ -434,23 +414,6 @@ onMounted(() => {
   box-shadow: 
     0 6px 18px rgba(74, 144, 226, 0.25),
     0 3px 10px rgba(74, 144, 226, 0.15);
-  transform: translateY(-2px);
-}
-
-.btn-debug {
-  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
-  color: white;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 6px 20px rgba(255, 152, 0, 0.35),
-    0 3px 10px rgba(255, 152, 0, 0.25);
-}
-
-.btn-debug:hover {
-  background: linear-gradient(135deg, #FFA726 0%, #FF9800 100%);
-  box-shadow: 
-    0 8px 25px rgba(255, 152, 0, 0.45),
-    0 4px 15px rgba(255, 152, 0, 0.3);
   transform: translateY(-2px);
 }
 

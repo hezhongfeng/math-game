@@ -8,8 +8,6 @@
  * - 需要主动处理状态恢复
  */
 
-import { logAudioEvent, recordUserInteraction, LOG_LEVELS, LOG_CATEGORIES } from './audioDebug.js'
-
 let audioContext = null
 let isAudioContextInitialized = false
 let hasUserInteracted = false
@@ -24,34 +22,12 @@ export function getAudioContext() {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext
       if (!AudioContextClass) {
         console.warn('AudioContext is not supported in this browser')
-        logAudioEvent(
-          LOG_LEVELS.ERROR,
-          LOG_CATEGORIES.CONTEXT,
-          'AudioContext 不支持',
-          { userAgent: navigator.userAgent }
-        )
         return null
       }
       audioContext = new AudioContextClass()
       setupAudioContextListeners()
-      
-      logAudioEvent(
-        LOG_LEVELS.SUCCESS,
-        LOG_CATEGORIES.CONTEXT,
-        'AudioContext 创建成功',
-        {
-          state: audioContext.state,
-          sampleRate: audioContext.sampleRate,
-          baseLatency: audioContext.baseLatency
-        }
-      )
     } catch (error) {
-      logAudioEvent(
-        LOG_LEVELS.ERROR,
-        LOG_CATEGORIES.CONTEXT,
-        'AudioContext 创建失败',
-        { error: error.message, stack: error.stack }
-      )
+      console.error('AudioContext 创建失败:', error)
       return null
     }
   }
@@ -84,51 +60,23 @@ function setupAudioContextListeners() {
             // 微信浏览器特殊处理：立即恢复 + 播放测试音
             audioContext.resume()
               .then(() => {
-                logAudioEvent(
-                  LOG_LEVELS.SUCCESS,
-                  LOG_CATEGORIES.CONTEXT,
-                  '微信浏览器 AudioContext 恢复成功',
-                  { state: audioContext.state, event: event.type }
-                )
                 // 微信需要立即播放一个声音才能解锁音频
                 playWeChatUnlockSound()
               })
               .catch((error) => {
-                logAudioEvent(
-                  LOG_LEVELS.WARN,
-                  LOG_CATEGORIES.CONTEXT,
-                  '微信浏览器 AudioContext 恢复失败',
-                  { error: error.message, event: event.type }
-                )
+                console.warn('微信浏览器 AudioContext 恢复失败:', error)
               })
           } else {
             // 普通浏览器
-            audioContext.resume()
-              .then(() => {
-                logAudioEvent(
-                  LOG_LEVELS.SUCCESS,
-                  LOG_CATEGORIES.CONTEXT,
-                  'AudioContext 恢复成功',
-                  { state: audioContext.state, event: event.type }
-                )
-              })
-              .catch((error) => {
-                logAudioEvent(
-                  LOG_LEVELS.WARN,
-                  LOG_CATEGORIES.CONTEXT,
-                  'AudioContext 恢复失败',
-                  { error: error.message, event: event.type }
-                )
-              })
+            audioContext.resume().catch((error) => {
+              console.warn('AudioContext 恢复失败:', error)
+            })
           }
         }
       }
 
       resumeContext()
     }
-    
-    // 记录用户交互
-    recordUserInteraction(event.type)
   }
 
   // iOS Safari 26.2 增强：监听更多事件类型，确保捕获早期交互
@@ -174,74 +122,30 @@ function setupAudioContextListeners() {
 export async function ensureAudioContextRunning() {
   const ctx = getAudioContext()
   if (!ctx) {
-    logAudioEvent(
-      LOG_LEVELS.WARN,
-      LOG_CATEGORIES.CONTEXT,
-      'AudioContext 不存在，无法恢复'
-    )
+    console.warn('AudioContext 不存在，无法恢复')
     return false
   }
-
-  const initialState = ctx.state
-  logAudioEvent(
-    LOG_LEVELS.DEBUG,
-    LOG_CATEGORIES.CONTEXT,
-    '检查 AudioContext 状态',
-    { state: initialState }
-  )
 
   // iOS 上即使用户交互过，AudioContext 有时仍然处于 suspended
   // 需要再次尝试恢复
   if (ctx.state === 'suspended') {
-    try {
-      logAudioEvent(
-        LOG_LEVELS.INFO,
-        LOG_CATEGORIES.CONTEXT,
-        '尝试恢复 AudioContext'
-      )
-      
+    try
+    {
       await ctx.resume()
       hasUserInteracted = true
-      
-      logAudioEvent(
-        LOG_LEVELS.INFO,
-        LOG_CATEGORIES.CONTEXT,
-        'AudioContext.resume() 调用完成',
-        { state: ctx.state }
-      )
 
       // iOS Safari 26.2 关键修复：等待状态实际变为 running
       // 某些版本的 Safari 中，resume() 返回后状态可能不会立即变更
-      const stateChanged = await waitForAudioContextRunning(ctx, 500)
+      await waitForAudioContextRunning(ctx, 500)
       
-      const isRunning = ctx.state === 'running'
-      logAudioEvent(
-        isRunning ? LOG_LEVELS.SUCCESS : LOG_LEVELS.WARN,
-        LOG_CATEGORIES.CONTEXT,
-        `AudioContext 恢复${isRunning ? '成功' : '失败'}`,
-        { state: ctx.state, initialState, stateChanged }
-      )
-      
-      return isRunning
+      return ctx.state === 'running'
     } catch (error) {
-      logAudioEvent(
-        LOG_LEVELS.ERROR,
-        LOG_CATEGORIES.CONTEXT,
-        'AudioContext 恢复异常',
-        { error: error.message, stack: error.stack, state: ctx.state }
-      )
+      console.error('AudioContext 恢复异常:', error)
       // 恢复失败，返回 false 但继续允许播放
       // （某些情况下即使返回失败，音频仍可能播放）
       return false
     }
   }
-
-  logAudioEvent(
-    LOG_LEVELS.SUCCESS,
-    LOG_CATEGORIES.CONTEXT,
-    'AudioContext 已经在运行状态',
-    { state: ctx.state }
-  )
   
   return true
 }
@@ -254,29 +158,14 @@ export async function ensureAudioContextRunning() {
  */
 function waitForAudioContextRunning(ctx, timeout = 500) {
   return new Promise((resolve) => {
-    const startTime = Date.now()
-    const initialState = ctx.state
-
-    logAudioEvent(
-      LOG_LEVELS.DEBUG,
-      LOG_CATEGORIES.STATE,
-      `开始轮询 AudioContext 状态，超时: ${timeout}ms`,
-      { initialState }
-    )
-
     // 如果已经是 running，立即返回
     if (ctx.state === 'running') {
-      logAudioEvent(
-        LOG_LEVELS.SUCCESS,
-        LOG_CATEGORIES.STATE,
-        'AudioContext 已经是 running 状态'
-      )
       resolve(true)
       return
     }
 
     let checkCount = 0
-    const maxChecks = timeout / 10
+    const startTime = Date.now()
 
     // 状态变化监听器
     const checkState = () => {
@@ -284,20 +173,10 @@ function waitForAudioContextRunning(ctx, timeout = 500) {
       checkCount++
 
       if (ctx.state === 'running') {
-        logAudioEvent(
-          LOG_LEVELS.SUCCESS,
-          LOG_CATEGORIES.STATE,
-          `AudioContext 状态变为 running (轮询 ${checkCount} 次, 耗时 ${elapsed}ms)`
-        )
         resolve(true)
       } else if (elapsed >= timeout) {
-        // 超时，但不一定失败
-        logAudioEvent(
-          LOG_LEVELS.WARN,
-          LOG_CATEGORIES.STATE,
-          `AudioContext 状态轮询超时 (检查 ${checkCount} 次, 耗时 ${elapsed}ms)`,
-          { finalState: ctx.state, initialState }
-        )
+        // 超时
+        console.warn(`AudioContext 状态轮询超时，最终状态: ${ctx.state}`)
         resolve(false)
       } else {
         // 继续检查
@@ -350,19 +229,8 @@ function playWeChatUnlockSound() {
     
     oscillator.start(audioContext.currentTime)
     oscillator.stop(audioContext.currentTime + 0.01) // 10ms，几乎不可听
-    
-    logAudioEvent(
-      LOG_LEVELS.DEBUG,
-      LOG_CATEGORIES.PLAY,
-      '微信音频解锁音已播放'
-    )
   } catch (error) {
-    logAudioEvent(
-      LOG_LEVELS.WARN,
-      LOG_CATEGORIES.PLAY,
-      '微信音频解锁音播放失败',
-      { error: error.message }
-    )
+    console.warn('微信音频解锁音播放失败:', error)
   }
 }
 

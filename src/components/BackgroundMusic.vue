@@ -5,7 +5,6 @@ import { useSound } from '../composables/useSound'
 import { useSettingsStore } from '../stores/settings'
 import { getAudioContext, closeAudioContext } from '../utils/audioContext'
 import { createBackgroundMusicBuffer } from '../utils/audioSynthesis'
-import { logAudioEvent, LOG_LEVELS, LOG_CATEGORIES } from '../utils/audioDebug'
 
 const props = defineProps({
   enabled: {
@@ -36,38 +35,11 @@ let gainNode = null
 function createBackgroundMusic() {
   const ctx = getAudioContext()
   if (!ctx) {
-    logAudioEvent(
-      LOG_LEVELS.ERROR,
-      LOG_CATEGORIES.PLAY,
-      '背景音乐缓冲区创建失败：AudioContext 不存在'
-    )
+    console.error('背景音乐缓冲区创建失败：AudioContext 不存在')
     return null
   }
 
-  logAudioEvent(
-    LOG_LEVELS.INFO,
-    LOG_CATEGORIES.PLAY,
-    '开始创建背景音乐缓冲区',
-    { contextState: ctx.state }
-  )
-
   const buffer = createBackgroundMusicBuffer(ctx)
-
-  if (buffer) {
-    logAudioEvent(
-      LOG_LEVELS.SUCCESS,
-      LOG_CATEGORIES.PLAY,
-      '背景音乐缓冲区创建成功',
-      { duration: buffer.duration, sampleRate: buffer.sampleRate, channels: buffer.numberOfChannels }
-    )
-  } else {
-    logAudioEvent(
-      LOG_LEVELS.ERROR,
-      LOG_CATEGORIES.PLAY,
-      '背景音乐缓冲区创建失败'
-    )
-  }
-
   return buffer
 }
 
@@ -75,8 +47,6 @@ async function play() {
   if (!props.enabled || !audioBuffer) return
   const ctx = getAudioContext()
   if (!ctx) return
-
-  logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.PLAY, '开始播放背景音乐', { enabled: props.enabled })
 
   try {
     if (ctx.state === 'suspended') {
@@ -93,7 +63,8 @@ async function play() {
     sourceNode.loop = true
 
     gainNode = ctx.createGain()
-    gainNode.gain.value = 0
+    // iOS Safari 26.2 修复：使用较小的初始音量，避免从 0 开始
+    gainNode.gain.value = Math.max(0.1, settingsStore.musicVolume * 0.3)
 
     sourceNode.connect(gainNode)
     gainNode.connect(ctx.destination)
@@ -101,18 +72,16 @@ async function play() {
     sourceNode.start()
     isPlaying.value = true
 
-    gainNode.gain.linearRampToValueAtTime(settingsStore.musicVolume, ctx.currentTime + 0.3)
-
-    logAudioEvent(LOG_LEVELS.SUCCESS, LOG_CATEGORIES.PLAY, '背景音乐播放成功')
+    // iOS Safari 26.2 修复：直接设置目标音量，使用 setValueAtTime 而不是 linearRamp
+    // 某些版本的 Safari 不支持或延迟执行 linearRampToValueAtTime
+    gainNode.gain.setValueAtTime(settingsStore.musicVolume, ctx.currentTime + 0.1)
   } catch (error) {
-    logAudioEvent(LOG_LEVELS.ERROR, LOG_CATEGORIES.PLAY, '背景音乐播放失败', { error: error.message })
+    console.error('背景音乐播放失败:', error)
   }
 }
 
 function pause() {
   if (sourceNode && isPlaying.value) {
-    logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.PLAY, '暂停背景音乐')
-
     try {
       if (gainNode) {
         const ctx = getAudioContext()
@@ -127,18 +96,15 @@ function pause() {
           sourceNode.disconnect()
         }
         isPlaying.value = false
-        logAudioEvent(LOG_LEVELS.SUCCESS, LOG_CATEGORIES.PLAY, '背景音乐暂停成功')
       }, 250)
     } catch (error) {
-      logAudioEvent(LOG_LEVELS.ERROR, LOG_CATEGORIES.PLAY, '背景音乐暂停失败', { error: error.message })
+      console.error('背景音乐暂停失败:', error)
     }
   }
 }
 
 async function togglePlay() {
   playSound('click')
-
-  logAudioEvent(LOG_LEVELS.INFO, LOG_CATEGORIES.PLAY, '用户切换背景音乐播放状态', { isPlaying: isPlaying.value })
 
   if (!audioBuffer) {
     audioBuffer = createBackgroundMusic()
@@ -156,8 +122,6 @@ async function togglePlay() {
 function setVolume(newVolume) {
   const volume = Math.max(0, Math.min(1, newVolume))
   settingsStore.musicVolume = volume
-
-  logAudioEvent(LOG_LEVELS.DEBUG, LOG_CATEGORIES.PLAY, '设置背景音乐音量', { volume })
 
   if (gainNode) {
     gainNode.gain.value = volume
