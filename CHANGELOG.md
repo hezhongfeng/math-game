@@ -19,6 +19,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enhanced AudioContext event listeners with `once: true` and `passive: true` options
   - Fixed delayed sound effects in `setTimeout` by re-checking AudioContext state
   - Ensured all audio playback occurs within user interaction context
+  - **Note**: iOS物理静音开关需关闭才能听到声音
+
+### Added
+
+- **微信浏览器支持**:
+  - 自动检测微信内置浏览器
+  - 特殊音频解锁机制（播放极短测试音）
+  - 兼容微信WebView的音频策略
+
+- **音频调试系统** (已移除):
+  - 添加了完整的音频诊断面板
+  - 实时显示AudioContext状态
+  - 记录用户交互和音频日志
+  - **已移除**：生产环境不需要调试代码
+
+### Removed
+
+- **调试系统清理**:
+  - 删除 `src/components/AudioDiagnosticPanel.vue` (624行)
+  - 删除 `src/utils/audioDebug.js` (407行)
+  - 移除所有调试日志代码
+  - 生产环境代码更加清洁
+
+### Optimized
+
+- **项目结构优化**:
+  - 删除未使用的 `ParticleEffects.vue` 组件 (7.23KB)
+  - 清理 `style.css` 未使用动画类 (fadeIn, correctPop, wrongShake)
+  - 优化 `Home.vue` 水母动画代码，减少模板重复
+  - 构建体积减小：CSS 54.22KB → 53.43KB
+
+- **代码质量**:
+  - 统一代码风格
+  - 移除冗余注释
+  - 优化组件结构
 
 ### Refactored
 
