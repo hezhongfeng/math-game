@@ -261,6 +261,18 @@ touch-action: manipulation;
 -webkit-overflow-scrolling: touch;
 ```
 
+### iOS Safari 音频兼容性
+
+本游戏针对 iOS Safari 浏览器进行了专门的音频兼容性优化：
+
+- **AudioContext 恢复**：在用户交互的同步代码路径中恢复 AudioContext
+- **事件监听优化**：touchstart 使用 `once: true` 避免重复监听
+- **触摸处理**：所有交互元素添加 `-webkit-tap-highlight-color: transparent`
+- **延时音效修复**：在 `setTimeout` 中重新检查 AudioContext 状态
+- **被动事件**：所有事件监听器使用 `passive: true` 优化性能
+
+这些优化确保 iPhone 和 iPad 上的 Safari 浏览器可以正常播放所有音效和背景音乐。
+
 ## 🌐 浏览器兼容性
 
 | 浏览器 | 状态 | 备注 |

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **iOS Safari Audio Compatibility**:
+  - Fixed `TypeError: forceInitializeAudioContext is not a function` error
+  - Resolved audio playback issues on iPhone/iPad Safari browsers
+  - AudioContext now properly resumes in synchronous execution path
+  - Optimized touch event handling for iOS devices
+  - Added `-webkit-tap-highlight-color: transparent` to interactive elements
+  - Implemented `touch-action: manipulation` for better touch response
+  - Enhanced AudioContext event listeners with `once: true` and `passive: true` options
+  - Fixed delayed sound effects in `setTimeout` by re-checking AudioContext state
+  - Ensured all audio playback occurs within user interaction context
+
 ### Refactored
 
 - **Code Organization & Architecture**:

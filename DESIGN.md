@@ -278,6 +278,30 @@ module.exports = {
 | Web Speech API | ✅ | ✅ | 显示提示 |
 | LocalStorage | ✅ | ✅ | 使用内存存储 |
 | CSS 动画 | ✅ | ✅ | 使用 JS 动画 |
+| Web Audio API | ✅ (需交互) | ✅ | 显示提示 |
+
+#### Web Audio API 兼容性说明
+
+**iOS Safari 特殊处理：**
+
+iOS Safari 对 Web Audio API 有严格的自动播放策略，必须在用户交互的同步代码路径中恢复 AudioContext。本项目已针对此限制进行优化：
+
+1. **同步执行 AudioContext 恢复**：在 `onMounted` 和事件处理程序中同步调用 `resume()`
+2. **优化事件监听**：
+   - `touchstart` 事件使用 `once: true` 避免重复监听
+   - 所有事件使用 `passive: true` 提升滚动性能
+   - 在捕获阶段（capture: true）处理事件以确保及时恢复
+3. **触摸处理优化**：
+   - 所有交互元素添加 `-webkit-tap-highlight-color: transparent`
+   - 使用 `touch-action: manipulation` 禁止双击缩放
+4. **延时音效修复**：
+   - 在 `setTimeout` 中重新检查 AudioContext 状态
+   - 如处于 suspended 状态，再次调用 `resume()` 并等待恢复
+5. **音频上下文管理**：
+   - 集中管理 AudioContext 实例，避免重复创建
+   - 提供 `forceInitializeAudioContext()` 工具函数
+
+**实现文件**：`src/utils/audioContext.js`、`src/composables/useSound.js`
 
 ---
 
