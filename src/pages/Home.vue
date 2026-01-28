@@ -13,35 +13,57 @@ const { playSound, forceInitializeAudioContext } = useSound()
 const bestScores = getAllBestScores()
 const completedCount = Object.keys(bestScores).length
 
-// 水母数据 - 从屏幕各个位置随机升起
+// 水母数据 - 均匀分布在整个20秒动画周期中，确保循环一直有水母
 const jellyfishes = [
-  // 从左侧不同高度
-  { color: '#FF6B6B', delay: 0, left: '8%', startTop: '85%', size: 52 },
-  { color: '#4ECDC4', delay: 0.3, left: '5%', startTop: '70%', size: 44 },
-  { color: '#FFE66D', delay: 0.6, left: '12%', startTop: '55%', size: 48 },
-  { color: '#AA96DA', delay: 0.9, left: '3%', startTop: '40%', size: 42 },
-  { color: '#FCBAD3', delay: 1.2, left: '15%', startTop: '25%', size: 46 },
-  // 从中间偏左
-  { color: '#A8D8EA', delay: 1.5, left: '25%', startTop: '90%', size: 50 },
-  { color: '#FF9F43', delay: 1.8, left: '22%', startTop: '75%', size: 44 },
-  { color: '#6AB04C', delay: 2.1, left: '28%', startTop: '60%', size: 48 },
-  { color: '#B5838D', delay: 2.4, left: '18%', startTop: '45%', size: 42 },
-  { color: '#E8A87C', delay: 0.2, left: '32%', startTop: '35%', size: 46 },
-  // 从中间
-  { color: '#41B3A3', delay: 0.5, left: '45%', startTop: '95%', size: 54 },
-  { color: '#D65076', delay: 0.8, left: '42%', startTop: '80%', size: 48 },
-  { color: '#45B7D1', delay: 1.1, left: '48%', startTop: '65%', size: 44 },
-  { color: '#96CEB4', delay: 1.4, left: '52%', startTop: '50%', size: 50 },
-  { color: '#FFEAA7', delay: 1.7, left: '38%', startTop: '35%', size: 42 },
-  // 从右侧
-  { color: '#DFE6E9', delay: 2, left: '62%', startTop: '88%', size: 46 },
-  { color: '#81ECEC', delay: 2.3, left: '68%', startTop: '72%', size: 50 },
-  { color: '#74B9FF', delay: 0.1, left: '75%', startTop: '58%', size: 44 },
-  { color: '#A29BFE', delay: 0.4, left: '82%', startTop: '42%', size: 48 },
-  { color: '#FD79A8', delay: 0.7, left: '88%', startTop: '28%', size: 52 },
-  { color: '#00B894', delay: 1, left: '92%', startTop: '82%', size: 46 },
-  { color: '#E17055', delay: 1.3, left: '78%', startTop: '48%', size: 42 },
-  { color: '#FDCB6E', delay: 1.6, left: '95%', startTop: '15%', size: 48 },
+  // 第一组: 0-4秒（覆盖动画开始阶段）
+  { color: '#FF6B6B', delay: 0, left: '8%', startTop: '85%', size: 42, opacity: 0.7 },
+  { color: '#4ECDC4', delay: 0.5, left: '5%', startTop: '70%', size: 38, opacity: 0.65 },
+  { color: '#FFE66D', delay: 1, left: '12%', startTop: '55%', size: 40, opacity: 0.7 },
+  { color: '#AA96DA', delay: 1.5, left: '3%', startTop: '40%', size: 36, opacity: 0.6 },
+  { color: '#FCBAD3', delay: 2, left: '15%', startTop: '25%', size: 39, opacity: 0.65 },
+  { color: '#A8D8EA', delay: 2.5, left: '25%', startTop: '90%', size: 41, opacity: 0.7 },
+  { color: '#FF9F43', delay: 3, left: '22%', startTop: '75%', size: 38, opacity: 0.65 },
+  { color: '#6AB04C', delay: 3.5, left: '28%', startTop: '60%', size: 40, opacity: 0.7 },
+  
+  // 第二组: 4-8秒
+  { color: '#B5838D', delay: 4, left: '18%', startTop: '45%', size: 36, opacity: 0.6 },
+  { color: '#E8A87C', delay: 4.5, left: '32%', startTop: '35%', size: 39, opacity: 0.65 },
+  { color: '#41B3A3', delay: 5, left: '45%', startTop: '95%', size: 43, opacity: 0.7 },
+  { color: '#D65076', delay: 5.5, left: '42%', startTop: '80%', size: 40, opacity: 0.65 },
+  { color: '#45B7D1', delay: 6, left: '48%', startTop: '65%', size: 38, opacity: 0.6 },
+  { color: '#96CEB4', delay: 6.5, left: '52%', startTop: '50%', size: 41, opacity: 0.7 },
+  { color: '#FFEAA7', delay: 7, left: '38%', startTop: '35%', size: 36, opacity: 0.6 },
+  { color: '#DFE6E9', delay: 7.5, left: '62%', startTop: '88%', size: 39, opacity: 0.65 },
+  
+  // 第三组: 8-12秒
+  { color: '#81ECEC', delay: 8, left: '68%', startTop: '72%', size: 41, opacity: 0.7 },
+  { color: '#74B9FF', delay: 8.5, left: '75%', startTop: '58%', size: 38, opacity: 0.65 },
+  { color: '#A29BFE', delay: 9, left: '82%', startTop: '42%', size: 40, opacity: 0.7 },
+  { color: '#FD79A8', delay: 9.5, left: '88%', startTop: '28%', size: 42, opacity: 0.65 },
+  { color: '#00B894', delay: 10, left: '92%', startTop: '82%', size: 37, opacity: 0.6 },
+  { color: '#E17055', delay: 10.5, left: '78%', startTop: '48%', size: 36, opacity: 0.6 },
+  { color: '#FDCB6E', delay: 11, left: '95%', startTop: '15%', size: 40, opacity: 0.7 },
+  { color: '#FF7675', delay: 11.5, left: '8%', startTop: '60%', size: 38, opacity: 0.65 },
+  
+  // 第四组: 12-16秒
+  { color: '#6C5CE7', delay: 12, left: '15%', startTop: '75%', size: 39, opacity: 0.6 },
+  { color: '#00CEC9', delay: 12.5, left: '35%', startTop: '90%', size: 41, opacity: 0.7 },
+  { color: '#FD79A8', delay: 13, left: '55%', startTop: '70%', size: 36, opacity: 0.6 },
+  { color: '#FDCB6E', delay: 13.5, left: '70%', startTop: '55%', size: 38, opacity: 0.65 },
+  { color: '#55EFC4', delay: 14, left: '85%', startTop: '40%', size: 40, opacity: 0.7 },
+  { color: '#74B9FF', delay: 14.5, left: '25%', startTop: '30%', size: 37, opacity: 0.6 },
+  { color: '#A29BFE', delay: 15, left: '45%', startTop: '85%', size: 39, opacity: 0.65 },
+  { color: '#FF7675', delay: 15.5, left: '65%', startTop: '65%', size: 41, opacity: 0.7 },
+  
+  // 第五组: 16-20秒（确保循环末期也有水母）
+  { color: '#00B894', delay: 16, left: '10%', startTop: '50%', size: 36, opacity: 0.6 },
+  { color: '#E17055', delay: 16.5, left: '30%', startTop: '70%', size: 38, opacity: 0.65 },
+  { color: '#FDCB6E', delay: 17, left: '50%', startTop: '85%', size: 40, opacity: 0.7 },
+  { color: '#6C5CE7', delay: 17.5, left: '70%', startTop: '60%', size: 37, opacity: 0.6 },
+  { color: '#00CEC9', delay: 18, left: '85%', startTop: '45%', size: 39, opacity: 0.65 },
+  { color: '#FD79A8', delay: 18.5, left: '20%', startTop: '35%', size: 35, opacity: 0.6 },
+  { color: '#55EFC4', delay: 19, left: '40%', startTop: '80%', size: 38, opacity: 0.65 },
+  { color: '#74B9FF', delay: 19.5, left: '60%', startTop: '55%', size: 40, opacity: 0.7 },
 ]
 
 function startGame() {
@@ -178,7 +200,8 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: floatJellyfish 20s ease-in-out infinite;
+  animation: floatJellyfish 20s linear infinite;
+  opacity: 0;
 }
 
 .jelly-head {
@@ -245,11 +268,11 @@ onMounted(() => {
     transform: translateY(0) rotate(-3deg);
     opacity: 0;
   }
-  5% {
-    opacity: 0.85;
+  3% {
+    opacity: 0.7;
   }
-  95% {
-    opacity: 0.85;
+  97% {
+    opacity: 0.7;
   }
   100% {
     transform: translateY(-120vh) rotate(3deg);

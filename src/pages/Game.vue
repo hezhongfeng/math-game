@@ -243,16 +243,16 @@ onMounted(() => {
         />
       </Transition>
 
-      <!-- 答题反馈 -->
+      <!-- 答题反馈遮罩 -->
       <Transition name="feedback">
-        <div v-if="shouldShowFeedback && isCorrect" class="feedback-overlay correct">
-          <div class="success-circle">
-            <Check :size="40" />
+        <div v-if="shouldShowFeedback" class="feedback-container" @click="handleWrongFeedbackClick">
+          <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
+            <div v-if="isCorrect" class="success-circle">
+              <Check :size="40" />
+            </div>
+            <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
+            <div v-if="isIncorrect" class="hint-text">点击继续</div>
           </div>
-        </div>
-        <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong" @click="handleWrongFeedbackClick">
-          <div class="answer-number">{{ currentQuestion.answer }}</div>
-          <div class="hint-text">点击继续</div>
         </div>
       </Transition>
     </main>
@@ -500,6 +500,44 @@ onMounted(() => {
   }
 }
 
+/* 反馈容器 */
+.feedback-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+/* 反馈弹窗 */
+.feedback-overlay {
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 28px 24px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+.feedback-overlay.correct {
+  border-color: #4CAF50;
+}
+
+.feedback-overlay.wrong {
+  border-color: #FF9800;
+  cursor: pointer;
+}
+
 /* 答案数字 - 错误反馈 */
 .answer-number {
   font-size: 48px;
@@ -515,22 +553,39 @@ onMounted(() => {
   color: #94a3b8;
 }
 
-/* 反馈层过渡 */
-.feedback-enter-active {
-  transition: all 0.4s ease;
+/* 反馈过渡 - 遮罩和弹窗统一动画 */
+.feedback-enter-active .feedback-container {
+  transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.feedback-leave-active {
-  transition: all 0.25s ease;
+.feedback-leave-active .feedback-container {
+  transition: opacity 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
 
-.feedback-enter-from {
+.feedback-enter-from .feedback-container {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.7);
 }
 
-.feedback-leave-to {
+.feedback-leave-to .feedback-container {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.85);
+}
+
+/* 弹窗内容动画 */
+.feedback-enter-active .feedback-overlay {
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-leave-active .feedback-overlay {
+  transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.feedback-enter-from .feedback-overlay {
+  opacity: 0;
+  transform: scale(0.75);
+}
+
+.feedback-leave-to .feedback-overlay {
+  opacity: 0;
+  transform: scale(0.85);
 }
 </style>
