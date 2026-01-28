@@ -74,14 +74,13 @@ const props = defineProps({
 
 /* 状态样式 - 占位符 */
 .state-placeholder {
-  border: 2px dashed #cbd5e1;
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border: 2px solid rgba(74, 144, 226, 0.15);
+  background: #ffffff;
 }
 
 .state-placeholder .number-value {
-  color: #4A90E2;
-  animation: pulse-gentle 2s ease-in-out infinite;
-  font-weight: 900;
+  color: #94a3b8;
+  font-weight: 400;
 }
 
 /* 状态样式 - 正确 */
@@ -119,7 +118,7 @@ const props = defineProps({
 }
 
 .size-large .number-value {
-  font-size: 3.5rem;
+  font-size: 3rem;
 }
 
 /* 动画 */
@@ -159,7 +158,7 @@ const props = defineProps({
   }
 
   .size-large .number-value {
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
 }
 </style>
