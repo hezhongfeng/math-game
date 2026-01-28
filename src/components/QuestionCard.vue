@@ -41,32 +41,26 @@ const formattedTime = computed(() => {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 })
 
-// 答案卡片的状态
+// 答案卡片的状态 - 始终保持默认样式
 const answerCardState = computed(() => {
-  if (!shouldShowFeedback.value) {
-    return props.userAnswer ? 'default' : 'placeholder'
+  if (!props.userAnswer) {
+    return 'placeholder'
   }
-  return isCorrect.value ? 'correct' : 'incorrect'
+  return 'default'
 })
 
 // 答案卡片的值
 const answerCardValue = computed(() => {
+  // 只在答对时显示正确答案，答错时显示用户答案
   if (shouldShowFeedback.value) {
-    return props.question.answer
+    return isCorrect.value ? props.question.answer : props.userAnswer
   }
   return props.userAnswer || '?'
 })
 </script>
 
 <template>
-  <div
-    class="question-card"
-    :class="{
-      'state-correct': isCorrect,
-      'state-incorrect': isIncorrect,
-      'state-default': !isCorrect && !isIncorrect
-    }"
-  >
+  <div class="question-card state-default">
     <!-- 顶部信息栏 -->
     <div class="header-bar">
       <div class="question-indicator">
@@ -200,19 +194,17 @@ const answerCardValue = computed(() => {
 
 .operator {
   font-size: 2.5rem;
-  font-weight: 800;
-  color: #FF6B6B;
+  font-weight: 700;
+  color: #4A90E2;
   line-height: 1;
-  text-shadow: 0 2px 4px rgba(255, 107, 107, 0.2);
   user-select: none;
 }
 
 .equals-operator {
   font-size: 2.5rem;
-  font-weight: 800;
-  color: #4ECDC4;
+  font-weight: 700;
+  color: #64748b;
   line-height: 1;
-  text-shadow: 0 2px 4px rgba(78, 205, 196, 0.2);
   user-select: none;
 }
 
@@ -237,6 +229,12 @@ const answerCardValue = computed(() => {
   }
 
   .operator {
+    font-size: 2.5rem;
+    width: 56px;
+    height: 56px;
+  }
+
+  .equals-operator {
     font-size: 2.5rem;
     width: 56px;
     height: 56px;

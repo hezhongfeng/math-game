@@ -251,9 +251,7 @@ onMounted(() => {
           </div>
         </div>
         <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong" @click="handleWrongFeedbackClick">
-          <div class="answer-card">
-            <span class="answer-number">{{ currentQuestion.answer }}</span>
-          </div>
+          <div class="answer-number">{{ currentQuestion.answer }}</div>
           <div class="hint-text">点击继续</div>
         </div>
       </Transition>
@@ -502,21 +500,13 @@ onMounted(() => {
   }
 }
 
-/* 答案卡片 - 错误反馈 */
-.answer-card {
-  padding: 12px 24px;
-  background: #fff9f0;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 152, 0, 0.2);
-  min-width: 140px;
-  text-align: center;
-}
-
+/* 答案数字 - 错误反馈 */
 .answer-number {
-  font-size: 36px;
+  font-size: 48px;
   font-weight: 700;
   color: #FF9800;
   line-height: 1;
+  text-align: center;
 }
 
 /* 点击提示文字 */
