@@ -123,6 +123,7 @@ function handleWrongFeedbackClick() {
 
 // 游戏完成处理
 function handleGameComplete() {
+  game.completeGame()  // 先设置结束时间
   const result = game.getResult()
   const best = updateBestScore(parseInt(props.id), result)
 

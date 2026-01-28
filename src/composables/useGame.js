@@ -28,8 +28,9 @@ export function useGame(difficulty) {
   })
   
   const duration = computed(() => {
-    if (!startTime.value || !endTime.value) return 0
-    return Math.floor((endTime.value - startTime.value) / 1000)
+    if (!startTime.value) return 0
+    const end = endTime.value || Date.now()
+    return Math.floor((end - startTime.value) / 1000)
   })
   
   /**
