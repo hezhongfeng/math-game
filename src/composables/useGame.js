@@ -132,6 +132,7 @@ export function useGame(difficulty) {
     startGame,
     submitAnswer,
     nextQuestion,
+    completeGame,
     getResult
   }
 }
