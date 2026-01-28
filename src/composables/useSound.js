@@ -111,8 +111,6 @@ export function useSound() {
     setTimeout(async () => {
       try
       {
-        // iOS Safari 26.2 关键修复：确保 AudioContext 处于运行状态
-        // 使用 ensureAudioContextRunning 等待 resume 完成
         await ensureAudioContextRunning()
 
         const ctx = getAudioContext()
@@ -140,7 +138,6 @@ export function useSound() {
     setTimeout(async () => {
       try
       {
-        // iOS Safari 26.2 关键修复：确保 AudioContext 处于运行状态
         await ensureAudioContextRunning()
 
         const ctx = getAudioContext()
@@ -193,7 +190,6 @@ export function useSound() {
       setTimeout(async () => {
         try
         {
-          // iOS Safari 26.2 关键修复：确保 AudioContext 处于运行状态
           await ensureAudioContextRunning()
 
           const ctx = getAudioContext()

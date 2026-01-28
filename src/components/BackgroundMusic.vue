@@ -63,7 +63,6 @@ async function play() {
     sourceNode.loop = true
 
     gainNode = ctx.createGain()
-    // iOS Safari 26.2 修复：使用较小的初始音量，避免从 0 开始
     gainNode.gain.value = Math.max(0.1, settingsStore.musicVolume * 0.3)
 
     sourceNode.connect(gainNode)
@@ -72,8 +71,6 @@ async function play() {
     sourceNode.start()
     isPlaying.value = true
 
-    // iOS Safari 26.2 修复：直接设置目标音量，使用 setValueAtTime 而不是 linearRamp
-    // 某些版本的 Safari 不支持或延迟执行 linearRampToValueAtTime
     gainNode.gain.setValueAtTime(settingsStore.musicVolume, ctx.currentTime + 0.1)
   } catch (error) {
     console.error('背景音乐播放失败:', error)

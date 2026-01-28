@@ -37,8 +37,6 @@ export function getAudioContext() {
 /**
  * 设置 AudioContext 用户交互监听器，用于恢复被暂停的音频
  * iOS Safari 在用户交互前不允许播放音频
- *
- * iOS Safari 26.2 增强：扩大事件监听器覆盖范围
  */
 function setupAudioContextListeners() {
   if (isAudioContextInitialized || !audioContext) return
@@ -79,7 +77,7 @@ function setupAudioContextListeners() {
     }
   }
 
-  // iOS Safari 26.2 增强：监听更多事件类型，确保捕获早期交互
+  // 监听更多事件类型，确保捕获早期交互
   // 使用 { once: false } 以便多次尝试恢复（某些 Safari 版本需要多次触发）
   const events = [
     'touchstart',  // 最早触发的触摸事件
@@ -103,7 +101,7 @@ function setupAudioContextListeners() {
     })
   })
   
-  // iOS Safari 26.2 关键增强：在 window 上也监听，扩大覆盖范围
+  // 在 window 上也监听，扩大覆盖范围
   events.forEach(event => {
     window.addEventListener(event, handleUserInteraction, { 
       capture: true, 
@@ -116,8 +114,6 @@ function setupAudioContextListeners() {
 /**
  * 确保 AudioContext 处于运行状态
  * 这是播放音频前的必要检查，特别是在 iOS 上
- *
- * iOS Safari 26.2 关键修复：添加状态轮询，确保 resume 完成
  */
 export async function ensureAudioContextRunning() {
   const ctx = getAudioContext()
@@ -134,7 +130,7 @@ export async function ensureAudioContextRunning() {
       await ctx.resume()
       hasUserInteracted = true
 
-      // iOS Safari 26.2 关键修复：等待状态实际变为 running
+      // 等待状态实际变为 running
       // 某些版本的 Safari 中，resume() 返回后状态可能不会立即变更
       await waitForAudioContextRunning(ctx, 500)
       
