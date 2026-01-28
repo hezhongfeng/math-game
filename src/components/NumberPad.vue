@@ -90,126 +90,60 @@ function handleSubmit() {
 .number-pad {
   border-radius: 32px;
   padding: 20px 16px;
-  box-shadow: 
-    0 8px 30px rgba(74, 144, 226, 0.15),
-    0 4px 15px rgba(74, 144, 226, 0.1);
-  border: 2px solid rgba(74, 144, 226, 0.2);
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(74, 144, 226, 0.15);
+  background: #ffffff;
   transition: all 0.3s ease;
 }
 
 .number-pad-disabled {
-  opacity: 0.7;
-  border-color: rgba(74, 144, 226, 0.1);
+  opacity: 0.6;
 }
 
-/* 数字按钮 */
+/* 数字按钮 - 扁平简约设计 */
 .num-btn {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  position: relative;
-  box-shadow: 
-    0 4px 0 rgba(42, 112, 194, 0.3),
-    0 6px 15px rgba(74, 144, 226, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.num-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+  border: 2px solid rgba(74, 144, 226, 0.3);
+  transition: all 0.15s ease;
 }
 
 .num-btn:hover:not(:disabled) {
-  box-shadow: 
-    0 6px 0 rgba(42, 112, 194, 0.4),
-    0 10px 30px rgba(74, 144, 226, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
+  border-color: rgba(74, 144, 226, 0.5);
 }
 
-.num-btn:active:not(:disabled),
-.num-btn.active-translate-y-0-5:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 
-    0 2px 0 rgba(42, 112, 194, 0.3),
-    0 3px 10px rgba(74, 144, 226, 0.2),
-    inset 0 2px 5px rgba(0, 0, 0, 0.1);
+.num-btn:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .num-btn-disabled {
-  background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 100%) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #999 !important;
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #94a3b8 !important;
   cursor: not-allowed;
-  box-shadow: none !important;
   transform: none !important;
 }
 
-/* 确认按钮 */
+/* 确认按钮 - 扁平简约设计 */
 .confirm-btn {
-  position: relative;
-  box-shadow: 
-    0 4px 0 rgba(56, 142, 60, 0.4),
-    0 6px 20px rgba(76, 175, 80, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  animation: pulse-glow-green 2s ease-in-out infinite;
-}
-
-.confirm-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+  border: 2px solid rgba(76, 175, 80, 0.4);
+  transition: all 0.15s ease;
 }
 
 .confirm-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 
-    0 6px 0 rgba(56, 142, 60, 0.5),
-    0 10px 35px rgba(76, 175, 80, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(76, 175, 80, 0.6);
 }
 
 .confirm-btn:active:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 
-    0 2px 0 rgba(56, 142, 60, 0.4),
-    0 3px 15px rgba(76, 175, 80, 0.3),
-    inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: scale(0.96);
 }
 
 .confirm-btn-disabled {
-  background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 100%) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  box-shadow: none !important;
-  animation: none !important;
-  transform: none !important;
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
   cursor: not-allowed;
-}
-
-@keyframes pulse-glow-green {
-  0%, 100% {
-    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-  }
-  50% {
-    box-shadow: 0 8px 40px rgba(76, 175, 80, 0.6);
-  }
+  transform: none !important;
 }
 </style>

@@ -171,15 +171,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
-  border-radius: 20px;
-  box-shadow: 
-    0 4px 20px rgba(74, 144, 226, 0.15),
-    0 2px 8px rgba(74, 144, 226, 0.08);
+  padding: 12px 16px;
+  background: #ffffff;
+  border-radius: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(74, 144, 226, 0.2);
   margin: 0 12px 16px;
   /* Safe area for notched devices */
-  padding-top: max(10px, env(safe-area-inset-top));
+  padding-top: max(12px, env(safe-area-inset-top));
 }
 
 .back-btn {
@@ -190,9 +189,9 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 600;
   color: #4A90E2;
-  background: linear-gradient(135deg, #e0efff 0%, #f0f7ff 100%);
-  border: 2px solid rgba(74, 144, 226, 0.3);
-  border-radius: 12px;
+  background: #ffffff;
+  border: 2px solid rgba(74, 144, 226, 0.2);
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.15s ease;
   -webkit-tap-highlight-color: transparent;
@@ -200,7 +199,7 @@ onMounted(() => {
 
 .back-btn:active {
   transform: scale(0.95);
-  background: #d0e4ff;
+  border-color: #4A90E2;
 }
 
 .back-btn span {
@@ -222,10 +221,10 @@ onMounted(() => {
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 700;
-  color: #E65100;
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  color: #FF8F00;
+  background: #ffffff;
   border-radius: 16px;
-  border: 2px solid #FFD54F;
+  border: 2px solid rgba(255, 193, 7, 0.4);
 }
 
 .progress-badge svg {
@@ -249,9 +248,10 @@ onMounted(() => {
   gap: 12px;
   margin-bottom: 14px;
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 249, 255, 0.9) 100%);
-  border-radius: 14px;
+  background: #ffffff;
+  border-radius: 20px;
   border: 2px solid rgba(74, 144, 226, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 .section-indicator {
@@ -290,11 +290,9 @@ onMounted(() => {
   left: 0;
   right: 0;
   padding: 12px 20px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 249, 255, 0.95) 100%);
-  border-top: 2px solid rgba(74, 144, 226, 0.1);
-  box-shadow: 0 -4px 20px rgba(74, 144, 226, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #ffffff;
+  border-top: 1px solid rgba(74, 144, 226, 0.15);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
   text-align: center;
   /* Safe area for notched devices */
   padding-bottom: max(12px, env(safe-area-inset-bottom));

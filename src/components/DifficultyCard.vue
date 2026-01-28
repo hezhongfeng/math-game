@@ -141,17 +141,15 @@ function handleSelect() {
 }
 
 .card-unlocked {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: #ffffff;
   border: 2px solid rgba(74, 144, 226, 0.2);
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 .card-unlocked:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 
-    0 8px 25px rgba(74, 144, 226, 0.15),
-    0 4px 10px rgba(74, 144, 226, 0.1);
+  transform: translateY(-2px);
   border-color: rgba(74, 144, 226, 0.4);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
 }
 
 .card-unlocked:active {
@@ -160,12 +158,16 @@ function handleSelect() {
 }
 
 .card-completed {
-  border-color: rgba(76, 175, 80, 0.3);
-  background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+  border-color: rgba(76, 175, 80, 0.4);
+  background: #ffffff;
+}
+
+.card-completed:hover {
+  border-color: #4CAF50;
 }
 
 .card-locked {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #f8fafc;
   border: 2px dashed #cbd5e1;
   opacity: 0.8;
 }
@@ -182,14 +184,14 @@ function handleSelect() {
 }
 
 .icon-wrapper {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(0, 0, 0, 0.06);
 }
 
 .emoji {
@@ -223,8 +225,9 @@ function handleSelect() {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  background: #dcfce7;
   color: #16a34a;
+  border: 2px solid #86efac;
 }
 
 .badge-locked {
@@ -234,8 +237,9 @@ function handleSelect() {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #e2e8f0;
+  background: #f1f5f9;
   color: #94a3b8;
+  border: 2px solid #e2e8f0;
 }
 
 .stats-row {

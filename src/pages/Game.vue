@@ -247,22 +247,12 @@ onMounted(() => {
       <Transition name="feedback">
         <div v-if="shouldShowFeedback && isCorrect" class="feedback-overlay correct">
           <div class="success-circle">
-            <div class="green-ring"></div>
-            <div class="ripple-green ripple-1"></div>
-            <div class="ripple-green ripple-2"></div>
-            <div class="circle-bg">
-              <Check :size="40" />
-            </div>
+            <Check :size="40" />
           </div>
         </div>
         <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong" @click="handleWrongFeedbackClick">
           <div class="error-circle">
-            <div class="orange-ring"></div>
-            <div class="ripple-orange ripple-1"></div>
-            <div class="ripple-orange ripple-2"></div>
-            <div class="circle-bg-error">
-              <span class="error-icon">✕</span>
-            </div>
+            <span class="error-icon">✕</span>
           </div>
           <div class="answer-card">
             <span class="answer-label">正确答案</span>
@@ -464,74 +454,44 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 400px;
+  max-width: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 20px;
   z-index: 9999;
-  background: white;
-  border-radius: 24px;
-  padding: 40px 32px;
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 32px 24px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .feedback-overlay.correct {
-  box-shadow: 0 12px 40px rgba(76, 175, 80, 0.25);
+  border: 3px solid #4CAF50;
 }
 
 .feedback-overlay.wrong {
-  box-shadow: 0 12px 40px rgba(255, 152, 0, 0.25);
+  border: 3px solid #FF9800;
   cursor: pointer;
 }
 
-/* 成功圆圈 */
+/* 成功圆圈 - 简约设计 */
 .success-circle {
-  position: relative;
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #4CAF50;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.green-ring {
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 4px solid #66BB6A;
-  animation: ringPulse 2s ease-in-out infinite;
-}
-
-@keyframes ringPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-}
-
-.circle-bg {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    0 8px 25px rgba(76, 175, 80, 0.45),
-    inset 0 2px 10px rgba(255, 255, 255, 0.3);
   animation: circlePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.circle-bg svg {
+.success-circle svg {
   color: white;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  width: 40px;
+  height: 40px;
 }
 
 @keyframes circlePop {
@@ -545,76 +505,15 @@ onMounted(() => {
   }
 }
 
-/* 绿色涟漪 */
-.ripple-green {
-  position: absolute;
-  border-radius: 50%;
-  border: 4px solid #4CAF50;
-  opacity: 0;
-}
-
-.ripple-green.ripple-1 {
-  inset: -25px;
-  animation: rippleExpand 1.2s ease-out 0.2s;
-}
-
-.ripple-green.ripple-2 {
-  inset: -45px;
-  border-color: #66BB6A;
-  animation: rippleExpand 1.2s ease-out 0.5s;
-}
-
-@keyframes rippleExpand {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(1.3);
-    opacity: 0;
-  }
-}
-
-/* 错误圆圈 */
+/* 错误圆圈 - 简约设计 */
 .error-circle {
-  position: relative;
-  width: 100px;
-  height: 100px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #FF9800;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.orange-ring {
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  border: 4px solid #FFB74D;
-  animation: orangeRingPulse 2s ease-in-out infinite;
-}
-
-@keyframes orangeRingPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-}
-
-.circle-bg-error {
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF9800 0%, #FFB74D 50%, #FF9800 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    0 6px 20px rgba(255, 152, 0, 0.4),
-    inset 0 2px 8px rgba(255, 255, 255, 0.3);
   animation: errorPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -631,70 +530,48 @@ onMounted(() => {
 
 .error-icon {
   color: white;
-  font-size: 40px;
+  font-size: 32px;
   font-weight: bold;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* 橙色涟漪 */
-.ripple-orange {
-  position: absolute;
-  border-radius: 50%;
-  border: 3px solid #FF9800;
-  opacity: 0;
-}
-
-.ripple-orange.ripple-1 {
-  inset: -15px;
-  animation: rippleExpand 1.2s ease-out 0.2s;
-}
-
-.ripple-orange.ripple-2 {
-  inset: -38px;
-  border-color: #FFB74D;
-  animation: rippleExpand 1.2s ease-out 0.5s;
-}
-
-/* 正确答案卡片 */
+/* 正确答案卡片 - 简约设计 */
 .answer-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   text-align: center;
-  padding: 32px 48px;
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  padding: 24px 40px;
+  background: #ffffff;
   border-radius: 24px;
-  border: 4px solid #FFD54F;
-  min-width: 180px;
+  border: 2px solid rgba(255, 193, 7, 0.4);
+  min-width: 160px;
 }
 
 .answer-label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  line-height: 1.2;
+  color: #94a3b8;
+  letter-spacing: 1px;
 }
 
 .answer-number {
-  font-size: 56px;
+  font-size: 48px;
   font-weight: 800;
-  color: #E65100;
-  line-height: 1.2;
+  color: #FF8F00;
+  line-height: 1;
 }
 
 /* 点击提示文字 */
 .hint-text {
-  font-size: 12px;
-  color: #999;
+  font-size: 13px;
+  color: #94a3b8;
   letter-spacing: 1px;
   animation: hintPulse 1.5s ease-in-out infinite;
 }
 
 @keyframes hintPulse {
-  0%, 100% { opacity: 0.6; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
 
