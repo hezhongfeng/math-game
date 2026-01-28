@@ -226,7 +226,7 @@ export function randomInt(min, max) {
 - Contains `DIFFICULTY_GROUPS` for grouping by level category
 
 **Constants (src/config/constants.js):**
-- Game constants, storage keys, etc.
+- Game constants, storage keys, audio frequencies and parameters for sound effects
 
 ### Component Structure
 
@@ -290,7 +290,7 @@ padding-top: max(10px, env(safe-area-inset-top));
 
 **LocalStorage keys:**
 - `math-game-data` - Game progress and best scores
-- `math-game-settings` - User settings (sound, speech, music)
+- `math-game-settings` - User settings (sound effects, speech synthesis)
 
 ---
 

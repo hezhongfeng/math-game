@@ -165,7 +165,7 @@ The project uses Web Audio API for all sound effects with no external audio file
 **When adding/modifying sounds:**
 - `src/config/constants.js` - AUDIO_FREQUENCIES, AUDIO_PARAMS (all tuning parameters)
 - `src/composables/useSound.js` - Sound synthesis implementation
-- `src/utils/audioSynthesis.js` - Background music generation
+
 - `src/utils/audioContext.js` - AudioContext lifecycle
 
 **When changing UI:**
@@ -198,9 +198,8 @@ The project currently has no unit tests. Manual verification approach:
 
 **Audio Testing:**
 1. Verify sound effects play on user interaction (some browsers block autoplay)
-2. Test background music play/pause
-3. Verify audio settings persist across page reloads
-4. Test volume slider responsiveness
+2. Verify audio settings persist across page reloads
+3. Test button click sounds and feedback sounds (correct/wrong/win)
 
 **Performance Baseline:**
 - Build size: JS ~145KB (gzip: 53KB), CSS ~54KB (gzip: 10KB)
@@ -260,7 +259,7 @@ The project currently has no unit tests. Manual verification approach:
 2. Check if AudioContext exists: `window.AudioContext || window.webkitAudioContext`
 3. Verify AudioContext state: `context.state` (should be 'running' or 'suspended')
 4. On iOS Safari: audio must be triggered by user interaction first
-5. For background music: ensure createBackgroundMusicBuffer() completes before play()
+5. Ensure AudioContext is properly resumed before playing sound effects
 
 ## Architecture Decisions & Rationale
 
@@ -303,7 +302,6 @@ The project currently has no unit tests. Manual verification approach:
 **Current Limitations:**
 - No TypeScript (all `.js` and `.vue` files)
 - No unit tests
-- Background music synthesis CPU-intensive on low-end devices
 - Vibration API has limited iOS support
 - Speech API quality varies by browser/OS
 
