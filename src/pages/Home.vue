@@ -13,57 +13,57 @@ const { playSound, forceInitializeAudioContext } = useSound()
 const bestScores = getAllBestScores()
 const completedCount = Object.keys(bestScores).length
 
-// 水母数据 - 均匀分布在整个20秒动画周期中，确保循环一直有水母
+// 水母数据 - 柔和马卡龙色系，更优雅的配色方案
 const jellyfishes = [
-  // 第一组: 0-4秒（覆盖动画开始阶段）
-  { color: '#FF6B6B', delay: 0, left: '8%', startTop: '85%', size: 42, opacity: 0.7 },
-  { color: '#4ECDC4', delay: 0.5, left: '5%', startTop: '70%', size: 38, opacity: 0.65 },
-  { color: '#FFE66D', delay: 1, left: '12%', startTop: '55%', size: 40, opacity: 0.7 },
-  { color: '#AA96DA', delay: 1.5, left: '3%', startTop: '40%', size: 36, opacity: 0.6 },
-  { color: '#FCBAD3', delay: 2, left: '15%', startTop: '25%', size: 39, opacity: 0.65 },
-  { color: '#A8D8EA', delay: 2.5, left: '25%', startTop: '90%', size: 41, opacity: 0.7 },
-  { color: '#FF9F43', delay: 3, left: '22%', startTop: '75%', size: 38, opacity: 0.65 },
-  { color: '#6AB04C', delay: 3.5, left: '28%', startTop: '60%', size: 40, opacity: 0.7 },
+  // 第一组: 0-4秒 - 柔和粉色系
+  { color: '#FFD1DC', delay: 0, left: '8%', startTop: '85%', size: 42, opacity: 0.65 },
+  { color: '#FFB3DE', delay: 0.5, left: '5%', startTop: '70%', size: 38, opacity: 0.6 },
+  { color: '#FFDAC1', delay: 1, left: '12%', startTop: '55%', size: 40, opacity: 0.65 },
+  { color: '#FFE4E1', delay: 1.5, left: '3%', startTop: '40%', size: 36, opacity: 0.55 },
+  { color: '#F8C3CD', delay: 2, left: '15%', startTop: '25%', size: 39, opacity: 0.6 },
+  { color: '#FFB6C1', delay: 2.5, left: '25%', startTop: '90%', size: 41, opacity: 0.65 },
+  { color: '#FFA7B5', delay: 3, left: '22%', startTop: '75%', size: 38, opacity: 0.6 },
+  { color: '#FFC2D1', delay: 3.5, left: '28%', startTop: '60%', size: 40, opacity: 0.65 },
   
-  // 第二组: 4-8秒
-  { color: '#B5838D', delay: 4, left: '18%', startTop: '45%', size: 36, opacity: 0.6 },
-  { color: '#E8A87C', delay: 4.5, left: '32%', startTop: '35%', size: 39, opacity: 0.65 },
-  { color: '#41B3A3', delay: 5, left: '45%', startTop: '95%', size: 43, opacity: 0.7 },
-  { color: '#D65076', delay: 5.5, left: '42%', startTop: '80%', size: 40, opacity: 0.65 },
-  { color: '#45B7D1', delay: 6, left: '48%', startTop: '65%', size: 38, opacity: 0.6 },
-  { color: '#96CEB4', delay: 6.5, left: '52%', startTop: '50%', size: 41, opacity: 0.7 },
-  { color: '#FFEAA7', delay: 7, left: '38%', startTop: '35%', size: 36, opacity: 0.6 },
-  { color: '#DFE6E9', delay: 7.5, left: '62%', startTop: '88%', size: 39, opacity: 0.65 },
+  // 第二组: 4-8秒 - 柔和蓝色系
+  { color: '#B5E3FF', delay: 4, left: '18%', startTop: '45%', size: 36, opacity: 0.55 },
+  { color: '#A2D2FF', delay: 4.5, left: '32%', startTop: '35%', size: 39, opacity: 0.6 },
+  { color: '#C1E1FF', delay: 5, left: '45%', startTop: '95%', size: 43, opacity: 0.65 },
+  { color: '#D4E6FF', delay: 5.5, left: '42%', startTop: '80%', size: 40, opacity: 0.6 },
+  { color: '#E2ECFF', delay: 6, left: '48%', startTop: '65%', size: 38, opacity: 0.55 },
+  { color: '#C7E3FF', delay: 6.5, left: '52%', startTop: '50%', size: 41, opacity: 0.65 },
+  { color: '#B8D4FF', delay: 7, left: '38%', startTop: '35%', size: 36, opacity: 0.55 },
+  { color: '#A8C8FF', delay: 7.5, left: '62%', startTop: '88%', size: 39, opacity: 0.6 },
   
-  // 第三组: 8-12秒
-  { color: '#81ECEC', delay: 8, left: '68%', startTop: '72%', size: 41, opacity: 0.7 },
-  { color: '#74B9FF', delay: 8.5, left: '75%', startTop: '58%', size: 38, opacity: 0.65 },
-  { color: '#A29BFE', delay: 9, left: '82%', startTop: '42%', size: 40, opacity: 0.7 },
-  { color: '#FD79A8', delay: 9.5, left: '88%', startTop: '28%', size: 42, opacity: 0.65 },
-  { color: '#00B894', delay: 10, left: '92%', startTop: '82%', size: 37, opacity: 0.6 },
-  { color: '#E17055', delay: 10.5, left: '78%', startTop: '48%', size: 36, opacity: 0.6 },
-  { color: '#FDCB6E', delay: 11, left: '95%', startTop: '15%', size: 40, opacity: 0.7 },
-  { color: '#FF7675', delay: 11.5, left: '8%', startTop: '60%', size: 38, opacity: 0.65 },
+  // 第三组: 8-12秒 - 柔和紫色系
+  { color: '#E1C4FF', delay: 8, left: '68%', startTop: '72%', size: 41, opacity: 0.65 },
+  { color: '#D4B5FF', delay: 8.5, left: '75%', startTop: '58%', size: 38, opacity: 0.6 },
+  { color: '#C9A8FF', delay: 9, left: '82%', startTop: '42%', size: 40, opacity: 0.65 },
+  { color: '#E8D5FF', delay: 9.5, left: '88%', startTop: '28%', size: 42, opacity: 0.6 },
+  { color: '#D9C0FF', delay: 10, left: '92%', startTop: '82%', size: 37, opacity: 0.55 },
+  { color: '#CDB2FF', delay: 10.5, left: '78%', startTop: '48%', size: 36, opacity: 0.55 },
+  { color: '#F0E1FF', delay: 11, left: '95%', startTop: '15%', size: 40, opacity: 0.65 },
+  { color: '#E6D0FF', delay: 11.5, left: '8%', startTop: '60%', size: 38, opacity: 0.6 },
   
-  // 第四组: 12-16秒
-  { color: '#6C5CE7', delay: 12, left: '15%', startTop: '75%', size: 39, opacity: 0.6 },
-  { color: '#00CEC9', delay: 12.5, left: '35%', startTop: '90%', size: 41, opacity: 0.7 },
-  { color: '#FD79A8', delay: 13, left: '55%', startTop: '70%', size: 36, opacity: 0.6 },
-  { color: '#FDCB6E', delay: 13.5, left: '70%', startTop: '55%', size: 38, opacity: 0.65 },
-  { color: '#55EFC4', delay: 14, left: '85%', startTop: '40%', size: 40, opacity: 0.7 },
-  { color: '#74B9FF', delay: 14.5, left: '25%', startTop: '30%', size: 37, opacity: 0.6 },
-  { color: '#A29BFE', delay: 15, left: '45%', startTop: '85%', size: 39, opacity: 0.65 },
-  { color: '#FF7675', delay: 15.5, left: '65%', startTop: '65%', size: 41, opacity: 0.7 },
+  // 第四组: 12-16秒 - 柔和绿色系
+  { color: '#D4F1D4', delay: 12, left: '15%', startTop: '75%', size: 39, opacity: 0.55 },
+  { color: '#C8E6C9', delay: 12.5, left: '35%', startTop: '90%', size: 41, opacity: 0.65 },
+  { color: '#DCEDC8', delay: 13, left: '55%', startTop: '70%', size: 36, opacity: 0.55 },
+  { color: '#E8F5E9', delay: 13.5, left: '70%', startTop: '55%', size: 38, opacity: 0.6 },
+  { color: '#F1F8E9', delay: 14, left: '85%', startTop: '40%', size: 40, opacity: 0.65 },
+  { color: '#D0E8D0', delay: 14.5, left: '25%', startTop: '30%', size: 37, opacity: 0.55 },
+  { color: '#BDE0BD', delay: 15, left: '45%', startTop: '85%', size: 39, opacity: 0.6 },
+  { color: '#C8E6D0', delay: 15.5, left: '65%', startTop: '65%', size: 41, opacity: 0.65 },
   
-  // 第五组: 16-20秒（确保循环末期也有水母）
-  { color: '#00B894', delay: 16, left: '10%', startTop: '50%', size: 36, opacity: 0.6 },
-  { color: '#E17055', delay: 16.5, left: '30%', startTop: '70%', size: 38, opacity: 0.65 },
-  { color: '#FDCB6E', delay: 17, left: '50%', startTop: '85%', size: 40, opacity: 0.7 },
-  { color: '#6C5CE7', delay: 17.5, left: '70%', startTop: '60%', size: 37, opacity: 0.6 },
-  { color: '#00CEC9', delay: 18, left: '85%', startTop: '45%', size: 39, opacity: 0.65 },
-  { color: '#FD79A8', delay: 18.5, left: '20%', startTop: '35%', size: 35, opacity: 0.6 },
-  { color: '#55EFC4', delay: 19, left: '40%', startTop: '80%', size: 38, opacity: 0.65 },
-  { color: '#74B9FF', delay: 19.5, left: '60%', startTop: '55%', size: 40, opacity: 0.7 },
+  // 第五组: 16-20秒 - 柔和黄色系
+  { color: '#FFF8D1', delay: 16, left: '10%', startTop: '50%', size: 36, opacity: 0.55 },
+  { color: '#FFF5BA', delay: 16.5, left: '30%', startTop: '70%', size: 38, opacity: 0.6 },
+  { color: '#FFF2A1', delay: 17, left: '50%', startTop: '85%', size: 40, opacity: 0.65 },
+  { color: '#FFF9C4', delay: 17.5, left: '70%', startTop: '60%', size: 37, opacity: 0.55 },
+  { color: '#FFFDCC', delay: 18, left: '85%', startTop: '45%', size: 39, opacity: 0.6 },
+  { color: '#FFFAC2', delay: 18.5, left: '20%', startTop: '35%', size: 35, opacity: 0.55 },
+  { color: '#FFF7B8', delay: 19, left: '40%', startTop: '80%', size: 38, opacity: 0.6 },
+  { color: '#FFF4A8', delay: 19.5, left: '60%', startTop: '55%', size: 40, opacity: 0.65 },
 ]
 
 function startGame() {
@@ -179,7 +179,7 @@ onMounted(() => {
   justify-content: center;
   padding: 24px 16px;
   position: relative;
-  background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #81ECEC 100%);
+  background: linear-gradient(180deg, #F0F8FF 0%, #F8FAFF 50%, #E6F0FF 100%);
   /* Allow scrolling on mobile while maintaining layout */
   overflow-y: auto;
   overflow-x: hidden;
