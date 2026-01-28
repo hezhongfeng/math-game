@@ -40,6 +40,10 @@ const questionKey = ref(0)
 const questionTimer = ref(0)
 let timerInterval = null
 
+// 游戏时间更新器
+const gameTime = ref(0)
+let gameTimeInterval = null
+
 const isComplete = computed(() => game.isComplete.value)
 const currentQuestion = computed(() => game.currentQuestion.value)
 const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
@@ -50,6 +54,25 @@ const shouldShowFeedback = computed(() => showAnswer.value && currentQuestion.va
 function triggerHapticFeedback() {
   if (navigator.vibrate) {
     navigator.vibrate(50)
+  }
+}
+
+// 启动游戏时间更新器
+function startGameTimeUpdater() {
+  gameTime.value = 0
+  if (gameTimeInterval) {
+    clearInterval(gameTimeInterval)
+  }
+  gameTimeInterval = setInterval(() => {
+    gameTime.value++
+  }, 1000)
+}
+
+// 停止游戏时间更新器
+function stopGameTimeUpdater() {
+  if (gameTimeInterval) {
+    clearInterval(gameTimeInterval)
+    gameTimeInterval = null
   }
 }
 
@@ -76,6 +99,7 @@ function stopQuestionTimer() {
 function initGame() {
   game.startGame()
   startQuestionTimer()
+  startGameTimeUpdater()
 }
 
 // 提交答案
@@ -149,6 +173,7 @@ function handleWrongFeedbackClick() {
 // 游戏完成处理
 function handleGameComplete() {
   stopQuestionTimer() // 停止题目计时器
+  stopGameTimeUpdater() // 停止游戏时间更新器
   game.completeGame()  // 先设置结束时间
   const result = game.getResult()
   const best = updateBestScore(parseInt(props.id), result)
@@ -174,6 +199,7 @@ function handleRetry() {
   isWaiting.value = false  // 重置等待状态
   questionKey.value = 0    // 重置题目key确保重新渲染
   stopQuestionTimer()      // 停止计时器
+  stopGameTimeUpdater()    // 停止游戏时间更新器
   initGame()
 }
 
@@ -202,6 +228,7 @@ onMounted(() => {
   onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyPress)
     stopQuestionTimer() // 清理计时器
+    stopGameTimeUpdater() // 清理游戏时间更新器
     settingsStore.saveSettings()
   })
 })
@@ -274,7 +301,7 @@ onMounted(() => {
         :current-index="game.currentIndex.value"
         :total-questions="game.questions.value.length"
         :correct-count="game.correctCount.value"
-        :duration="game.duration.value"
+        :duration="gameTime"
         :accuracy="game.accuracy.value"
       />
     </footer>
@@ -333,7 +360,7 @@ onMounted(() => {
   padding: 10px 14px;
   background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
   border-radius: 20px;
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(74, 144, 226, 0.15),
     0 2px 8px rgba(74, 144, 226, 0.08);
   margin: 0 12px 12px;

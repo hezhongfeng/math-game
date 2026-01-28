@@ -35,8 +35,9 @@ const progress = computed(() => {
 })
 
 const formatTime = computed(() => {
-  const minutes = Math.floor(props.duration / 60)
-  const seconds = props.duration % 60
+  const duration = Number(props.duration) || 0
+  const minutes = Math.floor(duration / 60)
+  const seconds = duration % 60
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 })
 </script>
@@ -50,8 +51,8 @@ const formatTime = computed(() => {
         <span class="progress-pct">{{ progress }}%</span>
       </div>
       <div class="progress-bar">
-        <div 
-          class="progress-fill" 
+        <div
+          class="progress-fill"
           :style="{ width: `${progress}%` }"
         ></div>
       </div>
@@ -97,7 +98,7 @@ const formatTime = computed(() => {
           <TrendingUp :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value">{{ accuracy }}%</span>
+          <span class="stat-value">{{ Number(accuracy) || 0 }}%</span>
           <span class="stat-label">正确率</span>
         </div>
       </div>
@@ -110,7 +111,7 @@ const formatTime = computed(() => {
   background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
   border-radius: 20px;
   padding: 16px 20px;
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(74, 144, 226, 0.12),
     0 2px 8px rgba(74, 144, 226, 0.08);
   border: 2px solid rgba(74, 144, 226, 0.15);

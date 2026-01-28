@@ -15,24 +15,26 @@ export function useGame(difficulty) {
   const startTime = ref(null)
   const endTime = ref(null)
   const currentQuestion = computed(() => questions.value[currentIndex.value])
-  
+
   // 计算属性
   const progress = computed(() => {
     if (!questions.value.length) return 0
     return ((currentIndex.value) / questions.value.length) * 100
   })
-  
-  const accuracy = computed(() => {
-    if (!questions.value.length) return 0
-    return Math.round((correctCount.value / questions.value.length) * 100)
-  })
-  
-  const duration = computed(() => {
-    if (!startTime.value) return 0
-    const end = endTime.value || Date.now()
-    return Math.floor((end - startTime.value) / 1000)
-  })
-  
+
+const accuracy = computed(() => {
+  if (!questions.value.length || correctCount.value === undefined || correctCount.value === null) return 0
+  const result = Math.round((correctCount.value / questions.value.length) * 100)
+  return isNaN(result) ? 0 : result
+})
+
+const duration = computed(() => {
+  if (!startTime.value) return 0
+  const end = endTime.value || Date.now()
+  const result = Math.floor((end - startTime.value) / 1000)
+  return isNaN(result) ? 0 : result
+})
+
   /**
    * 开始游戏
    */
@@ -45,7 +47,7 @@ export function useGame(difficulty) {
     startTime.value = Date.now()
     endTime.value = null
   }
-  
+
   /**
    * 提交答案
    * @param {number} answer - 用户输入的答案
@@ -77,7 +79,7 @@ export function useGame(difficulty) {
       currentIndex.value++
     }
   }
-  
+
   /**
    * 完成游戏
    */
@@ -85,7 +87,7 @@ export function useGame(difficulty) {
     endTime.value = Date.now()
     isComplete.value = true
   }
-  
+
   /**
    * 重置游戏
    */
@@ -98,7 +100,7 @@ export function useGame(difficulty) {
     startTime.value = null
     endTime.value = null
   }
-  
+
   /**
    * 获取游戏结果
    */
@@ -113,7 +115,7 @@ export function useGame(difficulty) {
       completedAt: new Date().toISOString()
     }
   }
-  
+
   return {
     // 状态
     questions,
