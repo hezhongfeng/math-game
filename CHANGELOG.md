@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **背景音乐移除**:
+  - 移除了 `src/components/BackgroundMusic.vue` 组件
+  - 移除了 `src/utils/audioSynthesis.js` 工具
+  - 移除了 `settings.js` 中的音乐开关和音量控制
+  - 移除了 `constants.js` 中的音乐频率和参数
+  - 移除了界面右下角的音乐悬浮按钮
+
 ### Fixed
 
 - **iOS Safari Audio Compatibility**:

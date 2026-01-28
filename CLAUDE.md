@@ -59,7 +59,7 @@ UI Feedback: Sound (useSound.js) + Animations + Haptics
 
 **Core Application Files:**
 - `src/main.js` - Vue app initialization, Pinia store registration
-- `src/App.vue` - Root component with BackgroundMusic wrapper
+- `src/App.vue` - Root component
 - `src/router.js` - Vue Router with 3 routes
 - `src/style.css` - Global base styles, keyframe animations
 
@@ -75,7 +75,6 @@ UI Feedback: Sound (useSound.js) + Animations + Haptics
 - `ParticleEffects.vue` - Canvas-based particle explosion animation for feedback
 - `ResultModal.vue` - Post-game stats modal (accuracy, time, best score)
 - `DifficultyCard.vue` - Clickable difficulty card with lock state and best score
-- `BackgroundMusic.vue` - Background music player with volume control
 - `Toast.vue` + `ToastContainer.vue` - Toast notification system
 - `SettingsPanel.vue` - Audio settings toggles
 
@@ -89,12 +88,11 @@ UI Feedback: Sound (useSound.js) + Animations + Haptics
 **Utilities & Config:**
 - `utils/generator.js` - Pure functions to generate questions and validate answers
 - `utils/audioContext.js` - Shared AudioContext initialization and lifecycle (getAudioContext, ensureAudioContextRunning, closeAudioContext)
-- `utils/audioSynthesis.js` - Background music buffer generation (createBackgroundMusicBuffer)
 - `config/difficulty.js` - 15 difficulty level definitions + grouping for UI
 - `config/constants.js` - Game constants, audio frequencies/parameters, speech messages, operator text
 
 **State Management (src/stores/):**
-- `settings.js` - Pinia store for UI settings: soundEnabled, speechEnabled, musicEnabled, musicVolume (persisted to localStorage)
+- `settings.js` - Pinia store for UI settings: soundEnabled, speechEnabled (persisted to localStorage)
 
 ### Audio Architecture
 
@@ -115,11 +113,6 @@ The project uses Web Audio API for all sound effects with no external audio file
   - `click`: 800Hz sine wave burst
 - All frequencies/parameters configurable in `config/constants.js` (AUDIO_FREQUENCIES, AUDIO_PARAMS)
 
-**Background Music:**
-- Generated on-demand in `utils/audioSynthesis.js`
-- 8-second loop with ABA structure (melody + bass accompaniment)
-- Parameters tunable in `config/constants.js` (AUDIO_PARAMS.backgroundMusic)
-
 ### State Flow & Persistence
 
 **Game State (Runtime, not persisted):**
@@ -129,7 +122,7 @@ The project uses Web Audio API for all sound effects with no external audio file
 
 **User Data (Persisted):**
 - Best scores per difficulty: `localStorage['math-game-data']` → `{bestScores: {[id]: {score, accuracy, duration, ...}}}`
-- Settings: `localStorage['math-game-settings']` → `{soundEnabled, speechEnabled, musicEnabled, musicVolume}`
+- Settings: `localStorage['math-game-settings']` → `{soundEnabled, speechEnabled}`
 - Loaded/saved via `useStorage.js` and `settings.js` store
 
 **Difficulty Completion Logic:**

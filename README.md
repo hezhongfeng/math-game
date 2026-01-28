@@ -25,7 +25,6 @@
 | **成绩记录** | 本地保存最佳成绩，支持进度追踪 |
 | **语音播报** | 支持题目和反馈的语音播报（可开关） |
 | **音效系统** | 数字点击音效、答题正确/错误音效、胜利音效 |
-| **背景音乐** | 可开关的轻松背景音乐 |
 | **手机优化** | 专为移动端设计的大按钮、触摸优化、响应式布局 |
 | **进度锁定** | 需通过前一关才能解锁更高难度 |
 
@@ -95,7 +94,7 @@ pnpm preview
 - **振动反馈**：使用 Vibration API 答对/答错时触发
 - **流畅动画**：粒子效果、缩放弹跳等视觉反馈
 - **iOS 优化**：-webkit-tap-highlight-color: transparent 去除默认高亮
-- **音频优化**：Web Audio API动态生成音效，支持背景音乐
+- **音频优化**：Web Audio API动态生成音效
 
 ## 🎮 操作说明
 
@@ -122,7 +121,6 @@ math-game/
 ├── src/
 │   ├── assets/              # 静态资源（预留目录）
 │   ├── components/          # 可复用组件
-│   │   ├── BackgroundMusic.vue   # 背景音乐控制
 │   │   ├── DifficultyCard.vue    # 难度卡片
 │   │   ├── NumberPad.vue         # 数字键盘（含确认按钮）
 │   │   ├── QuestionCard.vue      # 题目卡片
@@ -146,7 +144,6 @@ math-game/
 │   │   └── Home.vue              # 主页
 │   ├── utils/               # 工具函数
 │   │   ├── audioContext.js       # AudioContext管理（iOS Safari兼容）
-│   │   ├── audioSynthesis.js     # 音频合成（背景音乐）
 │   │   └── generator.js          # 题目生成器
 │   ├── router.js            # Vue Router 配置
 │   ├── main.js              # 应用入口
@@ -279,7 +276,7 @@ touch-action: manipulation;
 - **延时音效修复**：在 `setTimeout` 中重新检查 AudioContext 状态
 - **被动事件**：所有事件监听器使用 `passive: true` 优化性能
 
-这些优化确保 iPhone 和 iPad 上的 Safari 浏览器可以正常播放所有音效和背景音乐。
+这些优化确保 iPhone 和 iPad 上的 Safari 浏览器可以正常播放所有音效。
 
 ## 🌐 浏览器兼容性
 

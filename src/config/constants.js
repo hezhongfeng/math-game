@@ -24,24 +24,7 @@ export const AUDIO_FREQUENCIES = {
     end: 100
   },
   // 点击音效频率
-  click: 800,
-  // 背景音乐旋律频率 (C5, D5, E5, F5, G5, A5, B5, C6)
-  melody: {
-    C5: 523.25,
-    D5: 587.33,
-    E5: 659.25,
-    F5: 698.46,
-    G5: 783.99,
-    A5: 880.00,
-    B5: 987.77,
-    C6: 1046.50
-  },
-  // 低音频率 (E3, G3, A3)
-  bass: {
-    E3: 164.81,
-    G3: 196.00,
-    A3: 220.00
-  }
+  click: 800
 }
 
 // 音频参数配置
@@ -67,13 +50,6 @@ export const AUDIO_PARAMS = {
   win: {
     gain: 0.25,
     noteDuration: 0.15
-  },
-  // 背景音乐参数
-  backgroundMusic: {
-    duration: 8,
-    melodyGain: 0.15,
-    bassGain: 0.06,
-    bassOvertoneGain: 0.03
   }
 }
 

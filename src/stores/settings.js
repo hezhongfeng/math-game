@@ -7,12 +7,6 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // 语音开关
   const speechEnabled = ref(true)
-  
-  // 背景音乐开关 - 默认关闭，浏览器不允许自动播放
-  const musicEnabled = ref(false)
-  
-  // 背景音乐音量 - 默认80%，确保能被听到
-  const musicVolume = ref(0.8)
 
   // 切换音效开关
   function toggleSound() {
@@ -23,11 +17,6 @@ export const useSettingsStore = defineStore('settings', () => {
   function toggleSpeech() {
     speechEnabled.value = !speechEnabled.value
   }
-  
-  // 切换背景音乐开关
-  function toggleMusic() {
-    musicEnabled.value = !musicEnabled.value
-  }
 
   // 从 localStorage 加载设置
   function loadSettings() {
@@ -37,8 +26,6 @@ export const useSettingsStore = defineStore('settings', () => {
         const settings = JSON.parse(saved)
         soundEnabled.value = settings.soundEnabled ?? true
         speechEnabled.value = settings.speechEnabled ?? true
-        musicEnabled.value = settings.musicEnabled ?? false
-        musicVolume.value = settings.musicVolume ?? 0.8
       }
     } catch (error) {
       // 加载失败使用默认设置
@@ -50,9 +37,7 @@ export const useSettingsStore = defineStore('settings', () => {
     try {
       localStorage.setItem('math-game-settings', JSON.stringify({
         soundEnabled: soundEnabled.value,
-        speechEnabled: speechEnabled.value,
-        musicEnabled: musicEnabled.value,
-        musicVolume: musicVolume.value
+        speechEnabled: speechEnabled.value
       }))
     } catch (error) {
       // 保存失败继续
@@ -62,11 +47,8 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     soundEnabled,
     speechEnabled,
-    musicEnabled,
-    musicVolume,
     toggleSound,
     toggleSpeech,
-    toggleMusic,
     loadSettings,
     saveSettings
   }
