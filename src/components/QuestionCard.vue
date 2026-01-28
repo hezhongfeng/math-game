@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import { Clock } from 'lucide-vue-next'
+import NumberCard from './NumberCard.vue'
 
 const props = defineProps({
   question: {
@@ -13,46 +15,91 @@ const props = defineProps({
   userAnswer: {
     type: String,
     default: ''
+  },
+  currentIndex: {
+    type: Number,
+    default: 0
+  },
+  totalQuestions: {
+    type: Number,
+    default: 10
+  },
+  questionTimer: {
+    type: Number,
+    default: 0
   }
 })
 
 const shouldShowFeedback = computed(() => props.showAnswer && props.question.userAnswer !== null)
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
+
+// 格式化计时器显示 MM:SS
+const formattedTime = computed(() => {
+  const minutes = Math.floor(props.questionTimer / 60)
+  const seconds = props.questionTimer % 60
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+})
+
+// 答案卡片的状态
+const answerCardState = computed(() => {
+  if (!shouldShowFeedback.value) {
+    return props.userAnswer ? 'default' : 'placeholder'
+  }
+  return isCorrect.value ? 'correct' : 'incorrect'
+})
+
+// 答案卡片的值
+const answerCardValue = computed(() => {
+  if (shouldShowFeedback.value) {
+    return props.question.answer
+  }
+  return props.userAnswer || '?'
+})
 </script>
 
 <template>
   <div
-    class="question-card rounded-cute-2xl shadow-cute-lg border-2 transition-all duration-300"
+    class="question-card"
     :class="{
-      'bg-peppa-green/10 border-peppa-green': isCorrect,
-      'bg-peppa-orange/10 border-peppa-orange': isIncorrect,
-      'bg-peppa-blue/10 border-peppa-blue/30': !isCorrect && !isIncorrect
+      'state-correct': isCorrect,
+      'state-incorrect': isIncorrect,
+      'state-default': !isCorrect && !isIncorrect
     }"
   >
-    <!-- 题目区域 -->
-    <div class="question-section">
-      <div class="expression">
-        <span class="number operand1">{{ question.operand1 }}</span>
-        <span class="operator">{{ question.operator }}</span>
-        <span class="number operand2">{{ question.operand2 }}</span>
+    <!-- 顶部信息栏 -->
+    <div class="header-bar">
+      <div class="question-indicator">
+        <span class="current-index">第 {{ currentIndex + 1 }} 题</span>
+        <span class="total-count">/ 共 {{ totalQuestions }} 题</span>
+      </div>
+      <div class="timer">
+        <Clock :size="16" class="timer-icon" />
+        <span class="timer-value">{{ formattedTime }}</span>
       </div>
     </div>
-    
-    <!-- 等号和答案区域 -->
-    <div class="answer-section">
-      <div class="equals-answer">
-        <span class="equals">=</span>
-        <span
-          class="answer"
-          :class="{
-            'placeholder': !shouldShowFeedback,
-            'correct': shouldShowFeedback && isCorrect,
-            'incorrect': shouldShowFeedback && isIncorrect
-          }"
-        >
-          {{ shouldShowFeedback ? question.answer : (userAnswer || '?') }}
-        </span>
+
+    <!-- 算式与答案区域 -->
+    <div class="expression-section">
+      <div class="expression">
+        <NumberCard
+          :value="question.operand1"
+          size="normal"
+          state="default"
+        />
+        <span class="operator">{{ question.operator }}</span>
+        <NumberCard
+          :value="question.operand2"
+          size="normal"
+          state="default"
+        />
+        <span class="equals-operator">=</span>
+        <NumberCard
+          :value="answerCardValue"
+          size="large"
+          :state="answerCardState"
+          min-width="4ch"
+        />
       </div>
     </div>
   </div>
@@ -60,155 +107,153 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
 
 <style scoped>
 .question-card {
-  padding: 24px 28px;
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 20px 24px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   min-width: 300px;
   max-width: 95vw;
   width: 100%;
   touch-action: manipulation;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  transition: all 0.3s ease;
 }
 
-/* 题目区域 */
-.question-section {
+/* 状态样式 */
+.question-card.state-default {
+  border: 2px solid rgba(74, 144, 226, 0.2);
+}
+
+.question-card.state-correct {
+  border: 3px solid #4CAF50;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.2);
+}
+
+.question-card.state-incorrect {
+  border: 3px solid #FF9800;
+  box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2);
+}
+
+/* 顶部信息栏 */
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.question-indicator {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.current-index {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.total-count {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.timer-icon {
+  color: #4A90E2;
+}
+
+.timer-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4A90E2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+/* 算式与答案区域 */
+.expression-section {
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 16px 0;
 }
 
 .expression {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.number {
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: #1e3a5f;
-  font-family: inherit;
-  line-height: 1;
-  min-width: 3ch;
-  text-align: center;
-}
-
-.operand1, .operand2 {
-  color: #1e3a5f; /* peppa-blue-dark */
+  gap: 24px;
 }
 
 .operator {
   font-size: 2.5rem;
-  font-weight: 700;
-  color: #5a7a9a; /* peppa-blue-dark/70 */
-  font-family: inherit;
-  line-height: 1;
-}
-
-/* 等号和答案区域 */
-.answer-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.equals-answer {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-radius: 20px;
-  border: 2px solid #e2e8f0;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 1px 4px rgba(0, 0, 0, 0.02);
-}
-
-.equals {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #5a7a9a; /* peppa-blue-dark/70 */
-  font-family: inherit;
-  line-height: 1;
-}
-
-.answer {
-  font-size: 3.5rem;
   font-weight: 800;
-  font-family: inherit;
+  color: #FF6B6B;
   line-height: 1;
-  min-width: 4ch;
-  text-align: center;
-  transition: all 0.3s ease;
+  text-shadow: 0 2px 4px rgba(255, 107, 107, 0.2);
+  user-select: none;
 }
 
-/* 答案状态 */
-.answer.placeholder {
-  color: #06b6d4; /* peppa-cyan */
-  animation: pulse-gentle 2s ease-in-out infinite;
-}
-
-.answer.correct {
-  color: #059669; /* peppa-green */
-  animation: answer-pop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.answer.incorrect {
-  color: #ea580c; /* peppa-orange */
-  animation: answer-shake 0.6s ease-in-out;
-}
-
-/* 动画 */
-@keyframes answer-pop {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.25); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes answer-shake {
-  0%, 100% { transform: translateX(0); }
-  15% { transform: translateX(-12px); }
-  30% { transform: translateX(12px); }
-  45% { transform: translateX(-8px); }
-  60% { transform: translateX(8px); }
-  75% { transform: translateX(-4px); }
-}
-
-@keyframes pulse-gentle {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
+.equals-operator {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #4ECDC4;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(78, 205, 196, 0.2);
+  user-select: none;
 }
 
 /* 响应式设计 */
 @media (min-width: 768px) {
   .question-card {
-    padding: 32px 40px;
-    gap: 24px;
+    padding: 28px 32px 20px;
+    gap: 20px;
+    min-width: 380px;
   }
-  
-  .number {
-    font-size: 4.5rem;
+
+  .current-index {
+    font-size: 1.25rem;
   }
-  
+
+  .total-count {
+    font-size: 0.95rem;
+  }
+
+  .timer-value {
+    font-size: 1rem;
+  }
+
   .operator {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    width: 56px;
+    height: 56px;
   }
-  
-  .equals {
-    font-size: 3rem;
+
+  .expression {
+    gap: 28px;
   }
-  
-  .answer {
-    font-size: 4.5rem;
+
+  .divider-equals {
+    font-size: 1.75rem;
   }
-  
-  .equals-answer {
-    gap: 24px;
-    padding: 16px 32px;
+
+  .dot {
+    width: 10px;
+    height: 10px;
   }
 }
 </style>

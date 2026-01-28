@@ -34,8 +34,11 @@ const userAnswer = ref('')
 const showModal = ref(false)
 const resultData = ref(null)
 const isNewBest = ref(false)
-
 const questionKey = ref(0)
+
+// 当前题目计时器
+const questionTimer = ref(0)
+let timerInterval = null
 
 const isComplete = computed(() => game.isComplete.value)
 const currentQuestion = computed(() => game.currentQuestion.value)
@@ -50,9 +53,29 @@ function triggerHapticFeedback() {
   }
 }
 
+// 启动题目计时器
+function startQuestionTimer() {
+  questionTimer.value = 0
+  if (timerInterval) {
+    clearInterval(timerInterval)
+  }
+  timerInterval = setInterval(() => {
+    questionTimer.value++
+  }, 1000)
+}
+
+// 停止题目计时器
+function stopQuestionTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval)
+    timerInterval = null
+  }
+}
+
 // 初始化游戏
 function initGame() {
   game.startGame()
+  startQuestionTimer()
 }
 
 // 提交答案
@@ -89,6 +112,7 @@ function submitAnswer() {
         showAnswer.value = false
         isWaiting.value = false
         game.nextQuestion()
+        startQuestionTimer() // 重置题目计时器
       }
     }, GAME_CONFIG.FEEDBACK_DELAY)
   }
@@ -118,11 +142,13 @@ function handleWrongFeedbackClick() {
     questionKey.value++
     userAnswer.value = ''
     game.nextQuestion()
+    startQuestionTimer() // 重置题目计时器
   }
 }
 
 // 游戏完成处理
 function handleGameComplete() {
+  stopQuestionTimer() // 停止题目计时器
   game.completeGame()  // 先设置结束时间
   const result = game.getResult()
   const best = updateBestScore(parseInt(props.id), result)
@@ -147,6 +173,7 @@ function handleRetry() {
   showAnswer.value = false  // 重置答案显示状态
   isWaiting.value = false  // 重置等待状态
   questionKey.value = 0    // 重置题目key确保重新渲染
+  stopQuestionTimer()      // 停止计时器
   initGame()
 }
 
@@ -174,6 +201,7 @@ onMounted(() => {
 
   onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyPress)
+    stopQuestionTimer() // 清理计时器
     settingsStore.saveSettings()
   })
 })
@@ -208,6 +236,9 @@ onMounted(() => {
           :question="game.currentQuestion.value"
           :show-answer="showAnswer"
           :user-answer="userAnswer"
+          :current-index="game.currentIndex.value"
+          :total-questions="game.questions.value.length"
+          :question-timer="questionTimer"
           @submit="submitAnswer"
         />
       </Transition>
