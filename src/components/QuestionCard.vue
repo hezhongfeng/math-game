@@ -132,8 +132,7 @@ const answerCardValue = computed(() => {
 }
 
 .question-card.state-incorrect {
-  border: 3px solid #FF9800;
-  box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2);
+  border: 2px solid #FF9800;
 }
 
 /* 顶部信息栏 */

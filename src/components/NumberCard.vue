@@ -96,19 +96,18 @@ const props = defineProps({
 
 /* 状态样式 - 错误 */
 .state-incorrect {
-  border: 3px solid #FF9800;
-  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-  animation: incorrect-shake 0.5s ease-in-out;
+  border: 2px solid #FF9800;
+  background: #fff9f0;
 }
 
 .state-incorrect .number-value {
-  color: #ea580c;
+  color: #FF9800;
 }
 
 /* 数字文字样式 */
 .number-value {
   font-family: inherit;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   text-align: center;
 }
@@ -131,14 +130,6 @@ const props = defineProps({
   0% { transform: scale(0.8); opacity: 0; }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes incorrect-shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-8px); }
-  40% { transform: translateX(8px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
 }
 
 /* 响应式设计 */

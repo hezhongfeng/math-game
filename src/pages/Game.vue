@@ -251,14 +251,10 @@ onMounted(() => {
           </div>
         </div>
         <div v-else-if="shouldShowFeedback && isIncorrect" class="feedback-overlay wrong" @click="handleWrongFeedbackClick">
-          <div class="error-circle">
-            <span class="error-icon">✕</span>
-          </div>
           <div class="answer-card">
-            <span class="answer-label">正确答案</span>
             <span class="answer-number">{{ currentQuestion.answer }}</span>
           </div>
-          <div class="hint-text">点击任意位置继续</div>
+          <div class="hint-text">点击继续</div>
         </div>
       </Transition>
     </main>
@@ -454,25 +450,26 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 360px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
   z-index: 9999;
   background: #ffffff;
   border-radius: 32px;
-  padding: 32px 24px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  padding: 28px 24px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.08);
 }
 
 .feedback-overlay.correct {
-  border: 3px solid #4CAF50;
+  border-color: #4CAF50;
 }
 
 .feedback-overlay.wrong {
-  border: 3px solid #FF9800;
+  border-color: #FF9800;
   cursor: pointer;
 }
 
@@ -505,60 +502,20 @@ onMounted(() => {
   }
 }
 
-/* 错误圆圈 - 简约设计 */
-.error-circle {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: #FF9800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: errorPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes errorPop {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.error-icon {
-  color: white;
-  font-size: 32px;
-  font-weight: bold;
-}
-
-/* 正确答案卡片 - 简约设计 */
+/* 答案卡片 - 错误反馈 */
 .answer-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  padding: 12px 24px;
+  background: #fff9f0;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 152, 0, 0.2);
+  min-width: 140px;
   text-align: center;
-  padding: 24px 40px;
-  background: #ffffff;
-  border-radius: 24px;
-  border: 2px solid rgba(255, 193, 7, 0.4);
-  min-width: 160px;
-}
-
-.answer-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #94a3b8;
-  letter-spacing: 1px;
 }
 
 .answer-number {
-  font-size: 48px;
-  font-weight: 800;
-  color: #FF8F00;
+  font-size: 36px;
+  font-weight: 700;
+  color: #FF9800;
   line-height: 1;
 }
 
@@ -566,13 +523,6 @@ onMounted(() => {
 .hint-text {
   font-size: 13px;
   color: #94a3b8;
-  letter-spacing: 1px;
-  animation: hintPulse 1.5s ease-in-out infinite;
-}
-
-@keyframes hintPulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
 }
 
 /* 反馈层过渡 */
