@@ -30,59 +30,146 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
       'bg-peppa-blue/10 border-peppa-blue/30': !isCorrect && !isIncorrect
     }"
   >
-    <!-- 题目内容 -->
-    <div class="question-content">
-      <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
-        {{ question.operand1 }}
-      </span>
-      <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
-        {{ question.operator }}
-      </span>
-      <span class="text-5xl md:text-7xl font-bold text-peppa-blue-dark font-rounded">
-        {{ question.operand2 }}
-      </span>
-      <span class="text-4xl md:text-6xl font-bold text-peppa-blue-dark/70 font-rounded">
-        =
-      </span>
-      <span
-        class="text-5xl md:text-7xl font-bold font-rounded min-w-[4ch] text-center inline-block transition-all duration-300"
-        :class="{
-          'text-peppa-cyan animate-pulse-gentle': !shouldShowFeedback,
-          'text-peppa-green animate-answer-pop': shouldShowFeedback && isCorrect,
-          'text-peppa-orange animate-answer-shake': shouldShowFeedback && isIncorrect
-        }"
-      >
-        {{ shouldShowFeedback ? question.answer : (userAnswer || '?') }}
-      </span>
+    <!-- 题目区域 -->
+    <div class="question-section">
+      <div class="expression">
+        <span class="number operand1">{{ question.operand1 }}</span>
+        <span class="operator">{{ question.operator }}</span>
+        <span class="number operand2">{{ question.operand2 }}</span>
+      </div>
+    </div>
+    
+    <!-- 等号和答案区域 -->
+    <div class="answer-section">
+      <div class="equals-answer">
+        <span class="equals">=</span>
+        <span
+          class="answer"
+          :class="{
+            'placeholder': !shouldShowFeedback,
+            'correct': shouldShowFeedback && isCorrect,
+            'incorrect': shouldShowFeedback && isIncorrect
+          }"
+        >
+          {{ shouldShowFeedback ? question.answer : (userAnswer || '?') }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .question-card {
-  padding: 20px 24px;
-  min-width: 280px;
+  padding: 24px 28px;
+  min-width: 300px;
   max-width: 95vw;
   width: 100%;
   touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.question-content {
+/* 题目区域 */
+.question-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.expression {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px 16px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-@keyframes answerPop {
+.number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #1e3a5f;
+  font-family: inherit;
+  line-height: 1;
+  min-width: 3ch;
+  text-align: center;
+}
+
+.operand1, .operand2 {
+  color: #1e3a5f; /* peppa-blue-dark */
+}
+
+.operator {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #5a7a9a; /* peppa-blue-dark/70 */
+  font-family: inherit;
+  line-height: 1;
+}
+
+/* 等号和答案区域 */
+.answer-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.equals-answer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 20px;
+  border: 2px solid #e2e8f0;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.equals {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #5a7a9a; /* peppa-blue-dark/70 */
+  font-family: inherit;
+  line-height: 1;
+}
+
+.answer {
+  font-size: 3.5rem;
+  font-weight: 800;
+  font-family: inherit;
+  line-height: 1;
+  min-width: 4ch;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+/* 答案状态 */
+.answer.placeholder {
+  color: #06b6d4; /* peppa-cyan */
+  animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+.answer.correct {
+  color: #059669; /* peppa-green */
+  animation: answer-pop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.answer.incorrect {
+  color: #ea580c; /* peppa-orange */
+  animation: answer-shake 0.6s ease-in-out;
+}
+
+/* 动画 */
+@keyframes answer-pop {
   0% { transform: scale(0.3); opacity: 0; }
   50% { transform: scale(1.25); }
   70% { transform: scale(0.9); }
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes answerShake {
+@keyframes answer-shake {
   0%, 100% { transform: translateX(0); }
   15% { transform: translateX(-12px); }
   30% { transform: translateX(12px); }
@@ -91,11 +178,37 @@ const isIncorrect = computed(() => props.question.isCorrect === false)
   75% { transform: translateX(-4px); }
 }
 
-.animate-answer-pop {
-  animation: answerPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
 
-.animate-answer-shake {
-  animation: answerShake 0.6s ease-in-out;
+/* 响应式设计 */
+@media (min-width: 768px) {
+  .question-card {
+    padding: 32px 40px;
+    gap: 24px;
+  }
+  
+  .number {
+    font-size: 4.5rem;
+  }
+  
+  .operator {
+    font-size: 3rem;
+  }
+  
+  .equals {
+    font-size: 3rem;
+  }
+  
+  .answer {
+    font-size: 4.5rem;
+  }
+  
+  .equals-answer {
+    gap: 24px;
+    padding: 16px 32px;
+  }
 }
 </style>
