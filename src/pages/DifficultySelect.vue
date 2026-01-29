@@ -35,6 +35,18 @@ function isDifficultyLocked(difficulty) {
   return !completedDifficulties.includes(previousId)
 }
 
+// 获取阶段图标
+function getStageIcon(stageName) {
+  const icons = {
+    '入门': '🌱',
+    '初级': '🌿',
+    '中级': '🌲',
+    '进级': '🏔️',
+    '高级': '⭐'
+  }
+  return icons[stageName] || '🎯'
+}
+
 onMounted(() => {
   window.scrollTo(0, 0)
 })
@@ -42,37 +54,61 @@ onMounted(() => {
 
 <template>
   <div class="page">
-    <!-- 装饰星星 -->
+    <!-- 装饰星星 - 更多更活泼 -->
     <div class="stars">
       <span class="star star-1">✨</span>
       <span class="star star-2">⭐</span>
       <span class="star star-3">✨</span>
       <span class="star star-4">⭐</span>
+      <span class="star star-5">🌟</span>
+      <span class="star star-6">✨</span>
+      <span class="float-heart">💖</span>
+      <span class="float-lightning">⚡</span>
     </div>
 
-    <!-- 顶部导航 -->
+    <!-- 顶部导航 - 毛玻璃效果 -->
     <header class="header">
       <button @click="goBack" class="back-btn">
         <ArrowLeft :size="22" />
+        <span>返回</span>
       </button>
-      
-      <h1 class="title bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
-        选择难度
+
+      <h1 class="title">
+        <span class="title-icon">🎮</span>
+        选择关卡
       </h1>
-      
+
+      <!-- 进度环徽章 -->
       <div class="progress-badge">
-        <Trophy :size="18" />
-        <span>{{ completedCount }}/{{ DIFFICULTY_GROUPS.length * 3 }}</span>
+        <div class="progress-ring">
+          <svg viewBox="0 0 36 36">
+            <path
+              class="progress-ring-bg"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path
+              class="progress-ring-fill"
+              :stroke-dasharray="`${(completedCount / (DIFFICULTY_GROUPS.length * 3)) * 100}, 100`"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+          </svg>
+          <div class="progress-text">
+            <Trophy :size="14" />
+            <span>{{ completedCount }}</span>
+          </div>
+        </div>
       </div>
     </header>
 
     <!-- 主内容 -->
     <main class="main-content">
       <div v-for="(group, groupIndex) in DIFFICULTY_GROUPS" :key="group.name" class="section">
-        <!-- 阶段标题 -->
+        <!-- 阶段标题 - 彩色胶囊 -->
         <div class="section-header animate-fade-in-up" :style="{ animationDelay: `${groupIndex * 100}ms` }">
-          <span class="section-indicator" :style="{ backgroundColor: group.color }"></span>
-          <h2 class="section-title">{{ group.name }}阶段</h2>
+          <div class="section-badge" :class="`badge-${group.color}`">
+            <span class="section-icon">{{ getStageIcon(group.name) }}</span>
+            <h2 class="section-title">{{ group.name }}阶段</h2>
+          </div>
           <span class="section-count">{{ group.levels.length }}关</span>
         </div>
 
@@ -92,9 +128,13 @@ onMounted(() => {
       </div>
     </main>
 
-    <!-- 底部提示 -->
+    <!-- 底部提示 - 更活泼 -->
     <footer class="footer">
-      <p>💡 从第一关开始，依次解锁更高难度</p>
+      <div class="footer-content">
+        <span class="footer-icon">💡</span>
+        <p>从第一关开始，依次解锁更高难度</p>
+        <span class="footer-rocket">🚀</span>
+      </div>
     </footer>
   </div>
 </template>
@@ -103,103 +143,152 @@ onMounted(() => {
 .page {
   min-height: 100vh;
   position: relative;
-  padding: 12px 12px 60px;
-  background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #E8F5E9 100%);
+  padding: 12px 12px 80px;
+  background: linear-gradient(180deg, #FFF8E1 0%, #E0F7FA 40%, #F3E5F5 70%, #FFF8E1 100%);
   touch-action: manipulation;
-  /* Allow scrolling on mobile */
   overflow-y: auto;
   overflow-x: hidden;
-  /* Safe area handling for notched devices */
-  padding-bottom: max(60px, calc(40px + env(safe-area-inset-bottom)));
+  padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
 }
 
-/* 装饰星星 */
+/* 装饰星星 - 更多动画 */
 .stars {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .star {
   position: absolute;
   font-size: 24px;
-  opacity: 0.5;
-  animation: floatStar 4s ease-in-out infinite;
+  opacity: 0.6;
+  animation: floatStar 3s ease-in-out infinite;
 }
 
 .star-1 {
-  top: 5%;
-  left: 5%;
+  top: 3%;
+  left: 3%;
   animation-delay: 0s;
 }
 
 .star-2 {
-  top: 8%;
-  right: 8%;
+  top: 6%;
+  right: 5%;
   font-size: 20px;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
 }
 
 .star-3 {
-  bottom: 15%;
-  left: 5%;
-  animation-delay: 2s;
+  top: 15%;
+  left: 8%;
+  animation-delay: 1s;
 }
 
 .star-4 {
-  bottom: 20%;
-  right: 8%;
+  top: 12%;
+  right: 12%;
   font-size: 28px;
   animation-delay: 1.5s;
+}
+
+.star-5 {
+  top: 25%;
+  left: 2%;
+  font-size: 32px;
+  animation-delay: 0.8s;
+}
+
+.star-6 {
+  top: 30%;
+  right: 3%;
+  animation-delay: 1.2s;
+}
+
+.float-heart {
+  position: absolute;
+  font-size: 28px;
+  bottom: 20%;
+  left: 5%;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.float-lightning {
+  position: absolute;
+  font-size: 24px;
+  bottom: 30%;
+  right: 8%;
+  animation: wiggle 2s ease-in-out infinite;
 }
 
 @keyframes floatStar {
   0%, 100% {
     transform: translateY(0) rotate(0deg) scale(1);
-    opacity: 0.5;
+    opacity: 0.6;
   }
   50% {
-    transform: translateY(-10px) rotate(10deg) scale(1.1);
-    opacity: 0.7;
+    transform: translateY(-15px) rotate(15deg) scale(1.15);
+    opacity: 0.9;
   }
 }
 
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.2); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.2); }
+  70% { transform: scale(1); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* 顶部导航 - 毛玻璃效果 */
 .header {
   position: sticky;
-  top: 0;
+  top: 8px;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: #ffffff;
-  border-radius: 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 2px solid rgba(74, 144, 226, 0.2);
-  margin: 0 12px 16px;
-  /* Safe area for notched devices */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow:
+    0 4px 0 0 rgba(0, 0, 0, 0.05),
+    0 8px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  margin: 0 8px 20px;
   padding-top: max(12px, env(safe-area-inset-top));
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
-  font-size: 14px;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #4A90E2;
-  background: #ffffff;
-  border: 2px solid rgba(74, 144, 226, 0.2);
-  border-radius: 16px;
+  color: #4FC3F7;
+  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 3px 0 0 #0288D1,
+    0 4px 12px rgba(2, 136, 209, 0.2);
 }
 
 .back-btn:active {
-  transform: scale(0.95);
-  border-color: #4A90E2;
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 0 #0288D1,
+    0 2px 8px rgba(2, 136, 209, 0.2);
 }
 
 .back-btn span {
@@ -207,104 +296,198 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   font-family: inherit;
-  color: #1e3a5f;
+  color: #37474F;
   letter-spacing: 1px;
-}
-
-.progress-badge {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #FF8F00;
-  background: #ffffff;
-  border-radius: 16px;
-  border: 2px solid rgba(255, 193, 7, 0.4);
+  gap: 8px;
 }
 
-.progress-badge svg {
-  width: 16px;
-  height: 16px;
+.title-icon {
+  font-size: 24px;
+}
+
+/* 进度环徽章 */
+.progress-badge {
+  position: relative;
+}
+
+.progress-ring {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.progress-ring-bg {
+  fill: none;
+  stroke: #E3F2FD;
+  stroke-width: 3;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: url(#gradient);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.progress-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FF8F00;
+}
+
+.progress-text svg {
   color: #FFB300;
+  margin-bottom: -2px;
 }
 
 .main-content {
-  padding: 20px;
+  padding: 16px;
   padding-bottom: 40px;
 }
 
 .section {
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
+/* 阶段标题 - 彩色胶囊 */
 .section-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-  padding: 12px 16px;
-  background: #ffffff;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
-  border: 2px solid rgba(74, 144, 226, 0.15);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 3px 0 0 rgba(0, 0, 0, 0.06),
+    0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
-.section-indicator {
-  width: 5px;
-  height: 24px;
-  border-radius: 3px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+.section-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-weight: 700;
+}
+
+.section-icon {
+  font-size: 24px;
 }
 
 .section-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e3a5f;
+  font-size: 17px;
   font-family: inherit;
-  flex: 1;
+  color: #37474F;
+}
+
+/* 各阶段颜色 */
+.badge-green {
+  background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
+  color: #2E7D32;
+}
+
+.badge-blue {
+  background: linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%);
+  color: #0277BD;
+}
+
+.badge-yellow {
+  background: linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%);
+  color: #F57F17;
+}
+
+.badge-orange {
+  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+  color: #E65100;
+}
+
+.badge-red {
+  background: linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%);
+  color: #C62828;
 }
 
 .section-count {
-  font-size: 13px;
-  color: #5a7a9a;
+  font-size: 14px;
+  color: #78909C;
   font-weight: 600;
-  background: rgba(74, 144, 226, 0.1);
-  padding: 4px 12px;
+  background: #F5F5F5;
+  padding: 6px 14px;
   border-radius: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
+/* 底部提示 */
 .footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 12px 20px;
-  background: #ffffff;
-  border-top: 1px solid rgba(74, 144, 226, 0.15);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
-  text-align: center;
-  /* Safe area for notched devices */
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-top: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
 }
 
-.footer p {
-  font-size: 14px;
-  color: #5a7a9a;
-  font-family: inherit;
+.footer-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.footer-icon {
+  font-size: 18px;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.footer p {
+  font-size: 15px;
+  color: #5a7a9a;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.footer-rocket {
+  font-size: 18px;
+  animation: float-gentle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 </style>

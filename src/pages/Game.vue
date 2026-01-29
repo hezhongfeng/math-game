@@ -321,7 +321,7 @@ onMounted(() => {
 <style scoped>
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #E3F2FD 0%, #F5F9FF 50%, #E8F5E9 100%);
+  background: linear-gradient(180deg, #FFF8E1 0%, #E0F7FA 40%, #F3E5F5 100%);
   display: flex;
   flex-direction: column;
   padding: 12px 12px 24px;
@@ -349,41 +349,50 @@ onMounted(() => {
   margin-top: auto;
 }
 
-/* 顶部导航 */
+/* 顶部导航 - 毛玻璃效果 */
 .header {
   position: sticky;
-  top: 0;
+  top: 8px;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
   border-radius: 20px;
   box-shadow:
-    0 4px 20px rgba(74, 144, 226, 0.15),
-    0 2px 8px rgba(74, 144, 226, 0.08);
-  margin: 0 12px 12px;
-  padding-top: max(10px, env(safe-area-inset-top));
+    0 4px 0 0 rgba(0, 0, 0, 0.05),
+    0 8px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  margin: 0 8px 16px;
+  padding-top: max(12px, env(safe-area-inset-top));
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 10px 14px;
   font-size: 14px;
   font-weight: 600;
-  color: #4A90E2;
-  background: linear-gradient(135deg, #e0efff 0%, #f0f7ff 100%);
-  border: 2px solid rgba(74, 144, 226, 0.3);
-  border-radius: 12px;
+  color: #4FC3F7;
+  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
+  border: none;
+  border-radius: 14px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 3px 0 0 #0288D1,
+    0 4px 12px rgba(2, 136, 209, 0.2);
+  transition: all 0.2s ease;
 }
 
 .back-btn:active {
-  background: #d0e4ff;
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 0 #0288D1,
+    0 2px 8px rgba(2, 136, 209, 0.2);
 }
 
 .back-btn span {
@@ -398,41 +407,52 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   font-family: inherit;
-  color: #1e3a5f;
+  background: linear-gradient(135deg, #FF8A80, #4FC3F7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   letter-spacing: 1px;
 }
 
 .subtitle {
-  font-size: 11px;
-  color: #5a7a9a;
+  font-size: 12px;
+  color: #78909C;
   font-family: inherit;
-  margin-top: 2px;
+  margin-top: 4px;
+  font-weight: 500;
 }
 
 .retry-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  color: #4A90E2;
-  background: linear-gradient(135deg, #e0efff 0%, #f0f7ff 100%);
-  border: 2px solid rgba(74, 144, 226, 0.3);
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  color: #FF8A65;
+  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+  border: none;
+  border-radius: 14px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 3px 0 0 #E65100,
+    0 4px 12px rgba(230, 81, 0, 0.2);
+  transition: all 0.2s ease;
 }
 
 .retry-btn:active {
-  background: #d0e4ff;
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 0 #E65100,
+    0 2px 8px rgba(230, 81, 0, 0.2);
 }
 
 .retry-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 /* 题目切换 - 弹性弹入 */
@@ -468,14 +488,29 @@ onMounted(() => {
   }
 }
 
-/* 反馈层 */
+/* 反馈容器 */
+.feedback-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+/* 反馈弹窗 - 立体风格 */
 .feedback-overlay {
   position: fixed;
-  top: 38%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 320px;
+  width: 85%;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -484,36 +519,44 @@ onMounted(() => {
   z-index: 9999;
   background: #ffffff;
   border-radius: 32px;
-  padding: 28px 24px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(0, 0, 0, 0.08);
+  padding: 32px 28px;
+  box-shadow:
+    0 8px 0 0 rgba(0, 0, 0, 0.08),
+    0 20px 50px rgba(0, 0, 0, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.5);
 }
 
 .feedback-overlay.correct {
-  border-color: #4CAF50;
+  border-color: rgba(129, 199, 132, 0.5);
+  background: linear-gradient(180deg, #ffffff 0%, #F1F8E9 100%);
 }
 
 .feedback-overlay.wrong {
-  border-color: #FF9800;
+  border-color: rgba(255, 183, 77, 0.5);
   cursor: pointer;
+  background: linear-gradient(180deg, #ffffff 0%, #FFF3E0 100%);
 }
 
-/* 成功圆圈 - 简约设计 */
+/* 成功圆圈 - 弹性动画 */
 .success-circle {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: #4CAF50;
+  background: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: circlePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: circlePop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow:
+    0 6px 0 0 #4CAF50,
+    0 10px 30px rgba(102, 187, 106, 0.4);
 }
 
 .success-circle svg {
   color: white;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
 }
 
 @keyframes circlePop {
@@ -521,63 +564,36 @@ onMounted(() => {
     transform: scale(0);
     opacity: 0;
   }
+  50% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.95);
+  }
   100% {
     transform: scale(1);
     opacity: 1;
   }
 }
 
-/* 反馈容器 */
-.feedback-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9998;
-}
-
-/* 反馈弹窗 */
-.feedback-overlay {
-  background: #ffffff;
-  border-radius: 32px;
-  padding: 28px 24px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  min-width: 240px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  border: 2px solid rgba(0, 0, 0, 0.08);
-}
-
-.feedback-overlay.correct {
-  border-color: #4CAF50;
-}
-
-.feedback-overlay.wrong {
-  border-color: #FF9800;
-  cursor: pointer;
-}
-
 /* 答案数字 - 错误反馈 */
 .answer-number {
-  font-size: 48px;
-  font-weight: 700;
-  color: #FF9800;
+  font-size: 56px;
+  font-weight: 800;
+  color: #FF8A65;
   line-height: 1;
   text-align: center;
+  text-shadow: 0 2px 4px rgba(255, 138, 101, 0.3);
 }
 
 /* 点击提示文字 */
 .hint-text {
-  font-size: 13px;
-  color: #94a3b8;
+  font-size: 14px;
+  color: #FF8A65;
+  font-weight: 600;
+  background: rgba(255, 138, 101, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
 }
 
 /* 反馈过渡 - 遮罩和弹窗统一动画 */
@@ -599,7 +615,7 @@ onMounted(() => {
 
 /* 弹窗内容动画 */
 .feedback-enter-active .feedback-overlay {
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .feedback-leave-active .feedback-overlay {
@@ -608,11 +624,11 @@ onMounted(() => {
 
 .feedback-enter-from .feedback-overlay {
   opacity: 0;
-  transform: scale(0.75);
+  transform: translate(-50%, -50%) scale(0.6);
 }
 
 .feedback-leave-to .feedback-overlay {
   opacity: 0;
-  transform: scale(0.85);
+  transform: translate(-50%, -50%) scale(0.85);
 }
 </style>
