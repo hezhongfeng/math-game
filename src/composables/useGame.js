@@ -1,11 +1,14 @@
-import { ref, computed } from 'vue'
+import { ref, computed, toValue } from 'vue'
 import { generateQuestions, checkAnswer } from '../utils/generator'
 
 /**
  * 游戏核心逻辑 Composable
- * @param {Object} difficulty - 难度配置对象
+ * @param {Object|Ref<Object>} difficulty - 难度配置对象，支持响应式
  */
 export function useGame(difficulty) {
+  // 使用 toValue 获取实际值，支持响应式参数
+  const difficultyValue = computed(() => toValue(difficulty))
+  
   // 游戏状态
   const questions = ref([])
   const currentIndex = ref(0)
@@ -39,7 +42,7 @@ const duration = computed(() => {
    * 开始游戏
    */
   function startGame() {
-    questions.value = generateQuestions(difficulty)
+    questions.value = generateQuestions(difficultyValue.value)
     currentIndex.value = 0
     score.value = 0
     isComplete.value = false
@@ -111,7 +114,7 @@ const duration = computed(() => {
       totalCount: questions.value.length,
       accuracy: accuracy.value,
       duration: duration.value,
-      difficulty: difficulty,
+      difficulty: difficultyValue.value,
       completedAt: new Date().toISOString()
     }
   }

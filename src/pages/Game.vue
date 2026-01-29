@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, RotateCcw, Check, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
@@ -210,28 +210,29 @@ function handleHome() {
   router.push('/difficulty')
 }
 
+// 键盘事件处理器 - 提取为命名函数便于清理
+function handleKeyPress(e) {
+  if (e.key >= '0' && e.key <= '9') {
+    handleInput(parseInt(e.key))
+  } else if (e.key === 'Backspace') {
+    handleDelete()
+  } else if (e.key === 'Enter') {
+    submitAnswer()
+  }
+}
+
 onMounted(() => {
   settingsStore.loadSettings()
   initGame()
-
-  const handleKeyPress = (e) => {
-    if (e.key >= '0' && e.key <= '9') {
-      handleInput(parseInt(e.key))
-    } else if (e.key === 'Backspace') {
-      handleDelete()
-    } else if (e.key === 'Enter') {
-      submitAnswer()
-    }
-  }
-
   window.addEventListener('keydown', handleKeyPress)
+})
 
-  onUnmounted(() => {
-    window.removeEventListener('keydown', handleKeyPress)
-    stopQuestionTimer() // 清理计时器
-    stopGameTimeUpdater() // 清理游戏时间更新器
-    settingsStore.saveSettings()
-  })
+// onUnmounted 应该在顶层，不嵌套在 onMounted 内
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyPress)
+  stopQuestionTimer() // 清理计时器
+  stopGameTimeUpdater() // 清理游戏时间更新器
+  settingsStore.saveSettings()
 })
 </script>
 

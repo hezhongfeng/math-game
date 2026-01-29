@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, Trophy, Star } from 'lucide-vue-next'
+import { ArrowLeft, Trophy } from 'lucide-vue-next'
 import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
@@ -9,12 +9,11 @@ import DifficultyCard from '../components/DifficultyCard.vue'
 import TouchOptimizedButton from '../components/TouchOptimizedButton.vue'
 
 const router = useRouter()
-const { getBestScore, getCompletedDifficulties, getAllBestScores } = useStorage()
+const { getBestScore, getCompletedDifficulties, completedCount } = useStorage()
 const { playSound } = useSound()
 
-const completedDifficulties = getCompletedDifficulties()
-const allBestScores = getAllBestScores()
-const completedCount = computed(() => Object.keys(allBestScores).length)
+// 使用 ref 存储完成状态，确保响应式更新
+const completedDifficulties = ref(getCompletedDifficulties())
 
 function goBack() {
   playSound('click')
@@ -30,10 +29,26 @@ function getDifficultyBestScore(difficultyId) {
   return getBestScore(difficultyId)
 }
 
+// 使用计算属性缓存锁定状态计算
+const lockedStatusMap = computed(() => {
+  const map = new Map()
+  const completed = completedDifficulties.value
+  
+  DIFFICULTY_GROUPS.forEach(group => {
+    group.levels.forEach(id => {
+      if (id === 1) {
+        map.set(id, false)
+      } else {
+        map.set(id, !completed.includes(id - 1))
+      }
+    })
+  })
+  
+  return map
+})
+
 function isDifficultyLocked(difficulty) {
-  if (difficulty.id === 1) return false
-  const previousId = difficulty.id - 1
-  return !completedDifficulties.includes(previousId)
+  return lockedStatusMap.value.get(difficulty.id) ?? false
 }
 
 // 获取阶段图标

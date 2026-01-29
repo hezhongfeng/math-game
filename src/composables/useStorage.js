@@ -1,32 +1,61 @@
+import { ref, computed } from 'vue'
 import { useToast } from './useToast'
 
 const STORAGE_KEY = 'math-game-data'
 
+// 内存缓存，避免重复读取 localStorage
+let cachedData = null
+
 /**
  * 本地存储 Composable
  * 用于保存和读取游戏进度和最佳成绩
+ * 
+ * 使用响应式数据，组件可以监听变化自动更新
  */
 export function useStorage() {
   const { error: showError } = useToast()
-  // 从 localStorage 读取数据
+  
+  // 内部响应式状态
+  const _data = ref(null)
+  
+  /**
+   * 从 localStorage 读取数据
+   * 优先使用内存缓存
+   */
   function loadData() {
+    if (cachedData) {
+      return cachedData
+    }
+    
     try {
-      const data = localStorage.getItem(STORAGE_KEY)
-      return data ? JSON.parse(data) : { bestScores: {}, progress: {} }
+      const raw = localStorage.getItem(STORAGE_KEY)
+      cachedData = raw ? JSON.parse(raw) : { bestScores: {}, progress: {} }
+      _data.value = cachedData
+      return cachedData
     } catch (error) {
       showError('读取游戏数据失败，请检查浏览器存储设置')
-      return { bestScores: {}, progress: {} }
+      cachedData = { bestScores: {}, progress: {} }
+      _data.value = cachedData
+      return cachedData
     }
   }
   
-  // 保存数据到 localStorage
+  /**
+   * 保存数据到 localStorage
+   * 同时更新内存缓存
+   */
   function saveData(data) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+      cachedData = data
+      _data.value = data
     } catch (error) {
       showError('保存游戏数据失败，存储空间可能已满')
     }
   }
+  
+  // 确保数据已加载
+  loadData()
   
   /**
    * 获取某个难度的最佳成绩
@@ -73,8 +102,7 @@ export function useStorage() {
    * @returns {Object} 所有最佳成绩
    */
   function getAllBestScores() {
-    const data = loadData()
-    return data.bestScores
+    return loadData().bestScores
   }
   
   /**
@@ -82,14 +110,23 @@ export function useStorage() {
    * @returns {Array} 已完成的难度ID列表
    */
   function getCompletedDifficulties() {
-    const data = loadData()
-    return Object.keys(data.bestScores).map(id => parseInt(id))
+    return Object.keys(loadData().bestScores).map(id => parseInt(id))
   }
   
+  // 响应式计算属性
+  const bestScores = computed(() => loadData().bestScores)
+  const completedIds = computed(() => getCompletedDifficulties())
+  const completedCount = computed(() => completedIds.value.length)
+  
   return {
+    // 方法
     getBestScore,
     updateBestScore,
     getAllBestScores,
-    getCompletedDifficulties
+    getCompletedDifficulties,
+    // 响应式数据
+    bestScores,
+    completedIds,
+    completedCount
   }
 }
