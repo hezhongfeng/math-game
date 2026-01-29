@@ -12,6 +12,7 @@ import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
 import ResultModal from '../components/ResultModal.vue'
+import TouchOptimizedButton from '../components/TouchOptimizedButton.vue'
 
 const props = defineProps({
   id: {
@@ -238,20 +239,29 @@ onMounted(() => {
   <div class="page">
     <!-- 顶部导航 -->
     <header class="header">
-      <button @click="goBack" class="back-btn">
-        <ArrowLeft :size="22" />
-      </button>
+      <TouchOptimizedButton
+        size="small"
+        variant="secondary"
+        :icon="ArrowLeft"
+        :icon-size="20"
+        @click="goBack"
+      />
 
       <div class="title-group">
-        <h2 class="title bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
+        <h2 class="title font-child-friendly bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
           {{ difficulty.name }}
         </h2>
-        <p class="subtitle">{{ difficulty.description }}</p>
+        <p class="subtitle font-child-friendly">{{ difficulty.description }}</p>
       </div>
 
-      <button @click="handleRetry" class="retry-btn" title="重新开始">
-        <RotateCcw :size="24" />
-      </button>
+      <TouchOptimizedButton
+        size="small"
+        variant="playful"
+        :icon="RotateCcw"
+        :icon-size="20"
+        @click="handleRetry"
+        title="重新开始"
+      />
     </header>
 
     <!-- 题目卡片区 -->
@@ -369,36 +379,6 @@ onMounted(() => {
   padding-top: max(12px, env(safe-area-inset-top));
 }
 
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #4FC3F7;
-  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  box-shadow:
-    0 3px 0 0 #0288D1,
-    0 4px 12px rgba(2, 136, 209, 0.2);
-  transition: all 0.2s ease;
-}
-
-.back-btn:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 1px 0 0 #0288D1,
-    0 2px 8px rgba(2, 136, 209, 0.2);
-}
-
-.back-btn span {
-  font-size: 14px;
-}
-
 .title-group {
   display: flex;
   flex-direction: column;
@@ -409,7 +389,6 @@ onMounted(() => {
 .title {
   font-size: 20px;
   font-weight: 800;
-  font-family: inherit;
   background: linear-gradient(135deg, #FF8A80, #4FC3F7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -420,39 +399,8 @@ onMounted(() => {
 .subtitle {
   font-size: 12px;
   color: #78909C;
-  font-family: inherit;
   margin-top: 4px;
   font-weight: 500;
-}
-
-.retry-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  color: #FF8A65;
-  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  box-shadow:
-    0 3px 0 0 #E65100,
-    0 4px 12px rgba(230, 81, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.retry-btn:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 1px 0 0 #E65100,
-    0 2px 8px rgba(230, 81, 0, 0.2);
-}
-
-.retry-btn svg {
-  width: 22px;
-  height: 22px;
 }
 
 /* 题目切换 - 弹性弹入 */

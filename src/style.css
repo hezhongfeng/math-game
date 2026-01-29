@@ -600,3 +600,307 @@
     @apply transition-all duration-200;
   }
 }
+/* ============================================
+   儿童友好的组件系统 - Child-Friendly Components
+   ============================================ */
+
+@layer components {
+  /* 触摸优化按钮 - Touch Optimized Buttons */
+  .btn-child-primary {
+    @apply min-w-child-btn-md min-h-child-btn-md;
+    @apply bg-gradient-to-b from-macaron-primary to-macaron-primary-dark;
+    @apply text-white font-bold rounded-cute-xl;
+    @apply shadow-child-button border-0;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:shadow-child-button-hover hover:-translate-y-1;
+    @apply active:shadow-child-button-active active:translate-y-1;
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-primary/30;
+    @apply touch-manipulation cursor-pointer;
+    @apply font-child-friendly text-child-base;
+  }
+
+  .btn-child-secondary {
+    @apply min-w-child-btn-md min-h-child-btn-md;
+    @apply bg-white text-macaron-blue-dark;
+    @apply font-bold rounded-cute-xl;
+    @apply shadow-child-button border-2 border-macaron-blue/20;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:shadow-child-button-hover hover:-translate-y-1 hover:border-macaron-blue/40;
+    @apply active:shadow-child-button-active active:translate-y-1;
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-blue/30;
+    @apply touch-manipulation cursor-pointer;
+    @apply font-child-friendly text-child-base;
+  }
+
+  .btn-child-success {
+    @apply min-w-child-btn-md min-h-child-btn-md;
+    @apply bg-gradient-to-b from-macaron-mint to-macaron-mint-dark;
+    @apply text-white font-bold rounded-cute-xl;
+    @apply shadow-child-button;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:shadow-child-button-hover hover:-translate-y-1;
+    @apply active:shadow-child-button-active active:translate-y-1;
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-mint/30;
+    @apply touch-manipulation cursor-pointer;
+    @apply font-child-friendly text-child-base;
+  }
+
+  /* 大尺寸按钮 - Large Touch Targets */
+  .btn-child-large {
+    @apply min-w-child-btn-lg min-h-child-btn-lg;
+    @apply text-child-lg px-touch-xl py-touch-lg;
+  }
+
+  /* 儿童友好卡片 - Child-Friendly Cards */
+  .card-child {
+    @apply bg-white rounded-cute-xl;
+    @apply shadow-child-medium border-2 border-white/50;
+    @apply transition-all duration-200 ease-out;
+    @apply hover:shadow-child-large hover:-translate-y-1;
+    @apply min-h-child-card;
+    @apply touch-manipulation cursor-pointer;
+  }
+
+  .card-child-interactive {
+    @apply card-child;
+    @apply hover:scale-105 active:scale-95;
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-blue/30;
+  }
+
+  .card-child-success {
+    @apply card-child;
+    @apply border-macaron-mint/30 bg-gradient-to-br from-white to-macaron-mint/5;
+    @apply animate-success-glow;
+  }
+
+  /* 数字键盘优化 - Enhanced Number Pad */
+  .numpad-child {
+    @apply grid grid-cols-3 gap-touch-md p-touch-lg;
+    @apply bg-white/90 backdrop-blur-sm rounded-cute-xl;
+    @apply shadow-child-medium border-2 border-white/50;
+  }
+
+  .numpad-btn-child {
+    @apply min-w-child-btn-lg min-h-child-btn-lg;
+    @apply bg-gradient-to-b from-white to-gray-50;
+    @apply text-macaron-blue-dark font-bold rounded-cute-lg;
+    @apply shadow-child-button border-2 border-macaron-blue/10;
+    @apply transition-all duration-100 ease-out;
+    @apply hover:shadow-child-button-hover hover:-translate-y-0.5 hover:border-macaron-blue/20;
+    @apply active:shadow-child-button-active active:translate-y-0.5;
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-blue/30;
+    @apply touch-manipulation cursor-pointer;
+    @apply font-child-friendly text-child-xl;
+  }
+
+  .numpad-btn-special {
+    @apply numpad-btn-child;
+    @apply bg-gradient-to-b from-macaron-peach to-macaron-peach-dark;
+    @apply text-white border-macaron-peach/20;
+    @apply hover:border-macaron-peach/40;
+    @apply focus:ring-macaron-peach/30;
+  }
+
+  /* 进度指示器 - Progress Indicators */
+  .progress-child {
+    @apply h-4 bg-gray-100 rounded-full overflow-hidden;
+    @apply shadow-clay-inset border border-gray-200;
+  }
+
+  .progress-child-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+    @apply bg-gradient-to-r from-macaron-blue to-macaron-mint;
+  }
+
+  /* 输入框优化 - Child-Friendly Inputs */
+  .input-child {
+    @apply rounded-cute-lg px-touch-lg py-touch-md;
+    @apply bg-white shadow-child-soft;
+    @apply border-2 border-macaron-blue/20;
+    @apply font-child-friendly text-child-base;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:border-macaron-blue focus:ring-4 focus:ring-macaron-blue/20;
+    @apply focus:shadow-child-medium;
+    @apply placeholder:text-gray-400 placeholder:font-normal;
+  }
+
+  /* 导航栏优化 - Child-Friendly Navigation */
+  .navbar-child {
+    @apply bg-white/90 backdrop-blur-md rounded-cute-xl;
+    @apply shadow-child-medium border-2 border-white/50;
+    @apply p-touch-md;
+  }
+
+  .nav-btn-child {
+    @apply min-w-child-btn-sm min-h-child-btn-sm;
+    @apply bg-gradient-to-b from-macaron-blue-light to-macaron-blue;
+    @apply text-white rounded-cute-lg;
+    @apply shadow-child-button;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
+    @apply active:shadow-child-button-active active:translate-y-0.5;
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-blue/30;
+    @apply touch-manipulation cursor-pointer;
+    @apply font-child-friendly text-child-sm;
+  }
+
+  /* 反馈系统 - Feedback System */
+  .feedback-success {
+    @apply bg-gradient-to-br from-white to-macaron-mint/10;
+    @apply border-2 border-macaron-mint/30 rounded-cute-xl;
+    @apply shadow-child-large;
+    @apply animate-celebration;
+  }
+
+  .feedback-error {
+    @apply bg-gradient-to-br from-white to-macaron-peach/10;
+    @apply border-2 border-macaron-peach/30 rounded-cute-xl;
+    @apply shadow-child-large;
+    @apply animate-playful-wiggle;
+  }
+
+  /* 装饰元素 - Decorative Elements */
+  .decoration-float {
+    @apply absolute pointer-events-none;
+    @apply animate-float-gentle;
+    @apply opacity-60;
+  }
+
+  .decoration-sparkle {
+    @apply animate-star-twinkle;
+    @apply text-macaron-cream;
+  }
+
+  /* 文字样式 - Typography */
+  .text-child-title {
+    @apply font-child-friendly font-bold text-child-3xl;
+    @apply bg-gradient-to-r from-macaron-primary via-macaron-blue to-macaron-mint;
+    @apply bg-clip-text text-transparent;
+    @apply drop-shadow-sm;
+  }
+
+  .text-child-subtitle {
+    @apply font-child-friendly font-medium text-child-lg;
+    @apply text-gray-600;
+  }
+
+  .text-child-body {
+    @apply font-child-friendly text-child-base;
+    @apply text-gray-700 leading-relaxed;
+  }
+
+  /* 安全区域适配 - Safe Area Support */
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .safe-area-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .safe-area-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* 触摸优化 - Touch Optimization */
+  .touch-target-min {
+    @apply min-w-child-btn-sm min-h-child-btn-sm;
+  }
+
+  .touch-target-standard {
+    @apply min-w-child-btn-md min-h-child-btn-md;
+  }
+
+  .touch-target-large {
+    @apply min-w-child-btn-lg min-h-child-btn-lg;
+  }
+
+  .touch-spacing {
+    @apply gap-touch-md;
+  }
+
+  .touch-spacing-large {
+    @apply gap-touch-lg;
+  }
+
+  /* 无障碍访问 - Accessibility */
+  .focus-child {
+    @apply focus:outline-none focus:ring-4 focus:ring-macaron-blue/30;
+    @apply focus:ring-offset-2 focus:ring-offset-white;
+  }
+
+  .sr-only-child {
+    @apply sr-only;
+  }
+
+  /* 响应式适配 - Responsive Design */
+  @media (max-width: 640px) {
+    .btn-child-primary,
+    .btn-child-secondary,
+    .btn-child-success {
+      @apply text-child-sm px-touch-md py-touch-sm;
+    }
+
+    .numpad-btn-child {
+      @apply text-child-lg;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .btn-child-primary,
+    .btn-child-secondary,
+    .btn-child-success {
+      @apply text-child-lg px-touch-xl py-touch-lg;
+    }
+  }
+}
+
+/* ============================================
+   动画性能优化 - Animation Performance
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-celebration,
+  .animate-playful-wiggle,
+  .animate-success-glow,
+  .animate-touch-feedback,
+  .animate-gentle-bounce {
+    animation: none;
+  }
+
+  .card-child-interactive:hover {
+    transform: none;
+  }
+
+  .btn-child-primary:hover,
+  .btn-child-secondary:hover,
+  .btn-child-success:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* ============================================
+   高对比度模式支持 - High Contrast Mode
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .btn-child-primary {
+    @apply border-2 border-black;
+  }
+
+  .btn-child-secondary {
+    @apply border-2 border-black bg-white text-black;
+  }
+
+  .card-child {
+    @apply border-2 border-gray-400;
+  }
+
+  .input-child {
+    @apply border-2 border-black;
+  }
+}

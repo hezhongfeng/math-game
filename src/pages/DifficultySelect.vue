@@ -6,6 +6,7 @@ import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
+import TouchOptimizedButton from '../components/TouchOptimizedButton.vue'
 
 const router = useRouter()
 const { getBestScore, getCompletedDifficulties, getAllBestScores } = useStorage()
@@ -68,12 +69,17 @@ onMounted(() => {
 
     <!-- 顶部导航 - 毛玻璃效果 -->
     <header class="header">
-      <button @click="goBack" class="back-btn">
-        <ArrowLeft :size="22" />
-        <span>返回</span>
-      </button>
+      <TouchOptimizedButton
+        size="small"
+        variant="secondary"
+        :icon="ArrowLeft"
+        :icon-size="20"
+        @click="goBack"
+      >
+        返回
+      </TouchOptimizedButton>
 
-      <h1 class="title">
+      <h1 class="title font-child-friendly">
         <span class="title-icon">🎮</span>
         选择关卡
       </h1>
@@ -130,7 +136,7 @@ onMounted(() => {
 
     <!-- 底部提示 - 更活泼 -->
     <footer class="footer">
-      <div class="footer-content">
+      <div class="footer-content font-child-friendly">
         <span class="footer-icon">💡</span>
         <p>从第一关开始，依次解锁更高难度</p>
         <span class="footer-rocket">🚀</span>
@@ -265,40 +271,9 @@ onMounted(() => {
   padding-top: max(12px, env(safe-area-inset-top));
 }
 
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #4FC3F7;
-  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  -webkit-tap-highlight-color: transparent;
-  box-shadow:
-    0 3px 0 0 #0288D1,
-    0 4px 12px rgba(2, 136, 209, 0.2);
-}
-
-.back-btn:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 1px 0 0 #0288D1,
-    0 2px 8px rgba(2, 136, 209, 0.2);
-}
-
-.back-btn span {
-  font-size: 14px;
-}
-
 .title {
   font-size: 20px;
   font-weight: 800;
-  font-family: inherit;
   color: #37474F;
   letter-spacing: 1px;
   display: flex;
@@ -397,7 +372,6 @@ onMounted(() => {
 
 .section-title {
   font-size: 17px;
-  font-family: inherit;
   color: #37474F;
 }
 
@@ -472,7 +446,6 @@ onMounted(() => {
 .footer p {
   font-size: 15px;
   color: #5a7a9a;
-  font-family: inherit;
   font-weight: 500;
 }
 

@@ -7,6 +7,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
+
+    <!-- 儿童友好字体 - Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
     <title>数学运算游戏</title>
     <script>
       // 禁止移动端缩放 - iOS Safari 和 Android Chrome 兼容
@@ -20,37 +26,37 @@
           }
           lastTouchEnd = now;
         }, false);
-        
+
         // 阻止双指缩放
         document.addEventListener('touchstart', function(event) {
           if (event.touches.length > 1) {
             event.preventDefault();
           }
         }, { passive: false });
-        
+
         // 阻止手势缩放
         document.addEventListener('gesturestart', function(event) {
           event.preventDefault();
         });
-        
+
         document.addEventListener('gesturechange', function(event) {
           event.preventDefault();
         });
-        
+
         document.addEventListener('gestureend', function(event) {
           event.preventDefault();
         });
-        
+
         // 阻止 Ctrl/Cmd + 滚轮缩放
         document.addEventListener('wheel', function(event) {
           if (event.ctrlKey || event.metaKey) {
             event.preventDefault();
           }
         }, { passive: false });
-        
+
         // 阻止键盘缩放快捷键
         document.addEventListener('keydown', function(event) {
-          if ((event.ctrlKey || event.metaKey) && 
+          if ((event.ctrlKey || event.metaKey) &&
               (event.key === '+' || event.key === '-' || event.key === '0')) {
             event.preventDefault();
           }

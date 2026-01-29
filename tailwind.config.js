@@ -130,8 +130,28 @@ export default {
           expert: '#E57373',      // 高级 - 粉红
         },
       },
-      fontFamily: {
-        'rounded': ['"Alimama FangYuanTi VF"', 'Nunito', 'Comic Sans MS', 'cursive', 'sans-serif'],
+      fontSize: {
+        // 儿童友好的字体大小 - 更大更易读
+        'child-xs': ['14px', { lineHeight: '1.6' }],
+        'child-sm': ['16px', { lineHeight: '1.6' }],
+        'child-base': ['18px', { lineHeight: '1.6' }], // 儿童最小基础字体
+        'child-lg': ['22px', { lineHeight: '1.5' }],
+        'child-xl': ['26px', { lineHeight: '1.4' }],
+        'child-2xl': ['32px', { lineHeight: '1.3' }],
+        'child-3xl': ['40px', { lineHeight: '1.2' }],
+        'child-4xl': ['48px', { lineHeight: '1.1' }],
+      },
+      spacing: {
+        // 触摸友好的间距
+        'touch-sm': '8px',   // 最小触摸间距
+        'touch-md': '12px',  // 推荐触摸间距
+        'touch-lg': '16px',  // 大触摸间距
+        'touch-xl': '24px',  // 超大触摸间距
+        // 儿童友好的组件尺寸
+        'child-btn-sm': '48px',  // 小按钮最小尺寸
+        'child-btn-md': '64px',  // 标准按钮尺寸
+        'child-btn-lg': '80px',  // 大按钮尺寸
+        'child-card': '88px',    // 卡片最小高度
       },
       animation: {
         // 基础动画
@@ -151,6 +171,12 @@ export default {
         'scale-in': 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'spin-slow': 'spin 8s linear infinite',
         'star-twinkle': 'starTwinkle 2s ease-in-out infinite',
+        // 儿童友好的交互动画
+        'touch-feedback': 'touchFeedback 0.15s ease-out',
+        'celebration': 'celebration 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'gentle-bounce': 'gentleBounce 0.4s ease-out',
+        'playful-wiggle': 'playfulWiggle 0.6s ease-in-out',
+        'success-glow': 'successGlow 1s ease-out',
       },
       keyframes: {
         float: {
@@ -217,6 +243,38 @@ export default {
           '0%, 100%': { opacity: '1', transform: 'scale(1) rotate(0deg)' },
           '50%': { opacity: '0.6', transform: 'scale(0.9) rotate(15deg)' },
         },
+        // 儿童友好的交互动画关键帧
+        touchFeedback: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(0.95)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        celebration: {
+          '0%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+          '25%': { transform: 'scale(1.2) rotate(5deg)' },
+          '50%': { transform: 'scale(1.1) rotate(-3deg)' },
+          '75%': { transform: 'scale(1.15) rotate(2deg)' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+        },
+        gentleBounce: {
+          '0%': { transform: 'translateY(0)' },
+          '30%': { transform: 'translateY(-8px)' },
+          '60%': { transform: 'translateY(-4px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+        playfulWiggle: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '15%': { transform: 'rotate(3deg)' },
+          '30%': { transform: 'rotate(-3deg)' },
+          '45%': { transform: 'rotate(2deg)' },
+          '60%': { transform: 'rotate(-2deg)' },
+          '75%': { transform: 'rotate(1deg)' },
+        },
+        successGlow: {
+          '0%': { boxShadow: '0 0 0 rgba(129, 199, 132, 0)' },
+          '50%': { boxShadow: '0 0 20px rgba(129, 199, 132, 0.6)' },
+          '100%': { boxShadow: '0 0 0 rgba(129, 199, 132, 0)' },
+        },
       },
       borderRadius: {
         'cute': '16px',
@@ -249,6 +307,13 @@ export default {
         // 弥散阴影
         'diffuse': '0 20px 60px rgba(0, 0, 0, 0.08)',
         'diffuse-lg': '0 30px 80px rgba(0, 0, 0, 0.12)',
+        // 儿童友好的阴影系统
+        'child-soft': '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)',
+        'child-medium': '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.06)',
+        'child-large': '0 8px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08)',
+        'child-button': '0 3px 0 0 rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1)',
+        'child-button-hover': '0 5px 0 0 rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.15)',
+        'child-button-active': '0 1px 0 0 rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)',
       },
       transitionTimingFunction: {
         'bounce-out': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
