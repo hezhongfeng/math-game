@@ -162,8 +162,7 @@ export default {
         'button-entrance': 'buttonEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         'title-glow': 'titleGlow 3s ease-in-out infinite',
         'slide-in': 'slideIn 0.5s ease-out',
-        // 新增动画
-        'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
+        // 交互动画
         'wiggle': 'wiggle 0.5s ease-in-out',
         'shake': 'shake 0.5s ease-in-out',
         'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
@@ -175,7 +174,6 @@ export default {
         'touch-feedback': 'touchFeedback 0.15s ease-out',
         'celebration': 'celebration 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
         'gentle-bounce': 'gentleBounce 0.4s ease-out',
-        'playful-wiggle': 'playfulWiggle 0.6s ease-in-out',
         'success-glow': 'successGlow 1s ease-out',
       },
       keyframes: {
@@ -211,10 +209,6 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         // 新增关键帧
-        bounceGentle: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-8px)' },
-        },
         wiggle: {
           '0%, 100%': { transform: 'rotate(-3deg)' },
           '50%': { transform: 'rotate(3deg)' },
@@ -262,14 +256,6 @@ export default {
           '60%': { transform: 'translateY(-4px)' },
           '100%': { transform: 'translateY(0)' },
         },
-        playfulWiggle: {
-          '0%, 100%': { transform: 'rotate(0deg)' },
-          '15%': { transform: 'rotate(3deg)' },
-          '30%': { transform: 'rotate(-3deg)' },
-          '45%': { transform: 'rotate(2deg)' },
-          '60%': { transform: 'rotate(-2deg)' },
-          '75%': { transform: 'rotate(1deg)' },
-        },
         successGlow: {
           '0%': { boxShadow: '0 0 0 rgba(129, 199, 132, 0)' },
           '50%': { boxShadow: '0 0 20px rgba(129, 199, 132, 0.6)' },
@@ -286,34 +272,18 @@ export default {
         '4xl': '32px',
       },
       boxShadow: {
-        // 原有阴影
-        'cute': '0 6px 20px rgba(74, 144, 226, 0.15)',
-        'cute-lg': '0 10px 30px rgba(74, 144, 226, 0.2)',
-        'cute-xl': '0 14px 40px rgba(74, 144, 226, 0.25)',
-        'card': '0 4px 15px rgba(0, 0, 0, 0.08)',
-        'card-hover': '0 8px 25px rgba(74, 144, 226, 0.2)',
-        // Cliomorphism 风格 - 双层阴影系统
-        'clay': '0 4px 0 0 rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)',
-        'clay-hover': '0 6px 0 0 rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.15)',
-        'clay-active': '0 2px 0 0 rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.1)',
-        'clay-inset': 'inset 0 3px 6px rgba(0, 0, 0, 0.1), inset 0 1px 3px rgba(0, 0, 0, 0.1)',
-        // 光晕效果
-        'glow': '0 0 20px rgba(79, 195, 247, 0.4)',
-        'glow-green': '0 0 20px rgba(129, 199, 132, 0.4)',
-        'glow-pink': '0 0 20px rgba(255, 138, 128, 0.4)',
-        'glow-yellow': '0 0 20px rgba(255, 213, 79, 0.4)',
-        // 玻璃拟态
-        'glass': '0 8px 32px rgba(31, 38, 135, 0.15)',
-        // 弥散阴影
-        'diffuse': '0 20px 60px rgba(0, 0, 0, 0.08)',
-        'diffuse-lg': '0 30px 80px rgba(0, 0, 0, 0.12)',
-        // 儿童友好的阴影系统
+        // 儿童友好的阴影系统 - 统一的阴影体系
         'child-soft': '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)',
         'child-medium': '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.06)',
         'child-large': '0 8px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08)',
         'child-button': '0 3px 0 0 rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1)',
         'child-button-hover': '0 5px 0 0 rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.15)',
         'child-button-active': '0 1px 0 0 rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)',
+        // 特殊效果阴影
+        'glow': '0 0 20px rgba(79, 195, 247, 0.4)',
+        'glow-green': '0 0 20px rgba(129, 199, 132, 0.4)',
+        'glow-pink': '0 0 20px rgba(255, 138, 128, 0.4)',
+        'glow-yellow': '0 0 20px rgba(255, 213, 79, 0.4)',
       },
       transitionTimingFunction: {
         'bounce-out': 'cubic-bezier(0.34, 1.56, 0.64, 1)',

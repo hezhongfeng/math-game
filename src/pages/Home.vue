@@ -5,6 +5,7 @@ import { Trophy, Play, Star, Sparkles } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { DIFFICULTY_GROUPS } from '../config/difficulty'
+import { JELLYFISH_CONFIG, getTentacleCount, getJellyAnimationClass, jellyStyle } from '../config/jellyfish'
 import TouchOptimizedButton from '../components/TouchOptimizedButton.vue'
 import AnimatedCard from '../components/AnimatedCard.vue'
 
@@ -15,205 +16,8 @@ const { playSound, forceInitializeAudioContext } = useSound()
 const bestScores = getAllBestScores()
 const completedCount = Object.keys(bestScores).length
 
-// 水母数据 - 优化形态和动画，更加生动可爱
-const jellyfishes = [
-  // 第一组: 珊瑚粉色系 - 温柔可爱型
-  {
-    color: '#FFAB91',
-    delay: 0,
-    left: '8%',
-    startTop: '85%',
-    size: 45,
-    opacity: 0.75,
-    type: 'cute', // 可爱型
-    speed: 1.0,
-    wiggle: 0.8
-  },
-  {
-    color: '#FF8A65',
-    delay: 0.8,
-    left: '5%',
-    startTop: '70%',
-    size: 38,
-    opacity: 0.7,
-    type: 'playful', // 活泼型
-    speed: 1.2,
-    wiggle: 1.2
-  },
-  {
-    color: '#FFCCBC',
-    delay: 1.5,
-    left: '12%',
-    startTop: '55%',
-    size: 42,
-    opacity: 0.8,
-    type: 'gentle', // 温和型
-    speed: 0.9,
-    wiggle: 0.6
-  },
-  {
-    color: '#FF8A80',
-    delay: 2.2,
-    left: '3%',
-    startTop: '40%',
-    size: 35,
-    opacity: 0.65,
-    type: 'bouncy', // 弹跳型
-    speed: 1.4,
-    wiggle: 1.5
-  },
-
-  // 第二组: 天蓝色系 - 梦幻飘逸型
-  {
-    color: '#81D4FA',
-    delay: 3,
-    left: '18%',
-    startTop: '45%',
-    size: 40,
-    opacity: 0.7,
-    type: 'dreamy', // 梦幻型
-    speed: 0.8,
-    wiggle: 0.9
-  },
-  {
-    color: '#4FC3F7',
-    delay: 4.2,
-    left: '32%',
-    startTop: '35%',
-    size: 48,
-    opacity: 0.8,
-    type: 'elegant', // 优雅型
-    speed: 0.7,
-    wiggle: 0.5
-  },
-  {
-    color: '#B3E5FC',
-    delay: 5.5,
-    left: '45%',
-    startTop: '95%',
-    size: 44,
-    opacity: 0.75,
-    type: 'cute',
-    speed: 1.1,
-    wiggle: 1.0
-  },
-  {
-    color: '#29B6F6',
-    delay: 6.8,
-    left: '42%',
-    startTop: '80%',
-    size: 36,
-    opacity: 0.7,
-    type: 'playful',
-    speed: 1.3,
-    wiggle: 1.4
-  },
-
-  // 第三组: 薰衣草紫色系 - 神秘优雅型
-  {
-    color: '#CE93D8',
-    delay: 8,
-    left: '68%',
-    startTop: '72%',
-    size: 46,
-    opacity: 0.8,
-    type: 'mysterious', // 神秘型
-    speed: 0.6,
-    wiggle: 0.7
-  },
-  {
-    color: '#BA68C8',
-    delay: 9.5,
-    left: '75%',
-    startTop: '58%',
-    size: 39,
-    opacity: 0.7,
-    type: 'gentle',
-    speed: 0.9,
-    wiggle: 0.8
-  },
-  {
-    color: '#E1BEE7',
-    delay: 11,
-    left: '82%',
-    startTop: '42%',
-    size: 43,
-    opacity: 0.75,
-    type: 'dreamy',
-    speed: 0.8,
-    wiggle: 1.1
-  },
-
-  // 第四组: 薄荷绿色系 - 清新活力型
-  {
-    color: '#80CBC4',
-    delay: 12.5,
-    left: '15%',
-    startTop: '75%',
-    size: 41,
-    opacity: 0.7,
-    type: 'fresh', // 清新型
-    speed: 1.0,
-    wiggle: 1.0
-  },
-  {
-    color: '#4DB6AC',
-    delay: 14,
-    left: '35%',
-    startTop: '90%',
-    size: 47,
-    opacity: 0.8,
-    type: 'bouncy',
-    speed: 1.2,
-    wiggle: 1.3
-  },
-  {
-    color: '#A5D6A7',
-    delay: 15.5,
-    left: '55%',
-    startTop: '70%',
-    size: 38,
-    opacity: 0.7,
-    type: 'playful',
-    speed: 1.1,
-    wiggle: 1.2
-  },
-
-  // 第五组: 奶油黄色系 - 温暖阳光型
-  {
-    color: '#FFF176',
-    delay: 17,
-    left: '25%',
-    startTop: '50%',
-    size: 40,
-    opacity: 0.75,
-    type: 'sunny', // 阳光型
-    speed: 1.0,
-    wiggle: 0.9
-  },
-  {
-    color: '#FFEE58',
-    delay: 18.5,
-    left: '50%',
-    startTop: '85%',
-    size: 44,
-    opacity: 0.8,
-    type: 'cheerful', // 欢快型
-    speed: 1.3,
-    wiggle: 1.4
-  },
-  {
-    color: '#FFF59D',
-    delay: 20,
-    left: '70%',
-    startTop: '60%',
-    size: 37,
-    opacity: 0.7,
-    type: 'gentle',
-    speed: 0.9,
-    wiggle: 0.8
-  }
-]
+// 使用配置文件中的水母数据
+const jellyfishes = JELLYFISH_CONFIG
 
 function startGame() {
   playSound('click')
@@ -223,60 +27,6 @@ function startGame() {
 function viewAchievements() {
   playSound('click')
   router.push('/difficulty')
-}
-
-// 计算水母样式 - 根据类型应用不同动画
-function jellyStyle(jelly) {
-  const baseStyle = {
-    left: jelly.left,
-    top: jelly.startTop,
-    width: `${jelly.size}px`,
-    height: `${jelly.size * 0.9}px`,
-    animationDelay: `${jelly.delay}s`,
-    opacity: jelly.opacity
-  }
-
-  // 根据类型添加不同的动画类
-  const animationClass = getJellyAnimationClass(jelly.type, jelly.speed, jelly.wiggle)
-
-  return {
-    ...baseStyle,
-    animationDuration: `${25 / jelly.speed}s`
-  }
-}
-
-// 获取水母动画类名
-function getJellyAnimationClass(type, speed, wiggle) {
-  const animations = {
-    cute: 'floatJellyfish-cute',
-    playful: 'floatJellyfish-playful',
-    gentle: 'floatJellyfish-gentle',
-    bouncy: 'floatJellyfish-bouncy',
-    dreamy: 'floatJellyfish-dreamy',
-    elegant: 'floatJellyfish-elegant',
-    mysterious: 'floatJellyfish-mysterious',
-    fresh: 'floatJellyfish-fresh',
-    sunny: 'floatJellyfish-sunny',
-    cheerful: 'floatJellyfish-cheerful'
-  }
-  return animations[type] || 'floatJellyfish'
-}
-
-// 获取水母触手数量
-function getTentacleCount(type) {
-  const tentacleCounts = {
-    cute: 4,
-    playful: 5,
-    gentle: 3,
-    bouncy: 6,
-    dreamy: 4,
-    elegant: 3,
-    mysterious: 5,
-    fresh: 4,
-    sunny: 5,
-    cheerful: 6
-  }
-  return tentacleCounts[type] || 4
 }
 
 // iOS Safari 兼容性修复
@@ -316,15 +66,34 @@ onMounted(() => {
           <!-- 多层光泽效果 -->
           <div class="jelly-shine jelly-shine-main"></div>
           <div class="jelly-shine jelly-shine-secondary"></div>
-          <!-- 可爱的眼睛（部分水母） -->
-          <div v-if="['cute', 'playful', 'cheerful'].includes(jelly.type)" class="jelly-eyes">
+
+          <!-- 可爱的眼睛 - 扩展到更多类型 -->
+          <div v-if="['cute', 'playful', 'cheerful', 'bouncy', 'fresh', 'sunny'].includes(jelly.type)" class="jelly-eyes">
             <div class="jelly-eye jelly-eye-left"></div>
             <div class="jelly-eye jelly-eye-right"></div>
           </div>
-          <!-- 腮红效果（可爱型水母） -->
-          <div v-if="jelly.type === 'cute'" class="jelly-blush">
+
+          <!-- 腮红效果 - 扩展到更多可爱类型 -->
+          <div v-if="['cute', 'cheerful', 'fresh'].includes(jelly.type)" class="jelly-blush">
             <div class="blush blush-left"></div>
             <div class="blush blush-right"></div>
+          </div>
+
+          <!-- 温和型水母的微笑 -->
+          <div v-if="jelly.type === 'gentle'" class="jelly-smile">
+            <div class="smile-curve"></div>
+          </div>
+
+          <!-- 阳光型水母的光环效果 -->
+          <div v-if="jelly.type === 'sunny'" class="jelly-halo">
+            <div class="halo-ring"></div>
+          </div>
+
+          <!-- 弹跳型水母的活力点 -->
+          <div v-if="jelly.type === 'bouncy'" class="jelly-energy-dots">
+            <div class="energy-dot energy-dot-1"></div>
+            <div class="energy-dot energy-dot-2"></div>
+            <div class="energy-dot energy-dot-3"></div>
           </div>
         </div>
 
@@ -343,15 +112,43 @@ onMounted(() => {
           ></div>
         </div>
 
-        <!-- 装饰性粒子效果 -->
-        <div v-if="['dreamy', 'mysterious', 'elegant'].includes(jelly.type)" class="jelly-particles">
+        <!-- 装饰性粒子效果 - 扩展到更多类型 -->
+        <div v-if="['dreamy', 'mysterious', 'elegant', 'gentle', 'fresh'].includes(jelly.type)" class="jelly-particles">
           <div
             v-for="p in 3"
             :key="p"
             class="particle"
+            :class="`particle-${jelly.type}`"
             :style="{
               animationDelay: `${jelly.delay + p * 0.3}s`,
               background: jelly.color
+            }"
+          ></div>
+        </div>
+
+        <!-- 阳光型水母的光芒效果 -->
+        <div v-if="jelly.type === 'sunny'" class="jelly-rays">
+          <div
+            v-for="r in 6"
+            :key="r"
+            class="sun-ray"
+            :style="{
+              transform: `rotate(${r * 60}deg)`,
+              animationDelay: `${jelly.delay + r * 0.1}s`,
+              background: `linear-gradient(to top, transparent, ${jelly.color}66, transparent)`
+            }"
+          ></div>
+        </div>
+
+        <!-- 弹跳型水母的能量波 -->
+        <div v-if="jelly.type === 'bouncy'" class="jelly-energy-waves">
+          <div
+            v-for="w in 2"
+            :key="w"
+            class="energy-wave"
+            :style="{
+              animationDelay: `${jelly.delay + w * 0.5}s`,
+              borderColor: jelly.color
             }"
           ></div>
         </div>
@@ -653,6 +450,61 @@ onMounted(() => {
   animation: blushGlow 3s ease-in-out infinite;
 }
 
+/* 温和型水母的微笑 */
+.jelly-smile {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.smile-curve {
+  width: 12px;
+  height: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  animation: smileGlow 4s ease-in-out infinite;
+}
+
+/* 阳光型水母的光环效果 */
+.jelly-halo {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.halo-ring {
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  animation: haloRotate 6s linear infinite;
+}
+
+/* 弹跳型水母的活力点 */
+.jelly-energy-dots {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.energy-dot {
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  animation: energyPulse 1.5s ease-in-out infinite;
+}
+
+.energy-dot-1 { animation-delay: 0s; }
+.energy-dot-2 { animation-delay: 0.3s; }
+.energy-dot-3 { animation-delay: 0.6s; }
+
 /* 装饰性粒子效果 */
 .jelly-particles {
   position: absolute;
@@ -691,6 +543,60 @@ onMounted(() => {
   animation-delay: 2.6s;
 }
 
+/* 不同类型粒子的特殊效果 */
+.particle-gentle {
+  animation: particleFloat-gentle 5s ease-in-out infinite;
+}
+
+.particle-fresh {
+  animation: particleFloat-fresh 3.5s ease-in-out infinite;
+}
+
+/* 阳光型水母的光芒效果 */
+.jelly-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  pointer-events: none;
+}
+
+.sun-ray {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 40px;
+  transform-origin: bottom center;
+  animation: rayPulse 3s ease-in-out infinite;
+}
+
+/* 弹跳型水母的能量波 */
+.jelly-energy-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+}
+
+.energy-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  border: 2px solid;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  animation: energyWave 2s ease-out infinite;
+}
+
 @keyframes jellyPulse {
   0%, 100% {
     transform: scale(1);
@@ -710,6 +616,54 @@ onMounted(() => {
 @keyframes blushGlow {
   0%, 100% { opacity: 0.6; transform: scale(1); }
   50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes smileGlow {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+@keyframes haloRotate {
+  0% { transform: translateX(-50%) rotate(0deg) scale(1); opacity: 0.4; }
+  50% { transform: translateX(-50%) rotate(180deg) scale(1.1); opacity: 0.7; }
+  100% { transform: translateX(-50%) rotate(360deg) scale(1); opacity: 0.4; }
+}
+
+@keyframes energyPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+@keyframes rayPulse {
+  0%, 100% { opacity: 0.3; transform: rotate(var(--rotation, 0deg)) scaleY(1); }
+  50% { opacity: 0.8; transform: rotate(var(--rotation, 0deg)) scaleY(1.3); }
+}
+
+@keyframes energyWave {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@keyframes particleFloat-gentle {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-20px) scale(1);
+  }
+}
+
+@keyframes particleFloat-fresh {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(0.3) rotate(0deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-12px) scale(1.2) rotate(180deg);
+  }
 }
 
 @keyframes particleFloat {

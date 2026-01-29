@@ -58,30 +58,18 @@ export function useSound() {
     ensureAudioContextSync()
 
     try {
-      const oscillator = ctx.createOscillator()
-      const gainNode = ctx.createGain()
-
-      oscillator.connect(gainNode)
-      gainNode.connect(ctx.destination)
-
-      const now = ctx.currentTime
-
       switch (type) {
         case 'correct':
-          // 正确音效：上升的三声"叮叮叮"
-          playCorrectSound(ctx, oscillator, gainNode, now)
+          playCorrectSound()
           break
         case 'wrong':
-          // 错误音效：低沉的"嗡"声
-          playWrongSound(ctx, oscillator, gainNode, now)
+          playWrongSound()
           break
         case 'win':
-          // 胜利音效：欢快的音阶
-          playWinSound(ctx, oscillator, gainNode, now)
+          playWinSound()
           break
         case 'click':
-          // 点击音效：短促的"嗒"声
-          playClickSound(ctx, oscillator, gainNode, now)
+          playClickSound()
           break
         default:
           break
@@ -92,142 +80,118 @@ export function useSound() {
   }
 
   /**
-   * 正确音效
+   * 创建并播放音符的通用函数
+   * @param {number} frequency - 频率
+   * @param {number} duration - 持续时间
+   * @param {number} gain - 音量
+   * @param {string} type - 波形类型
+   * @param {number} delay - 延迟时间（毫秒）
    */
-  function playCorrectSound(ctx, oscillator, gainNode, now) {
+  async function playNote(frequency, duration, gain, type = 'sine', delay = 0) {
+    if (delay > 0) {
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
+
+    try {
+      await ensureAudioContextRunning()
+      const ctx = getAudioContext()
+      if (!ctx || ctx.state !== 'running') {
+        return // AudioContext 不可用，跳过播放
+      }
+
+      const osc = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+      osc.connect(gainNode)
+      gainNode.connect(ctx.destination)
+
+      const now = ctx.currentTime
+      osc.type = type
+      osc.frequency.setValueAtTime(frequency, now)
+      gainNode.gain.setValueAtTime(gain, now)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration)
+      osc.start(now)
+      osc.stop(now + duration)
+    } catch (error) {
+      console.error('音符播放失败:', error)
+    }
+  }
+
+  /**
+   * 正确音效 - 重构后的简化版本
+   */
+  function playCorrectSound() {
     const freq = AUDIO_FREQUENCIES.correct
     const params = AUDIO_PARAMS.correct
 
-    // 第一声
-    oscillator.frequency.setValueAtTime(freq.note1, now)
-    oscillator.frequency.setValueAtTime(freq.note2, now + 0.1)
-    oscillator.frequency.setValueAtTime(freq.note3, now + 0.2)
-    gainNode.gain.setValueAtTime(params.gain, now)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, now + params.envelope)
-    oscillator.start(now)
-    oscillator.stop(now + params.envelope)
-
-    // 第二声
-    setTimeout(async () => {
-      try
-      {
-        await ensureAudioContextRunning()
-
-        const ctx = getAudioContext()
-        if (!ctx || ctx.state !== 'running') {
-          return // AudioContext 不可用，跳过播放
-        }
-
-        const osc2 = ctx.createOscillator()
-        const gain2 = ctx.createGain()
-        osc2.connect(gain2)
-        gain2.connect(ctx.destination)
-        const t = ctx.currentTime
-        osc2.frequency.setValueAtTime(freq.note3, t)
-        osc2.frequency.setValueAtTime(freq.note4, t + 0.1)
-        gain2.gain.setValueAtTime(params.gain, t)
-        gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3)
-        osc2.start(t)
-        osc2.stop(t + 0.3)
-      } catch (error) {
-        console.error('正确音效第二声播放失败:', error)
-      }
-    }, params.delay1)
-
-    // 第三声
-    setTimeout(async () => {
-      try
-      {
-        await ensureAudioContextRunning()
-
-        const ctx = getAudioContext()
-        if (!ctx || ctx.state !== 'running') {
-          return // AudioContext 不可用，跳过播放
-        }
-
-        const osc3 = ctx.createOscillator()
-        const gain3 = ctx.createGain()
-        osc3.connect(gain3)
-        gain3.connect(ctx.destination)
-        const t = ctx.currentTime
-        osc3.frequency.setValueAtTime(freq.note5, t)
-        osc3.type = 'sine'
-        gain3.gain.setValueAtTime(params.gain, t)
-        gain3.gain.exponentialRampToValueAtTime(0.01, t + params.envelope)
-        osc3.start(t)
-        osc3.stop(t + params.envelope)
-      } catch (error) {
-        console.error('正确音效第三声播放失败:', error)
-      }
-    }, params.delay2)
+    // 播放三个音符序列
+    playNote(freq.note1, 0.1, params.gain)
+    playNote(freq.note2, 0.1, params.gain, 'sine', 100)
+    playNote(freq.note3, 0.2, params.gain, 'sine', 150)
+    playNote(freq.note4, 0.1, params.gain, 'sine', params.delay1)
+    playNote(freq.note5, params.envelope, params.gain, 'sine', params.delay2)
   }
 
   /**
-   * 错误音效
+   * 胜利音效 - 重构后的简化版本
    */
-  function playWrongSound(ctx, oscillator, gainNode, now) {
-    const freq = AUDIO_FREQUENCIES.wrong
-    const params = AUDIO_PARAMS.wrong
-
-    oscillator.type = 'sawtooth'
-    oscillator.frequency.setValueAtTime(freq.start, now)
-    oscillator.frequency.linearRampToValueAtTime(freq.end, now + params.duration)
-    gainNode.gain.setValueAtTime(params.gain, now)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, now + params.duration)
-    oscillator.start(now)
-    oscillator.stop(now + params.duration)
-  }
-
-  /**
-   * 胜利音效
-   */
-  function playWinSound(ctx, _oscillator, _gainNode, _now) {
+  function playWinSound() {
     const freq = AUDIO_FREQUENCIES.correct
     const params = AUDIO_PARAMS.win
     const notes = [freq.note1, freq.note2, freq.note3, freq.note5]
 
     notes.forEach((noteFreq, index) => {
-      setTimeout(async () => {
-        try
-        {
-          await ensureAudioContextRunning()
-
-          const ctx = getAudioContext()
-          if (!ctx || ctx.state !== 'running') {
-            return // AudioContext 不可用，跳过播放
-          }
-
-          const osc = ctx.createOscillator()
-          const gain = ctx.createGain()
-          osc.connect(gain)
-          gain.connect(ctx.destination)
-          const t = ctx.currentTime
-          osc.frequency.setValueAtTime(noteFreq, t)
-          osc.type = 'sine'
-          gain.gain.setValueAtTime(params.gain, t)
-          gain.gain.exponentialRampToValueAtTime(0.01, t + params.noteDuration)
-          osc.start(t)
-          osc.stop(t + params.noteDuration)
-        } catch (error) {
-          console.error(`胜利音效第 ${index + 1} 声播放失败:`, error)
-        }
-      }, index * params.noteDuration * 1000)
+      playNote(noteFreq, params.noteDuration, params.gain, 'sine', index * params.noteDuration * 1000)
     })
   }
 
   /**
-   * 点击音效
+   * 错误音效 - 重构后的简化版本
    */
-  function playClickSound(ctx, oscillator, gainNode, now) {
+  function playWrongSound() {
+    const freq = AUDIO_FREQUENCIES.wrong
+    const params = AUDIO_PARAMS.wrong
+
+    // 使用 playNote 但需要特殊处理频率变化
+    playNoteWithFrequencyRamp(freq.start, freq.end, params.duration, params.gain, 'sawtooth')
+  }
+
+  /**
+   * 点击音效 - 重构后的简化版本
+   */
+  function playClickSound() {
     const freq = AUDIO_FREQUENCIES.click
     const params = AUDIO_PARAMS.click
 
-    oscillator.type = 'sine'
-    oscillator.frequency.setValueAtTime(freq, now)
-    gainNode.gain.setValueAtTime(params.gain, now)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, now + params.duration)
-    oscillator.start(now)
-    oscillator.stop(now + params.duration)
+    playNote(freq, params.duration, params.gain, 'sine')
+  }
+
+  /**
+   * 播放带频率变化的音符
+   */
+  async function playNoteWithFrequencyRamp(startFreq, endFreq, duration, gain, type = 'sine') {
+    try {
+      await ensureAudioContextRunning()
+      const ctx = getAudioContext()
+      if (!ctx || ctx.state !== 'running') {
+        return
+      }
+
+      const osc = ctx.createOscillator()
+      const gainNode = ctx.createGain()
+      osc.connect(gainNode)
+      gainNode.connect(ctx.destination)
+
+      const now = ctx.currentTime
+      osc.type = type
+      osc.frequency.setValueAtTime(startFreq, now)
+      osc.frequency.linearRampToValueAtTime(endFreq, now + duration)
+      gainNode.gain.setValueAtTime(gain, now)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration)
+      osc.start(now)
+      osc.stop(now + duration)
+    } catch (error) {
+      console.error('频率变化音符播放失败:', error)
+    }
   }
 
   return {

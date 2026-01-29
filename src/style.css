@@ -328,42 +328,42 @@
   .btn-clay-primary {
     @apply relative font-bold rounded-full transition-all duration-200;
     @apply bg-gradient-to-b from-macaron-primary to-macaron-primary-dark;
-    @apply text-white shadow-clay;
+    @apply text-white shadow-child-button;
     @apply border-0;
-    @apply hover:shadow-clay-hover hover:-translate-y-0.5;
-    @apply active:shadow-clay-active active:translate-y-0.5;
+    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
+    @apply active:shadow-child-button-active active:translate-y-0.5;
   }
 
   /* 次要按钮 */
   .btn-clay-secondary {
     @apply relative font-bold rounded-full transition-all duration-200;
     @apply bg-white text-macaron-blue-dark;
-    @apply shadow-clay border-2 border-macaron-blue/20;
-    @apply hover:shadow-clay-hover hover:-translate-y-0.5;
-    @apply active:shadow-clay-active active:translate-y-0.5;
+    @apply shadow-child-button border-2 border-macaron-blue/20;
+    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
+    @apply active:shadow-child-button-active active:translate-y-0.5;
   }
 
   /* 成功按钮 */
   .btn-clay-success {
     @apply relative font-bold rounded-full transition-all duration-200;
     @apply bg-gradient-to-b from-macaron-mint to-macaron-mint-dark;
-    @apply text-white shadow-clay;
-    @apply hover:shadow-clay-hover hover:-translate-y-0.5;
-    @apply active:shadow-clay-active active:translate-y-0.5;
+    @apply text-white shadow-child-button;
+    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
+    @apply active:shadow-child-button-active active:translate-y-0.5;
   }
 
   /* 卡片 - 软3D风格 */
   .card-clay {
     @apply bg-white rounded-cute-xl;
-    @apply shadow-clay;
+    @apply shadow-child-medium;
     @apply border-2 border-white/50;
     @apply transition-all duration-300;
-    @apply hover:shadow-clay-hover hover:-translate-y-1;
+    @apply hover:shadow-child-large hover:-translate-y-1;
   }
 
   /* 卡片激活状态 */
   .card-clay-active {
-    @apply shadow-clay-active translate-y-0.5;
+    @apply shadow-child-soft translate-y-0.5;
   }
 
   /* 玻璃拟态卡片 */
@@ -383,23 +383,23 @@
   /* 数据展示卡片 */
   .stat-card-clay {
     @apply bg-white rounded-cute-lg p-4;
-    @apply shadow-clay;
+    @apply shadow-child-medium;
     @apply border-2 border-transparent;
     @apply transition-all duration-300;
-    @apply hover:shadow-clay-hover hover:-translate-y-0.5;
+    @apply hover:shadow-child-large hover:-translate-y-0.5;
   }
 
   /* 图标包装器 - 软3D */
   .icon-clay {
     @apply flex items-center justify-center rounded-cute-lg;
-    @apply shadow-clay;
+    @apply shadow-child-medium;
     @apply transition-all duration-200;
   }
 
   /* 进度条 - 渐变填充 */
   .progress-clay {
     @apply h-3 bg-gray-100 rounded-full overflow-hidden;
-    @apply shadow-clay-inset;
+    @apply shadow-child-soft;
   }
 
   .progress-clay-fill {
@@ -411,9 +411,9 @@
   /* 输入框 - 软3D凹陷 */
   .input-clay {
     @apply rounded-cute-lg px-4 py-3;
-    @apply bg-gray-50 shadow-clay-inset;
+    @apply bg-gray-50 shadow-child-soft;
     @apply border-2 border-transparent;
-    @apply focus:outline-none focus:border-macaron-blue/30 focus:shadow-clay;
+    @apply focus:outline-none focus:border-macaron-blue/30 focus:shadow-child-medium;
     @apply transition-all duration-200;
   }
 
@@ -567,13 +567,13 @@
 
   /* 统一的卡片样式 */
   .card {
-    @apply bg-white rounded-cute-xl shadow-card;
+    @apply bg-white rounded-cute-xl shadow-child-medium;
     @apply border-2 border-peppa-blue/20;
   }
 
   /* 统一的数据卡片样式 */
   .stat-card {
-    @apply bg-white rounded-cute-lg shadow-card p-4 text-center;
+    @apply bg-white rounded-cute-lg shadow-child-medium p-4 text-center;
     @apply border-2;
   }
 
@@ -704,7 +704,7 @@
   /* 进度指示器 - Progress Indicators */
   .progress-child {
     @apply h-4 bg-gray-100 rounded-full overflow-hidden;
-    @apply shadow-clay-inset border border-gray-200;
+    @apply shadow-child-soft border border-gray-200;
   }
 
   .progress-child-fill {
