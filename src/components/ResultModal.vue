@@ -43,10 +43,10 @@ function handleHome() {
           <!-- 头部 -->
           <div class="modal-header">
             <div class="trophy-wrapper">
-              <Trophy :size="44" class="trophy-icon" />
+              <Trophy :size="40" class="trophy-icon" />
             </div>
-            <h2 class="modal-title text-child-2xl">挑战完成！</h2>
-            <div v-if="isNewBest" class="new-record-badge text-child-sm">
+            <h2 class="modal-title text-child-xl">挑战完成！</h2>
+            <div v-if="isNewBest" class="new-record-badge text-child-xs">
               新纪录
             </div>
           </div>
@@ -55,7 +55,7 @@ function handleHome() {
           <div class="stats-grid">
             <div class="stat-card score-card">
               <div class="stat-icon">
-                <Target :size="24" />
+                <Target :size="22" />
               </div>
               <span class="stat-label text-child-xs">得分</span>
               <span class="stat-value text-child-lg">{{ result.score }}</span>
@@ -137,36 +137,13 @@ function handleHome() {
   width: 72px;
   height: 72px;
   border-radius: 20px;
-  background: linear-gradient(135deg, var(--game-warning) 0%, var(--game-warning-dark) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  box-shadow: 0 6px 16px rgba(234, 179, 8, 0.35);
-}
-
-.trophy-icon {
-  color: white;
-}
-
-.modal-title {
-  font-weight: 800;
-  color: var(--game-text);
-  margin-bottom: 8px;
-}
-
-/* 新纪录徽章 */
-.new-record-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(135deg, var(--game-accent) 0%, var(--game-accent-dark) 100%);
+background: linear-gradient(135deg, var(--game-warning) 0%, var(--game-warning-dark) 100%);
   color: white;
   padding: 6px 14px;
   border-radius: 20px;
   font-weight: 700;
   font-size: 18px;
-  box-shadow: 0 3px 0 0 #7C2D12;
+  box-shadow: 0 3px 0 0 var(--game-warning-dark);
 }
 
 /* 数据网格 */
@@ -265,17 +242,17 @@ function handleHome() {
 .btn-retry {
   background: linear-gradient(135deg, var(--game-success) 0%, var(--game-success-dark) 100%);
   color: white;
-  box-shadow: 0 3px 0 0 #14532D;
+  box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.3);
 }
 
 .btn-retry:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 0 0 #14532D;
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.3);
 }
 
 .btn-retry:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 0 #14532D;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.3);
 }
 
 .btn-home {

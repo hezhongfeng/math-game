@@ -36,10 +36,10 @@ onMounted(() => {
       <!-- 标题区 -->
       <div class="header animate-fade-in-up">
         <div class="title-icon">
-          <Calculator :size="44" />
+          <Calculator :size="48" />
         </div>
-        <h1 class="title text-child-3xl md:text-child-4xl">数学挑战</h1>
-        <p class="subtitle text-child-base">训练思维，挑战自我</p>
+        <h1 class="title text-child-3xl">数学挑战</h1>
+        <p class="subtitle text-child-lg">训练思维，挑战自我</p>
       </div>
 
       <!-- 统计卡片 -->
@@ -49,7 +49,7 @@ onMounted(() => {
           style="animation-delay: 100ms"
         >
           <div class="stat-icon-wrapper icon-primary">
-            <Trophy :size="28" class="stat-icon" />
+            <Trophy :size="24" class="stat-icon" />
           </div>
           <p class="stat-value text-child-2xl">{{ completedCount }}</p>
           <p class="stat-label text-child-sm">已完成</p>
@@ -60,7 +60,7 @@ onMounted(() => {
           style="animation-delay: 200ms"
         >
           <div class="stat-icon-wrapper icon-secondary">
-            <Star :size="28" class="stat-icon" />
+            <Star :size="24" class="stat-icon" />
           </div>
           <p class="stat-value text-child-2xl">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
           <p class="stat-label text-child-sm">总关卡</p>
@@ -76,6 +76,15 @@ onMounted(() => {
         >
           <Play :size="24" />
           <span>开始挑战</span>
+        </button>
+
+        <button
+          class="btn-secondary animate-button-entrance text-child-base"
+          style="animation-delay: 400ms"
+          @click="viewAchievements"
+        >
+          <Trophy :size="24" />
+          <span>查看成就</span>
         </button>
 
         <button
@@ -153,7 +162,7 @@ onMounted(() => {
 
 /* 统计卡片 */
 .stat-card {
-  background: #ffffff;
+  background: var(--game-bg-light);
   border-radius: 20px;
   padding: 20px 16px;
   text-align: center;
@@ -177,7 +186,7 @@ onMounted(() => {
 .stat-icon-wrapper {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,22 +249,22 @@ onMounted(() => {
   color: white;
   border: none;
   box-shadow:
-    0 4px 0 0 #312E81,
-    0 6px 12px rgba(79, 70, 229, 0.4);
+    0 4px 0 0 rgba(0, 0, 0, 0.3),
+    0 6px 12px rgba(255, 87, 87, 0.4);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow:
-    0 5px 0 0 #312E81,
-    0 8px 16px rgba(79, 70, 229, 0.5);
+    0 5px 0 0 rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(255, 87, 87, 0.5);
 }
 
 .btn-primary:active {
   transform: translateY(2px) scale(0.98);
   box-shadow:
-    0 2px 0 0 #312E81,
-    0 3px 6px rgba(79, 70, 229, 0.4);
+    0 2px 0 0 rgba(0, 0, 0, 0.3),
+    0 3px 6px rgba(255, 87, 87, 0.4);
 }
 
 /* 次按钮 - 白色 */
@@ -272,7 +281,7 @@ onMounted(() => {
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  background: #ffffff;
+  background: var(--game-bg-light);
   color: var(--game-primary-dark);
   border: 2px solid var(--game-border);
   box-shadow:

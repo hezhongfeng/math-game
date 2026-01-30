@@ -62,20 +62,20 @@ const formatTime = computed(() => {
     <div class="stats-row">
       <div class="stat-item">
         <div class="stat-icon score-icon">
-          <Star :size="18" />
+          <Star :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value text-child-xl">{{ score }}</span>
+          <span class="stat-value text-child-lg">{{ score }}</span>
           <span class="stat-label text-child-sm">得分</span>
         </div>
       </div>
 
       <div class="stat-item">
         <div class="stat-icon correct-icon">
-          <CheckCircle :size="18" />
+          <CheckCircle :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value text-child-xl">{{ correctCount }}</span>
+          <span class="stat-value text-child-lg">{{ correctCount }}</span>
           <span class="stat-label text-child-sm">正确</span>
         </div>
       </div>
@@ -85,20 +85,20 @@ const formatTime = computed(() => {
     <div class="stats-row">
       <div class="stat-item">
         <div class="stat-icon time-icon">
-          <Clock :size="18" />
+          <Clock :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value text-child-xl">{{ formatTime }}</span>
+          <span class="stat-value text-child-lg">{{ formatTime }}</span>
           <span class="stat-label text-child-sm">用时</span>
         </div>
       </div>
 
       <div class="stat-item">
         <div class="stat-icon accuracy-icon">
-          <TrendingUp :size="18" />
+          <TrendingUp :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value text-child-xl">{{ Number(accuracy) || 0 }}%</span>
+          <span class="stat-value text-child-lg">{{ Number(accuracy) || 0 }}%</span>
           <span class="stat-label text-child-sm">正确率</span>
         </div>
       </div>
@@ -174,9 +174,9 @@ const formatTime = computed(() => {
 }
 
 .stat-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

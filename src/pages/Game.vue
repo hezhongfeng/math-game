@@ -156,17 +156,20 @@ function handleDelete() {
   userAnswer.value = userAnswer.value.slice(0, -1)
 }
 
-// 点击错误反馈关闭
-function handleWrongFeedbackClick() {
-  showAnswer.value = false
-  isWaiting.value = false
-  if (game.currentIndex.value >= game.questions.value.length - 1) {
-    handleGameComplete()
-  } else {
-    questionKey.value++
-    userAnswer.value = ''
-    game.nextQuestion()
-    startQuestionTimer() // 重置题目计时器
+// 点击反馈遮罩处理
+function handleFeedbackClick() {
+  // 只有错误答题时才允许点击关闭，正确答题由自动延迟处理
+  if (!isCorrect.value) {
+    showAnswer.value = false
+    isWaiting.value = false
+    if (game.currentIndex.value >= game.questions.value.length - 1) {
+      handleGameComplete()
+    } else {
+      questionKey.value++
+      userAnswer.value = ''
+      game.nextQuestion()
+      startQuestionTimer() // 重置题目计时器
+    }
   }
 }
 
@@ -240,7 +243,7 @@ onUnmounted(() => {
     <!-- 顶部导航 -->
     <header class="header">
       <button class="nav-btn" @click="goBack">
-        <ArrowLeft :size="20" />
+        <ArrowLeft :size="22" />
       </button>
 
       <div class="title-group">
@@ -249,13 +252,13 @@ onUnmounted(() => {
       </div>
 
       <button class="nav-btn nav-btn-accent" @click="handleRetry" title="重新开始">
-        <RotateCcw :size="18" />
+        <RotateCcw :size="20" />
       </button>
     </header>
 
     <!-- 题目卡片区 -->
     <main class="main">
-      <Transition name="question" mode="out-in">
+      <Transition name="question">
         <QuestionCard
           v-if="game.currentQuestion.value"
           :key="questionKey"
@@ -271,12 +274,12 @@ onUnmounted(() => {
 
       <!-- 答题反馈遮罩 -->
       <Transition name="feedback">
-        <div v-if="shouldShowFeedback" class="feedback-container" @click="handleWrongFeedbackClick">
+        <div v-if="shouldShowFeedback" class="feedback-container" @click="handleFeedbackClick">
           <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
             <div v-if="isCorrect" class="success-circle">
               <Check :size="40" />
             </div>
-            <div v-else-if="isIncorrect" class="answer-number text-child-4xl">{{ currentQuestion.answer }}</div>
+            <div v-else-if="isIncorrect" class="answer-number text-child-3xl">{{ currentQuestion.answer }}</div>
             <div v-if="isIncorrect" class="hint-text text-child-sm">点击继续</div>
           </div>
         </div>
@@ -371,8 +374,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   background: var(--game-bg-light);
   color: var(--game-text-secondary);
@@ -418,34 +421,14 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 题目切换 */
-.question-leave-active {
-  transition: all 0.3s ease;
+/* 题目切换 - 从下方快速滚入 */
+.question-enter-active {
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(20px);
-}
-
-.question-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-.question-enter-active {
-  animation: questionSlide 0.4s ease-out;
-}
-
-@keyframes questionSlide {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  transform: translateY(50px) scale(0.95);
 }
 
 /* 反馈容器 */
@@ -477,7 +460,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: 14px;
   z-index: 9999;
-  background: #ffffff;
+  background: var(--game-bg-light);
   border-radius: 24px;
   padding: 28px 24px;
   box-shadow:
@@ -496,32 +479,32 @@ onUnmounted(() => {
 
 /* 成功圆圈 */
 .success-circle {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--game-success) 0%, var(--game-success-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: circlePop 0.5s ease-out;
+  animation: circlePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow:
-    0 4px 0 0 #14532D,
+    0 4px 0 0 rgba(0, 0, 0, 0.3),
     0 8px 20px rgba(34, 197, 94, 0.4);
 }
 
 .success-circle svg {
   color: white;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 @keyframes circlePop {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.5);
     opacity: 0;
   }
-  50% {
-    transform: scale(1.05);
+  60% {
+    transform: scale(1.1);
   }
   100% {
     transform: scale(1);
@@ -546,13 +529,13 @@ onUnmounted(() => {
   border-radius: 16px;
 }
 
-/* 反馈过渡 */
+/* 反馈过渡 - 流畅衔接 */
 .feedback-enter-active .feedback-container {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease-out;
 }
 
 .feedback-leave-active .feedback-container {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease-out;
 }
 
 .feedback-enter-from .feedback-container {
@@ -564,11 +547,11 @@ onUnmounted(() => {
 }
 
 .feedback-enter-active .feedback-overlay {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .feedback-leave-active .feedback-overlay {
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-out;
 }
 
 .feedback-enter-from .feedback-overlay {
@@ -578,6 +561,6 @@ onUnmounted(() => {
 
 .feedback-leave-to .feedback-overlay {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.95);
 }
 </style>

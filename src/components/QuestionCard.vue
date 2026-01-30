@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { Clock } from 'lucide-vue-next'
-import NumberCard from './NumberCard.vue'
 
 const props = defineProps({
   question: {
@@ -41,16 +40,8 @@ const formattedTime = computed(() => {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 })
 
-// 答案卡片的状态
-const answerCardState = computed(() => {
-  if (!props.userAnswer) {
-    return 'placeholder'
-  }
-  return 'default'
-})
-
-// 答案卡片的值
-const answerCardValue = computed(() => {
+// 答案显示
+const answerDisplay = computed(() => {
   if (shouldShowFeedback.value) {
     return isCorrect.value ? props.question.answer : props.userAnswer
   }
@@ -60,40 +51,28 @@ const answerCardValue = computed(() => {
 
 <template>
   <div class="question-card" :class="{ 'success': isCorrect, 'error': isIncorrect }">
-    <!-- 顶部信息栏 -->
-    <div class="header-bar">
-      <div class="question-indicator">
-        <span class="current-index text-child-base">第 {{ currentIndex + 1 }} 题</span>
-        <span class="total-count text-child-sm">/ 共 {{ totalQuestions }} 题</span>
-      </div>
-      <div class="timer">
-        <Clock :size="18" class="timer-icon" />
-        <span class="timer-value text-child-sm">{{ formattedTime }}</span>
+    <!-- 简洁顶部栏 -->
+    <div class="card-header">
+      <span class="question-counter">{{ currentIndex + 1 }} / {{ totalQuestions }}</span>
+      <div class="timer-badge">
+        <Clock :size="14" />
+        <span>{{ formattedTime }}</span>
       </div>
     </div>
 
-    <!-- 算式与答案区域 -->
-    <div class="expression-section">
-      <div class="expression">
-        <NumberCard
-          :value="question.operand1"
-          size="normal"
-          state="default"
-        />
-        <span class="operator">{{ question.operator }}</span>
-        <NumberCard
-          :value="question.operand2"
-          size="normal"
-          state="default"
-        />
-        <span class="equals-operator">=</span>
-        <NumberCard
-          :value="answerCardValue"
-          size="large"
-          :state="answerCardState"
-          min-width="4ch"
-        />
-      </div>
+    <!-- 算式区域 -->
+    <div class="math-expression">
+      <span class="number">{{ question.operand1 }}</span>
+      <span class="operator">{{ question.operator }}</span>
+      <span class="number">{{ question.operand2 }}</span>
+      <span class="equals">=</span>
+      <span class="answer" :class="{ 
+        'placeholder': !userAnswer && !showAnswer,
+        'correct': isCorrect,
+        'wrong': isIncorrect 
+      }">
+        {{ answerDisplay }}
+      </span>
     </div>
   </div>
 </template>
@@ -101,148 +80,146 @@ const answerCardValue = computed(() => {
 <style scoped>
 .question-card {
   background: white;
-  border-radius: 24px;
-  padding: 18px 20px 14px;
+  border-radius: 20px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-width: 280px;
-  max-width: 95vw;
+  gap: 12px;
   width: 100%;
+  max-width: 400px;
   touch-action: manipulation;
-  transition: all 0.3s ease;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 成功反馈 */
+/* 成功反馈 - 仅样式，无动画 */
 .success {
-  animation: successPulse 0.4s ease-out;
   border: 2px solid var(--game-success);
-  box-shadow:
-    0 0 16px rgba(34, 197, 94, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 错误反馈 */
+/* 错误反馈 - 仅样式，无动画 */
 .error {
-  animation: errorShake 0.4s ease-out;
   border: 2px solid var(--game-accent);
-  box-shadow:
-    0 0 16px rgba(249, 115, 22, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-@keyframes successPulse {
-  0% { transform: scale(0.98); }
-  50% { transform: scale(1.01); }
-  100% { transform: scale(1); }
-}
-
-@keyframes errorShake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-2px); }
-  80% { transform: translateX(2px); }
-}
-
-/* 顶部信息栏 */
-.header-bar {
+/* 顶部栏 */
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--game-border);
 }
 
-.question-indicator {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.current-index {
+.question-counter {
+  font-size: 18px;
   font-weight: 700;
-  color: var(--game-text);
-}
-
-.total-count {
   color: var(--game-text-secondary);
-  font-weight: 500;
 }
 
-/* 计时器 */
-.timer {
+.timer-badge {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 10px;
-  background: var(--game-bg-light);
-  border-radius: 12px;
-}
-
-.timer-icon {
-  color: var(--game-text-secondary);
-}
-
-.timer-value {
+  padding: 4px 10px;
+  background: var(--game-bg);
+  border-radius: 20px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--game-text-secondary);
-  font-variant-numeric: tabular-nums;
 }
 
-/* 算式与答案区域 */
-.expression-section {
-  display: flex;
-  justify-content: center;
-  padding: 12px 0;
-}
-
-.expression {
+/* 算式区域 */
+.math-expression {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.number {
+  font-family: 'Alimama ShuHeiTi', 'Noto Sans SC', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--game-text);
+  line-height: 1;
 }
 
 .operator {
-  font-size: 2.8rem;
+  font-size: 36px;
   font-weight: 700;
-  color: var(--game-primary-dark);
+  color: var(--game-primary);
   line-height: 1;
-  user-select: none;
 }
 
-.equals-operator {
-  font-size: 2.8rem;
+.equals {
+  font-size: 36px;
   font-weight: 700;
-  color: var(--game-success-dark);
+  color: var(--game-success);
   line-height: 1;
-  user-select: none;
 }
 
-/* 响应式设计 */
+.answer {
+  font-family: 'Alimama ShuHeiTi', 'Noto Sans SC', sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--game-text);
+  line-height: 1;
+  min-width: 60px;
+  text-align: center;
+  padding: 8px 12px;
+  background: var(--game-bg);
+  border-radius: 12px;
+  border: 2px solid var(--game-border);
+}
+
+.answer.placeholder {
+  color: var(--game-text-muted);
+  background: transparent;
+  border-style: dashed;
+}
+
+.answer.correct {
+  color: var(--game-success);
+  border-color: var(--game-success);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.answer.wrong {
+  color: var(--game-accent);
+  border-color: var(--game-accent);
+  background: rgba(249, 115, 22, 0.1);
+}
+
+/* 响应式 */
 @media (min-width: 768px) {
   .question-card {
-    padding: 24px 28px 18px;
-    gap: 18px;
-    min-width: 360px;
+    padding: 20px 24px;
+    gap: 16px;
+    max-width: 480px;
   }
 
-  .operator {
-    font-size: 3.2rem;
+  .number {
+    font-size: 48px;
   }
 
-  .equals-operator {
-    font-size: 3.2rem;
+  .operator,
+  .equals {
+    font-size: 44px;
   }
 
-  .expression {
-    gap: 20px;
+  .answer {
+    font-size: 52px;
+    min-width: 70px;
+    padding: 10px 16px;
+  }
+
+  .question-counter {
+    font-size: 20px;
+  }
+
+  .timer-badge {
+    font-size: 16px;
   }
 }
 </style>

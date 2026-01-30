@@ -146,6 +146,22 @@ function handleSubmit() {
   background: linear-gradient(135deg, var(--game-error) 0%, var(--game-error-dark) 100%);
   color: white;
   border: 2px solid rgba(239, 68, 68, 0.3);
+  box-shadow:
+    0 3px 0 0 rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.numpad-btn-delete:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--game-error-light) 0%, var(--game-error) 100%);
+  box-shadow:
+    0 4px 0 0 rgba(0, 0, 0, 0.3),
+    0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.numpad-btn-delete:active:not(:disabled) {
+  box-shadow:
+    0 1px 0 0 rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .numpad-btn-delete:hover:not(:disabled) {
@@ -161,20 +177,20 @@ function handleSubmit() {
   color: white;
   border: 2px solid rgba(34, 197, 94, 0.3);
   box-shadow:
-    0 3px 0 0 #14532D,
+    0 3px 0 0 rgba(0, 0, 0, 0.3),
     0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .numpad-btn-confirm:hover:not(:disabled) {
   background: linear-gradient(135deg, var(--game-success-light) 0%, var(--game-success) 100%);
   box-shadow:
-    0 4px 0 0 #14532D,
+    0 4px 0 0 rgba(0, 0, 0, 0.3),
     0 8px 20px rgba(34, 197, 94, 0.4);
 }
 
 .numpad-btn-confirm:active:not(:disabled) {
   box-shadow:
-    0 1px 0 0 #14532D,
+    0 1px 0 0 rgba(0, 0, 0, 0.3),
     0 2px 8px rgba(34, 197, 94, 0.3);
 }
 

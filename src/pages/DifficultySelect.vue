@@ -8,11 +8,14 @@ import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
 
 const router = useRouter()
-const { getBestScore, getCompletedDifficulties, completedCount } = useStorage()
+const { getBestScore, getCompletedDifficulties } = useStorage()
 const { playSound } = useSound()
 
 // 使用 ref 存储完成状态，确保响应式更新
 const completedDifficulties = ref(getCompletedDifficulties())
+
+// 计算完成的关卡数量（响应式）
+const completedCount = computed(() => completedDifficulties.value.length)
 
 function goBack() {
   playSound('click')
@@ -59,7 +62,7 @@ onMounted(() => {
   <div class="page">
     <!-- 顶部导航 -->
     <header class="header">
-      <button class="btn-back text-child-xs" @click="goBack">
+      <button class="btn-back text-child-sm" @click="goBack">
         <ArrowLeft :size="20" />
         <span>返回</span>
       </button>
@@ -69,20 +72,28 @@ onMounted(() => {
       <!-- 进度徽章 -->
       <div class="progress-badge">
         <div class="progress-ring">
-          <svg viewBox="0 0 36 36">
-            <path
+          <svg class="progress-svg" viewBox="0 0 44 44">
+            <!-- 背景圆环 -->
+            <circle
               class="progress-ring-bg"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              cx="22"
+              cy="22"
+              r="18"
+              fill="none"
             />
-            <path
+            <!-- 进度圆环 -->
+            <circle
               class="progress-ring-fill"
-              :stroke-dasharray="`${(completedCount / (DIFFICULTY_GROUPS.length * 3)) * 100}, 100`"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              cx="22"
+              cy="22"
+              r="18"
+              fill="none"
+              :stroke-dasharray="`${113}, 113`"
+              :stroke-dashoffset="`${113 - (completedCount / (DIFFICULTY_GROUPS.length * 3)) * 113}`"
             />
           </svg>
-          <div class="progress-text">
-            <Trophy :size="12" />
-            <span>{{ completedCount }}</span>
+          <div class="progress-icon-center">
+            <Trophy :size="22" />
           </div>
         </div>
       </div>
@@ -163,6 +174,7 @@ onMounted(() => {
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 80px;
 }
 
 .btn-back:hover {
@@ -178,59 +190,57 @@ onMounted(() => {
   font-weight: 700;
   color: var(--game-text);
   letter-spacing: 1px;
+  text-align: center;
+  flex: 1;
 }
 
-/* 进度环徽章 */
+/* 进度徽章 - 环形设计 */
 .progress-badge {
   position: relative;
+  min-width: 80px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .progress-ring {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   position: relative;
-  background: white;
-  border-radius: 50%;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 4px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.progress-ring svg {
-  transform: rotate(-90deg);
+.progress-svg {
   width: 100%;
   height: 100%;
+  transform: rotate(-90deg);
 }
 
 .progress-ring-bg {
-  fill: none;
   stroke: var(--game-border);
-  stroke-width: 3;
+  stroke-width: 4;
 }
 
 .progress-ring-fill {
-  fill: none;
-  stroke: var(--game-primary-dark);
-  stroke-width: 3;
+  stroke: var(--game-success);
+  stroke-width: 4;
   stroke-linecap: round;
-  transition: stroke-dasharray 0.5s ease;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.progress-text {
+.progress-icon-center {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--game-primary-dark);
+  color: var(--game-warning-dark);
 }
 
-.progress-text svg {
-  color: var(--game-accent);
-  margin-bottom: -2px;
+.progress-icon-center svg {
+  width: 20px;
+  height: 20px;
 }
 
 .main-content {

@@ -10,9 +10,9 @@
     --card-foreground: 240 25% 15%;
 
     /* ============================================
-       移动端儿童数学游戏配色 - 温暖珊瑚+清新薄荷
+       数学游戏统一配色系统 - 珊瑚红主题
        ============================================ */
-    /* 主色 - 活力珊瑚红（温暖、高能量） */
+    /* 主色 - 活力珊瑚红 */
     --game-primary: #FF5757;
     --game-primary-light: #FF7A7A;
     --game-primary-lighter: #FFB3B3;
@@ -48,96 +48,17 @@
     --game-error-lighter: #FECACA;
     --game-error-dark: #EF4444;
 
-    /* 中性色 - 高对比度移动端优化 */
-    --game-bg: #FFFBF7;         /* 奶油白背景 */
+    /* 中性色 */
+    --game-bg: #FFFBF7;
     --game-bg-light: #FFFFFF;
     --game-bg-dark: #FFF0E6;
     --game-bg-cream: #FFFBF7;
     --game-card: #FFFFFF;
-    --game-text: #1A1A2E;       /* 深墨蓝，户外可读 */
+    --game-text: #1A1A2E;
     --game-text-secondary: #4A5568;
     --game-text-muted: #718096;
     --game-border: #E2E8F0;
     --game-border-focus: #FF5757;
-
-    /* 原有主题色变量（向后兼容） */
-    --peppa-blue: #4A90E2;
-    --peppa-blue-light: #7AB8FF;
-    --peppa-blue-dark: #2A70C2;
-    --peppa-cyan: #26C6DA;
-    --peppa-green: #4CAF50;
-    --peppa-yellow: #FFD54F;
-    --peppa-orange: #FF9800;
-    --peppa-purple: #AB47BC;
-    --peppa-red: #EF5350;
-
-    /* 马卡龙色系变量 */
-    --macaron-primary: #FF8A80;
-    --macaron-primary-light: #FFAB91;
-    --macaron-blue: #4FC3F7;
-    --macaron-mint: #80CBC4;
-    --macaron-cream: #FFF176;
-    --macaron-lavender: #CE93D8;
-    --macaron-peach: #FFAB91;
-
-    /* 糖果工坊色系 - Claymorphism 新设计系统 */
-    --candy-berry: #FF8FA3;
-    --candy-berry-light: #FFB3C1;
-    --candy-berry-dark: #E85A70;
-    --candy-mint: #98FF98;
-    --candy-mint-light: #B8FFB8;
-    --candy-mint-dark: #6BCB77;
-    --candy-sky: #4FC3F7;
-    --candy-sky-light: #81D4FA;
-    --candy-sky-dark: #29B6F6;
-    --candy-lemon: #FFE66D;
-    --candy-lemon-light: #FFF5A0;
-    --candy-lemon-dark: #FFD93D;
-    --candy-lavender: #CE93D8;
-    --candy-lavender-light: #E1BEE7;
-    --candy-lavender-dark: #AB47BC;
-    --candy-cream: #FFFBF5;
-    --candy-choco: #5D4E37;
-
-    /* ============================================
-       低龄儿童友好配色 - 温暖、柔和、亲切
-       ============================================ */
-    /* 主色 - 温暖桃色 */
-    --toddler-primary: #F9A8D4;
-    --toddler-primary-light: #FBB8DC;
-    --toddler-primary-lighter: #FCD5E4;
-    --toddler-primary-dark: #F472B6;
-
-    /* 辅助色 - 清新薄荷绿 */
-    --toddler-accent: #6EE7B7;
-    --toddler-accent-light: #86EFAC;
-    --toddler-accent-lighter: #BBF7D0;
-    --toddler-accent-dark: #10B981;
-
-    /* 成功 - 薄荷绿 */
-    --toddler-success: #10B981;
-    --toddler-success-light: #6EE7B7;
-    --toddler-success-dark: #059669;
-
-    /* 警告 - 柔和黄色 */
-    --toddler-warning: #FDE68A;
-    --toddler-warning-light: #FEF9C3;
-    --toddler-warning-dark: #FCD34D;
-
-    /* 错误 - 柔和红色 */
-    --toddler-error: #FCA5A5;
-    --toddler-error-light: #FECACA;
-    --toddler-error-dark: #F87171;
-
-    /* 中性色 */
-    --toddler-bg: #FFF7ED;
-    --toddler-bg-light: #FFFBEB;
-    --toddler-bg-dark: #FEF3C7;
-    --toddler-card: #FFFFFF;
-    --toddler-text: #9D174D;
-    --toddler-text-secondary: #6B7280;
-    --toddler-text-muted: #9CA3AF;
-    --toddler-border: #FBCFE8;
   }
 
   * {
@@ -147,24 +68,20 @@
   }
 
   body {
-    font-family: 'Baloo 2', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
     background: linear-gradient(180deg, #FFFBF7 0%, #FFF0E6 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 基础字体大小 - 移动端更大 */
     font-size: 20px;
-    /* 移动端触摸优化 */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* 防止下拉刷新和过度滚动 */
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
 
   #app {
     min-height: 100vh;
-    /* Ensure app container handles mobile viewport properly */
     overflow-x: hidden;
   }
 }
@@ -173,7 +90,6 @@
    通用动画库
    ============================================ */
 
-/* 答案反馈动画 */
 @keyframes answerPop {
   0% { transform: scale(0.5); opacity: 0; }
   50% { transform: scale(1.2); }
@@ -186,52 +102,16 @@
   20%, 40%, 60%, 80% { transform: translateX(8px); }
 }
 
-/* 庆祝粒子动画 */
 @keyframes confetti-fall {
-  0% {
-    transform: translateY(-10px) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-@keyframes confetti-float {
-  0%, 100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateX(10px) translateY(-10px) rotate(90deg);
-  }
-  50% {
-    transform: translateX(0) translateY(-20px) rotate(180deg);
-  }
-  75% {
-    transform: translateX(-10px) translateY(-10px) rotate(270deg);
-  }
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
 }
 
-/* 脉冲光环动画 */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-/* 闪烁动画 */
-@keyframes twinkle {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
-
-/* 果冻弹跳动画 */
 @keyframes jelly {
   0%, 100% { transform: scale(1, 1); }
   25% { transform: scale(0.9, 1.1); }
@@ -239,82 +119,22 @@
   75% { transform: scale(0.95, 1.05); }
 }
 
-/* 漂浮动画 */
-@keyframes float-gentle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-}
-
-/* 旋转漂浮 */
-@keyframes float-rotate {
-  0% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(10deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-}
-
-/* 心跳动画 */
-@keyframes heartbeat {
+@keyframes pulse-gentle {
   0%, 100% { transform: scale(1); }
-  14% { transform: scale(1.1); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.1); }
-  70% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
-/* 滑动入场 */
 @keyframes slide-up {
   0% { transform: translateY(30px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes slide-down {
-  0% { transform: translateY(-30px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes slide-left {
-  0% { transform: translateX(30px); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slide-right {
-  0% { transform: translateX(-30px); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
-}
-
-/* 弹性缩放 */
 @keyframes bounce-scale {
   0% { transform: scale(0); opacity: 0; }
   50% { transform: scale(1.2); }
   70% { transform: scale(0.9); }
   100% { transform: scale(1); opacity: 1; }
 }
-
-/* 摇摆动画 */
-@keyframes swing {
-  0%, 100% { transform: rotate(0deg); }
-  20% { transform: rotate(5deg); }
-  40% { transform: rotate(-5deg); }
-  60% { transform: rotate(3deg); }
-  80% { transform: rotate(-3deg); }
-}
-
-/* 呼吸发光 */
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
-  50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4); }
-}
-
-/* 渐变流动 */
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ============================================
-   动画类
-   ============================================ */
 
 .animate-answer-pop {
   animation: answerPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -328,71 +148,23 @@
   animation: confetti-fall 3s ease-in forwards;
 }
 
-.animate-confetti-float {
-  animation: confetti-float 4s ease-in-out infinite;
-}
-
-.animate-pulse-ring {
-  animation: pulse-ring 1s ease-out infinite;
-}
-
-.animate-twinkle {
-  animation: twinkle 2s ease-in-out infinite;
-}
-
 .animate-jelly {
   animation: jelly 0.5s ease;
 }
 
-.animate-float-gentle {
-  animation: float-gentle 3s ease-in-out infinite;
-}
-
-.animate-float-rotate {
-  animation: float-rotate 4s ease-in-out infinite;
-}
-
-.animate-heartbeat {
-  animation: heartbeat 1.5s ease-in-out infinite;
+.animate-pulse-gentle {
+  animation: pulse-gentle 2.5s ease-in-out infinite;
 }
 
 .animate-slide-up {
   animation: slide-up 0.5s ease-out forwards;
 }
 
-.animate-slide-down {
-  animation: slide-down 0.5s ease-out forwards;
-}
-
-.animate-slide-left {
-  animation: slide-left 0.5s ease-out forwards;
-}
-
-.animate-slide-right {
-  animation: slide-right 0.5s ease-out forwards;
-}
-
 .animate-bounce-scale {
   animation: bounce-scale 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-.animate-swing {
-  animation: swing 1s ease-in-out;
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 2s ease-in-out infinite;
-}
-
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
-
-/* ============================================
-   过渡效果
-   ============================================ */
-
+/* 过渡效果 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -403,431 +175,6 @@
   opacity: 0;
 }
 
-/* 题目切换过渡 */
-.question-enter-active,
-.question-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.question-enter-from {
-  opacity: 0;
-  transform: translateY(30px) scale(0.95);
-}
-
-.question-leave-to {
-  opacity: 0;
-  transform: translateY(-30px) scale(0.95);
-}
-
-/* 弹性过渡 */
-.bounce-enter-active {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.bounce-leave-active {
-  transition: all 0.2s ease;
-}
-
-.bounce-enter-from,
-.bounce-leave-to {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-@layer components {
-  /* ============================================
-     数学游戏男童主题组件 - 现代科技感
-     ============================================ */
-
-  /* 主按钮 - 活力珊瑚红 */
-  .btn-game-primary {
-    @apply relative font-bold rounded-2xl transition-all duration-200;
-    @apply bg-gradient-to-b from-game-primary to-game-primary-dark text-white;
-    @apply border-0 cursor-pointer touch-manipulation;
-    @apply hover:from-game-primary-light hover:to-game-primary;
-    @apply active:scale-95;
-    box-shadow:
-      0 4px 0 0 #B32525,
-      0 6px 12px rgba(255, 87, 87, 0.3);
-  }
-
-  .btn-game-primary:active {
-    box-shadow:
-      0 2px 0 0 #B32525,
-      0 3px 6px rgba(255, 87, 87, 0.3);
-    transform: translateY(2px) scale(0.98);
-  }
-
-  /* 强调按钮 - 阳光金黄 */
-  .btn-game-accent {
-    @apply relative font-bold rounded-2xl transition-all duration-200;
-    @apply bg-gradient-to-b from-game-accent to-game-accent-dark text-white;
-    @apply border-0 cursor-pointer touch-manipulation;
-    @apply hover:from-game-accent-light hover:to-game-accent;
-    @apply active:scale-95;
-    box-shadow:
-      0 4px 0 0 #CC7A00,
-      0 6px 12px rgba(255, 193, 7, 0.3);
-  }
-
-  .btn-game-accent:active {
-    box-shadow:
-      0 2px 0 0 #CC7A00,
-      0 3px 6px rgba(255, 193, 7, 0.3);
-    transform: translateY(2px) scale(0.98);
-  }
-
-  /* 次要按钮 - 白色+靛蓝边框 */
-  .btn-game-secondary {
-    @apply relative font-bold rounded-2xl transition-all duration-200;
-    @apply bg-white text-game-primary-dark border-2 border-game-neutral-border;
-    @apply cursor-pointer touch-manipulation;
-    @apply hover:border-game-primary hover:bg-game-primary/5;
-    @apply active:scale-95;
-    box-shadow:
-      0 3px 0 0 var(--game-border),
-      0 4px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .btn-game-secondary:active {
-    box-shadow:
-      0 1px 0 0 var(--game-border),
-      0 2px 4px rgba(0, 0, 0, 0.08);
-    transform: translateY(2px) scale(0.98);
-  }
-
-  /* 成功按钮 - 科技绿 */
-  .btn-game-success {
-    @apply relative font-bold rounded-2xl transition-all duration-200;
-    @apply bg-gradient-to-b from-game-success to-game-success-dark text-white;
-    @apply border-0 cursor-pointer touch-manipulation;
-    @apply hover:from-game-success-light hover:to-game-success;
-    @apply active:scale-95;
-    box-shadow:
-      0 4px 0 0 #14532D,
-      0 6px 12px rgba(34, 197, 94, 0.3);
-  }
-
-  .btn-game-success:active {
-    box-shadow:
-      0 2px 0 0 #14532D,
-      0 3px 6px rgba(34, 197, 94, 0.3);
-    transform: translateY(2px) scale(0.98);
-  }
-
-  /* 卡片样式 - 现代简洁 */
-  .card-game {
-    @apply bg-white rounded-2xl p-6;
-    @apply transition-all duration-300;
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.04),
-      0 8px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  .card-game:hover {
-    box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.06),
-      0 12px 24px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
-  }
-
-  /* 题目卡片 */
-  .question-card-game {
-    @apply card-game;
-    @apply bg-gradient-to-br from-white to-game-bg;
-    @apply border-2 border-game-primary/10;
-  }
-
-  /* 统计卡片 */
-  .stat-card-game {
-    @apply bg-white rounded-xl p-4;
-    @apply transition-all duration-200;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.04),
-      0 4px 8px rgba(0, 0, 0, 0.06);
-  }
-
-  /* 数字键盘按钮 */
-  .numpad-btn-game {
-    @apply aspect-square rounded-xl font-bold text-2xl;
-    @apply bg-white text-game-text;
-    @apply flex items-center justify-center;
-    @apply transition-all duration-150 cursor-pointer touch-manipulation;
-    box-shadow:
-      0 2px 0 0 var(--game-border),
-      0 3px 6px rgba(0, 0, 0, 0.08);
-  }
-
-  .numpad-btn-game:hover {
-    @apply bg-game-bg;
-  }
-
-  .numpad-btn-game:active {
-    box-shadow:
-      0 1px 0 0 var(--game-border),
-      0 1px 3px rgba(0, 0, 0, 0.08);
-    transform: translateY(1px) scale(0.97);
-  }
-
-  /* 功能按钮 - 橙色 */
-  .numpad-btn-game-action {
-    @apply numpad-btn-game;
-    @apply bg-gradient-to-b from-game-accent to-game-accent-dark text-white;
-    box-shadow:
-      0 2px 0 0 #7C2D12,
-      0 3px 6px rgba(249, 115, 22, 0.3);
-  }
-
-  .numpad-btn-game-action:active {
-    box-shadow:
-      0 1px 0 0 #7C2D12,
-      0 1px 3px rgba(249, 115, 22, 0.3);
-  }
-
-  /* 删除按钮 - 红色 */
-  .numpad-btn-game-delete {
-    @apply numpad-btn-game;
-    @apply bg-gradient-to-b from-game-error to-game-error-dark text-white;
-    box-shadow:
-      0 2px 0 0 #7F1D1D,
-      0 3px 6px rgba(239, 68, 68, 0.3);
-  }
-
-  .numpad-btn-game-delete:active {
-    box-shadow:
-      0 1px 0 0 #7F1D1D,
-      0 1px 3px rgba(239, 68, 68, 0.3);
-  }
-
-  /* 确认按钮 - 绿色 */
-  .numpad-btn-game-confirm {
-    @apply numpad-btn-game;
-    @apply bg-gradient-to-b from-game-success to-game-success-dark text-white;
-    box-shadow:
-      0 2px 0 0 #14532D,
-      0 3px 6px rgba(34, 197, 94, 0.3);
-  }
-
-  .numpad-btn-game-confirm:active {
-    box-shadow:
-      0 1px 0 0 #14532D,
-      0 1px 3px rgba(34, 197, 94, 0.3);
-  }
-
-  /* 进度条 */
-  .progress-game {
-    @apply h-3 bg-game-bg rounded-full overflow-hidden;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .progress-game-fill {
-    @apply h-full rounded-full transition-all duration-500 ease-out;
-    @apply bg-gradient-to-r from-game-primary to-game-primary-light;
-  }
-
-  /* 文字渐变 */
-  .text-gradient-game {
-    @apply bg-clip-text text-transparent;
-    @apply bg-gradient-to-r from-game-primary to-game-accent;
-  }
-
-  /* 图标包装 */
-  .icon-game {
-    @apply flex items-center justify-center rounded-xl;
-    @apply bg-game-primary/10 text-game-primary;
-    @apply transition-all duration-200;
-  }
-
-  .icon-game-accent {
-    @apply icon-game;
-    @apply bg-game-accent/10 text-game-accent;
-  }
-
-  .icon-game-success {
-    @apply icon-game;
-    @apply bg-game-success/10 text-game-success;
-  }
-
-  /* ============================================
-     Cliomorphism 风格组件 - 软3D玩具感
-     ============================================ */
-
-  /* 统一的主按钮样式 - 立体胶囊按钮 */
-  .btn-clay-primary {
-    @apply relative font-bold rounded-full transition-all duration-200;
-    @apply bg-gradient-to-b to-toddler-primary to-toddler-primary-dark;
-    @apply text-white shadow-child-button;
-    @apply border-0;
-    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
-    @apply active:shadow-child-button-active active:translate-y-0.5;
-  }
-
-  /* 次要按钮 */
-  .btn-clay-secondary {
-    @apply relative font-bold rounded-full transition-all duration-200;
-    @apply bg-white text-toddler-primary-dark;
-    @apply shadow-child-button border-2 border-toddler-primary/20;
-    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
-    @apply active:shadow-child-button-active active:translate-y-0.5;
-  }
-
-  /* 成功按钮 */
-  .btn-clay-success {
-    @apply relative font-bold rounded-full transition-all duration-200;
-    @apply bg-gradient-to-b to-toddler-success to-toddler-success-dark;
-    @apply text-white shadow-child-button;
-    @apply hover:shadow-child-button-hover hover:-translate-y-0.5;
-    @apply active:shadow-child-button-active active:translate-y-0.5;
-  }
-
-  /* 卡片 - 软3D风格 */
-  .card-clay {
-    @apply bg-white rounded-cute-xl;
-    @apply shadow-child-medium;
-    @apply border-2 border-white/50;
-    @apply transition-all duration-300;
-    @apply hover:shadow-child-large hover:-translate-y-1;
-  }
-
-  /* 卡片激活状态 */
-  .card-clay-active {
-    @apply shadow-child-soft translate-y-0.5;
-  }
-
-  /* 玻璃拟态卡片 */
-  .card-glass {
-    @apply bg-white/80 backdrop-blur-md rounded-cute-xl;
-    @apply shadow-glass;
-    @apply border border-white/50;
-  }
-
-  /* 光晕卡片 */
-  .card-glow {
-    @apply bg-white rounded-cute-xl shadow-cute;
-    @apply transition-all duration-300;
-    @apply hover:shadow-glow hover:border-toddler-primary/30;
-  }
-
-  /* 数据展示卡片 */
-  .stat-card-clay {
-    @apply bg-white rounded-cute-lg p-4;
-    @apply shadow-child-medium;
-    @apply border-2 border-transparent;
-    @apply transition-all duration-300;
-    @apply hover:shadow-child-large hover:-translate-y-0.5;
-  }
-
-  /* 图标包装器 - 软3D */
-  .icon-clay {
-    @apply flex items-center justify-center rounded-cute-lg;
-    @apply shadow-child-medium;
-    @apply transition-all duration-200;
-  }
-
-  /* 进度条 - 渐变填充 */
-  .progress-clay {
-    @apply h-3 bg-gray-100 rounded-full overflow-hidden;
-    @apply shadow-child-soft;
-  }
-
-  .progress-clay-fill {
-    @apply h-full rounded-full;
-    @apply bg-gradient-to-r to-toddler-primary to-toddler-primary-light;
-    @apply transition-all duration-500 ease-out;
-  }
-
-  /* 输入框 - 软3D凹陷 */
-  .input-clay {
-    @apply rounded-cute-lg px-4 py-3;
-    @apply bg-gray-50 shadow-child-soft;
-    @apply border-2 border-transparent;
-    @apply focus:outline-none focus:border-toddler-primary/30 focus:shadow-child-medium;
-    @apply transition-all duration-200;
-  }
-
-  /* 浮动装饰元素 */
-  .float-decoration {
-    @apply absolute pointer-events-none;
-    @apply animate-float-gentle;
-  }
-
-  /* 光晕效果 */
-  .glow-effect {
-    @apply relative;
-  }
-
-  .glow-effect::before {
-    content: '';
-    @apply absolute inset-0 rounded-inherit;
-    @apply blur-xl opacity-50;
-    @apply -z-10;
-  }
-
-  /* 渐变文字 */
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    @apply bg-gradient-to-r to-toddler-primary via-toddler-accent to-toddler-success;
-  }
-
-  /* 呼吸边框 */
-  .border-breathe {
-    @apply relative;
-    animation: border-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes border-pulse {
-    0%, 100% { border-color: rgba(79, 70, 229, 0.3); }
-    50% { border-color: rgba(79, 70, 229, 0.8); }
-  }
-
-  /* 按压反馈 */
-  .press-feedback {
-    @apply transition-transform duration-150;
-    @apply active:scale-95;
-  }
-
-  /* 悬浮反馈 */
-  .hover-lift {
-    @apply transition-all duration-300;
-    @apply hover:-translate-y-1 hover:shadow-lg;
-  }
-
-  /* 内容块 - 玻璃拟态 */
-  .content-glass {
-    @apply bg-white/90 backdrop-blur-sm rounded-cute-lg;
-    @apply shadow-glass border border-white/50;
-  }
-
-  /* 标题样式 - 渐变发光 */
-  .title-glow {
-    @apply font-bold text-gradient;
-    @apply drop-shadow-sm;
-  }
-
-  /* 统一的内容块样式 */
-  .content-block {
-    @apply bg-white/90 backdrop-blur-sm rounded-cute-lg shadow-cute;
-    @apply border-4 border-peppa-blue-light/20;
-  }
-
-  /* 进度条样式 */
-  .progress-bar {
-    @apply h-3 bg-peppa-blue/20 rounded-full overflow-hidden;
-  }
-
-  .progress-bar-fill {
-    @apply h-full bg-gradient-to-r from-peppa-blue to-peppa-blue-dark rounded-full;
-    @apply transition-all duration-300 ease-out;
-  }
-
-  /* 输入框样式 */
-  .input-field {
-    @apply rounded-cute-lg border-2 border-peppa-blue-light/50 px-4 py-3;
-    @apply focus:outline-none focus:border-peppa-blue focus:ring-4 focus:ring-peppa-blue/20;
-    @apply transition-all duration-200;
-  }
-}
-
 @layer utilities {
   /* 动画延迟工具类 */
   .delay-100 { animation-delay: 100ms; }
@@ -835,9 +182,6 @@
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
-  .delay-600 { animation-delay: 600ms; }
-  .delay-700 { animation-delay: 700ms; }
-  .delay-800 { animation-delay: 800ms; }
 
   /* 圆角继承 */
   .rounded-inherit {
@@ -871,639 +215,68 @@
 
 @layer components {
   /* ============================================
-     数学游戏男童主题 - 统一组件样式
+     数学游戏统一组件 - 珊瑚红主题
      ============================================ */
 
-  /* 统一的按钮样式 - 主按钮 */
+  /* 主按钮 */
   .btn-primary {
-    @apply bg-gradient-to-r from-game-primary to-game-primary-dark text-white font-bold rounded-cute-xl shadow-game;
-    @apply hover:from-game-primary-light hover:to-game-primary active:scale-95;
-    @apply transition-all duration-200;
-    @apply border-4 border-transparent;
-  }
-
-  /* 统一的按钮样式 - 次按钮 */
-  .btn-secondary {
-    @apply bg-white text-game-primary-dark font-bold rounded-cute-xl shadow-game;
-    @apply hover:bg-game-primary-light/20 active:scale-95;
-    @apply transition-all duration-200;
-    @apply border-4 border-game-primary-light/30;
-  }
-
-  /* 统一的按钮样式 - 成功按钮 */
-  .btn-success {
-    @apply bg-gradient-to-r from-game-success to-game-success-dark text-white font-bold rounded-cute-xl shadow-game;
-    @apply hover:from-game-success-light hover:to-game-success active:scale-95;
-    @apply transition-all duration-200;
-  }
-
-  /* 统一的卡片样式 */
-  .card {
-    @apply bg-white rounded-cute-xl shadow-game;
-    @apply border-2 border-game-primary/20;
-  }
-
-  /* 统一的数据卡片样式 */
-  .stat-card {
-    @apply bg-white rounded-cute-lg shadow-game p-4 text-center;
-    @apply border-2 border-game-neutral-border;
-  }
-
-  /* 统一的内容块样式 */
-  .content-block {
-    @apply bg-white/90 backdrop-blur-sm rounded-cute-lg shadow-game;
-    @apply border-4 border-game-primary-light/20;
-  }
-
-  /* 进度条样式 */
-  .progress-bar {
-    @apply h-3 bg-game-primary/20 rounded-full overflow-hidden;
-  }
-
-  .progress-bar-fill {
-    @apply h-full bg-gradient-to-r from-game-primary to-game-primary-dark rounded-full;
-    @apply transition-all duration-300 ease-out;
-  }
-
-  /* 输入框样式 */
-  .input-field {
-    @apply rounded-cute-lg border-2 border-game-primary-light/50 px-4 py-3;
-    @apply focus:outline-none focus:border-game-primary focus:ring-4 focus:ring-game-primary/20;
-    @apply transition-all duration-200;
-  }
-}
-/* ============================================
-   儿童友好的组件系统 - Child-Friendly Components
-   ============================================ */
-
-@layer components {
-  /* 触摸优化按钮 - Touch Optimized Buttons */
-  .btn-child-primary {
-    @apply min-w-child-btn-md min-h-child-btn-md;
-    @apply bg-gradient-to-b from-game-primary to-game-primary-dark;
-    @apply text-white font-bold rounded-cute-xl;
-    @apply shadow-game-button border-0;
-    @apply transition-all duration-150 ease-out;
-    @apply hover:shadow-game-button-hover hover:-translate-y-1;
-    @apply active:shadow-game-button-active active:translate-y-1;
-    @apply focus:outline-none focus:ring-4 focus:ring-game-primary/30;
-    @apply touch-manipulation cursor-pointer;
-    @apply font-child-friendly text-child-base;
-  }
-
-  .btn-child-secondary {
-    @apply min-w-child-btn-md min-h-child-btn-md;
-    @apply bg-white text-game-primary-dark;
-    @apply font-bold rounded-cute-xl;
-    @apply shadow-game-button border-2 border-game-primary/20;
-    @apply transition-all duration-150 ease-out;
-    @apply hover:shadow-game-button-hover hover:-translate-y-1 hover:border-game-primary/40;
-    @apply active:shadow-game-button-active active:translate-y-1;
-    @apply focus:outline-none focus:ring-4 focus:ring-game-primary/30;
-    @apply touch-manipulation cursor-pointer;
-    @apply font-child-friendly text-child-base;
-  }
-
-  .btn-child-success {
-    @apply min-w-child-btn-md min-h-child-btn-md;
-    @apply bg-gradient-to-b from-game-success to-game-success-dark;
-    @apply text-white font-bold rounded-cute-xl;
-    @apply shadow-game-button;
-    @apply transition-all duration-150 ease-out;
-    @apply hover:shadow-game-button-hover hover:-translate-y-1;
-    @apply active:shadow-game-button-active active:translate-y-1;
-    @apply focus:outline-none focus:ring-4 focus:ring-game-success/30;
-    @apply touch-manipulation cursor-pointer;
-    @apply font-child-friendly text-child-base;
-  }
-
-  /* 大尺寸按钮 - Large Touch Targets */
-  .btn-child-large {
-    @apply min-w-child-btn-lg min-h-child-btn-lg;
-    @apply text-child-lg px-touch-xl py-touch-lg;
-  }
-
-  /* 儿童友好卡片 - Child-Friendly Cards */
-  .card-child {
-    @apply bg-white rounded-cute-xl;
-    @apply shadow-game border-2 border-white/50;
-    @apply transition-all duration-200 ease-out;
-    @apply hover:shadow-game-lg hover:-translate-y-1;
-    @apply min-h-child-card;
-    @apply touch-manipulation cursor-pointer;
-  }
-
-  .card-child-interactive {
-    @apply card-child;
-    @apply hover:scale-105 active:scale-95;
-    @apply focus:outline-none focus:ring-4 focus:ring-game-primary/30;
-  }
-
-  .card-child-success {
-    @apply card-child;
-    @apply border-game-success/30 bg-gradient-to-br from-white to-game-success/5;
-    @apply animate-success-glow;
-  }
-
-  /* 数字键盘优化 - Enhanced Number Pad */
-  .numpad-child {
-    @apply grid grid-cols-3 gap-touch-md p-touch-lg;
-    @apply bg-white/90 backdrop-blur-sm rounded-cute-xl;
-    @apply shadow-game border-2 border-white/50;
-  }
-
-  .numpad-btn-child {
-    @apply min-w-child-btn-lg min-h-child-btn-lg;
-    @apply bg-gradient-to-b from-white to-gray-50;
-    @apply text-game-text font-bold rounded-cute-lg;
-    @apply shadow-game-button border-2 border-game-primary/10;
-    @apply transition-all duration-100 ease-out;
-    @apply hover:shadow-game-button-hover hover:-translate-y-0.5 hover:border-game-primary/20;
-    @apply active:shadow-game-button-active active:translate-y-0.5;
-    @apply focus:outline-none focus:ring-4 focus:ring-game-primary/30;
-    @apply touch-manipulation cursor-pointer;
-    @apply font-child-friendly text-child-xl;
-  }
-
-  .numpad-btn-special {
-    @apply numpad-btn-child;
-    @apply bg-gradient-to-b from-game-accent to-game-accent-dark;
-    @apply text-white border-game-accent/20;
-    @apply hover:border-game-accent/40;
-    @apply focus:ring-game-accent/30;
-  }
-
-  /* 进度指示器 - Progress Indicators */
-  .progress-child {
-    @apply h-4 bg-gray-100 rounded-full overflow-hidden;
-    @apply shadow-game border border-gray-200;
-  }
-
-  .progress-child-fill {
-    @apply h-full rounded-full transition-all duration-500 ease-out;
-    @apply bg-gradient-to-r from-game-primary to-game-success;
-  }
-
-  /* 输入框优化 - Child-Friendly Inputs */
-  .input-child {
-    @apply rounded-cute-lg px-touch-lg py-touch-md;
-    @apply bg-white shadow-game;
-    @apply border-2 border-game-primary/20;
-    @apply font-child-friendly text-child-base;
-    @apply transition-all duration-200 ease-out;
-    @apply focus:outline-none focus:border-game-primary focus:ring-4 focus:ring-game-primary/20;
-    @apply focus:shadow-game;
-    @apply placeholder:text-gray-400 placeholder:font-normal;
-  }
-
-  /* 导航栏优化 - Child-Friendly Navigation */
-  .navbar-child {
-    @apply bg-white/90 backdrop-blur-md rounded-cute-xl;
-    @apply shadow-game border-2 border-white/50;
-    @apply p-touch-md;
-  }
-
-  .nav-btn-child {
-    @apply min-w-child-btn-sm min-h-child-btn-sm;
-    @apply bg-gradient-to-b from-game-primary-light to-game-primary;
-    @apply text-white rounded-cute-lg;
-    @apply shadow-game-button;
-    @apply transition-all duration-150 ease-out;
-    @apply hover:shadow-game-button-hover hover:-translate-y-0.5;
-    @apply active:shadow-game-button-active active:translate-y-0.5;
-    @apply focus:outline-none focus:ring-4 focus:ring-game-primary/30;
-    @apply touch-manipulation cursor-pointer;
-    @apply font-child-friendly text-child-sm;
-  }
-
-  /* 反馈系统 - Feedback System */
-  .feedback-success {
-    @apply bg-gradient-to-br from-white to-game-success/10;
-    @apply border-2 border-game-success/30 rounded-cute-xl;
-    @apply shadow-game-xl;
-    @apply animate-celebration;
-  }
-
-  .feedback-error {
-    @apply bg-gradient-to-br from-white to-game-warning/10;
-    @apply border-2 border-game-warning/30 rounded-cute-xl;
-    @apply shadow-game-xl;
-    @apply animate-playful-wiggle;
-  }
-
-  /* 装饰元素 - Decorative Elements */
-  .decoration-float {
-    @apply absolute pointer-events-none;
-    @apply animate-float-gentle;
-    @apply opacity-60;
-  }
-
-  .decoration-sparkle {
-    @apply animate-star-twinkle;
-    @apply text-game-bg;
-  }
-
-  /* 文字样式 - Typography */
-  .text-child-title {
-    @apply font-child-friendly font-bold text-child-3xl;
-    @apply bg-gradient-to-r from-game-primary via-game-accent to-game-success;
-    @apply bg-clip-text text-transparent;
-    @apply drop-shadow-sm;
-  }
-
-  .text-child-subtitle {
-    @apply font-child-friendly font-medium text-child-lg;
-    @apply text-gray-600;
-  }
-
-  .text-child-body {
-    @apply font-child-friendly text-child-base;
-    @apply text-gray-700 leading-relaxed;
-  }
-
-  /* 安全区域适配 - Safe Area Support */
-  .safe-area-top {
-    padding-top: max(1rem, env(safe-area-inset-top));
-  }
-
-  .safe-area-bottom {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
-  }
-
-  .safe-area-left {
-    padding-left: max(1rem, env(safe-area-inset-left));
-  }
-
-  .safe-area-right {
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-
-  /* 触摸优化 - Touch Optimization */
-  .touch-target-min {
-    @apply min-w-child-btn-sm min-h-child-btn-sm;
-  }
-
-  .touch-target-standard {
-    @apply min-w-child-btn-md min-h-child-btn-md;
-  }
-
-  .touch-target-large {
-    @apply min-w-child-btn-lg min-h-child-btn-lg;
-  }
-
-  .touch-spacing {
-    @apply gap-touch-md;
-  }
-
-  .touch-spacing-large {
-    @apply gap-touch-lg;
-  }
-
-  /* 无障碍访问 - Accessibility */
-  .focus-child {
-    @apply focus:outline-none focus:ring-4 focus:ring-game-primary/30;
-    @apply focus:ring-offset-2 focus:ring-offset-white;
-  }
-
-  .sr-only-child {
-    @apply sr-only;
-  }
-
-  /* 响应式适配 - Responsive Design */
-  @media (max-width: 640px) {
-    .btn-child-primary,
-    .btn-child-secondary,
-    .btn-child-success {
-      @apply text-child-sm px-touch-md py-touch-sm;
-    }
-
-    .numpad-btn-child {
-      @apply text-child-lg;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .btn-child-primary,
-    .btn-child-secondary,
-    .btn-child-success {
-      @apply text-child-lg px-touch-xl py-touch-lg;
-    }
-  }
-}
-
-/* ============================================
-   动画性能优化 - Animation Performance
-   ============================================ */
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-celebration,
-  .animate-playful-wiggle,
-  .animate-success-glow,
-  .animate-touch-feedback,
-  .animate-gentle-bounce {
-    animation: none;
-  }
-
-  .card-child-interactive:hover {
-    transform: none;
-  }
-
-  .btn-child-primary:hover,
-  .btn-child-secondary:hover,
-  .btn-child-success:hover {
-    transform: translateY(-1px);
-  }
-}
-
-/* ============================================
-   高对比度模式支持 - High Contrast Mode
-   ============================================ */
-
-@media (prefers-contrast: high) {
-  .btn-child-primary {
-    @apply border-2 border-black;
-  }
-
-  .btn-child-secondary {
-    @apply border-2 border-black bg-white text-black;
-  }
-
-  .card-child {
-    @apply border-2 border-gray-400;
-  }
-
-  .input-child {
-    @apply border-2 border-black;
-  }
-}
-
-/* ============================================
-   Claymorphism 新组件系统 - Candy Workshop
-   ============================================ */
-
-@layer components {
-  /* 3D 软按钮 - 双边阴影 */
-  .btn-candy {
-    @apply relative font-bold rounded-3xl transition-all duration-200;
-    @apply border-[3px] border-white cursor-pointer;
-    @apply touch-manipulation;
-    box-shadow:
-      4px 4px 12px rgba(0, 0, 0, 0.1),
-      -2px -2px 8px rgba(255, 255, 255, 0.8),
-      inset -2px -2px 6px rgba(0, 0, 0, 0.05),
-      inset 2px 2px 6px rgba(255, 255, 255, 0.8);
-  }
-
-  .btn-candy:active {
-    transform: scale(0.95) translateY(2px);
-    box-shadow:
-      2px 2px 6px rgba(0, 0, 0, 0.1),
-      -1px -1px 4px rgba(255, 255, 255, 0.8),
-      inset -3px -3px 8px rgba(0, 0, 0, 0.1),
-      inset 3px 3px 8px rgba(255, 255, 255, 0.6);
-  }
-
-  /* 靛蓝主按钮 */
-  .btn-candy-primary {
-    @apply btn-candy;
-    @apply bg-gradient-to-b to-toddler-primary to-toddler-primary-dark text-white;
-  }
-
-  /* 科技绿成功按钮 */
-  .btn-candy-success {
-    @apply btn-candy;
-    @apply bg-gradient-to-b to-toddler-success to-toddler-success-dark text-white;
-  }
-
-  /* 白色次按钮 */
-  .btn-candy-secondary {
-    @apply btn-candy;
-    @apply bg-white text-toddler-primary-dark;
-  }
-
-  /* 3D 软卡片 */
-  .card-candy {
-    @apply bg-white rounded-3xl p-6;
-    @apply border-[3px] border-white/80;
-    box-shadow:
-      8px 8px 20px rgba(0, 0, 0, 0.08),
-      -4px -4px 12px rgba(255, 255, 255, 0.9),
-      inset -2px -2px 8px rgba(0, 0, 0, 0.03),
-      inset 2px 2px 8px rgba(255, 255, 255, 0.9);
-  }
-
-  /* 按压状态卡片 */
-  .card-candy-pressed {
-    box-shadow:
-      4px 4px 10px rgba(0, 0, 0, 0.08),
-      -2px -2px 8px rgba(255, 255, 255, 0.9),
-      inset -3px -3px 8px rgba(0, 0, 0, 0.08),
-      inset 3px 3px 8px rgba(255, 255, 255, 0.6);
-  }
-
-  /* 星球样式 - 难度选择 */
-  .planet-candy {
-    @apply rounded-full flex items-center justify-center;
-    @apply border-[4px] border-white;
-    @apply transition-all duration-300 cursor-pointer;
-    @apply touch-manipulation;
-    box-shadow:
-      6px 6px 16px rgba(0, 0, 0, 0.12),
-      -4px -4px 12px rgba(255, 255, 255, 0.9),
-      inset -3px -3px 8px rgba(0, 0, 0, 0.05),
-      inset 3px 3px 8px rgba(255, 255, 255, 0.9);
-  }
-
-  .planet-candy:hover {
-    transform: scale(1.05) translateY(-5px);
-    box-shadow:
-      10px 10px 25px rgba(0, 0, 0, 0.15),
-      -6px -6px 16px rgba(255, 255, 255, 0.9),
-      inset -3px -3px 8px rgba(0, 0, 0, 0.05),
-      inset 3px 3px 8px rgba(255, 255, 255, 0.9);
-  }
-
-  .planet-candy:active {
-    transform: scale(0.98) translateY(0);
-    box-shadow:
-      3px 3px 8px rgba(0, 0, 0, 0.12),
-      -2px -2px 6px rgba(255, 255, 255, 0.9),
-      inset -4px -4px 10px rgba(0, 0, 0, 0.08),
-      inset 4px 4px 10px rgba(255, 255, 255, 0.6);
-  }
-
-  /* 数字键盘泡泡按钮 */
-  .numpad-btn-candy {
-    @apply aspect-square rounded-2xl font-bold text-2xl;
-    @apply bg-toddler-bg-light border-[3px] border-white;
-    @apply flex items-center justify-center;
-    @apply transition-all duration-150;
-    @apply cursor-pointer touch-manipulation;
-    box-shadow:
-      4px 4px 10px rgba(0, 0, 0, 0.08),
-      -2px -2px 6px rgba(255, 255, 255, 1),
-      inset -1px -1px 4px rgba(0, 0, 0, 0.03),
-      inset 1px 1px 4px rgba(255, 255, 255, 0.9);
-  }
-
-  .numpad-btn-candy:active {
-    transform: scale(0.92);
-    box-shadow:
-      2px 2px 5px rgba(0, 0, 0, 0.08),
-      -1px -1px 4px rgba(255, 255, 255, 1),
-      inset -2px -2px 6px rgba(0, 0, 0, 0.08),
-      inset 2px 2px 6px rgba(255, 255, 255, 0.6);
-  }
-
-  /* 特殊功能按钮 */
-  .numpad-btn-candy-special {
-    @apply numpad-btn-candy;
-    @apply bg-gradient-to-b to-toddler-accent to-toddler-accent-dark text-white;
-  }
-
-  /* 题目卡片 */
-  .question-card-candy {
-    @apply card-candy;
-    @apply bg-gradient-to-br from-white to-toddler-bg/30;
-  }
-
-  /* 统计卡片 */
-  .stat-card-candy {
-    @apply bg-white rounded-2xl p-4;
-    @apply border-[3px] border-white;
-    box-shadow:
-      6px 6px 16px rgba(0, 0, 0, 0.08),
-      -3px -3px 10px rgba(255, 255, 255, 0.9),
-      inset -2px -2px 6px rgba(0, 0, 0, 0.03),
-      inset 2px 2px 6px rgba(255, 255, 255, 0.9);
-  }
-
-  /* 渐变文字 */
-  .text-gradient-candy {
-    @apply bg-clip-text text-transparent;
-    @apply bg-gradient-to-r to-toddler-primary via-toddler-accent to-toddler-success;
-  }
-
-  /* 浮动装饰 */
-  .float-candy {
-    @apply absolute pointer-events-none;
-    animation: floatClay 3s ease-in-out infinite;
-  }
-
-  /* 果冻反馈 */
-  .jelly-feedback:active {
-    animation: jellyClay 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  /* 成功反馈 */
-  .success-candy {
-    animation: celebrateClay 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow:
-      0 0 20px rgba(34, 197, 94, 0.6),
-      8px 8px 20px rgba(0, 0, 0, 0.08),
-      -4px -4px 12px rgba(255, 255, 255, 0.9);
-  }
-
-  /* 错误反馈 */
-  .error-candy {
-    animation: shakeClay 0.5s ease-in-out;
-    box-shadow:
-      0 0 15px rgba(249, 115, 22, 0.5),
-      8px 8px 20px rgba(0, 0, 0, 0.08),
-      -4px -4px 12px rgba(255, 255, 255, 0.9);
-  }
-
-  /* 发光效果 */
-  .glow-primary { box-shadow: 0 0 20px rgba(79, 70, 229, 0.5); }
-  .glow-success { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
-  .glow-accent { box-shadow: 0 0 20px rgba(79, 195, 247, 0.5); }
-  .glow-warning { box-shadow: 0 0 20px rgba(234, 179, 8, 0.5); }
-  .glow-error { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
-}
-
-/* ============================================
-   男孩友好风格组件 - Boy-Friendly Design
-   ============================================ */
-
-@layer components {
-  /* 主按钮 - 桃色温暖感 */
-  .btn-toddler-primary {
-    @apply relative font-semibold rounded-2xl transition-all duration-200;
-    @apply bg-gradient-to-b to-toddler-primary to-toddler-primary-dark text-white;
+    @apply relative font-bold rounded-2xl transition-all duration-200;
+    @apply bg-gradient-to-b from-game-primary to-game-primary-dark text-white;
     @apply border-0 cursor-pointer touch-manipulation;
-    @apply hover:to-toddler-primary-light hover:to-toddler-primary;
+    @apply hover:from-game-primary-light hover:to-game-primary;
     @apply active:scale-95;
     box-shadow:
-      0 4px 0 0 rgba(0, 0, 0, 0.1),
-      0 6px 12px rgba(249, 168, 212, 0.3);
+      0 4px 0 0 #B32525,
+      0 6px 12px rgba(255, 87, 87, 0.3);
   }
 
-  .btn-toddler-primary:active {
+  .btn-primary:active {
     box-shadow:
-      0 2px 0 0 rgba(0, 0, 0, 0.08),
-      0 3px 6px rgba(249, 168, 212, 0.3);
+      0 2px 0 0 #B32525,
+      0 3px 6px rgba(255, 87, 87, 0.3);
     transform: translateY(2px) scale(0.98);
   }
 
-  /* 次要按钮 - 白色+桃色边框 */
-  .btn-soft-secondary {
-    @apply relative font-semibold rounded-2xl transition-all duration-200;
-    @apply bg-white text-toddler-primary-dark border-2 border-toddler-primary/20;
+  /* 次要按钮 */
+  .btn-secondary {
+    @apply relative font-bold rounded-2xl transition-all duration-200;
+    @apply bg-white text-game-primary-dark border-2 border-game-neutral-border;
     @apply cursor-pointer touch-manipulation;
-    @apply hover:border-toddler-primary/40 hover:bg-toddler-primary/5;
+    @apply hover:border-game-primary hover:bg-game-primary/5;
     @apply active:scale-95;
     box-shadow:
-      0 3px 0 0 var(--toddler-border),
+      0 3px 0 0 var(--game-border),
       0 4px 8px rgba(0, 0, 0, 0.08);
   }
 
-  .btn-soft-secondary:active {
+  .btn-secondary:active {
     box-shadow:
-      0 1px 0 0 var(--toddler-border),
+      0 1px 0 0 var(--game-border),
       0 2px 4px rgba(0, 0, 0, 0.08);
     transform: translateY(2px) scale(0.98);
   }
 
-  /* 强调按钮 - 活力橙 */
-  .btn-toddler-accent {
-    @apply relative font-semibold rounded-2xl transition-all duration-200;
-    @apply bg-gradient-to-b to-toddler-accent to-toddler-accent-dark text-white;
+  /* 成功按钮 */
+  .btn-success {
+    @apply relative font-bold rounded-2xl transition-all duration-200;
+    @apply bg-gradient-to-b from-game-success to-game-success-dark text-white;
     @apply border-0 cursor-pointer touch-manipulation;
-    @apply hover:to-toddler-accent-light hover:to-toddler-accent;
+    @apply hover:from-game-success-light hover:to-game-success;
     @apply active:scale-95;
     box-shadow:
-      0 4px 0 0 #C2410C,
-      0 6px 12px rgba(249, 115, 22, 0.3);
-  }
-
-  .btn-toddler-accent:active {
-    box-shadow:
-      0 2px 0 0 #C2410C,
-      0 3px 6px rgba(249, 115, 22, 0.3);
-    transform: translateY(2px) scale(0.98);
-  }
-
-  /* 成功按钮 - 科技绿 */
-  .btn-toddler-success {
-    @apply relative font-semibold rounded-2xl transition-all duration-200;
-    @apply bg-gradient-to-b to-toddler-success to-toddler-success-dark text-white;
-    @apply border-0 cursor-pointer touch-manipulation;
-    @apply hover:to-toddler-success-light hover:to-toddler-success;
-    @apply active:scale-95;
-    box-shadow:
-      0 4px 0 0 #15803D,
+      0 4px 0 0 #14532D,
       0 6px 12px rgba(34, 197, 94, 0.3);
   }
 
-  .btn-toddler-success:active {
+  .btn-success:active {
     box-shadow:
-      0 2px 0 0 #15803D,
+      0 2px 0 0 #14532D,
       0 3px 6px rgba(34, 197, 94, 0.3);
     transform: translateY(2px) scale(0.98);
   }
 
-  /* 卡片样式 - 简洁3D */
-  .card-boy {
+  /* 卡片样式 */
+  .card {
     @apply bg-white rounded-2xl p-6;
     @apply transition-all duration-300;
     box-shadow:
@@ -1511,7 +284,7 @@
       0 8px 16px rgba(0, 0, 0, 0.08);
   }
 
-  .card-boy:hover {
+  .card:hover {
     box-shadow:
       0 4px 8px rgba(0, 0, 0, 0.06),
       0 12px 24px rgba(0, 0, 0, 0.12);
@@ -1519,7 +292,7 @@
   }
 
   /* 统计卡片 */
-  .stat-card-boy {
+  .stat-card {
     @apply bg-white rounded-xl p-4;
     @apply transition-all duration-200;
     box-shadow:
@@ -1527,127 +300,94 @@
       0 4px 8px rgba(0, 0, 0, 0.06);
   }
 
-  /* 数字键盘按钮 - 简洁风格 */
-  .numpad-btn-boy {
+  /* 数字键盘按钮 */
+  .numpad-btn {
     @apply aspect-square rounded-xl font-bold text-2xl;
-    @apply bg-white text-toddler-text;
+    @apply bg-white text-game-neutral-text-primary;
     @apply flex items-center justify-center;
     @apply transition-all duration-150 cursor-pointer touch-manipulation;
     box-shadow:
-      0 2px 0 0 var(--toddler-border),
+      0 2px 0 0 var(--game-border),
       0 3px 6px rgba(0, 0, 0, 0.08);
   }
 
-  .numpad-btn-boy:hover {
-    @apply bg-toddler-bg;
+  .numpad-btn:hover {
+    @apply bg-[var(--game-bg)];
   }
 
-  .numpad-btn-boy:active {
+  .numpad-btn:active {
     box-shadow:
-      0 1px 0 0 var(--toddler-border),
+      0 1px 0 0 var(--game-border),
       0 1px 3px rgba(0, 0, 0, 0.08);
     transform: translateY(1px) scale(0.97);
   }
 
-  /* 功能按钮 */
-  .numpad-btn-soft-action {
-    @apply numpad-btn-boy;
-    @apply bg-gradient-to-b to-toddler-accent to-toddler-accent-dark text-white;
-    box-shadow:
-      0 2px 0 0 #C2410C,
-      0 3px 6px rgba(249, 115, 22, 0.3);
-  }
-
-  .numpad-btn-soft-action:active {
-    box-shadow:
-      0 1px 0 0 #C2410C,
-      0 1px 3px rgba(249, 115, 22, 0.3);
-  }
-
-  /* 删除按钮 */
-  .numpad-btn-soft-delete {
-    @apply numpad-btn-boy;
-    @apply bg-gradient-to-b to-toddler-error to-toddler-error-dark text-white;
-    box-shadow:
-      0 2px 0 0 #B91C1C,
-      0 3px 6px rgba(239, 68, 68, 0.3);
-  }
-
-  .numpad-btn-soft-delete:active {
-    box-shadow:
-      0 1px 0 0 #B91C1C,
-      0 1px 3px rgba(239, 68, 68, 0.3);
-  }
-
-  /* 确认按钮 */
-  .numpad-btn-soft-confirm {
-    @apply numpad-btn-boy;
-    @apply bg-gradient-to-b to-toddler-success to-toddler-success-dark text-white;
-    box-shadow:
-      0 2px 0 0 #15803D,
-      0 3px 6px rgba(34, 197, 94, 0.3);
-  }
-
-  .numpad-btn-soft-confirm:active {
-    box-shadow:
-      0 1px 0 0 #15803D,
-      0 1px 3px rgba(34, 197, 94, 0.3);
-  }
-
-  /* 题目卡片 */
-  .question-card-boy {
-    @apply card-boy;
-    @apply bg-gradient-to-br from-white to-toddler-bg;
-  }
-
   /* 进度条 */
-  .progress-boy {
-    @apply h-3 bg-toddler-bg rounded-full overflow-hidden;
+  .progress-bar {
+    @apply h-3 bg-[var(--game-bg)] rounded-full overflow-hidden;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .progress-soft-fill {
+  .progress-bar-fill {
     @apply h-full rounded-full transition-all duration-500 ease-out;
-    @apply bg-gradient-to-r to-toddler-primary to-toddler-primary-light;
-  }
-
-  /* 文字渐变 */
-  .text-gradient-boy {
-    @apply bg-clip-text text-transparent;
-    @apply bg-gradient-to-r to-toddler-primary to-toddler-accent;
+    @apply bg-gradient-to-r from-game-primary to-game-primary-light;
   }
 
   /* 图标包装 */
-  .icon-boy {
+  .icon-wrapper {
     @apply flex items-center justify-center rounded-xl;
-    @apply bg-toddler-primary/10 text-toddler-primary;
+    @apply bg-game-primary/10 text-game-primary;
     @apply transition-all duration-200;
   }
 
-  .icon-toddler-accent {
-    @apply icon-boy;
-    @apply bg-toddler-accent/10 text-toddler-accent;
+  .icon-accent {
+    @apply icon-wrapper;
+    @apply bg-game-accent/10 text-game-accent;
   }
 
-  .icon-toddler-success {
-    @apply icon-boy;
-    @apply bg-toddler-success/10 text-toddler-success;
+  .icon-success {
+    @apply icon-wrapper;
+    @apply bg-game-success/10 text-game-success;
   }
 }
 
-@layer utilities {
-  .text-tiny { @apply text-child-2xs; }
-  .text-small { @apply text-child-xs; }
-  .text-body { @apply text-child-sm; }
-  .text-normal { @apply text-child-base; }
-  .text-medium { @apply text-child-md; }
-  .text-large { @apply text-child-lg; }
-  .text-xlarge { @apply text-child-xl; }
-  .text-display { @apply text-child-2xl; }
-  .text-title { @apply text-child-3xl; }
-  .text-hero { @apply text-child-4xl; }
-  
-  .text-responsive-body { @apply text-child-sm md:text-child-base; }
-  .text-responsive-large { @apply text-child-lg md:text-child-xl; }
-  .text-responsive-title { @apply text-child-2xl md:text-child-3xl; }
+/* ============================================
+   动画性能优化
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-answer-pop,
+  .animate-answer-shake,
+  .animate-confetti-fall,
+  .animate-jelly,
+  .animate-pulse-gentle,
+  .animate-slide-up,
+  .animate-bounce-scale {
+    animation: none;
+  }
+
+  .card:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-success:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   高对比度模式支持
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .btn-primary {
+    @apply border-2 border-black;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-black bg-white text-black;
+  }
+
+  .card {
+    @apply border-2 border-gray-400;
+  }
 }
