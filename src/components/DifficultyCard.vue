@@ -188,7 +188,7 @@ function handleSelect() {
 </template>
 
 <style scoped>
-/* Cliomorphism 风格卡片 */
+/* Candy Claymorphism 风格卡片 */
 .card {
   display: flex;
   align-items: center;
@@ -203,48 +203,63 @@ function handleSelect() {
   min-height: 88px;
 }
 
-/* 已解锁卡片 - 立体效果 */
+/* 已解锁卡片 - Candy Claymorphism */
 .card-unlocked {
-  background: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(135deg, #ffffff 0%, #FFFBF5 100%);
+  border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.06),
-    0 8px 25px rgba(0, 0, 0, 0.08);
+    6px 6px 16px rgba(0, 0, 0, 0.08),
+    -3px -3px 10px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .card-unlocked:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.01);
   box-shadow:
-    0 6px 0 0 rgba(0, 0, 0, 0.06),
-    0 12px 35px rgba(0, 0, 0, 0.12);
+    10px 10px 25px rgba(0, 0, 0, 0.1),
+    -5px -5px 15px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .card-unlocked:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
   box-shadow:
-    0 2px 0 0 rgba(0, 0, 0, 0.06),
-    0 4px 15px rgba(0, 0, 0, 0.08);
+    3px 3px 10px rgba(0, 0, 0, 0.08),
+    -2px -2px 8px rgba(255, 255, 255, 0.9),
+    inset -3px -3px 8px rgba(0, 0, 0, 0.05),
+    inset 3px 3px 8px rgba(255, 255, 255, 0.7);
   transition: all 0.1s ease;
 }
 
-/* 已完成卡片 - 绿色光晕 */
+/* 已完成卡片 - 薄荷绿光晕 */
 .card-completed {
-  border-color: rgba(129, 199, 132, 0.5);
   background: linear-gradient(135deg, #ffffff 0%, #F1F8E9 100%);
+  border-color: rgba(152, 255, 152, 0.5);
+  box-shadow:
+    0 0 15px rgba(152, 255, 152, 0.3),
+    6px 6px 16px rgba(0, 0, 0, 0.06),
+    -3px -3px 10px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .card-completed:hover {
-  border-color: #81C784;
+  border-color: #98FF98;
   box-shadow:
-    0 6px 0 0 rgba(129, 199, 132, 0.3),
-    0 12px 35px rgba(129, 199, 132, 0.2);
+    0 0 20px rgba(152, 255, 152, 0.5),
+    10px 10px 25px rgba(0, 0, 0, 0.08),
+    -5px -5px 15px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 /* 锁定卡片 */
 .card-locked {
   background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
-  border: 2px dashed #bdbdbd;
-  opacity: 0.75;
+  border: 3px dashed #e0e0e0;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -259,7 +274,7 @@ function handleSelect() {
   }
 }
 
-/* 图标区域 - 立体 */
+/* 图标区域 - Candy Claymorphism */
 .icon-wrapper {
   width: 60px;
   height: 60px;
@@ -269,18 +284,24 @@ function handleSelect() {
   justify-content: center;
   flex-shrink: 0;
   position: relative;
+  border: 3px solid white;
   box-shadow:
-    0 3px 0 0 rgba(0, 0, 0, 0.1),
-    0 4px 12px rgba(0, 0, 0, 0.1);
+    4px 4px 10px rgba(0, 0, 0, 0.08),
+    -2px -2px 6px rgba(255, 255, 255, 1),
+    inset -1px -1px 4px rgba(0, 0, 0, 0.03),
+    inset 1px 1px 4px rgba(255, 255, 255, 0.9);
   transition: all 0.2s ease;
 }
 
 .card:hover .icon-wrapper:not(.icon-locked) {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .icon-locked {
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    inset 2px 2px 6px rgba(0, 0, 0, 0.06),
+    inset -1px -1px 4px rgba(255, 255, 255, 0.8);
+  border-color: #f0f0f0;
 }
 
 .emoji {
@@ -292,7 +313,7 @@ function handleSelect() {
   filter: grayscale(0.5) opacity(0.6);
 }
 
-/* 完成标记 */
+/* 完成标记 - Candy Style */
 .completed-badge {
   position: absolute;
   bottom: -4px;
@@ -300,12 +321,12 @@ function handleSelect() {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #81C784, #66BB6A);
+  background: linear-gradient(135deg, #98FF98, #6BCB77);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(102, 187, 106, 0.4);
+  box-shadow: 0 2px 8px rgba(107, 203, 119, 0.5);
   border: 2px solid white;
 }
 
@@ -486,7 +507,7 @@ function handleSelect() {
   font-weight: 500;
 }
 
-/* 箭头 */
+/* 箭头 - Candy Style */
 .arrow-wrapper {
   width: 36px;
   height: 36px;
@@ -494,8 +515,14 @@ function handleSelect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F5F5F5;
+  background: linear-gradient(135deg, #FFFBF5, #ffffff);
+  border: 2px solid white;
   transition: all 0.2s ease;
+  box-shadow:
+    2px 2px 6px rgba(0, 0, 0, 0.05),
+    -1px -1px 4px rgba(255, 255, 255, 1),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
 .arrow {
@@ -509,12 +536,15 @@ function handleSelect() {
 }
 
 .card-unlocked .arrow {
-  color: #0288D1;
+  color: #29B6F6;
 }
 
 .card-unlocked:hover .arrow-wrapper {
-  background: linear-gradient(135deg, #4FC3F7, #29B6F6);
-  transform: translateX(3px);
+  background: linear-gradient(135deg, #4FC3F7, #81D4FA);
+  transform: translateX(4px);
+  box-shadow:
+    3px 3px 8px rgba(79, 195, 247, 0.3),
+    -1px -1px 4px rgba(255, 255, 255, 1);
 }
 
 .card-unlocked:hover .arrow {
@@ -522,11 +552,12 @@ function handleSelect() {
 }
 
 .arrow-locked {
-  background: #EEEEEE;
+  background: linear-gradient(135deg, #f5f5f5, #eeeeee);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .arrow-locked .arrow {
-  color: #BDBDBD;
+  color: #bdbdbd;
   opacity: 0.5;
 }
 

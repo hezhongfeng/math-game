@@ -60,14 +60,14 @@ const answerCardValue = computed(() => {
 </script>
 
 <template>
-  <div class="question-card state-default">
+  <div class="question-card-candy" :class="{ 'success-candy': isCorrect, 'error-candy': isIncorrect }">
     <!-- 顶部信息栏 -->
-    <div class="header-bar">
+    <div class="header-bar-candy">
       <div class="question-indicator">
         <span class="current-index">第 {{ currentIndex + 1 }} 题</span>
         <span class="total-count">/ 共 {{ totalQuestions }} 题</span>
       </div>
-      <div class="timer">
+      <div class="timer-candy">
         <Clock :size="16" class="timer-icon" />
         <span class="timer-value">{{ formattedTime }}</span>
       </div>
@@ -81,13 +81,13 @@ const answerCardValue = computed(() => {
           size="normal"
           state="default"
         />
-        <span class="operator">{{ question.operator }}</span>
+        <span class="operator-candy">{{ question.operator }}</span>
         <NumberCard
           :value="question.operand2"
           size="normal"
           state="default"
         />
-        <span class="equals-operator">=</span>
+        <span class="equals-operator-candy">=</span>
         <NumberCard
           :value="answerCardValue"
           size="large"
@@ -100,11 +100,11 @@ const answerCardValue = computed(() => {
 </template>
 
 <style scoped>
-.question-card {
-  background: #ffffff;
-  border-radius: 32px;
+/* Candy Claymorphism 题目卡片 */
+.question-card-candy {
+  background: linear-gradient(135deg, #ffffff 0%, #FFFBF5 100%);
+  border-radius: 28px;
   padding: 20px 24px 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -112,30 +112,60 @@ const answerCardValue = computed(() => {
   max-width: 95vw;
   width: 100%;
   touch-action: manipulation;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    8px 8px 20px rgba(0, 0, 0, 0.08),
+    -4px -4px 12px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.03),
+    inset 2px 2px 8px rgba(255, 255, 255, 0.9);
 }
 
-/* 状态样式 */
-.question-card.state-default {
-  border: 2px solid rgba(74, 144, 226, 0.2);
+/* 成功反馈 */
+.success-candy {
+  animation: celebrateClay 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 0 25px rgba(152, 255, 152, 0.6),
+    8px 8px 20px rgba(0, 0, 0, 0.08),
+    -4px -4px 12px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.03),
+    inset 2px 2px 8px rgba(255, 255, 255, 0.9);
+  border-color: rgba(152, 255, 152, 0.5);
 }
 
-.question-card.state-correct {
-  border: 3px solid #4CAF50;
-  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.2);
+/* 错误反馈 */
+.error-candy {
+  animation: shakeClay 0.5s ease-in-out;
+  box-shadow:
+    0 0 20px rgba(255, 143, 163, 0.5),
+    8px 8px 20px rgba(0, 0, 0, 0.08),
+    -4px -4px 12px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.03),
+    inset 2px 2px 8px rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 143, 163, 0.5);
 }
 
-.question-card.state-incorrect {
-  border: 2px solid #FF9800;
+@keyframes celebrateClay {
+  0% { transform: scale(0.98) rotate(0deg); }
+  50% { transform: scale(1.02) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes shakeClay {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 
 /* 顶部信息栏 */
-.header-bar {
+.header-bar-candy {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 2px solid rgba(255, 143, 163, 0.1);
 }
 
 .question-indicator {
@@ -147,33 +177,39 @@ const answerCardValue = computed(() => {
 .current-index {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e3a5f;
+  color: #5D4E37;
 }
 
 .total-count {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #9E9E9E;
   font-weight: 500;
 }
 
-.timer {
+/* 计时器 - Candy Style */
+.timer-candy {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
   border-radius: 20px;
-  border: 1px solid rgba(74, 144, 226, 0.2);
+  border: 2px solid white;
+  box-shadow:
+    2px 2px 6px rgba(0, 0, 0, 0.05),
+    -1px -1px 4px rgba(255, 255, 255, 0.8),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.03),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
 .timer-icon {
-  color: #4A90E2;
+  color: #29B6F6;
 }
 
 .timer-value {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #4A90E2;
+  color: #29B6F6;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
 }
@@ -192,25 +228,30 @@ const answerCardValue = computed(() => {
   gap: 24px;
 }
 
-.operator {
+.operator-candy {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #4A90E2;
+  background: linear-gradient(135deg, #FF8FA3 0%, #4FC3F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
   user-select: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.equals-operator {
+.equals-operator-candy {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #64748b;
+  color: #98FF98;
   line-height: 1;
   user-select: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 /* 响应式设计 */
 @media (min-width: 768px) {
-  .question-card {
+  .question-card-candy {
     padding: 28px 32px 20px;
     gap: 20px;
     min-width: 380px;
@@ -228,29 +269,16 @@ const answerCardValue = computed(() => {
     font-size: 1rem;
   }
 
-  .operator {
-    font-size: 2.5rem;
-    width: 56px;
-    height: 56px;
+  .operator-candy {
+    font-size: 3rem;
   }
 
-  .equals-operator {
-    font-size: 2.5rem;
-    width: 56px;
-    height: 56px;
+  .equals-operator-candy {
+    font-size: 3rem;
   }
 
   .expression {
     gap: 28px;
-  }
-
-  .divider-equals {
-    font-size: 1.75rem;
-  }
-
-  .dot {
-    width: 10px;
-    height: 10px;
   }
 }
 </style>

@@ -129,6 +129,65 @@ export default {
           advanced: '#FF8A65',    // 进级 - 橙红
           expert: '#E57373',      // 高级 - 粉红
         },
+        // ============================================
+        // 糖果工坊色系 - Claymorphism 新设计系统
+        // ============================================
+        candy: {
+          // 草莓粉
+          berry: {
+            DEFAULT: '#FF8FA3',
+            light: '#FFB3C1',
+            lighter: '#FFD1D9',
+            dark: '#E85A70',
+          },
+          // 薄荷绿
+          mint: {
+            DEFAULT: '#98FF98',
+            light: '#B8FFB8',
+            lighter: '#D4FFD4',
+            dark: '#6BCB77',
+          },
+          // 天空蓝
+          sky: {
+            DEFAULT: '#4FC3F7',
+            light: '#81D4FA',
+            lighter: '#B3E5FC',
+            dark: '#29B6F6',
+          },
+          // 柠檬黄
+          lemon: {
+            DEFAULT: '#FFE66D',
+            light: '#FFF5A0',
+            lighter: '#FFF9D4',
+            dark: '#FFD93D',
+          },
+          // 薰衣草紫
+          lavender: {
+            DEFAULT: '#CE93D8',
+            light: '#E1BEE7',
+            lighter: '#F3E5F5',
+            dark: '#AB47BC',
+          },
+          // 蜜桃橙
+          peach: {
+            DEFAULT: '#FFAB91',
+            light: '#FFCCBC',
+            lighter: '#FBE9E7',
+            dark: '#FF8A65',
+          },
+          // 奶油白背景
+          cream: {
+            DEFAULT: '#FFFBF5',
+            light: '#FFFEF9',
+            dark: '#FFF5E6',
+          },
+          // 巧克力文字
+          choco: {
+            DEFAULT: '#5D4E37',
+            light: '#7A6A5A',
+            dark: '#3D3225',
+          },
+        },
       },
       fontSize: {
         // 儿童友好的字体大小 - 更大更易读
@@ -175,6 +234,14 @@ export default {
         'celebration': 'celebration 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
         'gentle-bounce': 'gentleBounce 0.4s ease-out',
         'success-glow': 'successGlow 1s ease-out',
+        // Claymorphism 新动画
+        'pop-clay': 'popClay 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'celebrate-clay': 'celebrateClay 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'jelly-clay': 'jellyClay 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'float-clay': 'floatClay 3s ease-in-out infinite',
+        'glow-clay': 'glowClay 2s ease-in-out infinite',
+        'shake-clay': 'shakeClay 0.5s ease-in-out',
+        'bounce-in': 'bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       keyframes: {
         float: {
@@ -261,6 +328,49 @@ export default {
           '50%': { boxShadow: '0 0 20px rgba(129, 199, 132, 0.6)' },
           '100%': { boxShadow: '0 0 0 rgba(129, 199, 132, 0)' },
         },
+        // Claymorphism 新动画
+        popClay: {
+          '0%': { transform: 'scale(1)' },
+          '40%': { transform: 'scale(0.92)' },
+          '70%': { transform: 'scale(1.03)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        celebrateClay: {
+          '0%': { transform: 'scale(0.5) rotate(0deg)', opacity: '0' },
+          '50%': { transform: 'scale(1.15) rotate(5deg)' },
+          '70%': { transform: 'scale(1.05) rotate(-3deg)' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+        },
+        jellyClay: {
+          '0%, 100%': { transform: 'scale(1, 1)' },
+          '25%': { transform: 'scale(0.95, 1.05)' },
+          '50%': { transform: 'scale(1.05, 0.95)' },
+          '75%': { transform: 'scale(0.98, 1.02)' },
+        },
+        floatClay: {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '33%': { transform: 'translateY(-8px) rotate(2deg)' },
+          '66%': { transform: 'translateY(-4px) rotate(-1deg)' },
+        },
+        glowClay: {
+          '0%, 100%': { boxShadow: '0 0 5px rgba(255, 143, 163, 0.4)' },
+          '50%': { boxShadow: '0 0 20px rgba(255, 143, 163, 0.8), 0 0 30px rgba(255, 143, 163, 0.4)' },
+        },
+        shakeClay: {
+          '0%, 100%': { transform: 'translateX(0) rotate(0deg)' },
+          '10%': { transform: 'translateX(-6px) rotate(-2deg)' },
+          '20%': { transform: 'translateX(6px) rotate(2deg)' },
+          '30%': { transform: 'translateX(-4px) rotate(-1deg)' },
+          '40%': { transform: 'translateX(4px) rotate(1deg)' },
+          '50%': { transform: 'translateX(-2px) rotate(0deg)' },
+          '60%': { transform: 'translateX(2px) rotate(0deg)' },
+        },
+        bounceIn: {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '50%': { transform: 'scale(1.05)' },
+          '70%': { transform: 'scale(0.9)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
       },
       borderRadius: {
         'cute': '16px',
@@ -284,6 +394,18 @@ export default {
         'glow-green': '0 0 20px rgba(129, 199, 132, 0.4)',
         'glow-pink': '0 0 20px rgba(255, 138, 128, 0.4)',
         'glow-yellow': '0 0 20px rgba(255, 213, 79, 0.4)',
+        // Claymorphism 双边阴影系统
+        'clay': '4px 4px 12px rgba(0, 0, 0, 0.1), -2px -2px 8px rgba(255, 255, 255, 0.8), inset -2px -2px 6px rgba(0, 0, 0, 0.05), inset 2px 2px 6px rgba(255, 255, 255, 0.8)',
+        'clay-hover': '6px 6px 16px rgba(0, 0, 0, 0.12), -3px -3px 10px rgba(255, 255, 255, 0.9), inset -2px -2px 6px rgba(0, 0, 0, 0.05), inset 2px 2px 6px rgba(255, 255, 255, 0.8)',
+        'clay-active': '2px 2px 6px rgba(0, 0, 0, 0.1), -1px -1px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 8px rgba(0, 0, 0, 0.08), inset 3px 3px 8px rgba(255, 255, 255, 0.6)',
+        'clay-card': '8px 8px 20px rgba(0, 0, 0, 0.08), -4px -4px 12px rgba(255, 255, 255, 0.9), inset -2px -2px 8px rgba(0, 0, 0, 0.03), inset 2px 2px 8px rgba(255, 255, 255, 0.9)',
+        'clay-pressed': '4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9), inset -3px -3px 8px rgba(0, 0, 0, 0.08), inset 3px 3px 8px rgba(255, 255, 255, 0.6)',
+        'clay-button': '4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 6px rgba(255, 255, 255, 1), inset -1px -1px 4px rgba(0, 0, 0, 0.03), inset 1px 1px 4px rgba(255, 255, 255, 0.9)',
+        'clay-planet': '6px 6px 16px rgba(0, 0, 0, 0.12), -4px -4px 12px rgba(255, 255, 255, 0.9), inset -3px -3px 8px rgba(0, 0, 0, 0.05), inset 3px 3px 8px rgba(255, 255, 255, 0.9)',
+        'glow-berry': '0 0 20px rgba(255, 143, 163, 0.5)',
+        'glow-mint': '0 0 20px rgba(152, 255, 152, 0.5)',
+        'glow-sky': '0 0 20px rgba(79, 195, 247, 0.5)',
+        'glow-lemon': '0 0 20px rgba(255, 230, 109, 0.5)',
       },
       transitionTimingFunction: {
         'bounce-out': 'cubic-bezier(0.34, 1.56, 0.64, 1)',

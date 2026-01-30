@@ -6,7 +6,6 @@ import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
-import TouchOptimizedButton from '../components/TouchOptimizedButton.vue'
 
 const router = useRouter()
 const { getBestScore, getCompletedDifficulties, completedCount } = useStorage()
@@ -70,38 +69,34 @@ onMounted(() => {
 
 <template>
   <div class="page">
-    <!-- 装饰星星 - 更多更活泼 -->
-    <div class="stars">
-      <span class="star star-1">✨</span>
-      <span class="star star-2">⭐</span>
-      <span class="star star-3">✨</span>
-      <span class="star star-4">⭐</span>
-      <span class="star star-5">🌟</span>
-      <span class="star star-6">✨</span>
-      <span class="float-heart">💖</span>
-      <span class="float-lightning">⚡</span>
+    <!-- 装饰元素 - Candy Style -->
+    <div class="decorations">
+      <div class="deco-blob blob-1"></div>
+      <div class="deco-blob blob-2"></div>
+      <div class="deco-blob blob-3"></div>
+      <div class="deco-circle circle-1"></div>
+      <div class="deco-circle circle-2"></div>
     </div>
 
-    <!-- 顶部导航 - 毛玻璃效果 -->
-    <header class="header">
-      <TouchOptimizedButton
-        size="small"
-        variant="secondary"
-        :icon="ArrowLeft"
-        :icon-size="20"
+    <!-- 顶部导航 - Candy Claymorphism -->
+    <header class="header-candy">
+      <button
+        class="btn-candy-back"
         @click="goBack"
       >
-        返回
-      </TouchOptimizedButton>
+        <ArrowLeft :size="20" />
+        <span>返回</span>
+      </button>
 
-      <h1 class="title font-child-friendly">
-        <span class="title-icon">🎮</span>
+      <h1 class="title-candy">
+        <span class="title-dot dot-1"></span>
         选择关卡
+        <span class="title-dot dot-2"></span>
       </h1>
 
       <!-- 进度环徽章 -->
-      <div class="progress-badge">
-        <div class="progress-ring">
+      <div class="progress-badge-candy">
+        <div class="progress-ring-candy">
           <svg viewBox="0 0 36 36">
             <path
               class="progress-ring-bg"
@@ -149,12 +144,12 @@ onMounted(() => {
       </div>
     </main>
 
-    <!-- 底部提示 - 更活泼 -->
-    <footer class="footer">
-      <div class="footer-content font-child-friendly">
-        <span class="footer-icon">💡</span>
+    <!-- 底部提示 - Candy Style -->
+    <footer class="footer-candy">
+      <div class="footer-content">
+        <div class="footer-bulb"></div>
         <p>从第一关开始，依次解锁更高难度</p>
-        <span class="footer-rocket">🚀</span>
+        <div class="footer-star"></div>
       </div>
     </footer>
   </div>
@@ -165,109 +160,93 @@ onMounted(() => {
   min-height: 100vh;
   position: relative;
   padding: 12px 12px 80px;
-  background: linear-gradient(180deg, #FFF8E1 0%, #E0F7FA 40%, #F3E5F5 70%, #FFF8E1 100%);
+  background: linear-gradient(180deg, #FFFBF5 0%, #F0F9FF 40%, #FFF8E7 70%, #FFFBF5 100%);
   touch-action: manipulation;
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
 }
 
-/* 装饰星星 - 更多动画 */
-.stars {
+/* 装饰元素 - Candy Style */
+.decorations {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
 }
 
-.star {
+.deco-blob {
   position: absolute;
-  font-size: 24px;
-  opacity: 0.6;
-  animation: floatStar 3s ease-in-out infinite;
+  border-radius: 50%;
+  opacity: 0.3;
+  filter: blur(1px);
 }
 
-.star-1 {
-  top: 3%;
-  left: 3%;
-  animation-delay: 0s;
+.blob-1 {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #FF8FA3, #FFB3C1);
+  top: 5%;
+  left: -30px;
+  animation: floatClay 5s ease-in-out infinite;
 }
 
-.star-2 {
-  top: 6%;
-  right: 5%;
-  font-size: 20px;
-  animation-delay: 0.5s;
+.blob-2 {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #98FF98, #B8FFB8);
+  top: 20%;
+  right: -20px;
+  animation: floatClay 4s ease-in-out infinite reverse;
 }
 
-.star-3 {
-  top: 15%;
-  left: 8%;
-  animation-delay: 1s;
-}
-
-.star-4 {
-  top: 12%;
-  right: 12%;
-  font-size: 28px;
-  animation-delay: 1.5s;
-}
-
-.star-5 {
-  top: 25%;
-  left: 2%;
-  font-size: 32px;
-  animation-delay: 0.8s;
-}
-
-.star-6 {
-  top: 30%;
-  right: 3%;
-  animation-delay: 1.2s;
-}
-
-.float-heart {
-  position: absolute;
-  font-size: 28px;
-  bottom: 20%;
-  left: 5%;
-  animation: heartbeat 1.5s ease-in-out infinite;
-}
-
-.float-lightning {
-  position: absolute;
-  font-size: 24px;
+.blob-3 {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #FFE66D, #FFF5A0);
   bottom: 30%;
-  right: 8%;
-  animation: wiggle 2s ease-in-out infinite;
+  left: 5%;
+  animation: floatClay 6s ease-in-out infinite;
 }
 
-@keyframes floatStar {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(-15px) rotate(15deg) scale(1.15);
-    opacity: 0.9;
-  }
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid;
+  opacity: 0.2;
 }
 
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  14% { transform: scale(1.2); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.2); }
-  70% { transform: scale(1); }
+.circle-1 {
+  width: 40px;
+  height: 40px;
+  border-color: #4FC3F7;
+  top: 15%;
+  right: 10%;
+  animation: float-gentle 4s ease-in-out infinite;
 }
 
-@keyframes wiggle {
-  0%, 100% { transform: rotate(-5deg); }
-  50% { transform: rotate(5deg); }
+.circle-2 {
+  width: 30px;
+  height: 30px;
+  border-color: #CE93D8;
+  bottom: 25%;
+  right: 5%;
+  animation: float-gentle 5s ease-in-out infinite reverse;
 }
 
-/* 顶部导航 - 毛玻璃效果 */
-.header {
+@keyframes floatClay {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(2deg); }
+  66% { transform: translateY(-4px) rotate(-1deg); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); opacity: 0.2; }
+  50% { transform: translateY(-10px); opacity: 0.4; }
+}
+
+/* 顶部导航 - Candy Claymorphism */
+.header-candy {
   position: sticky;
   top: 8px;
   z-index: 10;
@@ -275,43 +254,106 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 251, 245, 0.95) 100%);
   backdrop-filter: blur(12px);
   border-radius: 24px;
-  box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.05),
-    0 8px 30px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.8);
   margin: 0 8px 20px;
   padding-top: max(12px, env(safe-area-inset-top));
+  box-shadow:
+    6px 6px 16px rgba(0, 0, 0, 0.08),
+    -3px -3px 10px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.03),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
 }
 
-.title {
+/* 返回按钮 */
+.btn-candy-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #7A6A5A;
+  background: linear-gradient(180deg, #ffffff 0%, #FFFBF5 100%);
+  border: 2px solid white;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    3px 3px 8px rgba(0, 0, 0, 0.06),
+    -2px -2px 6px rgba(255, 255, 255, 1),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
+}
+
+.btn-candy-back:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    5px 5px 12px rgba(0, 0, 0, 0.08),
+    -3px -3px 8px rgba(255, 255, 255, 1),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
+}
+
+.btn-candy-back:active {
+  transform: scale(0.95);
+  box-shadow:
+    2px 2px 5px rgba(0, 0, 0, 0.06),
+    -1px -1px 4px rgba(255, 255, 255, 1),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.06),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.7);
+}
+
+.title-candy {
   font-size: 20px;
   font-weight: 800;
-  color: #37474F;
+  color: #5D4E37;
   letter-spacing: 1px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.title-icon {
-  font-size: 24px;
+.title-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 
-/* 进度环徽章 */
-.progress-badge {
+.dot-1 {
+  background: #FF8FA3;
+  box-shadow: 0 0 8px rgba(255, 143, 163, 0.6);
+  animation: glow-clay 2s ease-in-out infinite;
+}
+
+.dot-2 {
+  background: #4FC3F7;
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.6);
+  animation: glow-clay 2s ease-in-out infinite 1s;
+}
+
+/* 进度环徽章 - Candy Style */
+.progress-badge-candy {
   position: relative;
 }
 
-.progress-ring {
+.progress-ring-candy {
   width: 48px;
   height: 48px;
   position: relative;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow:
+    3px 3px 8px rgba(0, 0, 0, 0.08),
+    -2px -2px 6px rgba(255, 255, 255, 1),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.03),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
-.progress-ring svg {
+.progress-ring-candy svg {
   transform: rotate(-90deg);
   width: 100%;
   height: 100%;
@@ -325,7 +367,7 @@ onMounted(() => {
 
 .progress-ring-fill {
   fill: none;
-  stroke: url(#gradient);
+  stroke: linear-gradient(135deg, #FF8FA3 0%, #4FC3F7 100%);
   stroke-width: 3;
   stroke-linecap: round;
   transition: stroke-dasharray 0.5s ease;
@@ -340,12 +382,13 @@ onMounted(() => {
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  color: #FF8F00;
+  color: #FF8FA3;
 }
 
 .progress-text svg {
-  color: #FFB300;
+  color: #FFE66D;
   margin-bottom: -2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .main-content {
@@ -357,19 +400,21 @@ onMounted(() => {
   margin-bottom: 32px;
 }
 
-/* 阶段标题 - 彩色胶囊 */
+/* 阶段标题 - Candy Claymorphism */
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 251, 245, 0.95) 100%);
   border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 3px 0 0 rgba(0, 0, 0, 0.06),
-    0 6px 20px rgba(0, 0, 0, 0.06);
+    4px 4px 12px rgba(0, 0, 0, 0.06),
+    -2px -2px 8px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .section-badge {
@@ -379,6 +424,12 @@ onMounted(() => {
   padding: 8px 16px;
   border-radius: 16px;
   font-weight: 700;
+  border: 2px solid white;
+  box-shadow:
+    2px 2px 6px rgba(0, 0, 0, 0.05),
+    -1px -1px 4px rgba(255, 255, 255, 1),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
 .section-icon {
@@ -387,43 +438,46 @@ onMounted(() => {
 
 .section-title {
   font-size: 17px;
-  color: #37474F;
+  color: #5D4E37;
 }
 
-/* 各阶段颜色 */
+/* 各阶段颜色 - Candy Style */
 .badge-green {
-  background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
-  color: #2E7D32;
+  background: linear-gradient(135deg, #D4FFD4 0%, #98FF98 100%);
+  color: #4CAF50;
 }
 
 .badge-blue {
-  background: linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%);
-  color: #0277BD;
+  background: linear-gradient(135deg, #E1F5FE 0%, #81D4FA 100%);
+  color: #29B6F6;
 }
 
 .badge-yellow {
-  background: linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%);
-  color: #F57F17;
+  background: linear-gradient(135deg, #FFFDE7 0%, #FFF59D 100%);
+  color: #F9A825;
 }
 
 .badge-orange {
-  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
-  color: #E65100;
+  background: linear-gradient(135deg, #FFE4D6 0%, #FFCCBC 100%);
+  color: #FF8A65;
 }
 
 .badge-red {
-  background: linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%);
-  color: #C62828;
+  background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+  color: #EF5350;
 }
 
 .section-count {
   font-size: 14px;
-  color: #78909C;
+  color: #7A6A5A;
   font-weight: 600;
-  background: #F5F5F5;
+  background: linear-gradient(135deg, #ffffff 0%, #FFFBF5 100%);
   padding: 6px 14px;
   border-radius: 12px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 2px solid white;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.03),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.8);
 }
 
 .card-list {
@@ -432,17 +486,19 @@ onMounted(() => {
   gap: 14px;
 }
 
-/* 底部提示 */
-.footer {
+/* 底部提示 - Candy Style */
+.footer-candy {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 251, 245, 0.98) 100%);
   backdrop-filter: blur(8px);
-  border-top: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  border-top: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 -4px 20px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
   padding-bottom: max(14px, env(safe-area-inset-bottom));
 }
 
@@ -453,29 +509,36 @@ onMounted(() => {
   gap: 10px;
 }
 
-.footer-icon {
-  font-size: 18px;
-  animation: twinkle 2s ease-in-out infinite;
+.footer-bulb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFE66D 0%, #FFF59D 100%);
+  box-shadow: 0 0 10px rgba(255, 230, 109, 0.5);
+  animation: glow-clay 2s ease-in-out infinite;
+}
+
+.footer-star {
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, #FF8FA3 0%, #FFB3C1 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: float-gentle 2s ease-in-out infinite;
 }
 
 .footer p {
   font-size: 15px;
-  color: #5a7a9a;
+  color: #7A6A5A;
   font-weight: 500;
 }
 
-.footer-rocket {
-  font-size: 18px;
-  animation: float-gentle 2s ease-in-out infinite;
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.9); }
+@keyframes glow-clay {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 230, 109, 0.4); }
+  50% { box-shadow: 0 0 15px rgba(255, 230, 109, 0.8); }
 }
 
 @keyframes float-gentle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(10deg); }
 }
 </style>
