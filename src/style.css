@@ -4,53 +4,61 @@
 
 @layer base {
   :root {
-    --background: 210 30% 98%;
-    --foreground: 210 10% 20%;
+    --background: 30 50% 98%;
+    --foreground: 240 25% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 210 10% 20%;
+    --card-foreground: 240 25% 15%;
 
     /* ============================================
-       数学游戏男童主题配色 - 主使用
+       移动端儿童数学游戏配色 - 温暖珊瑚+清新薄荷
        ============================================ */
-    /* 主色 - 靛蓝 */
-    --game-primary: #4F46E5;
-    --game-primary-light: #6366F1;
-    --game-primary-lighter: #818CF8;
-    --game-primary-dark: #3730A3;
+    /* 主色 - 活力珊瑚红（温暖、高能量） */
+    --game-primary: #FF5757;
+    --game-primary-light: #FF7A7A;
+    --game-primary-lighter: #FFB3B3;
+    --game-primary-dark: #E63E3E;
 
-    /* 强调色 - 活力橙 */
-    --game-accent: #F97316;
-    --game-accent-light: #FB923C;
-    --game-accent-lighter: #FDBA74;
-    --game-accent-dark: #EA580C;
+    /* 辅色 - 清新薄荷绿 */
+    --game-secondary: #00D9C0;
+    --game-secondary-light: #33E6D4;
+    --game-secondary-lighter: #80F0E6;
+    --game-secondary-dark: #00B8A3;
 
-    /* 成功 - 科技绿 */
-    --game-success: #22C55E;
-    --game-success-light: #4ADE80;
-    --game-success-lighter: #86EFAC;
-    --game-success-dark: #16A34A;
+    /* 强调色 - 阳光金黄 */
+    --game-accent: #FFC107;
+    --game-accent-light: #FFD54F;
+    --game-accent-lighter: #FFECB3;
+    --game-accent-dark: #FFAB00;
 
-    /* 警告 - 活力黄 */
-    --game-warning: #EAB308;
-    --game-warning-light: #FACC15;
-    --game-warning-lighter: #FDE047;
-    --game-warning-dark: #CA8A04;
+    /* 成功 - 明亮草绿 */
+    --game-success: #4ADE80;
+    --game-success-light: #6EE79C;
+    --game-success-lighter: #A5F3C0;
+    --game-success-dark: #22C55E;
 
-    /* 错误 - 明亮红 */
-    --game-error: #EF4444;
-    --game-error-light: #F87171;
-    --game-error-lighter: #FCA5A5;
-    --game-error-dark: #DC2626;
+    /* 警告 - 温暖橙色 */
+    --game-warning: #FB923C;
+    --game-warning-light: #FDBA74;
+    --game-warning-lighter: #FED7AA;
+    --game-warning-dark: #F97316;
 
-    /* 中性色 */
-    --game-bg: #F1F5F9;
-    --game-bg-light: #F8FAFC;
-    --game-bg-dark: #E2E8F0;
+    /* 错误 - 鲜艳红色 */
+    --game-error: #F87171;
+    --game-error-light: #FCA5A5;
+    --game-error-lighter: #FECACA;
+    --game-error-dark: #EF4444;
+
+    /* 中性色 - 高对比度移动端优化 */
+    --game-bg: #FFFBF7;         /* 奶油白背景 */
+    --game-bg-light: #FFFFFF;
+    --game-bg-dark: #FFF0E6;
+    --game-bg-cream: #FFFBF7;
     --game-card: #FFFFFF;
-    --game-text: #1E293B;
-    --game-text-secondary: #64748B;
-    --game-text-muted: #94A3B8;
+    --game-text: #1A1A2E;       /* 深墨蓝，户外可读 */
+    --game-text-secondary: #4A5568;
+    --game-text-muted: #718096;
     --game-border: #E2E8F0;
+    --game-border-focus: #FF5757;
 
     /* 原有主题色变量（向后兼容） */
     --peppa-blue: #4A90E2;
@@ -139,12 +147,15 @@
   }
 
   body {
-    font-family: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(180deg, #F1F5F9 0%, #E0E7FF 100%);
+    font-family: 'Baloo 2', 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #FFFBF7 0%, #FFF0E6 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Prevent pull-to-refresh and overscroll effects on mobile */
+    /* 移动端触摸优化 */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* 防止下拉刷新和过度滚动 */
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -426,7 +437,7 @@
      数学游戏男童主题组件 - 现代科技感
      ============================================ */
 
-  /* 主按钮 - 靛蓝科技感 */
+  /* 主按钮 - 活力珊瑚红 */
   .btn-game-primary {
     @apply relative font-bold rounded-2xl transition-all duration-200;
     @apply bg-gradient-to-b from-game-primary to-game-primary-dark text-white;
@@ -434,18 +445,18 @@
     @apply hover:from-game-primary-light hover:to-game-primary;
     @apply active:scale-95;
     box-shadow:
-      0 4px 0 0 #312E81,
-      0 6px 12px rgba(79, 70, 229, 0.3);
+      0 4px 0 0 #B32525,
+      0 6px 12px rgba(255, 87, 87, 0.3);
   }
 
   .btn-game-primary:active {
     box-shadow:
-      0 2px 0 0 #312E81,
-      0 3px 6px rgba(79, 70, 229, 0.3);
+      0 2px 0 0 #B32525,
+      0 3px 6px rgba(255, 87, 87, 0.3);
     transform: translateY(2px) scale(0.98);
   }
 
-  /* 强调按钮 - 活力橙 */
+  /* 强调按钮 - 阳光金黄 */
   .btn-game-accent {
     @apply relative font-bold rounded-2xl transition-all duration-200;
     @apply bg-gradient-to-b from-game-accent to-game-accent-dark text-white;
@@ -453,14 +464,14 @@
     @apply hover:from-game-accent-light hover:to-game-accent;
     @apply active:scale-95;
     box-shadow:
-      0 4px 0 0 #7C2D12,
-      0 6px 12px rgba(249, 115, 22, 0.3);
+      0 4px 0 0 #CC7A00,
+      0 6px 12px rgba(255, 193, 7, 0.3);
   }
 
   .btn-game-accent:active {
     box-shadow:
-      0 2px 0 0 #7C2D12,
-      0 3px 6px rgba(249, 115, 22, 0.3);
+      0 2px 0 0 #CC7A00,
+      0 3px 6px rgba(255, 193, 7, 0.3);
     transform: translateY(2px) scale(0.98);
   }
 

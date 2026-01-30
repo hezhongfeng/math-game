@@ -8,49 +8,66 @@ export default {
     extend: {
       colors: {
         // ============================================
-        // 数学游戏男童主题配色 - 主使用
+        // 移动端儿童数学游戏配色 - 温暖珊瑚+清新薄荷
         // ============================================
         game: {
-          // 主色 - 靛蓝（科技感、稳重）
+          // 主色 - 活力珊瑚红（温暖、高能量、儿童喜欢）
           primary: {
-            DEFAULT: '#4F46E5',
-            light: '#6366F1',
-            lighter: '#818CF8',
-            dark: '#3730A3',
-            50: '#EEF2FF',
-            100: '#E0E7FF',
-            200: '#C7D2FE',
-            300: '#A5B4FC',
-            400: '#818CF8',
-            500: '#6366F1',
-            600: '#4F46E5',
-            700: '#4338CA',
-            800: '#3730A3',
-            900: '#312E81',
+            DEFAULT: '#FF5757',
+            light: '#FF7A7A',
+            lighter: '#FFB3B3',
+            dark: '#E63E3E',
+            50: '#FFF0F0',
+            100: '#FFE0E0',
+            200: '#FFC4C4',
+            300: '#FF9E9E',
+            400: '#FF7A7A',
+            500: '#FF5757',
+            600: '#E63E3E',
+            700: '#CC2E2E',
+            800: '#B32525',
+            900: '#991F1F',
           },
-          // 强调色 - 活力橙（能量、进取）
+          // 辅色 - 清新薄荷绿（活力、清爽、平衡）
+          secondary: {
+            DEFAULT: '#00D9C0',
+            light: '#33E6D4',
+            lighter: '#80F0E6',
+            dark: '#00B8A3',
+            50: '#E6FCFA',
+            100: '#B3F5F0',
+            200: '#80ECE4',
+            300: '#4DE3D8',
+            400: '#1ADACC',
+            500: '#00D9C0',
+            600: '#00B8A3',
+            700: '#009E8C',
+            800: '#008575',
+            900: '#006B5E',
+          },
+          // 强调色 - 阳光金黄（快乐、醒目）
           accent: {
-            DEFAULT: '#F97316',
-            light: '#FB923C',
-            lighter: '#FDBA74',
-            dark: '#EA580C',
-            50: '#FFF7ED',
-            100: '#FFEDD5',
-            200: '#FED7AA',
-            300: '#FDBA74',
-            400: '#FB923C',
-            500: '#F97316',
-            600: '#EA580C',
-            700: '#C2410C',
-            800: '#9A3412',
-            900: '#7C2D12',
+            DEFAULT: '#FFC107',
+            light: '#FFD54F',
+            lighter: '#FFECB3',
+            dark: '#FFAB00',
+            50: '#FFF8E1',
+            100: '#FFECB3',
+            200: '#FFE082',
+            300: '#FFD54F',
+            400: '#FFCA28',
+            500: '#FFC107',
+            600: '#FFB300',
+            700: '#FFAB00',
+            800: '#FF8F00',
+            900: '#FF6F00',
           },
-          // 科技绿 - 成功状态
+          // 成功状态 - 明亮草绿
           success: {
-            DEFAULT: '#22C55E',
-            light: '#4ADE80',
-            lighter: '#86EFAC',
-            dark: '#16A34A',
+            DEFAULT: '#4ADE80',
+            light: '#6EE79C',
+            lighter: '#A5F3C0',
+            dark: '#22C55E',
             50: '#F0FDF4',
             100: '#DCFCE7',
             200: '#BBF7D0',
@@ -62,29 +79,29 @@ export default {
             800: '#166534',
             900: '#14532D',
           },
-          // 警告黄
+          // 警告 - 温暖橙色
           warning: {
-            DEFAULT: '#EAB308',
-            light: '#FACC15',
-            lighter: '#FDE047',
-            dark: '#CA8A04',
-            50: '#FEFCE8',
-            100: '#FEF9C3',
-            200: '#FEF08A',
-            300: '#FDE047',
-            400: '#FACC15',
-            500: '#EAB308',
-            600: '#CA8A04',
-            700: '#A16207',
-            800: '#854D0E',
-            900: '#713F12',
+            DEFAULT: '#FB923C',
+            light: '#FDBA74',
+            lighter: '#FED7AA',
+            dark: '#F97316',
+            50: '#FFF7ED',
+            100: '#FFEDD5',
+            200: '#FED7AA',
+            300: '#FDBA74',
+            400: '#FB923C',
+            500: '#F97316',
+            600: '#EA580C',
+            700: '#C2410C',
+            800: '#9A3412',
+            900: '#7C2D12',
           },
-          // 错误红
+          // 错误 - 鲜艳红色
           error: {
-            DEFAULT: '#EF4444',
-            light: '#F87171',
-            lighter: '#FCA5A5',
-            dark: '#DC2626',
+            DEFAULT: '#F87171',
+            light: '#FCA5A5',
+            lighter: '#FECACA',
+            dark: '#EF4444',
             50: '#FEF2F2',
             100: '#FEE2E2',
             200: '#FECACA',
@@ -96,30 +113,34 @@ export default {
             800: '#991B1B',
             900: '#7F1D1D',
           },
-          // 中性色
+          // 中性色 - 高对比度移动端优化
           neutral: {
             // 背景色
             bg: {
-              DEFAULT: '#F1F5F9',
-              light: '#F8FAFC',
-              dark: '#E2E8F0',
+              DEFAULT: '#FFFBF7',    // 奶油白
+              light: '#FFFFFF',
+              dark: '#FFF0E6',
+              cream: '#FFFBF7',
             },
             // 卡片
             card: {
               DEFAULT: '#FFFFFF',
-              secondary: '#F8FAFC',
+              secondary: '#FFF8F0',
+              elevated: '#FFFFFF',
             },
-            // 文字
+            // 文字 - 高对比度确保户外可读
             text: {
-              primary: '#1E293B',
-              secondary: '#64748B',
-              muted: '#94A3B8',
+              primary: '#1A1A2E',    // 深墨蓝，高对比
+              secondary: '#4A5568',   // 深灰
+              muted: '#718096',       // 中灰
+              placeholder: '#A0AEC0', // 浅灰
             },
             // 边框
             border: {
               DEFAULT: '#E2E8F0',
               light: '#F1F5F9',
               dark: '#CBD5E1',
+              focus: '#FF5757',
             },
           },
         },
@@ -748,17 +769,17 @@ export default {
       },
       boxShadow: {
         // ============================================
-        // 数学游戏男童主题阴影 - 主使用
+        // 移动端儿童数学游戏阴影 - 珊瑚红主题
         // ============================================
-        'game': '0 2px 8px rgba(79, 70, 229, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)',
-        'game-lg': '0 4px 16px rgba(79, 70, 229, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
-        'game-xl': '0 8px 32px rgba(79, 70, 229, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1)',
-        'game-button': '0 3px 0 0 #3730A3, 0 4px 12px rgba(79, 70, 229, 0.3)',
-        'game-button-hover': '0 5px 0 0 #3730A3, 0 8px 20px rgba(79, 70, 229, 0.4)',
-        'game-button-active': '0 1px 0 0 #3730A3, 0 2px 8px rgba(79, 70, 229, 0.3)',
-        'game-glow': '0 0 20px rgba(79, 70, 229, 0.5)',
-        'game-glow-success': '0 0 20px rgba(34, 197, 94, 0.5)',
-        'game-glow-accent': '0 0 20px rgba(249, 115, 22, 0.5)',
+        'game': '0 2px 8px rgba(255, 87, 87, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)',
+        'game-lg': '0 4px 16px rgba(255, 87, 87, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+        'game-xl': '0 8px 32px rgba(255, 87, 87, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1)',
+        'game-button': '0 3px 0 0 #B32525, 0 4px 12px rgba(255, 87, 87, 0.3)',
+        'game-button-hover': '0 5px 0 0 #B32525, 0 8px 20px rgba(255, 87, 87, 0.4)',
+        'game-button-active': '0 1px 0 0 #B32525, 0 2px 8px rgba(255, 87, 87, 0.3)',
+        'game-glow': '0 0 20px rgba(255, 87, 87, 0.5)',
+        'game-glow-success': '0 0 20px rgba(74, 222, 128, 0.5)',
+        'game-glow-accent': '0 0 20px rgba(255, 193, 7, 0.5)',
         // 统一的可爱阴影系统
         'cute': '0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)',
         'cute-lg': '0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08)',
