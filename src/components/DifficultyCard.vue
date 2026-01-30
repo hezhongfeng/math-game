@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { Lock, Star, Check, ChevronRight } from 'lucide-vue-next'
-import { CUTE_EMOJIS } from '../config/constants'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -35,58 +34,12 @@ const stars = computed(() => {
   return []
 })
 
-const cuteEmoji = computed(() => CUTE_EMOJIS[props.difficulty.id % CUTE_EMOJIS.length])
-
 const accuracyColor = computed(() => {
   if (!props.bestScore) return ''
   if (props.bestScore.accuracy >= 80) return 'accuracy-high'
   if (props.bestScore.accuracy >= 60) return 'accuracy-medium'
   return 'accuracy-low'
 })
-
-// 根据难度颜色获取图标渐变
-function getIconGradient(color) {
-  const gradients = {
-    'bg-green-400': 'linear-gradient(135deg, #C8E6C9 0%, #81C784 100%)',
-    'bg-green-500': 'linear-gradient(135deg, #A5D6A7 0%, #66BB6A 100%)',
-    'bg-green-600': 'linear-gradient(135deg, #81C784 0%, #4CAF50 100%)',
-    'bg-blue-400': 'linear-gradient(135deg, #B3E5FC 0%, #4FC3F7 100%)',
-    'bg-blue-500': 'linear-gradient(135deg, #81D4FA 0%, #29B6F6 100%)',
-    'bg-blue-600': 'linear-gradient(135deg, #4FC3F7 0%, #03A9F4 100%)',
-    'bg-yellow-400': 'linear-gradient(135deg, #FFF9C4 0%, #FFD54F 100%)',
-    'bg-yellow-500': 'linear-gradient(135deg, #FFF59D 0%, #FFCA28 100%)',
-    'bg-yellow-600': 'linear-gradient(135deg, #FFD54F 0%, #FFB300 100%)',
-    'bg-orange-400': 'linear-gradient(135deg, #FFE0B2 0%, #FFB74D 100%)',
-    'bg-orange-500': 'linear-gradient(135deg, #FFCC80 0%, #FFA726 100%)',
-    'bg-orange-600': 'linear-gradient(135deg, #FFB74D 0%, #FF9800 100%)',
-    'bg-red-400': 'linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%)',
-    'bg-red-500': 'linear-gradient(135deg, #EF9A9A 0%, #EF5350 100%)',
-    'bg-red-600': 'linear-gradient(135deg, #E57373 0%, #F44336 100%)',
-  }
-  return gradients[color] || 'linear-gradient(135deg, #E3F2FD, #BBDEFB)'
-}
-
-// 获取文字颜色
-function getTextColor(color) {
-  const colors = {
-    'bg-green-400': '#2E7D32',
-    'bg-green-500': '#2E7D32',
-    'bg-green-600': '#1B5E20',
-    'bg-blue-400': '#0277BD',
-    'bg-blue-500': '#01579B',
-    'bg-blue-600': '#014377',
-    'bg-yellow-400': '#F57F17',
-    'bg-yellow-500': '#EF6C00',
-    'bg-yellow-600': '#E65100',
-    'bg-orange-400': '#E65100',
-    'bg-orange-500': '#D84315',
-    'bg-orange-600': '#BF360C',
-    'bg-red-400': '#C62828',
-    'bg-red-500': '#B71C1C',
-    'bg-red-600': '#8B0000',
-  }
-  return colors[color] || '#37474F'
-}
 
 // 获取难度样式类
 function getDifficultyClass(level) {
@@ -110,7 +63,7 @@ function handleSelect() {
 
 <template>
   <div
-    class="card animate-card-entrance"
+    class="card"
     :class="{
       'card-locked': isLocked,
       'card-unlocked': !isLocked,
@@ -118,31 +71,26 @@ function handleSelect() {
     }"
     @click="handleSelect"
   >
-    <!-- 图标区域 - 立体效果 -->
+    <!-- 图标区域 -->
     <div
       class="icon-wrapper"
       :class="{ 'icon-locked': isLocked }"
-      :style="{ background: isLocked ? 'linear-gradient(135deg, #f5f5f5, #e0e0e0)' : getIconGradient(difficulty.color) }"
     >
-      <span class="emoji" :class="{ 'emoji-locked': isLocked }">{{ cuteEmoji }}</span>
+      <span class="level-number">{{ difficulty.id }}</span>
       <div v-if="isCompleted && !isLocked" class="completed-badge">
-        <Check :size="14" />
+        <Check :size="12" />
       </div>
     </div>
 
     <!-- 中间内容 -->
     <div class="content">
       <div class="name-row">
-        <span
-          class="name"
-          :class="{ 'name-locked': isLocked }"
-          :style="{ color: isLocked ? '#9E9E9E' : getTextColor(difficulty.color) }"
-        >
+        <span class="name" :class="{ 'name-locked': isLocked }">
           {{ difficulty.name }}
         </span>
         <div v-if="!isLocked" class="status-badges">
           <span v-if="isCompleted" class="mini-badge completed">
-            <Check :size="12" />
+            <Check :size="10" />
           </span>
           <span v-else class="mini-badge new">NEW</span>
         </div>
@@ -159,7 +107,7 @@ function handleSelect() {
           <Star
             v-for="n in 3"
             :key="n"
-            :size="16"
+            :size="14"
             :fill="n <= stars.length ? 'currentColor' : 'none'"
             class="star-icon"
             :class="{ 'star-filled': n <= stars.length, 'star-empty': n > stars.length }"
@@ -170,7 +118,7 @@ function handleSelect() {
       <div v-else-if="!isLocked" class="status-row">
         <span class="question-count">{{ difficulty.questionCount }}题挑战</span>
         <span class="difficulty-badge" :class="getDifficultyClass(difficulty.level)">
-          {{ difficulty.operation === 'add' ? '➕' : difficulty.operation === 'subtract' ? '➖' : '➕➖' }}
+          {{ difficulty.operation === 'add' ? '+' : difficulty.operation === 'subtract' ? '-' : '+/-' }}
         </span>
       </div>
 
@@ -180,85 +128,53 @@ function handleSelect() {
       </div>
     </div>
 
-    <!-- 箭头 - 动态效果 -->
+    <!-- 箭头 -->
     <div class="arrow-wrapper" :class="{ 'arrow-locked': isLocked }">
-      <ChevronRight :size="24" class="arrow" />
+      <ChevronRight :size="20" class="arrow" />
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Candy Claymorphism 风格卡片 */
 .card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  border-radius: 24px;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  animation: cardSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  min-height: 88px;
+  animation: cardSlideIn 0.4s ease-out both;
+  min-height: 80px;
 }
 
-/* 已解锁卡片 - Candy Claymorphism */
+/* 已解锁卡片 */
 .card-unlocked {
-  background: linear-gradient(135deg, #ffffff 0%, #FFFBF5 100%);
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    6px 6px 16px rgba(0, 0, 0, 0.08),
-    -3px -3px 10px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .card-unlocked:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow:
-    10px 10px 25px rgba(0, 0, 0, 0.1),
-    -5px -5px 15px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-unlocked:active {
   transform: scale(0.98);
-  box-shadow:
-    3px 3px 10px rgba(0, 0, 0, 0.08),
-    -2px -2px 8px rgba(255, 255, 255, 0.9),
-    inset -3px -3px 8px rgba(0, 0, 0, 0.05),
-    inset 3px 3px 8px rgba(255, 255, 255, 0.7);
-  transition: all 0.1s ease;
 }
 
-/* 已完成卡片 - 薄荷绿光晕 */
+/* 已完成卡片 */
 .card-completed {
-  background: linear-gradient(135deg, #ffffff 0%, #F1F8E9 100%);
-  border-color: rgba(152, 255, 152, 0.5);
-  box-shadow:
-    0 0 15px rgba(152, 255, 152, 0.3),
-    6px 6px 16px rgba(0, 0, 0, 0.06),
-    -3px -3px 10px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
-}
-
-.card-completed:hover {
-  border-color: #98FF98;
-  box-shadow:
-    0 0 20px rgba(152, 255, 152, 0.5),
-    10px 10px 25px rgba(0, 0, 0, 0.08),
-    -5px -5px 15px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #ffffff 0%, rgba(34, 197, 94, 0.1) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 /* 锁定卡片 */
 .card-locked {
-  background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
-  border: 3px dashed #e0e0e0;
+  background: var(--game-bg-light);
+  border: 1px dashed rgba(226, 232, 240, 0.5);
   opacity: 0.7;
   cursor: not-allowed;
 }
@@ -266,68 +182,57 @@ function handleSelect() {
 @keyframes cardSlideIn {
   0% {
     opacity: 0;
-    transform: translateX(-20px) scale(0.95);
+    transform: translateX(-15px);
   }
   100% {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateX(0);
   }
 }
 
-/* 图标区域 - Candy Claymorphism */
+/* 图标区域 */
 .icon-wrapper {
-  width: 60px;
-  height: 60px;
-  border-radius: 18px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   position: relative;
-  border: 3px solid white;
-  box-shadow:
-    4px 4px 10px rgba(0, 0, 0, 0.08),
-    -2px -2px 6px rgba(255, 255, 255, 1),
-    inset -1px -1px 4px rgba(0, 0, 0, 0.03),
-    inset 1px 1px 4px rgba(255, 255, 255, 0.9);
-  transition: all 0.2s ease;
-}
-
-.card:hover .icon-wrapper:not(.icon-locked) {
-  transform: scale(1.08);
+  background: linear-gradient(135deg, var(--game-primary) 0%, var(--game-primary-dark) 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.4);
 }
 
 .icon-locked {
-  box-shadow:
-    inset 2px 2px 6px rgba(0, 0, 0, 0.06),
-    inset -1px -1px 4px rgba(255, 255, 255, 0.8);
-  border-color: #f0f0f0;
+  background: var(--game-border);
+  color: var(--game-text-muted);
+  box-shadow: none;
 }
 
-.emoji {
-  font-size: 34px;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
+.level-number {
+  font-size: 20px;
+  font-weight: 800;
 }
 
-.emoji-locked {
-  filter: grayscale(0.5) opacity(0.6);
-}
-
-/* 完成标记 - Candy Style */
+/* 完成标记 */
 .completed-badge {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 22px;
-  height: 22px;
+  bottom: -3px;
+  right: -3px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #98FF98, #6BCB77);
+  background: var(--game-success);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(107, 203, 119, 0.5);
   border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.4);
 }
 
 .content {
@@ -338,98 +243,97 @@ function handleSelect() {
 .name-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .name {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  font-family: inherit;
+  color: var(--game-text);
   letter-spacing: 0.3px;
 }
 
 .name-locked {
-  color: #9E9E9E;
+  color: var(--game-text-muted);
 }
 
 /* 状态徽章 */
 .status-badges {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .mini-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 9px;
   font-weight: 700;
 }
 
 .mini-badge.completed {
-  background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
-  color: #2E7D32;
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--game-success-dark);
 }
 
 .mini-badge.new {
-  background: linear-gradient(135deg, #FFCCBC, #FFAB91);
-  color: #D84315;
-  animation: pulse-gentle 2s infinite;
+  background: rgba(249, 115, 22, 0.2);
+  color: var(--game-accent-dark);
 }
 
 .lock-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: #E0E0E0;
-  color: #9E9E9E;
+  background: var(--game-border);
+  color: var(--game-text-muted);
 }
 
 /* 统计行 */
 .stats-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .stat-score {
-  font-size: 15px;
-  color: #546E7A;
+  font-size: 14px;
+  color: var(--game-text-secondary);
   font-weight: 600;
 }
 
 .stat-divider {
-  color: #BDBDBD;
+  color: var(--game-border);
   font-weight: 300;
 }
 
 .stat-accuracy {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
 }
 
 .stat-accuracy.accuracy-high {
-  color: #4CAF50;
+  color: var(--game-success-dark);
 }
 
 .stat-accuracy.accuracy-medium {
-  color: #FF9800;
+  color: var(--game-warning-dark);
 }
 
 .stat-accuracy.accuracy-low {
-  color: #F44336;
+  color: var(--game-error-dark);
 }
 
 /* 星星评分 */
 .star-rating {
   display: flex;
-  gap: 2px;
+  gap: 1px;
   margin-left: auto;
 }
 
@@ -438,19 +342,18 @@ function handleSelect() {
 }
 
 .star-filled {
-  color: #FFD54F;
-  filter: drop-shadow(0 1px 2px rgba(255, 213, 79, 0.4));
+  color: var(--game-warning);
 }
 
 .star-empty {
-  color: #E0E0E0;
+  color: var(--game-border);
 }
 
 /* 状态行 */
 .status-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .status-row.locked {
@@ -458,93 +361,87 @@ function handleSelect() {
 }
 
 .question-count {
-  font-size: 15px;
-  color: #78909C;
+  font-size: 13px;
+  color: var(--game-text-secondary);
   font-weight: 500;
 }
 
 /* 难度徽章 */
 .difficulty-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
   margin-left: auto;
+  background: var(--game-bg);
+  color: var(--game-text-secondary);
 }
 
 .level-beginner {
-  background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--game-success-dark);
 }
 
 .level-elementary {
-  background: linear-gradient(135deg, #B3E5FC, #81D4FA);
+  background: rgba(249, 115, 22, 0.2);
+  color: var(--game-accent-dark);
 }
 
 .level-intermediate {
-  background: linear-gradient(135deg, #FFF9C4, #FFF59D);
+  background: rgba(234, 179, 8, 0.2);
+  color: var(--game-warning-dark);
 }
 
 .level-advanced {
-  background: linear-gradient(135deg, #FFE0B2, #FFCC80);
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--game-error-dark);
 }
 
 .level-expert {
-  background: linear-gradient(135deg, #FFCDD2, #EF9A9A);
-}
-
-.level-default {
-  background: linear-gradient(135deg, #E0E0E0, #BDBDBD);
+  background: rgba(79, 70, 229, 0.2);
+  color: var(--game-primary-dark);
 }
 
 .lock-icon {
-  color: #9E9E9E;
+  color: var(--game-text-muted);
   flex-shrink: 0;
 }
 
 .locked-text {
-  font-size: 13px;
-  color: #9E9E9E;
+  font-size: 12px;
+  color: var(--game-text-muted);
   font-weight: 500;
 }
 
-/* 箭头 - Candy Style */
+/* 箭头 */
 .arrow-wrapper {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #FFFBF5, #ffffff);
-  border: 2px solid white;
+  background: var(--game-bg);
   transition: all 0.2s ease;
-  box-shadow:
-    2px 2px 6px rgba(0, 0, 0, 0.05),
-    -1px -1px 4px rgba(255, 255, 255, 1),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
-    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
 .arrow {
-  color: #BDBDBD;
+  color: var(--game-text-muted);
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .card-unlocked .arrow-wrapper {
-  background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+  background: rgba(79, 70, 229, 0.1);
 }
 
 .card-unlocked .arrow {
-  color: #29B6F6;
+  color: var(--game-primary-dark);
 }
 
 .card-unlocked:hover .arrow-wrapper {
-  background: linear-gradient(135deg, #4FC3F7, #81D4FA);
-  transform: translateX(4px);
-  box-shadow:
-    3px 3px 8px rgba(79, 195, 247, 0.3),
-    -1px -1px 4px rgba(255, 255, 255, 1);
+  background: var(--game-primary-dark);
+  transform: translateX(3px);
 }
 
 .card-unlocked:hover .arrow {
@@ -552,17 +449,11 @@ function handleSelect() {
 }
 
 .arrow-locked {
-  background: linear-gradient(135deg, #f5f5f5, #eeeeee);
-  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05);
+  background: var(--game-bg);
 }
 
 .arrow-locked .arrow {
-  color: #bdbdbd;
+  color: var(--game-border);
   opacity: 0.5;
-}
-
-@keyframes pulse-gentle {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
 }
 </style>

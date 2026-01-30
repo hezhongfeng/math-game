@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, Trophy } from 'lucide-vue-next'
+import { ArrowLeft, Trophy, Lock, CheckCircle2 } from 'lucide-vue-next'
 import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
@@ -50,18 +50,6 @@ function isDifficultyLocked(difficulty) {
   return lockedStatusMap.value.get(difficulty.id) ?? false
 }
 
-// 获取阶段图标
-function getStageIcon(stageName) {
-  const icons = {
-    '入门': '🌱',
-    '初级': '🌿',
-    '中级': '🌲',
-    '进级': '🏔️',
-    '高级': '⭐'
-  }
-  return icons[stageName] || '🎯'
-}
-
 onMounted(() => {
   window.scrollTo(0, 0)
 })
@@ -69,34 +57,18 @@ onMounted(() => {
 
 <template>
   <div class="page">
-    <!-- 装饰元素 - Candy Style -->
-    <div class="decorations">
-      <div class="deco-blob blob-1"></div>
-      <div class="deco-blob blob-2"></div>
-      <div class="deco-blob blob-3"></div>
-      <div class="deco-circle circle-1"></div>
-      <div class="deco-circle circle-2"></div>
-    </div>
-
-    <!-- 顶部导航 - Candy Claymorphism -->
-    <header class="header-candy">
-      <button
-        class="btn-candy-back"
-        @click="goBack"
-      >
+    <!-- 顶部导航 -->
+    <header class="header">
+      <button class="btn-back" @click="goBack">
         <ArrowLeft :size="20" />
         <span>返回</span>
       </button>
 
-      <h1 class="title-candy">
-        <span class="title-dot dot-1"></span>
-        选择关卡
-        <span class="title-dot dot-2"></span>
-      </h1>
+      <h1 class="title">选择关卡</h1>
 
-      <!-- 进度环徽章 -->
-      <div class="progress-badge-candy">
-        <div class="progress-ring-candy">
+      <!-- 进度徽章 -->
+      <div class="progress-badge">
+        <div class="progress-ring">
           <svg viewBox="0 0 36 36">
             <path
               class="progress-ring-bg"
@@ -109,7 +81,7 @@ onMounted(() => {
             />
           </svg>
           <div class="progress-text">
-            <Trophy :size="14" />
+            <Trophy :size="12" />
             <span>{{ completedCount }}</span>
           </div>
         </div>
@@ -119,11 +91,10 @@ onMounted(() => {
     <!-- 主内容 -->
     <main class="main-content">
       <div v-for="(group, groupIndex) in DIFFICULTY_GROUPS" :key="group.name" class="section">
-        <!-- 阶段标题 - 彩色胶囊 -->
-        <div class="section-header animate-fade-in-up" :style="{ animationDelay: `${groupIndex * 100}ms` }">
+        <!-- 阶段标题 -->
+        <div class="section-header" :style="{ animationDelay: `${groupIndex * 100}ms` }">
           <div class="section-badge" :class="`badge-${group.color}`">
-            <span class="section-icon">{{ getStageIcon(group.name) }}</span>
-            <h2 class="section-title">{{ group.name }}阶段</h2>
+            <h2 class="section-title">{{ group.name }}</h2>
           </div>
           <span class="section-count">{{ group.levels.length }}关</span>
         </div>
@@ -144,13 +115,9 @@ onMounted(() => {
       </div>
     </main>
 
-    <!-- 底部提示 - Candy Style -->
-    <footer class="footer-candy">
-      <div class="footer-content">
-        <div class="footer-bulb"></div>
-        <p>从第一关开始，依次解锁更高难度</p>
-        <div class="footer-star"></div>
-      </div>
+    <!-- 底部提示 -->
+    <footer class="footer">
+      <p>依次完成关卡，解锁更高难度</p>
     </footer>
   </div>
 </template>
@@ -159,94 +126,16 @@ onMounted(() => {
 .page {
   min-height: 100vh;
   position: relative;
-  padding: 12px 12px 80px;
-  background: linear-gradient(180deg, #FFFBF5 0%, #F0F9FF 40%, #FFF8E7 70%, #FFFBF5 100%);
+  padding: 12px 12px 60px;
+  background: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg) 50%, var(--game-bg-dark) 100%);
   touch-action: manipulation;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
+  padding-bottom: max(60px, calc(50px + env(safe-area-inset-bottom)));
 }
 
-/* 装饰元素 - Candy Style */
-.decorations {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.deco-blob {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.3;
-  filter: blur(1px);
-}
-
-.blob-1 {
-  width: 120px;
-  height: 120px;
-  background: linear-gradient(135deg, #FF8FA3, #FFB3C1);
-  top: 5%;
-  left: -30px;
-  animation: floatClay 5s ease-in-out infinite;
-}
-
-.blob-2 {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #98FF98, #B8FFB8);
-  top: 20%;
-  right: -20px;
-  animation: floatClay 4s ease-in-out infinite reverse;
-}
-
-.blob-3 {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #FFE66D, #FFF5A0);
-  bottom: 30%;
-  left: 5%;
-  animation: floatClay 6s ease-in-out infinite;
-}
-
-.deco-circle {
-  position: absolute;
-  border-radius: 50%;
-  border: 3px solid;
-  opacity: 0.2;
-}
-
-.circle-1 {
-  width: 40px;
-  height: 40px;
-  border-color: #4FC3F7;
-  top: 15%;
-  right: 10%;
-  animation: float-gentle 4s ease-in-out infinite;
-}
-
-.circle-2 {
-  width: 30px;
-  height: 30px;
-  border-color: #CE93D8;
-  bottom: 25%;
-  right: 5%;
-  animation: float-gentle 5s ease-in-out infinite reverse;
-}
-
-@keyframes floatClay {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  33% { transform: translateY(-8px) rotate(2deg); }
-  66% { transform: translateY(-4px) rotate(-1deg); }
-}
-
-@keyframes float-gentle {
-  0%, 100% { transform: translateY(0); opacity: 0.2; }
-  50% { transform: translateY(-10px); opacity: 0.4; }
-}
-
-/* 顶部导航 - Candy Claymorphism */
-.header-candy {
+/* 顶部导航 */
+.header {
   position: sticky;
   top: 8px;
   z-index: 10;
@@ -254,106 +143,62 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 251, 245, 0.95) 100%);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border-radius: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  margin: 0 8px 20px;
-  padding-top: max(12px, env(safe-area-inset-top));
-  box-shadow:
-    6px 6px 16px rgba(0, 0, 0, 0.08),
-    -3px -3px 10px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.03),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  margin: 0 4px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* 返回按钮 */
-.btn-candy-back {
+.btn-back {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 16px;
-  font-size: 15px;
+  padding: 8px 14px;
+  font-size: 14px;
   font-weight: 600;
-  color: #7A6A5A;
-  background: linear-gradient(180deg, #ffffff 0%, #FFFBF5 100%);
-  border: 2px solid white;
-  border-radius: 20px;
+  color: var(--game-text-secondary);
+  background: var(--game-bg-light);
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow:
-    3px 3px 8px rgba(0, 0, 0, 0.06),
-    -2px -2px 6px rgba(255, 255, 255, 1),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
-    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
 }
 
-.btn-candy-back:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    5px 5px 12px rgba(0, 0, 0, 0.08),
-    -3px -3px 8px rgba(255, 255, 255, 1),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
-    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
+.btn-back:hover {
+  background: var(--game-bg);
+  color: var(--game-primary-dark);
 }
 
-.btn-candy-back:active {
+.btn-back:active {
   transform: scale(0.95);
-  box-shadow:
-    2px 2px 5px rgba(0, 0, 0, 0.06),
-    -1px -1px 4px rgba(255, 255, 255, 1),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.06),
-    inset 2px 2px 5px rgba(255, 255, 255, 0.7);
 }
 
-.title-candy {
-  font-size: 20px;
-  font-weight: 800;
-  color: #5D4E37;
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--game-text);
   letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
-.title-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.dot-1 {
-  background: #FF8FA3;
-  box-shadow: 0 0 8px rgba(255, 143, 163, 0.6);
-  animation: glow-clay 2s ease-in-out infinite;
-}
-
-.dot-2 {
-  background: #4FC3F7;
-  box-shadow: 0 0 8px rgba(79, 195, 247, 0.6);
-  animation: glow-clay 2s ease-in-out infinite 1s;
-}
-
-/* 进度环徽章 - Candy Style */
-.progress-badge-candy {
+/* 进度环徽章 */
+.progress-badge {
   position: relative;
 }
 
-.progress-ring-candy {
-  width: 48px;
-  height: 48px;
+.progress-ring {
+  width: 44px;
+  height: 44px;
   position: relative;
   background: white;
   border-radius: 50%;
-  border: 2px solid white;
   box-shadow:
-    3px 3px 8px rgba(0, 0, 0, 0.08),
-    -2px -2px 6px rgba(255, 255, 255, 1),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.03),
-    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
-.progress-ring-candy svg {
+.progress-ring svg {
   transform: rotate(-90deg);
   width: 100%;
   height: 100%;
@@ -361,13 +206,13 @@ onMounted(() => {
 
 .progress-ring-bg {
   fill: none;
-  stroke: #E3F2FD;
+  stroke: var(--game-border);
   stroke-width: 3;
 }
 
 .progress-ring-fill {
   fill: none;
-  stroke: linear-gradient(135deg, #FF8FA3 0%, #4FC3F7 100%);
+  stroke: var(--game-primary-dark);
   stroke-width: 3;
   stroke-linecap: round;
   transition: stroke-dasharray 0.5s ease;
@@ -380,165 +225,112 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: #FF8FA3;
+  color: var(--game-primary-dark);
 }
 
 .progress-text svg {
-  color: #FFE66D;
+  color: var(--game-accent);
   margin-bottom: -2px;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .main-content {
-  padding: 16px;
+  padding: 8px;
   padding-bottom: 40px;
 }
 
 .section {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
-/* 阶段标题 - Candy Claymorphism */
+/* 阶段标题 */
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding: 10px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 251, 245, 0.95) 100%);
-  border-radius: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.8);
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: white;
+  border-radius: 14px;
   box-shadow:
-    4px 4px 12px rgba(0, 0, 0, 0.06),
-    -2px -2px 8px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.02),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9);
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
 .section-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  border-radius: 16px;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 10px;
   font-weight: 700;
-  border: 2px solid white;
-  box-shadow:
-    2px 2px 6px rgba(0, 0, 0, 0.05),
-    -1px -1px 4px rgba(255, 255, 255, 1),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.02),
-    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
-}
-
-.section-icon {
-  font-size: 24px;
+  font-size: 14px;
 }
 
 .section-title {
-  font-size: 17px;
-  color: #5D4E37;
+  font-size: 15px;
 }
 
-/* 各阶段颜色 - Candy Style */
+/* 各阶段颜色 - 男童科技风 */
 .badge-green {
-  background: linear-gradient(135deg, #D4FFD4 0%, #98FF98 100%);
-  color: #4CAF50;
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--game-success-dark);
 }
 
 .badge-blue {
-  background: linear-gradient(135deg, #E1F5FE 0%, #81D4FA 100%);
-  color: #29B6F6;
+  background: rgba(79, 70, 229, 0.15);
+  color: var(--game-primary-dark);
 }
 
 .badge-yellow {
-  background: linear-gradient(135deg, #FFFDE7 0%, #FFF59D 100%);
-  color: #F9A825;
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--game-warning-dark);
 }
 
 .badge-orange {
-  background: linear-gradient(135deg, #FFE4D6 0%, #FFCCBC 100%);
-  color: #FF8A65;
+  background: rgba(249, 115, 22, 0.15);
+  color: var(--game-accent-dark);
 }
 
 .badge-red {
-  background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
-  color: #EF5350;
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--game-error-dark);
 }
 
 .section-count {
-  font-size: 14px;
-  color: #7A6A5A;
+  font-size: 13px;
+  color: var(--game-text-secondary);
   font-weight: 600;
-  background: linear-gradient(135deg, #ffffff 0%, #FFFBF5 100%);
-  padding: 6px 14px;
-  border-radius: 12px;
-  border: 2px solid white;
-  box-shadow:
-    inset 2px 2px 4px rgba(0, 0, 0, 0.03),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.8);
+  background: var(--game-bg-light);
+  padding: 5px 12px;
+  border-radius: 10px;
 }
 
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
-/* 底部提示 - Candy Style */
-.footer-candy {
+/* 底部提示 */
+.footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 251, 245, 0.98) 100%);
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(8px);
-  border-top: 3px solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    0 -4px 20px rgba(0, 0, 0, 0.06),
-    inset 0 2px 4px rgba(255, 255, 255, 0.9);
-  padding-bottom: max(14px, env(safe-area-inset-bottom));
-}
-
-.footer-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.footer-bulb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FFE66D 0%, #FFF59D 100%);
-  box-shadow: 0 0 10px rgba(255, 230, 109, 0.5);
-  animation: glow-clay 2s ease-in-out infinite;
-}
-
-.footer-star {
-  width: 16px;
-  height: 16px;
-  background: linear-gradient(135deg, #FF8FA3 0%, #FFB3C1 100%);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  animation: float-gentle 2s ease-in-out infinite;
+  border-top: 1px solid var(--game-border);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
 .footer p {
-  font-size: 15px;
-  color: #7A6A5A;
+  font-size: 14px;
+  color: var(--game-text-secondary);
   font-weight: 500;
-}
-
-@keyframes glow-clay {
-  0%, 100% { box-shadow: 0 0 5px rgba(255, 230, 109, 0.4); }
-  50% { box-shadow: 0 0 15px rgba(255, 230, 109, 0.8); }
-}
-
-@keyframes float-gentle {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(10deg); }
+  text-align: center;
 }
 </style>

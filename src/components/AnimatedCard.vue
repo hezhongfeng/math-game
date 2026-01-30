@@ -81,31 +81,31 @@ const cardClasses = computed(() => {
 
   // 阴影类
   const elevationClasses = {
-    low: 'shadow-child-soft',
-    medium: 'shadow-child-medium',
-    high: 'shadow-child-large'
+    low: 'shadow-game',
+    medium: 'shadow-game-lg',
+    high: 'shadow-game-xl'
   }
 
   // 变体类
   const variantClasses = {
     default: [],
     success: [
-      'border-macaron-mint/30',
+      'border-game-success/30',
       'bg-gradient-to-br',
       'from-white',
-      'to-macaron-mint/5'
+      'to-game-success/5'
     ],
     warning: [
-      'border-macaron-peach/30',
+      'border-game-warning/30',
       'bg-gradient-to-br',
       'from-white',
-      'to-macaron-peach/5'
+      'to-game-warning/5'
     ],
     playful: [
-      'border-macaron-primary/30',
+      'border-game-primary/30',
       'bg-gradient-to-br',
       'from-white',
-      'to-macaron-primary/5'
+      'to-game-primary/5'
     ]
   }
 
@@ -113,12 +113,12 @@ const cardClasses = computed(() => {
   const interactiveClasses = props.interactive || props.clickable ? [
     'cursor-pointer',
     'touch-manipulation',
-    'hover:shadow-child-large',
+    'hover:shadow-game-xl',
     'hover:-translate-y-1',
     'active:scale-95',
     'focus:outline-none',
     'focus:ring-4',
-    'focus:ring-macaron-blue/30'
+    'focus:ring-game-primary/30'
   ] : []
 
   // 禁用状态类
@@ -225,7 +225,7 @@ onMounted(() => {
       class="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-inherit flex items-center justify-center z-10"
     >
       <div class="flex flex-col items-center gap-3">
-        <div class="w-8 h-8 border-3 border-macaron-blue border-t-transparent rounded-full animate-spin"></div>
+        <div class="w-8 h-8 border-3 border-game-primary border-t-transparent rounded-full animate-spin"></div>
         <span class="text-child-sm font-child-friendly text-gray-600">加载中...</span>
       </div>
     </div>
@@ -238,7 +238,7 @@ onMounted(() => {
       <div
         v-for="i in 6"
         :key="i"
-        class="absolute w-2 h-2 bg-macaron-primary rounded-full animate-confetti-fall"
+        class="absolute w-2 h-2 bg-game-accent rounded-full animate-confetti-fall"
         :style="{
           left: `${Math.random() * 100}%`,
           animationDelay: `${Math.random() * 0.5}s`,
@@ -257,13 +257,13 @@ onMounted(() => {
     <!-- 悬停光晕 -->
     <div
       v-if="isHovered && (interactive || clickable)"
-      class="absolute -inset-1 bg-gradient-to-r from-macaron-blue/20 via-macaron-primary/20 to-macaron-mint/20 rounded-inherit blur-sm -z-10 animate-pulse-gentle"
+      class="absolute -inset-1 bg-gradient-to-r from-game-primary/20 via-game-accent/20 to-game-success/20 rounded-inherit blur-sm -z-10 animate-pulse-gentle"
     ></div>
 
     <!-- 焦点指示器 -->
     <div
       v-if="isFocused"
-      class="absolute -inset-1 border-2 border-macaron-blue rounded-inherit -z-10 animate-pulse-gentle"
+      class="absolute -inset-1 border-2 border-game-primary rounded-inherit -z-10 animate-pulse-gentle"
     ></div>
 
     <!-- 卡片内容 -->

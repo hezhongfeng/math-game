@@ -8,6 +8,122 @@ export default {
     extend: {
       colors: {
         // ============================================
+        // 数学游戏男童主题配色 - 主使用
+        // ============================================
+        game: {
+          // 主色 - 靛蓝（科技感、稳重）
+          primary: {
+            DEFAULT: '#4F46E5',
+            light: '#6366F1',
+            lighter: '#818CF8',
+            dark: '#3730A3',
+            50: '#EEF2FF',
+            100: '#E0E7FF',
+            200: '#C7D2FE',
+            300: '#A5B4FC',
+            400: '#818CF8',
+            500: '#6366F1',
+            600: '#4F46E5',
+            700: '#4338CA',
+            800: '#3730A3',
+            900: '#312E81',
+          },
+          // 强调色 - 活力橙（能量、进取）
+          accent: {
+            DEFAULT: '#F97316',
+            light: '#FB923C',
+            lighter: '#FDBA74',
+            dark: '#EA580C',
+            50: '#FFF7ED',
+            100: '#FFEDD5',
+            200: '#FED7AA',
+            300: '#FDBA74',
+            400: '#FB923C',
+            500: '#F97316',
+            600: '#EA580C',
+            700: '#C2410C',
+            800: '#9A3412',
+            900: '#7C2D12',
+          },
+          // 科技绿 - 成功状态
+          success: {
+            DEFAULT: '#22C55E',
+            light: '#4ADE80',
+            lighter: '#86EFAC',
+            dark: '#16A34A',
+            50: '#F0FDF4',
+            100: '#DCFCE7',
+            200: '#BBF7D0',
+            300: '#86EFAC',
+            400: '#4ADE80',
+            500: '#22C55E',
+            600: '#16A34A',
+            700: '#15803D',
+            800: '#166534',
+            900: '#14532D',
+          },
+          // 警告黄
+          warning: {
+            DEFAULT: '#EAB308',
+            light: '#FACC15',
+            lighter: '#FDE047',
+            dark: '#CA8A04',
+            50: '#FEFCE8',
+            100: '#FEF9C3',
+            200: '#FEF08A',
+            300: '#FDE047',
+            400: '#FACC15',
+            500: '#EAB308',
+            600: '#CA8A04',
+            700: '#A16207',
+            800: '#854D0E',
+            900: '#713F12',
+          },
+          // 错误红
+          error: {
+            DEFAULT: '#EF4444',
+            light: '#F87171',
+            lighter: '#FCA5A5',
+            dark: '#DC2626',
+            50: '#FEF2F2',
+            100: '#FEE2E2',
+            200: '#FECACA',
+            300: '#FCA5A5',
+            400: '#F87171',
+            500: '#EF4444',
+            600: '#DC2626',
+            700: '#B91C1C',
+            800: '#991B1B',
+            900: '#7F1D1D',
+          },
+          // 中性色
+          neutral: {
+            // 背景色
+            bg: {
+              DEFAULT: '#F1F5F9',
+              light: '#F8FAFC',
+              dark: '#E2E8F0',
+            },
+            // 卡片
+            card: {
+              DEFAULT: '#FFFFFF',
+              secondary: '#F8FAFC',
+            },
+            // 文字
+            text: {
+              primary: '#1E293B',
+              secondary: '#64748B',
+              muted: '#94A3B8',
+            },
+            // 边框
+            border: {
+              DEFAULT: '#E2E8F0',
+              light: '#F1F5F9',
+              dark: '#CBD5E1',
+            },
+          },
+        },
+        // ============================================
         // 原有 Peppa 配色（向后兼容）
         // ============================================
         peppa: {
@@ -186,6 +302,255 @@ export default {
             DEFAULT: '#5D4E37',
             light: '#7A6A5A',
             dark: '#3D3225',
+          },
+        },
+        // ============================================
+        // 低龄儿童友好配色 - 温暖、柔和、亲切
+        // ============================================
+        toddler: {
+          // 主色 - 温暖桃色（温暖、柔和、亲切）
+          primary: {
+            DEFAULT: '#F9A8D4',
+            light: '#FBB8DC',
+            lighter: '#FCD5E4',
+            dark: '#F472B6',
+            50: '#FDF2F8',
+            100: '#FBCFE8',
+            200: '#F9A8D4',
+            300: '#F9A8D4',
+            400: '#F9A8D4',
+            500: '#F9A8D4',
+            600: '#F472B6',
+            700: '#DB2777',
+            800: '#BE185D',
+            900: '#9D174D',
+          },
+          // 辅助色 - 清新薄荷绿（活力、清新）
+          secondary: {
+            DEFAULT: '#6EE7B7',
+            light: '#86EFAC',
+            lighter: '#BBF7D0',
+            dark: '#10B981',
+            50: '#ECFDF5',
+            100: '#D1FAE5',
+            200: '#A7F3D0',
+            300: '#6EE7B7',
+            400: '#34D399',
+            500: '#10B981',
+            600: '#059669',
+            700: '#047857',
+            800: '#065F46',
+            900: '#064E3B',
+          },
+          // CTA - 温暖橙色（温暖、引人注意）
+          accent: {
+            DEFAULT: '#FB923C',
+            light: '#FDBA74',
+            lighter: '#FED7AA',
+            dark: '#F97316',
+            50: '#FFF7ED',
+            100: '#FFEDD5',
+            200: '#FED7AA',
+            300: '#FDBA74',
+            400: '#FB923C',
+            500: '#F97316',
+            600: '#EA580C',
+            700: '#C2410C',
+            800: '#9A3412',
+            900: '#7C2D12',
+          },
+          // 成功状态 - 薄荷绿
+          success: {
+            DEFAULT: '#10B981',
+            light: '#6EE7B7',
+            lighter: '#A7F3D0',
+            dark: '#059669',
+            50: '#ECFDF5',
+            100: '#D1FAE5',
+            200: '#A7F3D0',
+            300: '#6EE7B7',
+            400: '#34D399',
+            500: '#10B981',
+            600: '#059669',
+            700: '#047857',
+            800: '#065F46',
+            900: '#064E3B',
+          },
+          // 警告 - 柔和黄色
+          warning: {
+            DEFAULT: '#FDE68A',
+            light: '#FEF9C3',
+            lighter: '#FFFBEB',
+            dark: '#FCD34D',
+            50: '#FFFBEB',
+            100: '#FEF9C3',
+            200: '#FDE68A',
+            300: '#FDE68A',
+            400: '#FDE68A',
+            500: '#F59E0B',
+            600: '#D97706',
+            700: '#B45309',
+            800: '#92400E',
+            900: '#78350F',
+          },
+          // 错误状态 - 柔和红色
+          error: {
+            DEFAULT: '#FCA5A5',
+            light: '#FECACA',
+            lighter: '#FEE2E2',
+            dark: '#F87171',
+            50: '#FEF2F2',
+            100: '#FEE2E2',
+            200: '#FECACA',
+            300: '#FCA5A5',
+            400: '#F87171',
+            500: '#EF4444',
+            600: '#DC2626',
+            700: '#B91C1C',
+            800: '#991B1B',
+            900: '#7F1D1D',
+          },
+          // 中性色
+          neutral: {
+            // 背景色
+            bg: {
+              DEFAULT: '#FFF7ED',
+              light: '#FFFBEB',
+              dark: '#FEF3C7',
+            },
+            // 卡片
+            card: {
+              DEFAULT: '#FFFFFF',
+              secondary: '#FFFBEB',
+            },
+            // 文字
+            text: {
+              primary: '#9D174D',
+              secondary: '#6B7280',
+              muted: '#9CA3AF',
+            },
+            // 边框
+            border: {
+              DEFAULT: '#FBCFE8',
+              light: '#FDF2F8',
+              dark: '#F9A8D4',
+            },
+          },
+        },
+        // ============================================
+        // 男孩友好配色系统 - 现代科技感（向后兼容）
+        // ============================================
+        boy: {
+          // 主色 - 靛蓝（科技感、稳重）
+          primary: {
+            DEFAULT: '#4F46E5',
+            light: '#6366F1',
+            lighter: '#818CF8',
+            dark: '#3730A3',
+            50: '#EEF2FF',
+            100: '#E0E7FF',
+            200: '#C7D2FE',
+            300: '#A5B4FC',
+            400: '#818CF8',
+            500: '#6366F1',
+            600: '#4F46E5',
+            700: '#4338CA',
+            800: '#3730A3',
+            900: '#312E81',
+          },
+          // 辅助色 - 活力橙（能量、进取）
+          accent: {
+            DEFAULT: '#F97316',
+            light: '#FB923C',
+            lighter: '#FDBA74',
+            dark: '#EA580C',
+            50: '#FFF7ED',
+            100: '#FFEDD5',
+            200: '#FED7AA',
+            300: '#FDBA74',
+            400: '#FB923C',
+            500: '#F97316',
+            600: '#EA580C',
+            700: '#C2410C',
+            800: '#9A3412',
+            900: '#7C2D12',
+          },
+          // 科技绿 - 成功状态
+          success: {
+            DEFAULT: '#22C55E',
+            light: '#4ADE80',
+            lighter: '#86EFAC',
+            dark: '#16A34A',
+            50: '#F0FDF4',
+            100: '#DCFCE7',
+            200: '#BBF7D0',
+            300: '#86EFAC',
+            400: '#4ADE80',
+            500: '#22C55E',
+            600: '#16A34A',
+            700: '#15803D',
+            800: '#166534',
+            900: '#14532D',
+          },
+          // 警告黄
+          warning: {
+            DEFAULT: '#EAB308',
+            light: '#FACC15',
+            lighter: '#FDE047',
+            dark: '#CA8A04',
+            50: '#FEFCE8',
+            100: '#FEF9C3',
+            200: '#FEF08A',
+            300: '#FDE047',
+            400: '#FACC15',
+            500: '#EAB308',
+            600: '#CA8A04',
+            700: '#A16207',
+            800: '#854D0E',
+            900: '#713F12',
+          },
+          // 错误红
+          error: {
+            DEFAULT: '#EF4444',
+            light: '#F87171',
+            lighter: '#FCA5A5',
+            dark: '#DC2626',
+            50: '#FEF2F2',
+            100: '#FEE2E2',
+            200: '#FECACA',
+            300: '#FCA5A5',
+            400: '#F87171',
+            500: '#EF4444',
+            600: '#DC2626',
+            700: '#B91C1C',
+            800: '#991B1B',
+            900: '#7F1D1D',
+          },
+          // 中性色
+          neutral: {
+            // 背景色
+            bg: {
+              DEFAULT: '#F1F5F9',
+              light: '#F8FAFC',
+              dark: '#E2E8F0',
+            },
+            // 卡片
+            card: {
+              DEFAULT: '#FFFFFF',
+              secondary: '#F8FAFC',
+            },
+            // 文字
+            text: {
+              primary: '#1E293B',
+              secondary: '#64748B',
+              muted: '#94A3B8',
+            },
+            // 边框
+            border: {
+              DEFAULT: '#E2E8F0',
+              light: '#F1F5F9',
+              dark: '#CBD5E1',
+            },
           },
         },
       },
@@ -382,6 +747,22 @@ export default {
         '4xl': '32px',
       },
       boxShadow: {
+        // ============================================
+        // 数学游戏男童主题阴影 - 主使用
+        // ============================================
+        'game': '0 2px 8px rgba(79, 70, 229, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)',
+        'game-lg': '0 4px 16px rgba(79, 70, 229, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
+        'game-xl': '0 8px 32px rgba(79, 70, 229, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1)',
+        'game-button': '0 3px 0 0 #3730A3, 0 4px 12px rgba(79, 70, 229, 0.3)',
+        'game-button-hover': '0 5px 0 0 #3730A3, 0 8px 20px rgba(79, 70, 229, 0.4)',
+        'game-button-active': '0 1px 0 0 #3730A3, 0 2px 8px rgba(79, 70, 229, 0.3)',
+        'game-glow': '0 0 20px rgba(79, 70, 229, 0.5)',
+        'game-glow-success': '0 0 20px rgba(34, 197, 94, 0.5)',
+        'game-glow-accent': '0 0 20px rgba(249, 115, 22, 0.5)',
+        // 统一的可爱阴影系统
+        'cute': '0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)',
+        'cute-lg': '0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08)',
+        'cute-xl': '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.1)',
         // 儿童友好的阴影系统 - 统一的阴影体系
         'child-soft': '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)',
         'child-medium': '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.06)',
@@ -389,6 +770,27 @@ export default {
         'child-button': '0 3px 0 0 rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1)',
         'child-button-hover': '0 5px 0 0 rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.15)',
         'child-button-active': '0 1px 0 0 rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)',
+        // 卡片阴影
+        'card': '0 2px 12px rgba(0, 0, 0, 0.08)',
+        'card-hover': '0 4px 24px rgba(0, 0, 0, 0.12)',
+        // 低龄儿童友好阴影系统
+        'toddler-primary': '0 0 20px rgba(249, 168, 212, 0.4)',
+        'toddler-success': '0 0 20px rgba(16, 185, 129, 0.4)',
+        'toddler-warning': '0 0 20px rgba(253, 230, 138, 0.4)',
+        'toddler-error': '0 0 20px rgba(252, 165, 165, 0.4)',
+        'toddler-accent': '0 0 20px rgba(251, 146, 60, 0.4)',
+        // 轻量柔和阴影系统（向后兼容）
+        'soft-primary': '0 0 20px rgba(14, 165, 233, 0.4)',
+        'soft-success': '0 0 20px rgba(16, 185, 129, 0.4)',
+        'soft-warning': '0 0 20px rgba(251, 191, 36, 0.4)',
+        'soft-error': '0 0 20px rgba(248, 113, 113, 0.4)',
+        'soft-accent': '0 0 20px rgba(251, 191, 36, 0.4)',
+        // 男孩友好阴影系统（向后兼容）
+        'boy-primary': '0 0 20px rgba(79, 70, 229, 0.5)',
+        'boy-success': '0 0 20px rgba(34, 197, 94, 0.5)',
+        'boy-warning': '0 0 20px rgba(234, 179, 8, 0.5)',
+        'boy-error': '0 0 20px rgba(239, 68, 68, 0.5)',
+        'boy-accent': '0 0 20px rgba(249, 115, 22, 0.5)',
         // 特殊效果阴影
         'glow': '0 0 20px rgba(79, 195, 247, 0.4)',
         'glow-green': '0 0 20px rgba(129, 199, 132, 0.4)',

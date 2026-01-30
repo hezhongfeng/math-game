@@ -73,57 +73,57 @@ const buttonClasses = computed(() => {
   const variantClasses = {
     primary: [
       'bg-gradient-to-b',
-      'from-macaron-primary',
-      'to-macaron-primary-dark',
+      'from-game-primary',
+      'to-game-primary-dark',
       'text-white',
-      'shadow-child-button',
+      'shadow-game-button',
       'border-0',
-      'hover:shadow-child-button-hover',
+      'hover:shadow-game-button-hover',
       'hover:-translate-y-1',
-      'active:shadow-child-button-active',
+      'active:shadow-game-button-active',
       'active:translate-y-1',
       'focus:ring-4',
-      'focus:ring-macaron-primary/30'
+      'focus:ring-game-primary/30'
     ],
     secondary: [
       'bg-white',
-      'text-macaron-blue-dark',
-      'shadow-child-button',
+      'text-game-primary-dark',
+      'shadow-game-button',
       'border-2',
-      'border-macaron-blue/20',
-      'hover:shadow-child-button-hover',
+      'border-game-primary/20',
+      'hover:shadow-game-button-hover',
       'hover:-translate-y-1',
-      'hover:border-macaron-blue/40',
-      'active:shadow-child-button-active',
+      'hover:border-game-primary/40',
+      'active:shadow-game-button-active',
       'active:translate-y-1',
       'focus:ring-4',
-      'focus:ring-macaron-blue/30'
+      'focus:ring-game-primary/30'
     ],
     success: [
       'bg-gradient-to-b',
-      'from-macaron-mint',
-      'to-macaron-mint-dark',
+      'from-game-success',
+      'to-game-success-dark',
       'text-white',
-      'shadow-child-button',
-      'hover:shadow-child-button-hover',
+      'shadow-game-button',
+      'hover:shadow-game-button-hover',
       'hover:-translate-y-1',
-      'active:shadow-child-button-active',
+      'active:shadow-game-button-active',
       'active:translate-y-1',
       'focus:ring-4',
-      'focus:ring-macaron-mint/30'
+      'focus:ring-game-success/30'
     ],
     playful: [
       'bg-gradient-to-b',
-      'from-macaron-peach',
-      'to-macaron-peach-dark',
+      'from-game-accent',
+      'to-game-accent-dark',
       'text-white',
-      'shadow-child-button',
-      'hover:shadow-child-button-hover',
+      'shadow-game-button',
+      'hover:shadow-game-button-hover',
       'hover:-translate-y-1',
-      'active:shadow-child-button-active',
+      'active:shadow-game-button-active',
       'active:translate-y-1',
       'focus:ring-4',
-      'focus:ring-macaron-peach/30'
+      'focus:ring-game-accent/30'
     ]
   }
 

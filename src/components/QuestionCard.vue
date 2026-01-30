@@ -41,7 +41,7 @@ const formattedTime = computed(() => {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 })
 
-// 答案卡片的状态 - 始终保持默认样式
+// 答案卡片的状态
 const answerCardState = computed(() => {
   if (!props.userAnswer) {
     return 'placeholder'
@@ -51,7 +51,6 @@ const answerCardState = computed(() => {
 
 // 答案卡片的值
 const answerCardValue = computed(() => {
-  // 只在答对时显示正确答案，答错时显示用户答案
   if (shouldShowFeedback.value) {
     return isCorrect.value ? props.question.answer : props.userAnswer
   }
@@ -60,15 +59,15 @@ const answerCardValue = computed(() => {
 </script>
 
 <template>
-  <div class="question-card-candy" :class="{ 'success-candy': isCorrect, 'error-candy': isIncorrect }">
+  <div class="question-card" :class="{ 'success': isCorrect, 'error': isIncorrect }">
     <!-- 顶部信息栏 -->
-    <div class="header-bar-candy">
+    <div class="header-bar">
       <div class="question-indicator">
         <span class="current-index">第 {{ currentIndex + 1 }} 题</span>
         <span class="total-count">/ 共 {{ totalQuestions }} 题</span>
       </div>
-      <div class="timer-candy">
-        <Clock :size="16" class="timer-icon" />
+      <div class="timer">
+        <Clock :size="14" class="timer-icon" />
         <span class="timer-value">{{ formattedTime }}</span>
       </div>
     </div>
@@ -81,13 +80,13 @@ const answerCardValue = computed(() => {
           size="normal"
           state="default"
         />
-        <span class="operator-candy">{{ question.operator }}</span>
+        <span class="operator">{{ question.operator }}</span>
         <NumberCard
           :value="question.operand2"
           size="normal"
           state="default"
         />
-        <span class="equals-operator-candy">=</span>
+        <span class="equals-operator">=</span>
         <NumberCard
           :value="answerCardValue"
           size="large"
@@ -100,72 +99,64 @@ const answerCardValue = computed(() => {
 </template>
 
 <style scoped>
-/* Candy Claymorphism 题目卡片 */
-.question-card-candy {
-  background: linear-gradient(135deg, #ffffff 0%, #FFFBF5 100%);
-  border-radius: 28px;
-  padding: 20px 24px 16px;
+.question-card {
+  background: white;
+  border-radius: 24px;
+  padding: 18px 20px 14px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  min-width: 300px;
+  gap: 14px;
+  min-width: 280px;
   max-width: 95vw;
   width: 100%;
   touch-action: manipulation;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 3px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
   box-shadow:
-    8px 8px 20px rgba(0, 0, 0, 0.08),
-    -4px -4px 12px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 8px rgba(0, 0, 0, 0.03),
-    inset 2px 2px 8px rgba(255, 255, 255, 0.9);
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* 成功反馈 */
-.success-candy {
-  animation: celebrateClay 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+.success {
+  animation: successPulse 0.4s ease-out;
+  border: 2px solid var(--game-success);
   box-shadow:
-    0 0 25px rgba(152, 255, 152, 0.6),
-    8px 8px 20px rgba(0, 0, 0, 0.08),
-    -4px -4px 12px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 8px rgba(0, 0, 0, 0.03),
-    inset 2px 2px 8px rgba(255, 255, 255, 0.9);
-  border-color: rgba(152, 255, 152, 0.5);
+    0 0 16px rgba(34, 197, 94, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* 错误反馈 */
-.error-candy {
-  animation: shakeClay 0.5s ease-in-out;
+.error {
+  animation: errorShake 0.4s ease-out;
+  border: 2px solid var(--game-accent);
   box-shadow:
-    0 0 20px rgba(255, 143, 163, 0.5),
-    8px 8px 20px rgba(0, 0, 0, 0.08),
-    -4px -4px 12px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 8px rgba(0, 0, 0, 0.03),
-    inset 2px 2px 8px rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 143, 163, 0.5);
+    0 0 16px rgba(249, 115, 22, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
-@keyframes celebrateClay {
-  0% { transform: scale(0.98) rotate(0deg); }
-  50% { transform: scale(1.02) rotate(2deg); }
-  100% { transform: scale(1) rotate(0deg); }
+@keyframes successPulse {
+  0% { transform: scale(0.98); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
 }
 
-@keyframes shakeClay {
+@keyframes errorShake {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
 }
 
 /* 顶部信息栏 */
-.header-bar-candy {
+.header-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(255, 143, 163, 0.1);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--game-border);
 }
 
 .question-indicator {
@@ -175,110 +166,98 @@ const answerCardValue = computed(() => {
 }
 
 .current-index {
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 700;
-  color: #5D4E37;
+  color: var(--game-text);
 }
 
 .total-count {
-  font-size: 0.85rem;
-  color: #9E9E9E;
+  font-size: 13px;
+  color: var(--game-text-secondary);
   font-weight: 500;
 }
 
-/* 计时器 - Candy Style */
-.timer-candy {
+/* 计时器 */
+.timer {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
-  border-radius: 20px;
-  border: 2px solid white;
-  box-shadow:
-    2px 2px 6px rgba(0, 0, 0, 0.05),
-    -1px -1px 4px rgba(255, 255, 255, 0.8),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.03),
-    inset 1px 1px 3px rgba(255, 255, 255, 0.9);
+  gap: 4px;
+  padding: 5px 10px;
+  background: var(--game-bg-light);
+  border-radius: 12px;
 }
 
 .timer-icon {
-  color: #29B6F6;
+  color: var(--game-text-secondary);
 }
 
 .timer-value {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #29B6F6;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--game-text-secondary);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.5px;
 }
 
 /* 算式与答案区域 */
 .expression-section {
   display: flex;
   justify-content: center;
-  padding: 16px 0;
+  padding: 12px 0;
 }
 
 .expression {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 16px;
 }
 
-.operator-candy {
-  font-size: 2.5rem;
+.operator {
+  font-size: 2.2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF8FA3 0%, #4FC3F7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--game-primary-dark);
   line-height: 1;
   user-select: none;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.equals-operator-candy {
-  font-size: 2.5rem;
+.equals-operator {
+  font-size: 2.2rem;
   font-weight: 700;
-  color: #98FF98;
+  color: var(--game-success-dark);
   line-height: 1;
   user-select: none;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 /* 响应式设计 */
 @media (min-width: 768px) {
-  .question-card-candy {
-    padding: 28px 32px 20px;
-    gap: 20px;
-    min-width: 380px;
+  .question-card {
+    padding: 24px 28px 18px;
+    gap: 18px;
+    min-width: 360px;
   }
 
   .current-index {
-    font-size: 1.25rem;
+    font-size: 18px;
   }
 
   .total-count {
-    font-size: 0.95rem;
+    font-size: 14px;
   }
 
   .timer-value {
-    font-size: 1rem;
+    font-size: 14px;
   }
 
-  .operator-candy {
-    font-size: 3rem;
+  .operator {
+    font-size: 2.6rem;
   }
 
-  .equals-operator-candy {
-    font-size: 3rem;
+  .equals-operator {
+    font-size: 2.6rem;
   }
 
   .expression {
-    gap: 28px;
+    gap: 20px;
   }
 }
 </style>

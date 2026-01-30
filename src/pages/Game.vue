@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw, Check, Star } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw, Check } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -12,7 +12,6 @@ import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
 import ResultModal from '../components/ResultModal.vue'
-import TouchOptimizedButton from '../components/TouchOptimizedButton.vue'
 
 const props = defineProps({
   id: {
@@ -240,29 +239,18 @@ onUnmounted(() => {
   <div class="page">
     <!-- 顶部导航 -->
     <header class="header">
-      <TouchOptimizedButton
-        size="small"
-        variant="secondary"
-        :icon="ArrowLeft"
-        :icon-size="20"
-        @click="goBack"
-      />
+      <button class="nav-btn" @click="goBack">
+        <ArrowLeft :size="20" />
+      </button>
 
       <div class="title-group">
-        <h2 class="title font-child-friendly bg-gradient-to-r from-peppa-blue to-peppa-blue-dark bg-clip-text text-transparent">
-          {{ difficulty.name }}
-        </h2>
-        <p class="subtitle font-child-friendly">{{ difficulty.description }}</p>
+        <h2 class="title">{{ difficulty.name }}</h2>
+        <p class="subtitle">{{ difficulty.description }}</p>
       </div>
 
-      <TouchOptimizedButton
-        size="small"
-        variant="playful"
-        :icon="RotateCcw"
-        :icon-size="20"
-        @click="handleRetry"
-        title="重新开始"
-      />
+      <button class="nav-btn nav-btn-accent" @click="handleRetry" title="重新开始">
+        <RotateCcw :size="18" />
+      </button>
     </header>
 
     <!-- 题目卡片区 -->
@@ -286,7 +274,7 @@ onUnmounted(() => {
         <div v-if="shouldShowFeedback" class="feedback-container" @click="handleWrongFeedbackClick">
           <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
             <div v-if="isCorrect" class="success-circle">
-              <Check :size="40" />
+              <Check :size="36" />
             </div>
             <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
             <div v-if="isIncorrect" class="hint-text">点击继续</div>
@@ -325,22 +313,22 @@ onUnmounted(() => {
       :is-new-best="isNewBest"
       @retry="handleRetry"
       @home="handleHome"
-     />
+    />
   </div>
 </template>
 
 <style scoped>
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #FFF8E1 0%, #E0F7FA 40%, #F3E5F5 100%);
+  background: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg) 50%, var(--game-bg-dark) 100%);
   display: flex;
   flex-direction: column;
-  padding: 12px 12px 24px;
+  padding: 12px 12px 20px;
   touch-action: manipulation;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
 
 .main {
@@ -353,14 +341,14 @@ onUnmounted(() => {
 }
 
 .numpad-section {
-  margin: 12px 0;
+  margin: 10px 0;
 }
 
 .footer {
   margin-top: auto;
 }
 
-/* 顶部导航 - 毛玻璃效果 */
+/* 顶部导航 */
 .header {
   position: sticky;
   top: 8px;
@@ -368,16 +356,47 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.85);
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.05),
-    0 8px 30px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  margin: 0 8px 16px;
-  padding-top: max(12px, env(safe-area-inset-top));
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 16px rgba(0, 0, 0, 0.08);
+  margin: 0 4px 12px;
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--game-bg-light);
+  color: var(--game-text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: var(--game-bg);
+  color: var(--game-primary-dark);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-btn-accent {
+  background: linear-gradient(135deg, var(--game-accent) 0%, var(--game-accent-dark) 100%);
+  color: white;
+}
+
+.nav-btn-accent:hover {
+  background: linear-gradient(135deg, var(--game-accent-light) 0%, var(--game-accent) 100%);
 }
 
 .title-group {
@@ -388,52 +407,46 @@ onUnmounted(() => {
 }
 
 .title {
-  font-size: 20px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #FF8A80, #4FC3F7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 1px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--game-text);
+  letter-spacing: 0.5px;
 }
 
 .subtitle {
   font-size: 12px;
-  color: #78909C;
-  margin-top: 4px;
+  color: var(--game-text-secondary);
+  margin-top: 2px;
   font-weight: 500;
 }
 
-/* 题目切换 - 弹性弹入 */
+/* 题目切换 */
 .question-leave-active {
-  transition: all 0.35s ease;
+  transition: all 0.3s ease;
 }
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(40px) scale(0.9);
+  transform: translateY(20px);
 }
 
 .question-leave-to {
   opacity: 0;
-  transform: translateY(-40px) scale(0.9);
+  transform: translateY(-20px);
 }
 
 .question-enter-active {
-  animation: questionBounce 0.5s ease-out;
+  animation: questionSlide 0.4s ease-out;
 }
 
-@keyframes questionBounce {
+@keyframes questionSlide {
   0% {
     opacity: 0;
-    transform: translateY(40px) scale(0.9);
-  }
-  60% {
-    transform: translateY(-12px) scale(1.02);
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -444,7 +457,7 @@ onUnmounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -452,72 +465,65 @@ onUnmounted(() => {
   z-index: 9998;
 }
 
-/* 反馈弹窗 - 立体风格 */
+/* 反馈弹窗 */
 .feedback-overlay {
   position: fixed;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 85%;
-  max-width: 300px;
+  width: 80%;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   z-index: 9999;
   background: #ffffff;
-  border-radius: 32px;
-  padding: 32px 28px;
+  border-radius: 24px;
+  padding: 28px 24px;
   box-shadow:
-    0 8px 0 0 rgba(0, 0, 0, 0.08),
-    0 20px 50px rgba(0, 0, 0, 0.2);
-  border: 3px solid rgba(255, 255, 255, 0.5);
+    0 4px 0 0 rgba(0, 0, 0, 0.06),
+    0 16px 40px rgba(0, 0, 0, 0.15);
 }
 
 .feedback-overlay.correct {
-  border-color: rgba(129, 199, 132, 0.5);
-  background: linear-gradient(180deg, #ffffff 0%, #F1F8E9 100%);
+  border: 2px solid var(--game-success);
 }
 
 .feedback-overlay.wrong {
-  border-color: rgba(255, 183, 77, 0.5);
+  border: 2px solid var(--game-accent);
   cursor: pointer;
-  background: linear-gradient(180deg, #ffffff 0%, #FFF3E0 100%);
 }
 
-/* 成功圆圈 - 弹性动画 */
+/* 成功圆圈 */
 .success-circle {
-  width: 90px;
-  height: 90px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
+  background: linear-gradient(135deg, var(--game-success) 0%, var(--game-success-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: circlePop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: circlePop 0.5s ease-out;
   box-shadow:
-    0 6px 0 0 #4CAF50,
-    0 10px 30px rgba(102, 187, 106, 0.4);
+    0 4px 0 0 #14532D,
+    0 8px 20px rgba(34, 197, 94, 0.4);
 }
 
 .success-circle svg {
   color: white;
-  width: 44px;
-  height: 44px;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+  width: 36px;
+  height: 36px;
 }
 
 @keyframes circlePop {
   0% {
-    transform: scale(0);
+    transform: scale(0.8);
     opacity: 0;
   }
   50% {
-    transform: scale(1.1);
-  }
-  70% {
-    transform: scale(0.95);
+    transform: scale(1.05);
   }
   100% {
     transform: scale(1);
@@ -527,31 +533,30 @@ onUnmounted(() => {
 
 /* 答案数字 - 错误反馈 */
 .answer-number {
-  font-size: 56px;
+  font-size: 48px;
   font-weight: 800;
-  color: #FF8A65;
+  color: var(--game-accent);
   line-height: 1;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(255, 138, 101, 0.3);
 }
 
 /* 点击提示文字 */
 .hint-text {
-  font-size: 14px;
-  color: #FF8A65;
+  font-size: 13px;
+  color: var(--game-accent);
   font-weight: 600;
-  background: rgba(255, 138, 101, 0.1);
-  padding: 8px 16px;
-  border-radius: 20px;
+  background: rgba(249, 115, 22, 0.1);
+  padding: 6px 14px;
+  border-radius: 16px;
 }
 
-/* 反馈过渡 - 遮罩和弹窗统一动画 */
+/* 反馈过渡 */
 .feedback-enter-active .feedback-container {
-  transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.3s ease;
 }
 
 .feedback-leave-active .feedback-container {
-  transition: opacity 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transition: opacity 0.2s ease;
 }
 
 .feedback-enter-from .feedback-container {
@@ -562,22 +567,21 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* 弹窗内容动画 */
 .feedback-enter-active .feedback-overlay {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .feedback-leave-active .feedback-overlay {
-  transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
+  transition: all 0.2s ease;
 }
 
 .feedback-enter-from .feedback-overlay {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.6);
+  transform: translate(-50%, -50%) scale(0.8);
 }
 
 .feedback-leave-to .feedback-overlay {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.85);
+  transform: translate(-50%, -50%) scale(0.9);
 }
 </style>

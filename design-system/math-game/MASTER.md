@@ -1,203 +1,283 @@
-# Design System Master File
+# Math Game - Master Design System
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+## Design Philosophy
+**Modern, Tech-Inspired, Energetic, Perfect for Young Boys (3-6 years)**
 
----
-
-**Project:** Math Game
-**Generated:** 2026-01-30 09:40:09
-**Category:** Gaming
+This design system prioritizes modern, tech-inspired colors with energetic accents that create an engaging learning environment for young boys while maintaining clarity and approachability.
 
 ---
 
-## Global Rules
+## Color Palette
 
-### Color Palette
+### Primary Colors
+| Role | Hex | Tailwind | Usage |
+|------|-----|---------|-------|
+| **Primary** | `#4F46E5` | `game-primary` | Main buttons, headers, primary actions |
+| **Primary Light** | `#6366F1` | `game-primary-light` | Secondary accents, highlights |
+| **Primary Dark** | `#3730A3` | `game-primary-dark` | Hover states, active states |
+| **Primary BG** | `#EEF2FF` | `game-bg` | Page backgrounds, subtle accents |
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#4F46E5` | `--color-primary` |
-| Secondary | `#818CF8` | `--color-secondary` |
-| CTA/Accent | `#F97316` | `--color-cta` |
-| Background | `#EEF2FF` | `--color-background` |
-| Text | `#1E1B4B` | `--color-text` |
+### Accent Colors
+| Role | Hex | Tailwind | Usage |
+|------|-----|---------|-------|
+| **Accent** | `#F97316` | `game-accent` | Call-to-action buttons, key interactions |
+| **Accent Light** | `#FB923C` | `game-accent-light` | Accent highlights, stars |
+| **Accent Dark** | `#EA580C` | `game-accent-dark` | Accent hover states |
 
-**Color Notes:** Playful indigo + energetic orange
+### Semantic Colors
+| Role | Hex | Tailwind | Usage |
+|------|-----|---------|-------|
+| **Success** | `#22C55E` | `game-success` | Correct answers, positive feedback |
+| **Success Light** | `#4ADE80` | `game-success-light` | Success backgrounds |
+| **Warning** | `#EAB308` | `game-warning` | Warning messages |
+| **Warning Light** | `#FACC15` | `game-warning-light` | Warning backgrounds |
+| **Error** | `#EF4444` | `game-error` | Incorrect answers, negative feedback |
+| **Error Light** | `#F87171` | `game-error-light` | Error backgrounds |
 
-### Typography
+### Neutral Colors
+| Role | Hex | Tailwind | Usage |
+|------|-----|---------|-------|
+| **Text Primary** | `#1E293B` | `game-text` | Headings, primary text |
+| **Text Secondary** | `#64748B` | `game-text-secondary` | Body text, descriptions |
+| **Text Muted** | `#94A3B8` | `game-text-muted` | Disabled text, labels |
+| **Background** | `#F1F5F9` | `game-bg` | Main page background |
+| **Card** | `#FFFFFF` | `game-card` | Card backgrounds |
+| **Border** | `#E2E8F0` | `game-border` | Borders, dividers |
 
-- **Heading Font:** Baloo 2
-- **Body Font:** Comic Neue
-- **Mood:** kids, education, playful, friendly, colorful, learning
-- **Google Fonts:** [Baloo 2 + Comic Neue](https://fonts.google.com/share?selection.family=Baloo+2:wght@400;500;600;700|Comic+Neue:wght@300;400;700)
+---
 
-**CSS Import:**
+## Typography
+
+### Font Family
+- **Headings**: Fredoka (Google Fonts)
+- **Body**: Nunito (Google Fonts)
+
+### Import
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Comic+Neue:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
 ```
 
-### Spacing Variables
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `16px` / `1rem` | Standard padding |
-| `--space-lg` | `24px` / `1.5rem` | Section padding |
-| `--space-xl` | `32px` / `2rem` | Large gaps |
-| `--space-2xl` | `48px` / `3rem` | Section margins |
-| `--space-3xl` | `64px` / `4rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
+### Font Scale
+| Token | Size | Line Height | Usage |
+|-------|------|-------------|-------|
+| `text-child-xs` | 14px | 1.6 | Labels, small text |
+| `text-child-sm` | 16px | 1.6 | Secondary text |
+| `text-child-base` | 18px | 1.6 | Body text (minimum for children) |
+| `text-child-lg` | 22px | 1.5 | Subheadings |
+| `text-child-xl` | 26px | 1.4 | Large text |
+| `text-child-2xl` | 32px | 1.3 | Card titles |
+| `text-child-3xl` | 40px | 1.2 | Page headings |
+| `text-child-4xl` | 48px | 1.1 | Hero headings |
 
 ---
 
-## Component Specs
+## Components
 
 ### Buttons
+**Primary Button (Indigo)**
+```html
+<button class="
+  bg-gradient-to-b from-game-primary to-game-primary-dark
+  text-white font-bold rounded-cute-xl
+  shadow-game-button hover:shadow-game-button-hover
+  hover:-translate-y-0.5 active:shadow-game-button-active active:translate-y-0.5
+  transition-all duration-200
+">
+  Button Text
+</button>
+```
 
-```css
-/* Primary Button */
-.btn-primary {
-  background: #F97316;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
+**CTA Button (Orange)**
+```html
+<button class="
+  bg-gradient-to-b from-game-accent to-game-accent-dark
+  text-white font-bold rounded-cute-xl
+  shadow-game-button hover:shadow-game-button-hover
+  hover:-translate-y-0.5 active:shadow-game-button-active active:translate-y-0.5
+  transition-all duration-200
+">
+  CTA
+</button>
+```
 
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #4F46E5;
-  border: 2px solid #4F46E5;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
+**Secondary Button (White)**
+```html
+<button class="
+  bg-white text-game-primary-dark font-bold rounded-cute-xl
+  border-2 border-game-neutral-border
+  shadow-game-button
+  hover:bg-game-primary/5 hover:-translate-y-0.5
+  active:translate-y-0.5
+  transition-all duration-200
+">
+  Secondary
+</button>
 ```
 
 ### Cards
+**Standard Card**
+```html
+<div class="
+  bg-white rounded-2xl shadow-game
+  border-2 border-game-neutral-border
+  hover:shadow-game-lg hover:-translate-y-1
+  transition-all duration-300
+">
+  Card Content
+</div>
+```
 
-```css
-.card {
-  background: #EEF2FF;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
+**Success Card**
+```html
+<div class="
+  bg-gradient-to-br from-white to-game-success/10
+  border-2 border-game-success/30
+  rounded-2xl shadow-game
+">
+  Success Content
+</div>
 ```
 
 ### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #4F46E5;
-  outline: none;
-  box-shadow: 0 0 0 3px #4F46E520;
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
+**Text Input**
+```html
+<input class="
+  bg-white rounded-2xl
+  border-2 border-game-neutral-border
+  px-4 py-3
+  text-game-text placeholder:text-game-text-muted
+  focus:outline-none focus:border-game-primary focus:ring-4 focus:ring-game-primary/20
+  transition-all duration-200
+">
 ```
 
 ---
 
-## Style Guidelines
+## Spacing
 
-**Style:** Retro-Futurism
+### Touch-Friendly Spacing
+| Token | Value | Usage |
+|-------|-------|-------|
+| `touch-sm` | 8px | Minimum touch spacing |
+| `touch-md` | 12px | Recommended touch spacing |
+| `touch-lg` | 16px | Large touch spacing |
+| `touch-xl` | 24px | Extra large touch spacing |
 
-**Keywords:** Vintage sci-fi, 80s aesthetic, neon glow, geometric patterns, CRT scanlines, pixel art, cyberpunk, synthwave
-
-**Best For:** Gaming, entertainment, music platforms, tech brands, artistic projects, nostalgic, cyberpunk
-
-**Key Effects:** CRT scanlines (::before overlay), neon glow (text-shadow+box-shadow), glitch effects (skew/offset keyframes)
-
-### Page Pattern
-
-**Pattern Name:** Immersive/Interactive Experience
-
-- **Conversion Strategy:** 40% higher engagement. Performance trade-off. Provide skip option. Mobile fallback essential.
-- **CTA Placement:** After interaction complete + Skip option for impatient users
-- **Section Order:** 1. Full-screen interactive element, 2. Guided product tour, 3. Key benefits revealed, 4. CTA after completion
-
----
-
-## Anti-Patterns (Do NOT Use)
-
-- ❌ Minimalist design
-- ❌ Static assets
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
+### Child-Friendly Component Sizes
+| Token | Value | Usage |
+|-------|-------|-------|
+| `child-btn-sm` | 48px | Small buttons (minimum touch target) |
+| `child-btn-md` | 64px | Standard buttons |
+| `child-btn-lg` | 80px | Large buttons |
+| `child-card` | 88px | Card minimum height |
 
 ---
 
-## Pre-Delivery Checklist
+## Shadows
 
-Before delivering any UI code, verify:
+### Game Shadow System
+| Token | Value | Usage |
+|-------|-------|-------|
+| `shadow-game` | `0 2px 8px rgba(79, 70, 229, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)` | Subtle elements |
+| `shadow-game-lg` | `0 4px 16px rgba(79, 70, 229, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)` | Cards on hover |
+| `shadow-game-xl` | `0 8px 32px rgba(79, 70, 229, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1)` | Important cards |
+| `shadow-game-button` | `0 3px 0 0 #312E81, 0 4px 12px rgba(79, 70, 229, 0.3)` | Default buttons |
+| `shadow-game-button-hover` | `0 5px 0 0 #312E81, 0 8px 20px rgba(79, 70, 229, 0.4)` | Button hover |
+| `shadow-game-button-active` | `0 1px 0 0 #312E81, 0 2px 8px rgba(79, 70, 229, 0.3)` | Button active |
 
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+### Glow Effects
+| Token | Value | Usage |
+|-------|-------|-------|
+| `shadow-game-glow` | `0 0 20px rgba(79, 70, 229, 0.5)` | Primary glow |
+| `shadow-game-glow-success` | `0 0 20px rgba(34, 197, 94, 0.5)` | Success glow |
+| `shadow-game-glow-accent` | `0 0 20px rgba(249, 115, 22, 0.5)` | Accent glow |
+
+---
+
+## Animations
+
+### Entry Animations
+- `animate-fade-in-up` - Elements appearing from below
+- `animate-card-entrance` - Card entry with scale
+- `animate-button-entrance` - Button entry with scale
+
+### Interactive Animations
+- `animate-wiggle` - Playful shake (60deg rotation)
+- `animate-shake` - Horizontal shake (error feedback)
+- `animate-pop` - Quick scale effect (0.3s)
+- `animate-elastic` - Elastic bounce (0.6s)
+
+### Background Animations
+- `animate-float` - Gentle floating (4s infinite)
+- `animate-pulse-gentle` - Subtle pulse (2.5s infinite)
+- `animate-star-twinkle` - Star twinkle effect (2s infinite)
+
+---
+
+## Accessibility
+
+### Contrast Requirements
+- **Light mode**: Minimum 4.5:1 contrast ratio
+- **Large text**: Minimum 3:1 contrast ratio
+- **Interactive elements**: Must meet 3:1 contrast ratio
+
+### Touch Targets
+- **Minimum size**: 44×44px (WCAG 2.1 Level AAA)
+- **Recommended**: 64×64px for children
+
+### Focus States
+- All interactive elements must have visible focus states
+- Focus ring: 4px offset, 30% opacity of primary color
+
+### Reduced Motion
+- Respect `prefers-reduced-motion` media query
+- Provide reduced animation options in settings
+
+---
+
+## Anti-Patterns
+
+### ❌ Avoid
+- High saturation colors that cause visual fatigue
+- High contrast combinations (e.g., pure black on pure white)
+- Small touch targets (< 44px)
+- Layout shifts on hover
+- Animations that trigger motion sickness
+- Emoji icons (use SVG instead)
+- Empty focus states
+
+### ✅ Do
+- Use modern tech-inspired colors for main backgrounds
+- Maintain 4.5:1 minimum contrast ratio
+- Ensure all interactive elements have `cursor-pointer`
+- Provide smooth transitions (150-300ms)
+- Use consistent spacing and sizing
+- Test on multiple screen sizes
+
+---
+
+## Responsive Breakpoints
+- **Mobile**: 375px (minimum)
+- **Tablet**: 768px
+- **Desktop**: 1024px
+- **Large Desktop**: 1440px
+
+---
+
+## Implementation Notes
+
+1. **Color Usage**: Always use semantic color names (e.g., `game-primary`, `game-success`) not raw hex values
+2. **Transitions**: Keep between 150-300ms for smooth but responsive feel
+3. **Spacing**: Use touch-friendly spacing values for mobile-first approach
+4. **Typography**: Never use font sizes smaller than `text-child-base` (18px) for primary content
+5. **Borders**: Use `game-border` for clean, professional look
+
+---
+
+## Version
+- **Version**: 3.0
+- **Created**: 2026-01-30
+- **Last Updated**: 2026-01-30
+- **Status**: Active
+- **Target Age**: 3-6 years old (Boys)
+- **Theme**: Modern Tech, Indigo Primary, Orange Accent

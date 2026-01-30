@@ -62,7 +62,7 @@ const formatTime = computed(() => {
     <div class="stats-row">
       <div class="stat-item">
         <div class="stat-icon score-icon">
-          <Star :size="20" />
+          <Star :size="18" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ score }}</span>
@@ -72,7 +72,7 @@ const formatTime = computed(() => {
 
       <div class="stat-item">
         <div class="stat-icon correct-icon">
-          <CheckCircle :size="20" />
+          <CheckCircle :size="18" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ correctCount }}</span>
@@ -85,7 +85,7 @@ const formatTime = computed(() => {
     <div class="stats-row">
       <div class="stat-item">
         <div class="stat-icon time-icon">
-          <Clock :size="20" />
+          <Clock :size="18" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ formatTime }}</span>
@@ -95,7 +95,7 @@ const formatTime = computed(() => {
 
       <div class="stat-item">
         <div class="stat-icon accuracy-icon">
-          <TrendingUp :size="20" />
+          <TrendingUp :size="18" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ Number(accuracy) || 0 }}%</span>
@@ -108,60 +108,57 @@ const formatTime = computed(() => {
 
 <style scoped>
 .score-board {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
-  border-radius: 20px;
-  padding: 16px 20px;
+  background: white;
+  border-radius: 18px;
+  padding: 16px 18px;
   box-shadow:
-    0 4px 20px rgba(74, 144, 226, 0.12),
-    0 2px 8px rgba(74, 144, 226, 0.08);
-  border: 2px solid rgba(74, 144, 226, 0.15);
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 16px rgba(0, 0, 0, 0.06);
 }
 
 /* 进度条 */
 .progress-section {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .progress-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .progress-label {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: #4A90E2;
-  font-family: inherit;
+  color: var(--game-text-secondary);
 }
 
 .progress-pct {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  color: #2A70C2;
-  font-family: inherit;
+  color: var(--game-primary-dark);
 }
 
 .progress-bar {
-  height: 10px;
-  background: #E3F2FD;
-  border-radius: 10px;
+  height: 8px;
+  background: var(--game-bg-light);
+  border-radius: 8px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4A90E2, #7AB8FF);
-  border-radius: 10px;
+  background: linear-gradient(90deg, var(--game-primary), var(--game-primary-light));
+  border-radius: 8px;
   transition: width 0.3s ease;
 }
 
 /* 统计行 */
 .stats-row {
   display: flex;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .stats-row:first-of-type {
@@ -172,16 +169,16 @@ const formatTime = computed(() => {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #F5F9FF;
-  border-radius: 16px;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--game-bg-light);
+  border-radius: 14px;
 }
 
 .stat-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,23 +186,23 @@ const formatTime = computed(() => {
 }
 
 .stat-icon.score-icon {
-  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-  color: #1976D2;
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--game-primary-dark);
 }
 
 .stat-icon.correct-icon {
-  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
-  color: #388E3C;
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--game-success-dark);
 }
 
 .stat-icon.time-icon {
-  background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
-  color: #00838F;
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--game-accent-dark);
 }
 
 .stat-icon.accuracy-icon {
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
-  color: #F9A825;
+  background: rgba(234, 179, 8, 0.1);
+  color: var(--game-warning-dark);
 }
 
 .stat-info {
@@ -216,17 +213,15 @@ const formatTime = computed(() => {
 }
 
 .stat-value {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  color: #1e3a5f;
-  font-family: inherit;
+  color: var(--game-text);
   line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 13px;
-  color: #64748b;
-  font-family: inherit;
+  font-size: 12px;
+  color: var(--game-text-secondary);
   font-weight: 500;
 }
 </style>

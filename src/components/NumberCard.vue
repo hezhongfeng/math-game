@@ -44,64 +44,64 @@ const props = defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 16px;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.06),
-    inset 0 1px 3px rgba(255, 255, 255, 0.8);
+  background: white;
+  border-radius: 14px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 4px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 }
 
 /* 尺寸变体 */
 .size-normal {
-  padding: 12px 16px;
-  min-height: 64px;
+  padding: 10px 14px;
+  min-height: 56px;
 }
 
 .size-large {
-  padding: 16px 24px;
-  min-height: 80px;
+  padding: 14px 20px;
+  min-height: 72px;
 }
 
 /* 状态样式 - 默认 */
 .state-default {
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--game-border);
 }
 
 .state-default .number-value {
-  color: #1e3a5f;
+  color: var(--game-text);
 }
 
 /* 状态样式 - 占位符 */
 .state-placeholder {
-  border: 2px solid rgba(74, 144, 226, 0.15);
-  background: #ffffff;
+  border: 2px solid var(--game-border);
+  background: var(--game-bg-light);
 }
 
 .state-placeholder .number-value {
-  color: #94a3b8;
+  color: var(--game-text-muted);
   font-weight: 400;
 }
 
 /* 状态样式 - 正确 */
 .state-correct {
-  border: 3px solid #4CAF50;
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  animation: correct-pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border: 2px solid var(--game-success);
+  background: linear-gradient(135deg, #ffffff 0%, rgba(34, 197, 94, 0.1) 100%);
+  animation: correct-pop 0.4s ease-out;
 }
 
 .state-correct .number-value {
-  color: #059669;
+  color: var(--game-success-dark);
 }
 
 /* 状态样式 - 错误 */
 .state-incorrect {
-  border: 2px solid #FF9800;
-  background: #fff9f0;
+  border: 2px solid var(--game-accent);
+  background: linear-gradient(135deg, #ffffff 0%, rgba(249, 115, 22, 0.1) 100%);
 }
 
 .state-incorrect .number-value {
-  color: #FF9800;
+  color: var(--game-accent-dark);
 }
 
 /* 数字文字样式 */
@@ -113,43 +113,38 @@ const props = defineProps({
 }
 
 .size-normal .number-value {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
 }
 
 .size-large .number-value {
-  font-size: 3rem;
+  font-size: 2.6rem;
 }
 
 /* 动画 */
-@keyframes pulse-gentle {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-
 @keyframes correct-pop {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.1); }
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); opacity: 1; }
 }
 
 /* 响应式设计 */
 @media (min-width: 768px) {
   .size-normal {
-    padding: 16px 20px;
-    min-height: 72px;
+    padding: 14px 18px;
+    min-height: 64px;
   }
 
   .size-large {
-    padding: 20px 32px;
-    min-height: 96px;
+    padding: 18px 28px;
+    min-height: 84px;
   }
 
   .size-normal .number-value {
-    font-size: 3rem;
+    font-size: 2.6rem;
   }
 
   .size-large .number-value {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 }
 </style>

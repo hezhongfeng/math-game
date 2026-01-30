@@ -19,24 +19,24 @@ const icons = {
 
 const colors = {
   success: {
-    bg: 'bg-gradient-to-r from-peppa-green to-peppa-green-dark',
+    bg: 'bg-gradient-to-r from-game-success to-game-success-dark',
     text: 'text-white',
-    shadow: 'shadow-peppa-green'
+    shadow: 'shadow-game-success'
   },
   error: {
-    bg: 'bg-gradient-to-r from-peppa-orange to-peppa-orange-dark',
+    bg: 'bg-gradient-to-r from-game-error to-game-error-dark',
     text: 'text-white',
-    shadow: 'shadow-peppa-orange'
+    shadow: 'shadow-game-error'
   },
   warning: {
-    bg: 'bg-gradient-to-r from-peppa-yellow to-peppa-yellow-dark',
+    bg: 'bg-gradient-to-r from-game-warning to-game-warning-dark',
     text: 'text-gray-800',
-    shadow: 'shadow-peppa-yellow'
+    shadow: 'shadow-game-warning'
   },
   info: {
-    bg: 'bg-gradient-to-r from-peppa-blue to-peppa-blue-dark',
+    bg: 'bg-gradient-to-r from-game-primary to-game-primary-dark',
     text: 'text-white',
-    shadow: 'shadow-peppa-blue'
+    shadow: 'shadow-game-primary'
   }
 }
 </script>
