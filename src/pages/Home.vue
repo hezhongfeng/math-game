@@ -249,22 +249,22 @@ onMounted(() => {
   color: white;
   border: none;
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.3),
-    0 6px 12px rgba(255, 87, 87, 0.4);
+    0 4px 0 0 rgba(58, 99, 71, 0.4),
+    0 6px 12px rgba(74, 124, 89, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow:
-    0 5px 0 0 rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(255, 87, 87, 0.5);
+    0 5px 0 0 rgba(58, 99, 71, 0.4),
+    0 8px 16px rgba(74, 124, 89, 0.4);
 }
 
 .btn-primary:active {
   transform: translateY(2px) scale(0.98);
   box-shadow:
-    0 2px 0 0 rgba(0, 0, 0, 0.3),
-    0 3px 6px rgba(255, 87, 87, 0.4);
+    0 2px 0 0 rgba(58, 99, 71, 0.4),
+    0 3px 6px rgba(74, 124, 89, 0.3);
 }
 
 /* 次按钮 - 白色 */

@@ -10,55 +10,55 @@
     --card-foreground: 240 25% 15%;
 
     /* ============================================
-       数学游戏统一配色系统 - 珊瑚红主题
+       数学游戏配色 - 森林冒险系（自然清新）
        ============================================ */
-    /* 主色 - 活力珊瑚红 */
-    --game-primary: #FF5757;
-    --game-primary-light: #FF7A7A;
-    --game-primary-lighter: #FFB3B3;
-    --game-primary-dark: #E63E3E;
+    /* 主色 - 森林绿 */
+    --game-primary: #4A7C59;
+    --game-primary-light: #5D9A6E;
+    --game-primary-lighter: #7BB383;
+    --game-primary-dark: #3A6347;
 
-    /* 辅色 - 清新薄荷绿 */
-    --game-secondary: #00D9C0;
-    --game-secondary-light: #33E6D4;
-    --game-secondary-lighter: #80F0E6;
-    --game-secondary-dark: #00B8A3;
+    /* 辅色 - 阳光橙 */
+    --game-secondary: #E8A838;
+    --game-secondary-light: #F0BE5C;
+    --game-secondary-lighter: #F5D085;
+    --game-secondary-dark: #C48A26;
 
-    /* 强调色 - 阳光金黄 */
-    --game-accent: #FFC107;
-    --game-accent-light: #FFD54F;
-    --game-accent-lighter: #FFECB3;
-    --game-accent-dark: #FFAB00;
+    /* 强调色 - 落叶黄 */
+    --game-accent: #F4D03F;
+    --game-accent-light: #F7DC6F;
+    --game-accent-lighter: #FAE79C;
+    --game-accent-dark: #D4AC0D;
 
-    /* 成功 - 明亮草绿 */
-    --game-success: #4ADE80;
-    --game-success-light: #6EE79C;
-    --game-success-lighter: #A5F3C0;
-    --game-success-dark: #22C55E;
+    /* 成功 - 嫩芽绿 */
+    --game-success: #52C41A;
+    --game-success-light: #73D13D;
+    --game-success-lighter: #95DE64;
+    --game-success-dark: #389E0D;
 
-    /* 警告 - 温暖橙色 */
-    --game-warning: #FB923C;
-    --game-warning-light: #FDBA74;
-    --game-warning-lighter: #FED7AA;
-    --game-warning-dark: #F97316;
+    /* 警告 - 温暖棕色 */
+    --game-warning: #D4820D;
+    --game-warning-light: #E8A040;
+    --game-warning-lighter: #F0BC70;
+    --game-warning-dark: #A86608;
 
-    /* 错误 - 鲜艳红色 */
-    --game-error: #F87171;
-    --game-error-light: #FCA5A5;
-    --game-error-lighter: #FECACA;
-    --game-error-dark: #EF4444;
+    /* 错误 - 深红色 */
+    --game-error: #CF4A4A;
+    --game-error-light: #E06C6C;
+    --game-error-lighter: #F09090;
+    --game-error-dark: #A83232;
 
-    /* 中性色 */
-    --game-bg: #FFFBF7;
-    --game-bg-light: #FFFFFF;
-    --game-bg-dark: #FFF0E6;
-    --game-bg-cream: #FFFBF7;
+    /* 中性色 - 自然系 */
+    --game-bg: #F5F5DC;
+    --game-bg-light: #FAFAF0;
+    --game-bg-dark: #E8E8C8;
+    --game-bg-cream: #F5F5DC;
     --game-card: #FFFFFF;
-    --game-text: #1A1A2E;
-    --game-text-secondary: #4A5568;
-    --game-text-muted: #718096;
-    --game-border: #E2E8F0;
-    --game-border-focus: #FF5757;
+    --game-text: #2C3E2C;
+    --game-text-secondary: #4A5D4A;
+    --game-text-muted: #6B7D6B;
+    --game-border: #D4D4B8;
+    --game-border-focus: #4A7C59;
   }
 
   * {
@@ -69,7 +69,7 @@
 
   body {
     font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(180deg, #FFFBF7 0%, #FFF0E6 100%);
+    background: linear-gradient(180deg, #F5F5DC 0%, #E8E8C8 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -226,14 +226,14 @@
     @apply hover:from-game-primary-light hover:to-game-primary;
     @apply active:scale-95;
     box-shadow:
-      0 4px 0 0 #B32525,
-      0 6px 12px rgba(255, 87, 87, 0.3);
+      0 4px 0 0 #2F4F39,
+      0 6px 12px rgba(74, 124, 89, 0.3);
   }
 
   .btn-primary:active {
     box-shadow:
-      0 2px 0 0 #B32525,
-      0 3px 6px rgba(255, 87, 87, 0.3);
+      0 2px 0 0 #2F4F39,
+      0 3px 6px rgba(74, 124, 89, 0.3);
     transform: translateY(2px) scale(0.98);
   }
 
@@ -264,14 +264,14 @@
     @apply hover:from-game-success-light hover:to-game-success;
     @apply active:scale-95;
     box-shadow:
-      0 4px 0 0 #14532D,
-      0 6px 12px rgba(34, 197, 94, 0.3);
+      0 4px 0 0 #237804,
+      0 6px 12px rgba(82, 196, 26, 0.3);
   }
 
   .btn-success:active {
     box-shadow:
-      0 2px 0 0 #14532D,
-      0 3px 6px rgba(34, 197, 94, 0.3);
+      0 2px 0 0 #237804,
+      0 3px 6px rgba(82, 196, 26, 0.3);
     transform: translateY(2px) scale(0.98);
   }
 

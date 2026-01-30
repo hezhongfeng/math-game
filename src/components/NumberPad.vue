@@ -143,55 +143,48 @@ function handleSubmit() {
 
 /* 删除按钮 */
 .numpad-btn-delete {
-  background: linear-gradient(135deg, var(--game-error) 0%, var(--game-error-dark) 100%);
+  background: linear-gradient(135deg, #FF8A80 0%, #FF6B6B 100%);
   color: white;
-  border: 2px solid rgba(239, 68, 68, 0.3);
+  border: 2px solid rgba(255, 107, 107, 0.4);
   box-shadow:
-    0 3px 0 0 rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(239, 68, 68, 0.3);
+    0 3px 0 0 rgba(200, 70, 70, 0.4),
+    0 4px 12px rgba(255, 107, 107, 0.25);
 }
 
 .numpad-btn-delete:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--game-error-light) 0%, var(--game-error) 100%);
+  background: linear-gradient(135deg, #FFB3B0 0%, #FF8A80 100%);
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.3),
-    0 8px 20px rgba(239, 68, 68, 0.4);
+    0 4px 0 0 rgba(200, 70, 70, 0.4),
+    0 8px 20px rgba(255, 107, 107, 0.35);
 }
 
 .numpad-btn-delete:active:not(:disabled) {
   box-shadow:
-    0 1px 0 0 rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(239, 68, 68, 0.3);
-}
-
-.numpad-btn-delete:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--game-error-light) 0%, var(--game-error) 100%);
-  box-shadow:
-    0 4px 0 0 #7F1D1D,
-    0 8px 20px rgba(239, 68, 68, 0.3);
+    0 1px 0 0 rgba(200, 70, 70, 0.4),
+    0 2px 8px rgba(255, 107, 107, 0.25);
 }
 
 /* 确认按钮 */
 .numpad-btn-confirm {
-  background: linear-gradient(135deg, var(--game-success) 0%, var(--game-success-dark) 100%);
+  background: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
   color: white;
-  border: 2px solid rgba(34, 197, 94, 0.3);
+  border: 2px solid rgba(102, 187, 106, 0.4);
   box-shadow:
-    0 3px 0 0 rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(34, 197, 94, 0.3);
+    0 3px 0 0 rgba(60, 140, 60, 0.4),
+    0 4px 12px rgba(102, 187, 106, 0.25);
 }
 
 .numpad-btn-confirm:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--game-success-light) 0%, var(--game-success) 100%);
+  background: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%);
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.3),
-    0 8px 20px rgba(34, 197, 94, 0.4);
+    0 4px 0 0 rgba(60, 140, 60, 0.4),
+    0 8px 20px rgba(102, 187, 106, 0.35);
 }
 
 .numpad-btn-confirm:active:not(:disabled) {
   box-shadow:
-    0 1px 0 0 rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(34, 197, 94, 0.3);
+    0 1px 0 0 rgba(60, 140, 60, 0.4),
+    0 2px 8px rgba(102, 187, 106, 0.25);
 }
 
 .numpad-btn-confirm-disabled {

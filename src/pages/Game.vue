@@ -473,7 +473,7 @@ onUnmounted(() => {
 }
 
 .feedback-overlay.wrong {
-  border: 2px solid var(--game-accent);
+  border: 2px solid var(--game-warning);
   cursor: pointer;
 }
 
@@ -488,8 +488,8 @@ onUnmounted(() => {
   justify-content: center;
   animation: circlePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.3),
-    0 8px 20px rgba(34, 197, 94, 0.4);
+    0 4px 0 0 rgba(56, 158, 13, 0.4),
+    0 8px 20px rgba(82, 196, 26, 0.35);
 }
 
 .success-circle svg {
@@ -515,16 +515,16 @@ onUnmounted(() => {
 /* 答案数字 - 错误反馈 */
 .answer-number {
   font-weight: 800;
-  color: var(--game-accent);
+  color: var(--game-warning);
   line-height: 1;
   text-align: center;
 }
 
 /* 点击提示文字 */
 .hint-text {
-  color: var(--game-accent);
+  color: var(--game-warning-dark);
   font-weight: 600;
-  background: rgba(249, 115, 22, 0.1);
+  background: rgba(212, 130, 13, 0.12);
   padding: 6px 14px;
   border-radius: 16px;
 }
