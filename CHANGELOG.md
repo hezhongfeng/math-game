@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Home 页面改版**:
+  - 全新视觉设计，采用男孩友好配色系统（靛蓝+橙色）
+  - 添加统计卡片展示已完成关卡数和总关卡数
+  - 优化按钮样式和入场动画
+  - 改进响应式布局适配
+
+### Changed
+
+- **主题配色系统升级**:
+  - 更新为更现代的色彩方案
+  - 主色调从 Peppa Pig 蓝改为活力珊瑚红
+  - 添加完整的多主题配色支持（game/toddler/boy/macaron/candy）
+  - 优化高对比度确保户外可读性
+
+### Documentation
+
+- **完善项目文档**:
+  - 创建 `CONTRIBUTING.md` 贡献者指南
+  - 创建 `COMPONENTS.md` 组件文档
+  - 更新 `CHANGELOG.md` 变更记录
+  - 完善 `AGENTS.md` 开发规范
+
+## [1.1.0] - 2026-01-30
+
 ### Removed
 
 - **背景音乐移除**:

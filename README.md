@@ -362,6 +362,18 @@ touch-action: manipulation;
 - 支持 PWA 离线使用
 - 添加家长控制面板
 
+## 📚 项目文档
+
+| 文档 | 描述 |
+|------|------|
+| [README.md](./README.md) | 项目介绍和使用指南 (本文档) |
+| [DESIGN.md](./DESIGN.md) | 设计规范 - 移动端适配、响应式设计、组件布局 |
+| [AGENTS.md](./AGENTS.md) | 开发规范 - 代码风格、项目结构、最佳实践 |
+| [CLAUDE.md](./CLAUDE.md) | 架构概述 - 技术栈、数据流、重要文件 |
+| [COMPONENTS.md](./COMPONENTS.md) | 组件文档 - 所有 Vue 组件的详细说明 |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | 贡献指南 - 如何参与项目开发 |
+| [CHANGELOG.md](./CHANGELOG.md) | 变更日志 - 版本历史和更新记录 |
+
 ## 📄 许可证
 
 本项目仅供学习和个人使用。
