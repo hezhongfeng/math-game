@@ -141,7 +141,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  font-size: 16px;
+  font-size: 20px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
@@ -214,7 +214,7 @@ onMounted(() => {
 }
 
 .stat-label {
-  font-size: 13px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }

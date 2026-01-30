@@ -166,13 +166,13 @@ const answerCardValue = computed(() => {
 }
 
 .current-index {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--game-text);
 }
 
 .total-count {
-  font-size: 13px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
@@ -192,7 +192,7 @@ const answerCardValue = computed(() => {
 }
 
 .timer-value {
-  font-size: 13px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--game-text-secondary);
   font-variant-numeric: tabular-nums;

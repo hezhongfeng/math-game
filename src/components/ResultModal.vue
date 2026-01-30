@@ -150,7 +150,7 @@ function handleHome() {
 }
 
 .modal-title {
-  font-size: 26px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--game-text);
   margin-bottom: 8px;
@@ -166,7 +166,7 @@ function handleHome() {
   padding: 6px 14px;
   border-radius: 20px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 18px;
   box-shadow: 0 3px 0 0 #7C2D12;
 }
 

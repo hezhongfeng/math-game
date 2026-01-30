@@ -575,16 +575,21 @@ export default {
           },
         },
       },
+      fontFamily: {
+        // 儿童友好的字体 - 圆润饱满，易于阅读
+        'child-friendly': ['"Baloo 2"', 'system-ui', '-apple-system', 'sans-serif'],
+        'child-body': ['"Comic Neue"', 'system-ui', 'sans-serif'],
+      },
       fontSize: {
-        // 儿童友好的字体大小 - 更大更易读
-        'child-xs': ['14px', { lineHeight: '1.6' }],
-        'child-sm': ['16px', { lineHeight: '1.6' }],
-        'child-base': ['18px', { lineHeight: '1.6' }], // 儿童最小基础字体
-        'child-lg': ['22px', { lineHeight: '1.5' }],
-        'child-xl': ['26px', { lineHeight: '1.4' }],
-        'child-2xl': ['32px', { lineHeight: '1.3' }],
-        'child-3xl': ['40px', { lineHeight: '1.2' }],
-        'child-4xl': ['48px', { lineHeight: '1.1' }],
+        // 儿童友好的字体大小 - 更大更易读（针对移动设备优化）
+        'child-xs': ['16px', { lineHeight: '1.6' }],   // 小标签、辅助文字
+        'child-sm': ['18px', { lineHeight: '1.6' }],   // 次要文字
+        'child-base': ['20px', { lineHeight: '1.6' }], // 正文最小尺寸
+        'child-lg': ['24px', { lineHeight: '1.5' }],   // 大正文
+        'child-xl': ['28px', { lineHeight: '1.4' }],   // 小标题
+        'child-2xl': ['34px', { lineHeight: '1.3' }],  // 副标题
+        'child-3xl': ['42px', { lineHeight: '1.2' }],  // 大标题
+        'child-4xl': ['52px', { lineHeight: '1.1' }],  // 特大标题
       },
       spacing: {
         // 触摸友好的间距

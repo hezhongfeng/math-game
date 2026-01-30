@@ -147,11 +147,13 @@
   }
 
   body {
-    font-family: 'Baloo 2', 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Baloo 2', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(180deg, #FFFBF7 0%, #FFF0E6 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* 基础字体大小 - 移动端更大 */
+    font-size: 20px;
     /* 移动端触摸优化 */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;

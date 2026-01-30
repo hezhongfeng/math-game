@@ -407,14 +407,14 @@ onUnmounted(() => {
 }
 
 .title {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--game-text);
   letter-spacing: 0.5px;
 }
 
 .subtitle {
-  font-size: 12px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   margin-top: 2px;
   font-weight: 500;
@@ -542,7 +542,7 @@ onUnmounted(() => {
 
 /* 点击提示文字 */
 .hint-text {
-  font-size: 13px;
+  font-size: 18px;
   color: var(--game-accent);
   font-weight: 600;
   background: rgba(249, 115, 22, 0.1);

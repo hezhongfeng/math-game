@@ -248,7 +248,7 @@ function handleSelect() {
 }
 
 .name {
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--game-text);
   letter-spacing: 0.3px;
@@ -270,7 +270,7 @@ function handleSelect() {
   justify-content: center;
   padding: 2px 6px;
   border-radius: 8px;
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -303,7 +303,7 @@ function handleSelect() {
 }
 
 .stat-score {
-  font-size: 14px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 600;
 }
@@ -314,7 +314,7 @@ function handleSelect() {
 }
 
 .stat-accuracy {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
 }
 
@@ -361,7 +361,7 @@ function handleSelect() {
 }
 
 .question-count {
-  font-size: 13px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
@@ -370,7 +370,7 @@ function handleSelect() {
 .difficulty-badge {
   padding: 3px 8px;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   margin-left: auto;
   background: var(--game-bg);
@@ -408,7 +408,7 @@ function handleSelect() {
 }
 
 .locked-text {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--game-text-muted);
   font-weight: 500;
 }

@@ -129,13 +129,13 @@ const formatTime = computed(() => {
 }
 
 .progress-label {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--game-text-secondary);
 }
 
 .progress-pct {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--game-primary-dark);
 }
@@ -213,14 +213,14 @@ const formatTime = computed(() => {
 }
 
 .stat-value {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--game-text);
   line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }

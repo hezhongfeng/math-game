@@ -176,7 +176,7 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--game-text);
   letter-spacing: 1px;
@@ -265,11 +265,11 @@ onMounted(() => {
   padding: 6px 14px;
   border-radius: 10px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .section-title {
-  font-size: 15px;
+  font-size: 20px;
 }
 
 /* 各阶段颜色 - 男童科技风 */
@@ -299,7 +299,7 @@ onMounted(() => {
 }
 
 .section-count {
-  font-size: 13px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 600;
   background: var(--game-bg-light);
@@ -328,7 +328,7 @@ onMounted(() => {
 }
 
 .footer p {
-  font-size: 14px;
+  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
   text-align: center;
