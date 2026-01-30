@@ -1634,3 +1634,20 @@
     @apply bg-toddler-success/10 text-toddler-success;
   }
 }
+
+@layer utilities {
+  .text-tiny { @apply text-child-2xs; }
+  .text-small { @apply text-child-xs; }
+  .text-body { @apply text-child-sm; }
+  .text-normal { @apply text-child-base; }
+  .text-medium { @apply text-child-md; }
+  .text-large { @apply text-child-lg; }
+  .text-xlarge { @apply text-child-xl; }
+  .text-display { @apply text-child-2xl; }
+  .text-title { @apply text-child-3xl; }
+  .text-hero { @apply text-child-4xl; }
+  
+  .text-responsive-body { @apply text-child-sm md:text-child-base; }
+  .text-responsive-large { @apply text-child-lg md:text-child-xl; }
+  .text-responsive-title { @apply text-child-2xl md:text-child-3xl; }
+}

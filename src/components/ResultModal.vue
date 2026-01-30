@@ -43,10 +43,10 @@ function handleHome() {
           <!-- 头部 -->
           <div class="modal-header">
             <div class="trophy-wrapper">
-              <Trophy :size="40" class="trophy-icon" />
+              <Trophy :size="44" class="trophy-icon" />
             </div>
-            <h2 class="modal-title">挑战完成！</h2>
-            <div v-if="isNewBest" class="new-record-badge">
+            <h2 class="modal-title text-child-2xl">挑战完成！</h2>
+            <div v-if="isNewBest" class="new-record-badge text-child-sm">
               新纪录
             </div>
           </div>
@@ -55,42 +55,42 @@ function handleHome() {
           <div class="stats-grid">
             <div class="stat-card score-card">
               <div class="stat-icon">
-                <Target :size="22" />
+                <Target :size="24" />
               </div>
-              <span class="stat-label">得分</span>
-              <span class="stat-value">{{ result.score }}</span>
+              <span class="stat-label text-child-xs">得分</span>
+              <span class="stat-value text-child-lg">{{ result.score }}</span>
             </div>
             <div class="stat-card correct-card">
               <div class="stat-icon">
-                <CheckCircle :size="22" />
+                <CheckCircle :size="24" />
               </div>
-              <span class="stat-label">正确</span>
-              <span class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</span>
+              <span class="stat-label text-child-xs">正确</span>
+              <span class="stat-value text-child-lg">{{ result.correctCount }}/{{ result.totalCount }}</span>
             </div>
             <div class="stat-card accuracy-card">
               <div class="stat-icon">
-                <BarChart3 :size="22" />
+                <BarChart3 :size="24" />
               </div>
-              <span class="stat-label">正确率</span>
-              <span class="stat-value">{{ result.accuracy }}%</span>
+              <span class="stat-label text-child-xs">正确率</span>
+              <span class="stat-value text-child-lg">{{ result.accuracy }}%</span>
             </div>
             <div class="stat-card time-card">
               <div class="stat-icon">
-                <Clock :size="22" />
+                <Clock :size="24" />
               </div>
-              <span class="stat-label">用时</span>
-              <span class="stat-value">{{ formatTime(result.duration) }}</span>
+              <span class="stat-label text-child-xs">用时</span>
+              <span class="stat-value text-child-lg">{{ formatTime(result.duration) }}</span>
             </div>
           </div>
 
           <!-- 按钮 -->
           <div class="button-group">
-            <button @click="handleRetry" class="btn btn-retry">
-              <RotateCcw :size="18" />
+            <button @click="handleRetry" class="btn btn-retry text-child-xs">
+              <RotateCcw :size="20" />
               再玩一次
             </button>
-            <button @click="handleHome" class="btn btn-home">
-              <Home :size="18" />
+            <button @click="handleHome" class="btn btn-home text-child-xs">
+              <Home :size="20" />
               返回选择
             </button>
           </div>
@@ -150,7 +150,6 @@ function handleHome() {
 }
 
 .modal-title {
-  font-size: 32px;
   font-weight: 800;
   color: var(--game-text);
   margin-bottom: 8px;

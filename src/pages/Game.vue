@@ -244,8 +244,8 @@ onUnmounted(() => {
       </button>
 
       <div class="title-group">
-        <h2 class="title">{{ difficulty.name }}</h2>
-        <p class="subtitle">{{ difficulty.description }}</p>
+        <h2 class="title text-child-xl">{{ difficulty.name }}</h2>
+        <p class="subtitle text-child-sm">{{ difficulty.description }}</p>
       </div>
 
       <button class="nav-btn nav-btn-accent" @click="handleRetry" title="重新开始">
@@ -274,10 +274,10 @@ onUnmounted(() => {
         <div v-if="shouldShowFeedback" class="feedback-container" @click="handleWrongFeedbackClick">
           <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
             <div v-if="isCorrect" class="success-circle">
-              <Check :size="36" />
+              <Check :size="40" />
             </div>
-            <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
-            <div v-if="isIncorrect" class="hint-text">点击继续</div>
+            <div v-else-if="isIncorrect" class="answer-number text-child-4xl">{{ currentQuestion.answer }}</div>
+            <div v-if="isIncorrect" class="hint-text text-child-sm">点击继续</div>
           </div>
         </div>
       </Transition>
@@ -407,14 +407,12 @@ onUnmounted(() => {
 }
 
 .title {
-  font-size: 24px;
   font-weight: 700;
   color: var(--game-text);
   letter-spacing: 0.5px;
 }
 
 .subtitle {
-  font-size: 18px;
   color: var(--game-text-secondary);
   margin-top: 2px;
   font-weight: 500;
@@ -533,7 +531,6 @@ onUnmounted(() => {
 
 /* 答案数字 - 错误反馈 */
 .answer-number {
-  font-size: 48px;
   font-weight: 800;
   color: var(--game-accent);
   line-height: 1;
@@ -542,7 +539,6 @@ onUnmounted(() => {
 
 /* 点击提示文字 */
 .hint-text {
-  font-size: 18px;
   color: var(--game-accent);
   font-weight: 600;
   background: rgba(249, 115, 22, 0.1);

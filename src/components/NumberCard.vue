@@ -55,12 +55,12 @@ const props = defineProps({
 /* 尺寸变体 */
 .size-normal {
   padding: 10px 14px;
-  min-height: 56px;
+  min-height: 64px;
 }
 
 .size-large {
   padding: 14px 20px;
-  min-height: 72px;
+  min-height: 80px;
 }
 
 /* 状态样式 - 默认 */
@@ -113,11 +113,11 @@ const props = defineProps({
 }
 
 .size-normal .number-value {
-  font-size: 2.2rem;
+  font-size: 3.2rem;
 }
 
 .size-large .number-value {
-  font-size: 2.6rem;
+  font-size: 3.8rem;
 }
 
 /* 动画 */
@@ -131,20 +131,20 @@ const props = defineProps({
 @media (min-width: 768px) {
   .size-normal {
     padding: 14px 18px;
-    min-height: 64px;
+    min-height: 72px;
   }
 
   .size-large {
     padding: 18px 28px;
-    min-height: 84px;
+    min-height: 96px;
   }
 
   .size-normal .number-value {
-    font-size: 2.6rem;
+    font-size: 3.6rem;
   }
 
   .size-large .number-value {
-    font-size: 3rem;
+    font-size: 4.2rem;
   }
 }
 </style>

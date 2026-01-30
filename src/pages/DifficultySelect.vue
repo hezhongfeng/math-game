@@ -59,12 +59,12 @@ onMounted(() => {
   <div class="page">
     <!-- 顶部导航 -->
     <header class="header">
-      <button class="btn-back" @click="goBack">
+      <button class="btn-back text-child-xs" @click="goBack">
         <ArrowLeft :size="20" />
         <span>返回</span>
       </button>
 
-      <h1 class="title">选择关卡</h1>
+      <h1 class="title text-child-xl">选择关卡</h1>
 
       <!-- 进度徽章 -->
       <div class="progress-badge">
@@ -93,10 +93,10 @@ onMounted(() => {
       <div v-for="(group, groupIndex) in DIFFICULTY_GROUPS" :key="group.name" class="section">
         <!-- 阶段标题 -->
         <div class="section-header" :style="{ animationDelay: `${groupIndex * 100}ms` }">
-          <div class="section-badge" :class="`badge-${group.color}`">
+          <div class="section-badge text-child-sm" :class="`badge-${group.color}`">
             <h2 class="section-title">{{ group.name }}</h2>
           </div>
-          <span class="section-count">{{ group.levels.length }}关</span>
+          <span class="section-count text-child-sm">{{ group.levels.length }}关</span>
         </div>
 
         <!-- 难度卡片列表 -->
@@ -117,7 +117,7 @@ onMounted(() => {
 
     <!-- 底部提示 -->
     <footer class="footer">
-      <p>依次完成关卡，解锁更高难度</p>
+      <p class="text-child-sm">依次完成关卡，解锁更高难度</p>
     </footer>
   </div>
 </template>
@@ -156,7 +156,6 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  font-size: 14px;
   font-weight: 600;
   color: var(--game-text-secondary);
   background: var(--game-bg-light);
@@ -176,7 +175,6 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 24px;
   font-weight: 700;
   color: var(--game-text);
   letter-spacing: 1px;
@@ -225,7 +223,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--game-primary-dark);
 }
@@ -265,11 +263,10 @@ onMounted(() => {
   padding: 6px 14px;
   border-radius: 10px;
   font-weight: 700;
-  font-size: 18px;
 }
 
 .section-title {
-  font-size: 20px;
+  font-size: inherit;
 }
 
 /* 各阶段颜色 - 男童科技风 */
@@ -299,7 +296,6 @@ onMounted(() => {
 }
 
 .section-count {
-  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 600;
   background: var(--game-bg-light);
@@ -328,7 +324,6 @@ onMounted(() => {
 }
 
 .footer p {
-  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
   text-align: center;

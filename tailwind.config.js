@@ -581,15 +581,16 @@ export default {
         'child-body': ['"Comic Neue"', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        // 儿童友好的字体大小 - 更大更易读（针对移动设备优化）
-        'child-xs': ['16px', { lineHeight: '1.6' }],   // 小标签、辅助文字
-        'child-sm': ['18px', { lineHeight: '1.6' }],   // 次要文字
-        'child-base': ['20px', { lineHeight: '1.6' }], // 正文最小尺寸
-        'child-lg': ['24px', { lineHeight: '1.5' }],   // 大正文
-        'child-xl': ['28px', { lineHeight: '1.4' }],   // 小标题
-        'child-2xl': ['34px', { lineHeight: '1.3' }],  // 副标题
-        'child-3xl': ['42px', { lineHeight: '1.2' }],  // 大标题
-        'child-4xl': ['52px', { lineHeight: '1.1' }],  // 特大标题
+        'child-2xs': ['14px', { lineHeight: '1.5', letterSpacing: '0.02em' }],
+        'child-xs': ['16px', { lineHeight: '1.6', letterSpacing: '0.01em' }],
+        'child-sm': ['18px', { lineHeight: '1.6', letterSpacing: '0' }],
+        'child-base': ['20px', { lineHeight: '1.6', letterSpacing: '-0.01em' }],
+        'child-md': ['22px', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+        'child-lg': ['24px', { lineHeight: '1.5', letterSpacing: '-0.02em' }],
+        'child-xl': ['28px', { lineHeight: '1.4', letterSpacing: '-0.02em' }],
+        'child-2xl': ['32px', { lineHeight: '1.3', letterSpacing: '-0.02em' }],
+        'child-3xl': ['38px', { lineHeight: '1.2', letterSpacing: '-0.02em' }],
+        'child-4xl': ['46px', { lineHeight: '1.1', letterSpacing: '-0.03em' }],
       },
       spacing: {
         // 触摸友好的间距

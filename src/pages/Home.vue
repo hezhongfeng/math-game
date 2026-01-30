@@ -36,10 +36,10 @@ onMounted(() => {
       <!-- 标题区 -->
       <div class="header animate-fade-in-up">
         <div class="title-icon">
-          <Calculator :size="40" />
+          <Calculator :size="44" />
         </div>
-        <h1 class="title">数学挑战</h1>
-        <p class="subtitle">训练思维，挑战自我</p>
+        <h1 class="title text-child-3xl md:text-child-4xl">数学挑战</h1>
+        <p class="subtitle text-child-base">训练思维，挑战自我</p>
       </div>
 
       <!-- 统计卡片 -->
@@ -49,10 +49,10 @@ onMounted(() => {
           style="animation-delay: 100ms"
         >
           <div class="stat-icon-wrapper icon-primary">
-            <Trophy :size="24" class="stat-icon" />
+            <Trophy :size="28" class="stat-icon" />
           </div>
-          <p class="stat-value">{{ completedCount }}</p>
-          <p class="stat-label">已完成</p>
+          <p class="stat-value text-child-2xl">{{ completedCount }}</p>
+          <p class="stat-label text-child-sm">已完成</p>
         </div>
 
         <div
@@ -60,30 +60,30 @@ onMounted(() => {
           style="animation-delay: 200ms"
         >
           <div class="stat-icon-wrapper icon-secondary">
-            <Star :size="24" class="stat-icon" />
+            <Star :size="28" class="stat-icon" />
           </div>
-          <p class="stat-value">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
-          <p class="stat-label">总关卡</p>
+          <p class="stat-value text-child-2xl">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
+          <p class="stat-label text-child-sm">总关卡</p>
         </div>
       </div>
 
       <!-- 主按钮 -->
       <div class="buttons">
         <button
-          class="btn-primary animate-button-entrance"
+          class="btn-primary animate-button-entrance text-child-base"
           style="animation-delay: 300ms"
           @click="startGame"
         >
-          <Play :size="22" />
+          <Play :size="24" />
           <span>开始挑战</span>
         </button>
 
         <button
-          class="btn-secondary animate-button-entrance"
+          class="btn-secondary animate-button-entrance text-child-base"
           style="animation-delay: 400ms"
           @click="viewAchievements"
         >
-          <Trophy :size="22" />
+          <Trophy :size="24" />
           <span>查看成就</span>
         </button>
       </div>
@@ -133,7 +133,6 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 40px;
   font-weight: 800;
   margin-bottom: 8px;
   color: var(--game-text);
@@ -141,7 +140,6 @@ onMounted(() => {
 }
 
 .subtitle {
-  font-size: 20px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
@@ -199,7 +197,6 @@ onMounted(() => {
 }
 
 .stat-value {
-  font-size: 32px;
   font-weight: 800;
   margin-bottom: 4px;
   color: var(--game-text);
@@ -214,7 +211,6 @@ onMounted(() => {
 }
 
 .stat-label {
-  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
@@ -234,7 +230,6 @@ onMounted(() => {
   gap: 10px;
   width: 100%;
   padding: 18px 24px;
-  font-size: 18px;
   font-weight: 700;
   border-radius: 16px;
   cursor: pointer;
@@ -271,7 +266,6 @@ onMounted(() => {
   gap: 10px;
   width: 100%;
   padding: 18px 24px;
-  font-size: 18px;
   font-weight: 700;
   border-radius: 16px;
   cursor: pointer;

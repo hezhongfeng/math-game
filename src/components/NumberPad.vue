@@ -41,7 +41,7 @@ function handleSubmit() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="numpad-btn text-3xl md:text-4xl font-bold"
+        class="numpad-btn text-5xl md:text-6xl font-bold"
         :class="{ 'numpad-btn-disabled': disabled }"
       >
         {{ num }}
@@ -63,7 +63,7 @@ function handleSubmit() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="numpad-btn text-3xl md:text-4xl font-bold"
+        class="numpad-btn text-5xl md:text-6xl font-bold"
         :class="{ 'numpad-btn-disabled': disabled }"
       >
         0

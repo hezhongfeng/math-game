@@ -63,12 +63,12 @@ const answerCardValue = computed(() => {
     <!-- 顶部信息栏 -->
     <div class="header-bar">
       <div class="question-indicator">
-        <span class="current-index">第 {{ currentIndex + 1 }} 题</span>
-        <span class="total-count">/ 共 {{ totalQuestions }} 题</span>
+        <span class="current-index text-child-base">第 {{ currentIndex + 1 }} 题</span>
+        <span class="total-count text-child-sm">/ 共 {{ totalQuestions }} 题</span>
       </div>
       <div class="timer">
-        <Clock :size="14" class="timer-icon" />
-        <span class="timer-value">{{ formattedTime }}</span>
+        <Clock :size="18" class="timer-icon" />
+        <span class="timer-value text-child-sm">{{ formattedTime }}</span>
       </div>
     </div>
 
@@ -166,13 +166,11 @@ const answerCardValue = computed(() => {
 }
 
 .current-index {
-  font-size: 20px;
   font-weight: 700;
   color: var(--game-text);
 }
 
 .total-count {
-  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
@@ -192,7 +190,6 @@ const answerCardValue = computed(() => {
 }
 
 .timer-value {
-  font-size: 18px;
   font-weight: 600;
   color: var(--game-text-secondary);
   font-variant-numeric: tabular-nums;
@@ -213,7 +210,7 @@ const answerCardValue = computed(() => {
 }
 
 .operator {
-  font-size: 2.2rem;
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--game-primary-dark);
   line-height: 1;
@@ -221,7 +218,7 @@ const answerCardValue = computed(() => {
 }
 
 .equals-operator {
-  font-size: 2.2rem;
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--game-success-dark);
   line-height: 1;
@@ -236,24 +233,12 @@ const answerCardValue = computed(() => {
     min-width: 360px;
   }
 
-  .current-index {
-    font-size: 18px;
-  }
-
-  .total-count {
-    font-size: 14px;
-  }
-
-  .timer-value {
-    font-size: 14px;
-  }
-
   .operator {
-    font-size: 2.6rem;
+    font-size: 3.2rem;
   }
 
   .equals-operator {
-    font-size: 2.6rem;
+    font-size: 3.2rem;
   }
 
   .expression {

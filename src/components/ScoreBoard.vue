@@ -47,8 +47,8 @@ const formatTime = computed(() => {
     <!-- 进度条 -->
     <div class="progress-section">
       <div class="progress-header">
-        <span class="progress-label">进度 {{ currentIndex }}/{{ totalQuestions }}</span>
-        <span class="progress-pct">{{ progress }}%</span>
+        <span class="progress-label text-child-sm">进度 {{ currentIndex }}/{{ totalQuestions }}</span>
+        <span class="progress-pct text-child-sm">{{ progress }}%</span>
       </div>
       <div class="progress-bar">
         <div
@@ -65,8 +65,8 @@ const formatTime = computed(() => {
           <Star :size="18" />
         </div>
         <div class="stat-info">
-          <span class="stat-value">{{ score }}</span>
-          <span class="stat-label">得分</span>
+          <span class="stat-value text-child-xl">{{ score }}</span>
+          <span class="stat-label text-child-sm">得分</span>
         </div>
       </div>
 
@@ -75,8 +75,8 @@ const formatTime = computed(() => {
           <CheckCircle :size="18" />
         </div>
         <div class="stat-info">
-          <span class="stat-value">{{ correctCount }}</span>
-          <span class="stat-label">正确</span>
+          <span class="stat-value text-child-xl">{{ correctCount }}</span>
+          <span class="stat-label text-child-sm">正确</span>
         </div>
       </div>
     </div>
@@ -88,8 +88,8 @@ const formatTime = computed(() => {
           <Clock :size="18" />
         </div>
         <div class="stat-info">
-          <span class="stat-value">{{ formatTime }}</span>
-          <span class="stat-label">用时</span>
+          <span class="stat-value text-child-xl">{{ formatTime }}</span>
+          <span class="stat-label text-child-sm">用时</span>
         </div>
       </div>
 
@@ -98,8 +98,8 @@ const formatTime = computed(() => {
           <TrendingUp :size="18" />
         </div>
         <div class="stat-info">
-          <span class="stat-value">{{ Number(accuracy) || 0 }}%</span>
-          <span class="stat-label">正确率</span>
+          <span class="stat-value text-child-xl">{{ Number(accuracy) || 0 }}%</span>
+          <span class="stat-label text-child-sm">正确率</span>
         </div>
       </div>
     </div>
@@ -129,13 +129,11 @@ const formatTime = computed(() => {
 }
 
 .progress-label {
-  font-size: 18px;
   font-weight: 600;
   color: var(--game-text-secondary);
 }
 
 .progress-pct {
-  font-size: 18px;
   font-weight: 700;
   color: var(--game-primary-dark);
 }
@@ -213,14 +211,12 @@ const formatTime = computed(() => {
 }
 
 .stat-value {
-  font-size: 24px;
   font-weight: 700;
   color: var(--game-text);
   line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 18px;
   color: var(--game-text-secondary);
   font-weight: 500;
 }
