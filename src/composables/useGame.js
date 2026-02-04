@@ -25,18 +25,18 @@ export function useGame(difficulty) {
     return ((currentIndex.value) / questions.value.length) * 100
   })
 
-const accuracy = computed(() => {
-  if (!questions.value.length || correctCount.value === undefined || correctCount.value === null) return 0
-  const result = Math.round((correctCount.value / questions.value.length) * 100)
-  return isNaN(result) ? 0 : result
-})
+  const accuracy = computed(() => {
+    if (!questions.value.length || correctCount.value === undefined || correctCount.value === null) return 0
+    const result = Math.round((correctCount.value / questions.value.length) * 100)
+    return isNaN(result) ? 0 : result
+  })
 
-const duration = computed(() => {
-  if (!startTime.value) return 0
-  const end = endTime.value || Date.now()
-  const result = Math.floor((end - startTime.value) / 1000)
-  return isNaN(result) ? 0 : result
-})
+  const duration = computed(() => {
+    if (!startTime.value) return 0
+    const end = endTime.value || Date.now()
+    const result = Math.floor((end - startTime.value) / 1000)
+    return isNaN(result) ? 0 : result
+  })
 
   /**
    * 开始游戏

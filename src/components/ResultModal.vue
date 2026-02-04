@@ -137,12 +137,12 @@ function handleHome() {
   width: 72px;
   height: 72px;
   border-radius: 20px;
-background: linear-gradient(135deg, var(--game-warning) 0%, var(--game-warning-dark) 100%);
+  background: linear-gradient(135deg, var(--game-warning) 0%, var(--game-warning-dark) 100%);
   color: white;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
   box-shadow: 0 3px 0 0 var(--game-warning-dark);
 }
 
