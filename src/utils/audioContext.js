@@ -77,36 +77,20 @@ function setupAudioContextListeners() {
     }
   }
 
-  // 监听更多事件类型，确保捕获早期交互
-  // 使用 { once: false } 以便多次尝试恢复（某些 Safari 版本需要多次触发）
+  // 精简事件类型，保留关键交互事件
+  // 使用 { once: true } 首次交互后自动移除监听，优化性能
   const events = [
-    'touchstart',  // 最早触发的触摸事件
-    'touchmove',   // 触摸移动也可能触发
-    'touchend',    // 触摸结束
-    'click',       // 点击事件
-    'mousedown',   // 鼠标按下（桌面模式）
-    'mouseup',     // 鼠标释放
-    'keydown',     // 键盘按下
-    'keyup',       // 键盘释放
-    'pointerdown', // 指针事件
-    'pointerup'    // 指针释放
+    'touchstart',  // 最早触发的触摸事件（移动端）
+    'click',       // 点击事件（通用）
+    'keydown'      // 键盘按下（桌面端辅助功能）
   ]
   
-  // 在捕获阶段监听所有事件，passive: true 优化性能
+  // 在 document 上监听关键事件，passive: true 优化性能
   events.forEach(event => {
     document.addEventListener(event, handleUserInteraction, { 
       capture: true, 
       passive: true,
-      once: false  // 不设置 once，允许多次触发
-    })
-  })
-  
-  // 在 window 上也监听，扩大覆盖范围
-  events.forEach(event => {
-    window.addEventListener(event, handleUserInteraction, { 
-      capture: true, 
-      passive: true,
-      once: false
+      once: true  // 首次交互后自动移除
     })
   })
 }
