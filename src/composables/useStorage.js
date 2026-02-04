@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useToast } from './useToast'
 import { STORAGE_KEYS } from '../config/constants'
 
@@ -10,14 +10,9 @@ let cachedData = null
 /**
  * 本地存储 Composable
  * 用于保存和读取游戏进度和最佳成绩
- * 
- * 使用响应式数据，组件可以监听变化自动更新
  */
 export function useStorage() {
   const { error: showError } = useToast()
-  
-  // 内部响应式状态
-  const _data = ref(null)
   
   /**
    * 从 localStorage 读取数据
@@ -31,12 +26,10 @@ export function useStorage() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       cachedData = raw ? JSON.parse(raw) : { bestScores: {}, progress: {} }
-      _data.value = cachedData
       return cachedData
     } catch (error) {
       showError('读取游戏数据失败，请检查浏览器存储设置')
       cachedData = { bestScores: {}, progress: {} }
-      _data.value = cachedData
       return cachedData
     }
   }
@@ -49,7 +42,6 @@ export function useStorage() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
       cachedData = data
-      _data.value = data
     } catch (error) {
       showError('保存游戏数据失败，存储空间可能已满')
     }
