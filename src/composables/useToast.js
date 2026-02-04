@@ -40,21 +40,9 @@ export function useToast() {
     return addToast(message, 'error', duration)
   }
 
-  function warning(message, duration = DEFAULT_DURATION) {
-    return addToast(message, 'warning', duration)
-  }
-
-  function info(message, duration = DEFAULT_DURATION) {
-    return addToast(message, 'info', duration)
-  }
-
   return {
     toasts,
-    addToast,
-    removeToast,
     success,
-    error,
-    warning,
-    info
+    error
   }
 }
