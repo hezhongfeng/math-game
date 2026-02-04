@@ -92,19 +92,6 @@ export function useGame(difficulty) {
   }
 
   /**
-   * 重置游戏
-   */
-  function resetGame() {
-    questions.value = []
-    currentIndex.value = 0
-    score.value = 0
-    isComplete.value = false
-    correctCount.value = 0
-    startTime.value = null
-    endTime.value = null
-  }
-
-  /**
    * 获取游戏结果
    */
   function getResult() {
@@ -138,7 +125,6 @@ export function useGame(difficulty) {
     submitAnswer,
     nextQuestion,
     completeGame,
-    resetGame,
     getResult
   }
 }
