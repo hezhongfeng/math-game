@@ -1,5 +1,9 @@
 # AGENTS.md
 
+> **⚠️ CRITICAL: This project is designed for mobile browsers ONLY.**
+> All code changes MUST be tested on mobile devices before merging.
+> Mobile-first is not optional - it's the core design requirement.
+
 This guide helps agentic coding agents work effectively in this math-game repository.
 
 ## Build & Run Commands

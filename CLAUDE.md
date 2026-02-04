@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+> **⚠️ CRITICAL: This project is designed for mobile browsers ONLY.**
+> All features must be tested on mobile devices before merging code.
+> Desktop support is secondary - mobile experience comes first.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
