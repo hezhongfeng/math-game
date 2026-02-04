@@ -1,7 +1,8 @@
 import { ref, computed } from 'vue'
 import { useToast } from './useToast'
+import { STORAGE_KEYS } from '../config/constants'
 
-const STORAGE_KEY = 'math-game-data'
+const STORAGE_KEY = STORAGE_KEYS.GAME_DATA
 
 // 内存缓存，避免重复读取 localStorage
 let cachedData = null

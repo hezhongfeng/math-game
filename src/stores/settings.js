@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { STORAGE_KEYS } from '../config/constants'
 
 export const useSettingsStore = defineStore('settings', () => {
   // 音效开关
@@ -13,7 +14,7 @@ export const useSettingsStore = defineStore('settings', () => {
   // 从 localStorage 加载设置
   function loadSettings() {
     try {
-      const saved = localStorage.getItem('math-game-settings')
+      const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS)
       if (saved) {
         const settings = JSON.parse(saved)
         soundEnabled.value = settings.soundEnabled ?? true
@@ -26,7 +27,7 @@ export const useSettingsStore = defineStore('settings', () => {
   // 保存设置到 localStorage
   function saveSettings() {
     try {
-      localStorage.setItem('math-game-settings', JSON.stringify({
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({
         soundEnabled: soundEnabled.value
       }))
     } catch (error) {

@@ -1,5 +1,13 @@
 // 游戏常量配置
 
+// LocalStorage 存储键名 - 集中管理避免冲突
+export const STORAGE_KEYS = {
+  // 游戏数据（成绩、进度）
+  GAME_DATA: 'math-game-data',
+  // 用户设置（音效等）
+  SETTINGS: 'math-game-settings'
+}
+
 export const GAME_CONFIG = {
   // 反馈延迟时间（毫秒）
   FEEDBACK_DELAY: 1500,
