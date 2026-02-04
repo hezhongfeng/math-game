@@ -7,6 +7,9 @@ const router = useRouter()
 const hasError = ref(false)
 const errorInfo = ref(null)
 
+// 开发环境标记（用于显示详细错误）
+const isDev = import.meta.env.DEV
+
 // 捕获子组件错误
 onErrorCaptured((err, instance, info) => {
   console.error('错误边界捕获到错误:', err)
@@ -59,7 +62,7 @@ function retry() {
         </p>
         
         <!-- 错误详情（开发环境显示） -->
-        <div v-if="errorInfo && import.meta.env.DEV" class="error-details">
+        <div v-if="errorInfo && isDev" class="error-details">
           <p class="error-detail-text">{{ errorInfo.message }}</p>
           <p class="error-detail-info">{{ errorInfo.info }}</p>
         </div>
@@ -159,7 +162,8 @@ function retry() {
 }
 
 .btn-retry {
-  composes: touch-manipulation;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,7 +191,8 @@ function retry() {
 }
 
 .btn-home {
-  composes: touch-manipulation;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -86,7 +86,9 @@ function handleSubmit() {
 
 <style scoped>
 .number-pad {
-  composes: game-card;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 16px 12px;
   transition: all 0.3s ease;
 }
@@ -96,7 +98,8 @@ function handleSubmit() {
 }
 
 .numpad-btn {
-  composes: touch-manipulation;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   aspect-ratio: 1;
   border-radius: 16px;
   display: flex;

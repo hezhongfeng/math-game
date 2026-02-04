@@ -46,17 +46,6 @@ const levelColorClass = computed(() => {
   return classes[props.difficulty.level] || 'bg-game-neutral-border'
 })
 
-// 获取难度背景色（用于卡片边框）
-const levelBorderColor = computed(() => {
-  if (props.isCompleted && !props.isLocked) {
-    return 'border-l-4 border-l-game-success'
-  }
-  if (!props.isLocked) {
-    return 'border-l-4 border-l-game-primary'
-  }
-  return ''
-})
-
 function handleSelect() {
   if (!props.isLocked) {
     playSound('click')
@@ -69,10 +58,10 @@ function handleSelect() {
   <div
     class="level-card"
     :class="[
-      levelBorderColor,
       {
         'level-locked': isLocked,
-        'level-completed': isCompleted && !isLocked
+        'level-completed': isCompleted && !isLocked,
+        'level-unlocked': !isLocked && !isCompleted
       }
     ]"
     @click="handleSelect"
@@ -144,13 +133,17 @@ function handleSelect() {
 
 <style scoped>
 .level-card {
-  composes: game-card-sm touch-manipulation;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.25s ease;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .level-card:hover:not(.level-locked) {
@@ -167,6 +160,16 @@ function handleSelect() {
   background: var(--game-bg);
   cursor: not-allowed;
   opacity: 0.8;
+}
+
+/* 已完成状态 - 绿色左边框 */
+.level-completed {
+  border-left: 4px solid var(--game-success);
+}
+
+/* 已解锁状态 - 主色左边框 */
+.level-unlocked {
+  border-left: 4px solid var(--game-primary);
 }
 
 /* 序号圆形 */

@@ -116,7 +116,7 @@ function handleHome() {
 
 /* 模态框内容 */
 .modal-content {
-  composes: game-card;
+  background: white;
   border-radius: 24px;
   padding: 28px 24px;
   max-width: 360px;
@@ -224,7 +224,8 @@ function handleHome() {
 }
 
 .btn {
-  composes: touch-manipulation;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   flex: 1;
   display: flex;
   align-items: center;

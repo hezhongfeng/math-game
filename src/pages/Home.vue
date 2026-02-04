@@ -153,7 +153,9 @@ onMounted(() => {
 
 /* 统计卡片 */
 .stat-card {
-  composes: game-card;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 20px 16px;
   text-align: center;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -222,7 +224,8 @@ onMounted(() => {
 
 /* 主按钮 - 靛蓝 */
 .btn-primary {
-  composes: touch-manipulation;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -257,7 +260,8 @@ onMounted(() => {
 
 /* 次按钮 - 白色 */
 .btn-secondary {
-  composes: touch-manipulation;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
