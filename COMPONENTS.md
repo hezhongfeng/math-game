@@ -6,16 +6,14 @@ This document provides detailed information about all Vue components in the math
 
 ```
 src/components/
-├── AnimatedCard.vue         # Animated container component
 ├── DifficultyCard.vue       # Difficulty level selection card
-├── NumberCard.vue          # Number display component
 ├── NumberPad.vue           # Numeric keypad (3×4 grid)
 ├── QuestionCard.vue        # Math question display
 ├── ResultModal.vue         # Game completion modal
 ├── ScoreBoard.vue          # Real-time score display
 ├── Toast.vue               # Toast notification item
 ├── ToastContainer.vue      # Toast notification container
-└── TouchOptimizedButton.vue # Touch-friendly button base
+└── ErrorBoundary.vue       # Error boundary wrapper
 ```
 
 ---
@@ -157,31 +155,6 @@ const question = {
     :question-timer="15"
   />
 </template>
-```
-
----
-
-### NumberCard
-
-**File**: `src/components/NumberCard.vue`
-
-Reusable number display component used within QuestionCard.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | String/Number | required | Number to display |
-| `size` | String | `'normal'` | `'normal'` or `'large'` |
-| `state` | String | `'default'` | `'default'`, `'success'`, `'error'`, or `'placeholder'` |
-| `minWidth` | String | `'auto'` | Minimum width (e.g., `'4ch'`) |
-
-#### Usage
-
-This component is primarily used internally by QuestionCard, but can be used standalone:
-
-```vue
-<NumberCard :value="5" size="large" state="success" />
 ```
 
 ---
@@ -344,169 +317,6 @@ const { showToast } = useToast()
 showToast('Answer submitted!', 'success')
 showToast('An error occurred', 'error')
 </script>
-```
-
----
-
-## 🎨 Utility Components
-
-### AnimatedCard
-
-**File**: `src/components/AnimatedCard.vue`
-
-Wrapper component providing entrance animations.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `animation` | String | `'fade'` | Animation type |
-| `delay` | Number | `0` | Animation delay in milliseconds |
-
-### TouchOptimizedButton
-
-**File**: `src/components/TouchOptimizedButton.vue`
-
-Base button component with built-in touch optimizations.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | String | `'primary'` | `'primary'`, `'secondary'`, `'danger'`, `'success'` |
-| `size` | String | `'md'` | `'sm'`, `'md'`, `'lg'` |
-| `disabled` | Boolean | `false` | Disabled state |
-| `loading` | Boolean | `false` | Loading state |
-
-#### Events
-
-| Event | Description |
-|-------|-------------|
-| `click` | Button clicked |
-
----
-
-## 📱 Mobile-First Design Principles
-
-All components follow these mobile-first principles:
-
-### Touch Targets
-
-| Component | Minimum Size | Implementation |
-|-----------|--------------|----------------|
-| NumberPad buttons | 64×64px | `min-h-[64px] min-w-[64px]` |
-| Action buttons | 48px height | `py-4` or `h-12` |
-| Cards | 88px height | `min-height: 88px` |
-
-### CSS Requirements
-
-All interactive elements must include:
-
-```css
--webkit-tap-highlight-color: transparent;
-touch-action: manipulation;
-```
-
-### Responsive Breakpoints
-
-- **Mobile (default)**: Base classes, <768px
-- **Tablet/Desktop**: `md:` prefix, ≥768px
-- **Large Desktop**: `lg:` prefix, ≥1024px
-
----
-
-## 🔄 Component Interactions
-
-### Game Flow Component Diagram
-
-```
-┌──────────────┐
-│   Game.vue   │ (Page)
-└──────┬───────┘
-       │
-   ┌───┴───┐
-   │       │
-   ▼       ▼
-┌────────┐ ┌──────────┐
-│Question│ │ NumberPad│
-│ Card   │ │          │
-└───┬────┘ └────┬─────┘
-    │           │
-    │    ┌──────┘
-    │    │
-    ▼    ▼
-┌─────────────┐
-│ ScoreBoard  │
-└─────────────┘
-       │
-       │ (on complete)
-       ▼
-┌─────────────┐
-│ ResultModal │
-└─────────────┘
-```
-
----
-
-## 🛠️ Adding New Components
-
-When creating a new component:
-
-1. **File Location**: Place in `src/components/`
-2. **Naming**: Use PascalCase (e.g., `NewComponent.vue`)
-3. **Script Setup**: Always use `<script setup>`
-4. **Props**: Define types and defaults explicitly
-5. **Emits**: Use `defineEmits` for all events
-6. **Mobile Optimizations**: Include touch-friendly CSS
-7. **Documentation**: Add to this file
-
-### Template Structure
-
-```vue
-<script setup>
-import { ref, computed } from 'vue'
-
-const props = defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  count: {
-    type: Number,
-    default: 0
-  }
-})
-
-const emit = defineEmits(['action'])
-
-function handleClick() {
-  emit('action', props.count)
-}
-</script>
-
-<template>
-  <div class="component-container">
-    <h2>{{ title }}</h2>
-    <button
-      @click="handleClick"
-      class="touch-optimized-btn"
-    >
-      Action
-    </button>
-  </div>
-</template>
-
-<style scoped>
-.component-container {
-  padding: 16px;
-}
-
-.touch-optimized-btn {
-  min-height: 48px;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-</style>
 ```
 
 ---

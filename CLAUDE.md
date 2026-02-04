@@ -72,27 +72,25 @@ UI Feedback: Sound (useSound.js) + Animations + Haptics
 - `QuestionCard.vue` - Displays math question (e.g., "2 + 3 = ?")
 - `NumberPad.vue` - 3×4 grid of digit buttons (0-9) + delete + confirm buttons
 - `ScoreBoard.vue` - Real-time score display during gameplay
-- `ParticleEffects.vue` - Canvas-based particle explosion animation for feedback
 - `ResultModal.vue` - Post-game stats modal (accuracy, time, best score)
 - `DifficultyCard.vue` - Clickable difficulty card with lock state and best score
 - `Toast.vue` + `ToastContainer.vue` - Toast notification system
-- `SettingsPanel.vue` - Audio settings toggles
+- `ErrorBoundary.vue` - Error boundary wrapper for graceful error handling
 
 **Composables (src/composables/) - Vue 3 composition functions with business logic:**
 - `useGame.js` - Game state (questions, currentIndex, score), lifecycle (startGame, submitAnswer, nextQuestion, resetGame)
 - `useSound.js` - Web Audio API sound synthesis for: correct/wrong/win/click sounds, uses AudioContext utility
-- `useSpeech.js` - Web Speech API text-to-speech for question and feedback announcements
 - `useStorage.js` - LocalStorage persistence for best scores and difficulty completion status
 - `useToast.js` - Toast notification queue management
 
 **Utilities & Config:**
 - `utils/generator.js` - Pure functions to generate questions and validate answers
-- `utils/audioContext.js` - Shared AudioContext initialization and lifecycle (getAudioContext, ensureAudioContextRunning, closeAudioContext)
+- `utils/audioContext.js` - Shared AudioContext initialization and lifecycle (getAudioContext, ensureAudioContextRunning)
 - `config/difficulty.js` - 15 difficulty level definitions + grouping for UI
-- `config/constants.js` - Game constants, audio frequencies/parameters, speech messages, operator text
+- `config/constants.js` - Game constants, audio frequencies/parameters
 
 **State Management (src/stores/):**
-- `settings.js` - Pinia store for UI settings: soundEnabled, speechEnabled (persisted to localStorage)
+- `settings.js` - Pinia store for UI settings: soundEnabled (persisted to localStorage)
 
 ### Audio Architecture
 
@@ -103,7 +101,6 @@ The project uses Web Audio API for all sound effects with no external audio file
 - Single shared AudioContext instance managed globally
 - `getAudioContext()` creates/returns the context
 - `ensureAudioContextRunning()` handles browser autoplay restrictions (some browsers suspend AudioContext until user interaction)
-- `closeAudioContext()` cleans up on unmount
 
 **Sound Synthesis:**
 - `useSound.js` generates 4 types of sounds via oscillators:
@@ -122,7 +119,7 @@ The project uses Web Audio API for all sound effects with no external audio file
 
 **User Data (Persisted):**
 - Best scores per difficulty: `localStorage['math-game-data']` → `{bestScores: {[id]: {score, accuracy, duration, ...}}}`
-- Settings: `localStorage['math-game-settings']` → `{soundEnabled, speechEnabled}`
+- Settings: `localStorage['math-game-settings']` → `{soundEnabled}`
 - Loaded/saved via `useStorage.js` and `settings.js` store
 
 **Difficulty Completion Logic:**
@@ -133,7 +130,7 @@ The project uses Web Audio API for all sound effects with no external audio file
 ## Code Organization Principles
 
 ### Composition Over Duplication
-- Common logic extracted to `utils/` (audioContext.js, audioSynthesis.js, generator.js)
+- Common logic extracted to `utils/` (audioContext.js, generator.js)
 - Composables handle data + lifecycle, components handle UI only
 - No console statements in production code (errors handled gracefully with toast notifications)
 
@@ -251,8 +248,7 @@ The project currently has no unit tests. Manual verification approach:
 ### Adding Game Settings
 1. Add ref to `settings.js` Pinia store
 2. Add load/save in store functions (loadSettings, saveSettings)
-3. Add UI toggle in `SettingsPanel.vue`
-4. Consume in relevant composables (useSound, useSpeech, etc.)
+3. Consume in relevant composables (useSound, etc.)
 
 ### Debugging Audio Issues
 1. Open browser DevTools → Console
@@ -303,7 +299,6 @@ The project currently has no unit tests. Manual verification approach:
 - No TypeScript (all `.js` and `.vue` files)
 - No unit tests
 - Vibration API has limited iOS support
-- Speech API quality varies by browser/OS
 
 **Suggested Future Enhancements:**
 1. Add multiplication/division operations
