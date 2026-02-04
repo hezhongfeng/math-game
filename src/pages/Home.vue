@@ -86,15 +86,6 @@ onMounted(() => {
           <Trophy :size="24" />
           <span>查看成就</span>
         </button>
-
-        <button
-          class="btn-secondary animate-button-entrance text-child-base"
-          style="animation-delay: 400ms"
-          @click="viewAchievements"
-        >
-          <Trophy :size="24" />
-          <span>查看成就</span>
-        </button>
       </div>
     </div>
   </div>
