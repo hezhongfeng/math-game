@@ -155,11 +155,11 @@ function handleSelect() {
   transform: translateX(2px);
 }
 
-/* 锁定状态 */
+/* 锁定状态 - 更明显的灰色背景 */
 .level-locked {
-  background: var(--game-bg);
+  background: linear-gradient(135deg, #E8E8D0 0%, #D8D8C0 100%);
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* 已完成状态 - 绿色左边框 */
