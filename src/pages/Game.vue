@@ -36,6 +36,12 @@ const resultData = ref(null)
 const isNewBest = ref(false)
 const questionKey = ref(0)
 
+// 防抖控制 - 防止快速连击
+const lastInputTime = ref(0)
+const lastSubmitTime = ref(0)
+const INPUT_DEBOUNCE = 100 // 输入防抖 100ms
+const SUBMIT_DEBOUNCE = 300 // 提交防抖 300ms
+
 // 当前题目计时器
 const questionTimer = ref(0)
 let questionStartTime = null
@@ -106,9 +112,12 @@ function initGame() {
   startGameTimeUpdater()
 }
 
-// 提交答案
+// 提交答案 - 带防抖
 function submitAnswer() {
   if (isWaiting.value || !userAnswer.value) return
+  const now = Date.now()
+  if (now - lastSubmitTime.value < SUBMIT_DEBOUNCE) return
+  lastSubmitTime.value = now
 
   const answer = parseInt(userAnswer.value)
   const correct = game.submitAnswer(answer)
@@ -146,17 +155,23 @@ function submitAnswer() {
   }
 }
 
-// 处理输入
+// 处理输入 - 带防抖
 function handleInput(num) {
   if (isWaiting.value) return
+  const now = Date.now()
+  if (now - lastInputTime.value < INPUT_DEBOUNCE) return
+  lastInputTime.value = now
   if (userAnswer.value.length < GAME_CONFIG.MAX_ANSWER_LENGTH) {
     userAnswer.value += num
   }
 }
 
-// 处理删除
+// 处理删除 - 带防抖
 function handleDelete() {
   if (isWaiting.value) return
+  const now = Date.now()
+  if (now - lastInputTime.value < INPUT_DEBOUNCE) return
+  lastInputTime.value = now
   userAnswer.value = userAnswer.value.slice(0, -1)
 }
 
