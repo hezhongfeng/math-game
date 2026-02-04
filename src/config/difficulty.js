@@ -1,6 +1,6 @@
 // 难度配置：定义15个循序渐进的难度等级
 
-export const DIFFICULTY_LEVELS = [
+const DIFFICULTY_LEVELS = [
   // 1-3 数值范围
   {
     id: 1,

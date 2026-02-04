@@ -217,7 +217,7 @@ function playWeChatUnlockSound() {
 /**
  * 关闭 AudioContext
  */
-export function closeAudioContext() {
+function closeAudioContext() {
   if (audioContext) {
     try {
       audioContext.close()

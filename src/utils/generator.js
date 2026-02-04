@@ -6,7 +6,7 @@
  * @param {number} max - 最大值
  * @returns {number} 随机整数
  */
-export function randomInt(min, max) {
+function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
@@ -16,7 +16,7 @@ export function randomInt(min, max) {
  * @param {number} max - 最大值
  * @returns {Object} { operand1, operand2, operator, answer }
  */
-export function generateAddition(min, max) {
+function generateAddition(min, max) {
   const operand1 = randomInt(min, max)
   const operand2 = randomInt(min, max)
   return {
@@ -33,7 +33,7 @@ export function generateAddition(min, max) {
  * @param {number} max - 最大值
  * @returns {Object} { operand1, operand2, operator, answer }
  */
-export function generateSubtraction(min, max) {
+function generateSubtraction(min, max) {
   const operand1 = randomInt(min, max)
   const operand2 = randomInt(min, operand1) // 确保结果为非负数
   return {
@@ -50,7 +50,7 @@ export function generateSubtraction(min, max) {
  * @param {number} max - 最大值
  * @returns {Object} { operand1, operand2, operator, answer }
  */
-export function generateMixed(min, max) {
+function generateMixed(min, max) {
   return Math.random() > 0.5 
     ? generateAddition(min, max)
     : generateSubtraction(min, max)
