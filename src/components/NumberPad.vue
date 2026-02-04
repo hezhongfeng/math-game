@@ -87,7 +87,7 @@ function handleSubmit() {
 <style scoped>
 .number-pad {
   border-radius: 20px;
-  padding: 20px 16px;
+  padding: 16px 12px;
   background: white;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -105,8 +105,8 @@ function handleSubmit() {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 64px;
-  min-width: 64px;
+  min-height: 56px;
+  min-width: 56px;
   background: var(--game-bg-light);
   color: var(--game-primary-dark);
   border: 2px solid rgba(79, 70, 229, 0.1);
@@ -200,8 +200,8 @@ function handleSubmit() {
 /* 响应式调整 */
 @media (min-width: 768px) {
   .numpad-btn {
-    min-height: 72px;
-    min-width: 72px;
+    min-height: 64px;
+    min-width: 64px;
     border-radius: 18px;
   }
 }

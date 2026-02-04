@@ -344,7 +344,7 @@ onUnmounted(() => {
 }
 
 .numpad-section {
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 .footer {

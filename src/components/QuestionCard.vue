@@ -81,10 +81,10 @@ const answerDisplay = computed(() => {
 .question-card {
   background: white;
   border-radius: 20px;
-  padding: 16px 20px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   max-width: 400px;
   touch-action: manipulation;
@@ -134,26 +134,26 @@ const answerDisplay = computed(() => {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 8px 0;
+  padding: 6px 0;
 }
 
 .number {
   font-family: 'Alimama ShuHeiTi', 'Noto Sans SC', sans-serif;
-  font-size: 40px;
+  font-size: 44px;
   font-weight: 700;
   color: var(--game-text);
   line-height: 1;
 }
 
 .operator {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 700;
   color: var(--game-primary);
   line-height: 1;
 }
 
 .equals {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 700;
   color: var(--game-success);
   line-height: 1;
@@ -161,11 +161,11 @@ const answerDisplay = computed(() => {
 
 .answer {
   font-family: 'Alimama ShuHeiTi', 'Noto Sans SC', sans-serif;
-  font-size: 44px;
+  font-size: 48px;
   font-weight: 800;
   color: var(--game-text);
   line-height: 1;
-  min-width: 60px;
+  min-width: 64px;
   text-align: center;
   padding: 8px 12px;
   background: var(--game-bg);
@@ -200,17 +200,17 @@ const answerDisplay = computed(() => {
   }
 
   .number {
-    font-size: 48px;
+    font-size: 56px;
   }
 
   .operator,
   .equals {
-    font-size: 44px;
+    font-size: 52px;
   }
 
   .answer {
-    font-size: 52px;
-    min-width: 70px;
+    font-size: 60px;
+    min-width: 80px;
     padding: 10px 16px;
   }
 
