@@ -38,10 +38,12 @@ const questionKey = ref(0)
 
 // 当前题目计时器
 const questionTimer = ref(0)
+let questionStartTime = null
 let timerInterval = null
 
 // 游戏时间更新器
 const gameTime = ref(0)
+let gameStartTime = null
 let gameTimeInterval = null
 
 const isComplete = computed(() => game.isComplete.value)
@@ -57,15 +59,16 @@ function triggerHapticFeedback() {
   }
 }
 
-// 启动游戏时间更新器
+// 启动游戏时间更新器 - 使用 Date.now() 避免 setInterval 漂移
 function startGameTimeUpdater() {
+  gameStartTime = Date.now()
   gameTime.value = 0
   if (gameTimeInterval) {
     clearInterval(gameTimeInterval)
   }
   gameTimeInterval = setInterval(() => {
-    gameTime.value++
-  }, 1000)
+    gameTime.value = Math.floor((Date.now() - gameStartTime) / 1000)
+  }, 200) // 200ms 更新一次，确保流畅且精准
 }
 
 // 停止游戏时间更新器
@@ -76,15 +79,16 @@ function stopGameTimeUpdater() {
   }
 }
 
-// 启动题目计时器
+// 启动题目计时器 - 使用 Date.now() 避免 setInterval 漂移
 function startQuestionTimer() {
+  questionStartTime = Date.now()
   questionTimer.value = 0
   if (timerInterval) {
     clearInterval(timerInterval)
   }
   timerInterval = setInterval(() => {
-    questionTimer.value++
-  }, 1000)
+    questionTimer.value = Math.floor((Date.now() - questionStartTime) / 1000)
+  }, 200) // 200ms 更新一次，确保流畅且精准
 }
 
 // 停止题目计时器
