@@ -53,5 +53,4 @@ export const AUDIO_PARAMS = {
   }
 }
 
-// 可爱表情映射
-export const CUTE_EMOJIS = ['⚽', '⭐', '🌈', '🚀', '🏆', '✨']
+
