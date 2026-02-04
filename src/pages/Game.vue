@@ -35,6 +35,7 @@ const showModal = ref(false)
 const resultData = ref(null)
 const isNewBest = ref(false)
 const questionKey = ref(0)
+const isLoading = ref(true)
 
 // 防抖控制 - 防止快速连击
 const lastInputTime = ref(0)
@@ -105,11 +106,18 @@ function stopQuestionTimer() {
   }
 }
 
-// 初始化游戏
-function initGame() {
+// 初始化游戏 - 带加载状态
+async function initGame() {
+  isLoading.value = true
+  
+  // 模拟加载延迟，让用户体验更流畅
+  await new Promise(resolve => setTimeout(resolve, 300))
+  
   game.startGame()
   startQuestionTimer()
   startGameTimeUpdater()
+  
+  isLoading.value = false
 }
 
 // 提交答案 - 带防抖
@@ -259,6 +267,18 @@ onUnmounted(() => {
 
 <template>
   <div class="page">
+    <!-- 加载状态 -->
+    <Transition name="fade">
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+        </div>
+        <p class="loading-text text-child-base">加载中...</p>
+      </div>
+    </Transition>
+
     <!-- 顶部导航 -->
     <header class="header">
       <button class="nav-btn" @click="goBack">
@@ -581,5 +601,79 @@ onUnmounted(() => {
 .feedback-leave-to .feedback-overlay {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  gap: 16px;
+}
+
+.loading-spinner {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.spinner-ring {
+  position: absolute;
+  inset: 0;
+  border: 4px solid transparent;
+  border-top-color: var(--game-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-ring:nth-child(1) {
+  animation-duration: 1s;
+}
+
+.spinner-ring:nth-child(2) {
+  animation-duration: 1.2s;
+  animation-direction: reverse;
+  border-top-color: var(--game-success);
+  inset: 8px;
+}
+
+.spinner-ring:nth-child(3) {
+  animation-duration: 0.8s;
+  border-top-color: var(--game-accent);
+  inset: 16px;
+}
+
+.loading-text {
+  color: var(--game-text-secondary);
+  font-weight: 600;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 淡入淡出过渡 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
