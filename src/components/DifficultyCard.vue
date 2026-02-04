@@ -144,13 +144,11 @@ function handleSelect() {
 
 <style scoped>
 .level-card {
+  composes: game-card-sm touch-manipulation;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.25s ease;
   cursor: pointer;
 }

@@ -108,12 +108,8 @@ const formatTime = computed(() => {
 
 <style scoped>
 .score-board {
-  background: white;
-  border-radius: 18px;
+  composes: game-card-sm;
   padding: 16px 18px;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.06);
 }
 
 /* 进度条 */

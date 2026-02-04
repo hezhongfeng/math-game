@@ -79,16 +79,13 @@ const answerDisplay = computed(() => {
 
 <style scoped>
 .question-card {
-  background: white;
-  border-radius: 20px;
+  composes: game-card touch-manipulation;
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
   max-width: 400px;
-  touch-action: manipulation;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* 成功反馈 - 仅样式，无动画 */

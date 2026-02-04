@@ -159,6 +159,7 @@ function retry() {
 }
 
 .btn-retry {
+  composes: touch-manipulation;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,8 +170,6 @@ function retry() {
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   background: linear-gradient(135deg, var(--game-primary) 0%, var(--game-primary-dark) 100%);
   color: white;
   border: none;
@@ -188,6 +187,7 @@ function retry() {
 }
 
 .btn-home {
+  composes: touch-manipulation;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,8 +198,6 @@ function retry() {
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   background: var(--game-bg-light);
   color: var(--game-text-secondary);
   border: 2px solid var(--game-border);

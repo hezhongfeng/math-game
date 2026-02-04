@@ -203,6 +203,20 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* 游戏卡片 - 白色圆角阴影 */
+  .game-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* 游戏卡片小 */
+  .game-card-sm {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
   /* 安全区域 */
   .safe-top {
     padding-top: max(1rem, env(safe-area-inset-top));

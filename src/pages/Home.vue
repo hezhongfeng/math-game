@@ -153,12 +153,10 @@ onMounted(() => {
 
 /* 统计卡片 */
 .stat-card {
-  background: var(--game-bg-light);
-  border-radius: 20px;
+  composes: game-card;
   padding: 20px 16px;
   text-align: center;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .stat-card:hover {
@@ -224,6 +222,7 @@ onMounted(() => {
 
 /* 主按钮 - 靛蓝 */
 .btn-primary {
+  composes: touch-manipulation;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -234,8 +233,6 @@ onMounted(() => {
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   background: linear-gradient(180deg, var(--game-primary-light) 0%, var(--game-primary-dark) 100%);
   color: white;
   border: none;
@@ -260,6 +257,7 @@ onMounted(() => {
 
 /* 次按钮 - 白色 */
 .btn-secondary {
+  composes: touch-manipulation;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -270,8 +268,6 @@ onMounted(() => {
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   background: var(--game-bg-light);
   color: var(--game-primary-dark);
   border: 2px solid var(--game-border);
