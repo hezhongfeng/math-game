@@ -178,22 +178,22 @@ function handleHome() {
 }
 
 .score-card .stat-icon {
-  background: rgba(79, 70, 229, 0.1);
+  background: rgba(74, 124, 89, 0.1);
   color: var(--game-primary-dark);
 }
 
 .correct-card .stat-icon {
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(82, 196, 26, 0.1);
   color: var(--game-success-dark);
 }
 
 .accuracy-card .stat-icon {
-  background: rgba(249, 115, 22, 0.1);
+  background: rgba(244, 208, 63, 0.1);
   color: var(--game-accent-dark);
 }
 
 .time-card .stat-icon {
-  background: rgba(234, 179, 8, 0.1);
+  background: rgba(232, 168, 56, 0.1);
   color: var(--game-warning-dark);
 }
 

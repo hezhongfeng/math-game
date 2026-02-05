@@ -140,23 +140,13 @@ export default {
             },
           },
         },
-        // 阶段颜色 - 用于难度关卡
-        stage: {
-          beginner: '#52C41A',
-          elementary: '#E8A838',
-          intermediate: '#F4D03F',
-          advanced: '#4A7C59',
-          expert: '#2F4F39',
-        },
+
       },
       fontFamily: {
         // 中文优先风格 - 阿里妈妈数黑体（标题/数字）+ 思源黑体（正文）
         'display': ['"Alimama ShuHeiTi"', '"Noto Sans SC"', 'system-ui', '-apple-system', 'sans-serif'],
         'body': ['"Noto Sans SC"', 'system-ui', '-apple-system', 'sans-serif'],
         'number': ['"Alimama ShuHeiTi"', '"Noto Sans SC"', 'system-ui', 'sans-serif'],
-        // 向后兼容
-        'child-friendly': ['"Alimama ShuHeiTi"', '"Noto Sans SC"', 'system-ui', '-apple-system', 'sans-serif'],
-        'child-body': ['"Noto Sans SC"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
         'child-2xs': ['14px', { lineHeight: '1.5', letterSpacing: '0.02em' }],
@@ -178,7 +168,6 @@ export default {
         'child-btn-sm': '48px',
         'child-btn-md': '64px',
         'child-btn-lg': '80px',
-        'child-card': '88px',
       },
       animation: {
         // 有限次数的装饰性动画（3次后停止）
@@ -199,9 +188,6 @@ export default {
         'gentle-bounce': 'gentleBounce 0.4s ease-out',
         'success-glow': 'successGlow 1s ease-out',
         'bounce-in': 'bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        // 悬停触发动画（通过类名控制）
-        'hover-float': 'float 3s ease-in-out',
-        'hover-pulse': 'pulseGentle 2s ease-in-out',
       },
       keyframes: {
         float: {
@@ -285,10 +271,6 @@ export default {
         'cute-xl': '32px',
         'cute-2xl': '40px',
         'pill': '9999px',
-        // Claymorphism 圆角
-        'clay': '20px',
-        'clay-lg': '28px',
-        'clay-xl': '36px',
       },
       boxShadow: {
         'game': '0 2px 8px rgba(74, 124, 89, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)',
@@ -305,17 +287,6 @@ export default {
         'cute-xl': '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.1)',
         'card': '0 2px 12px rgba(0, 0, 0, 0.08)',
         'card-hover': '0 4px 24px rgba(0, 0, 0, 0.12)',
-        // ============================================
-        // Claymorphism 粘土风阴影
-        // ============================================
-        'clay': '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
-        'clay-hover': '12px 12px 24px rgba(0, 0, 0, 0.12), -12px -12px 24px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.05)',
-        'clay-active': '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.6), inset 4px 4px 8px rgba(0, 0, 0, 0.08), inset -4px -4px 8px rgba(255, 255, 255, 0.5)',
-        'clay-button': '0 6px 0 0 var(--game-primary-dark), 0 8px 20px rgba(74, 124, 89, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3)',
-        'clay-button-hover': '0 8px 0 0 var(--game-primary-dark), 0 12px 28px rgba(74, 124, 89, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.4)',
-        'clay-button-active': '0 2px 0 0 var(--game-primary-dark), 0 4px 12px rgba(74, 124, 89, 0.3), inset 0 3px 6px rgba(0, 0, 0, 0.15)',
-        'clay-inset': 'inset 4px 4px 8px rgba(0, 0, 0, 0.08), inset -4px -4px 8px rgba(255, 255, 255, 0.8)',
-        'clay-raised': '6px 6px 12px rgba(0, 0, 0, 0.1), -6px -6px 12px rgba(255, 255, 255, 0.9)',
       },
       transitionTimingFunction: {
         'bounce-out': 'cubic-bezier(0.34, 1.56, 0.64, 1)',

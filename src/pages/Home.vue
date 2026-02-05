@@ -336,49 +336,4 @@ onMounted(() => {
     inset 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* 动画 */
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out both;
-}
-
-.animate-card-entrance {
-  animation: cardEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-.animate-button-entrance {
-  animation: buttonEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes cardEntrance {
-  0% {
-    opacity: 0;
-    transform: translateY(25px) scale(0.92);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes buttonEntrance {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
 </style>
