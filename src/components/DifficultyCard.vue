@@ -132,47 +132,76 @@ function handleSelect() {
 </template>
 
 <style scoped>
+/* ============================================
+   Claymorphism 粘土风难度卡片
+   ============================================ */
+
 .level-card {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.25s ease;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f5f0 100%);
+  border-radius: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.08),
+    -6px -6px 12px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
 .level-card:hover:not(.level-locked) {
-  transform: translateX(4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px) translateX(2px);
+  box-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.1),
+    -10px -10px 20px rgba(255, 255, 255, 0.95),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .level-card:active:not(.level-locked) {
-  transform: translateX(2px);
+  transform: translateY(1px) translateX(1px);
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.08),
+    -3px -3px 6px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* 锁定状态 - 更明显的灰色背景 */
+/* 锁定状态 - 粘土风凹陷效果 */
 .level-locked {
-  background: linear-gradient(135deg, #E8E8D0 0%, #D8D8C0 100%);
+  background: linear-gradient(145deg, #e0e0d5 0%, #d5d5c8 100%);
   cursor: not-allowed;
   opacity: 0.85;
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.08),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.4);
 }
 
-/* 已完成状态 - 绿色左边框 */
+/* 已完成状态 - 绿色发光边框 */
 .level-completed {
-  border-left: 4px solid var(--game-success);
+  border: 3px solid var(--game-success);
+  box-shadow:
+    0 0 15px rgba(82, 196, 26, 0.2),
+    6px 6px 12px rgba(0, 0, 0, 0.08),
+    -6px -6px 12px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-/* 已解锁状态 - 主色左边框 */
+/* 已解锁状态 - 主色发光边框 */
 .level-unlocked {
-  border-left: 4px solid var(--game-primary);
+  border: 3px solid var(--game-primary-light);
+  box-shadow:
+    0 0 15px rgba(74, 124, 89, 0.15),
+    6px 6px 12px rgba(0, 0, 0, 0.08),
+    -6px -6px 12px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-/* 序号圆形 */
+/* 序号圆形 - 粘土风 */
 .level-num {
   width: 48px;
   height: 48px;
@@ -184,6 +213,11 @@ function handleSelect() {
   font-weight: 800;
   color: white;
   flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.15),
+    -2px -2px 4px rgba(255, 255, 255, 0.3),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 /* 信息区 */
@@ -217,13 +251,18 @@ function handleSelect() {
   font-weight: 700;
 }
 
+/* NEW 标签 - 粘土风 */
 .new-label {
-  padding: 2px 8px;
-  background: var(--game-warning-dark);
+  padding: 3px 10px;
+  background: linear-gradient(145deg, var(--game-warning-light) 0%, var(--game-warning) 100%);
   color: white;
-  font-size: 12px;
-  font-weight: 700;
-  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 2px 0 0 #A86608,
+    0 3px 6px rgba(212, 130, 13, 0.3);
 }
 
 /* 锁定提示 */
@@ -243,10 +282,12 @@ function handleSelect() {
 
 .check-mark {
   color: var(--game-success);
+  filter: drop-shadow(0 2px 4px rgba(82, 196, 26, 0.3));
 }
 
 .lock-mark {
-  color: var(--game-border);
+  color: var(--game-text-muted);
+  opacity: 0.6;
 }
 
 .go-arrow {
@@ -255,7 +296,7 @@ function handleSelect() {
 }
 
 .level-card:hover .go-arrow {
-  color: var(--game-text-secondary);
-  transform: translateX(2px);
+  color: var(--game-primary);
+  transform: translateX(4px);
 }
 </style>

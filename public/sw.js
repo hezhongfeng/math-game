@@ -1,81 +1,151 @@
 /**
- * 数学游戏 Service Worker
- * 提供离线缓存支持
+ * 数学运算游戏 - Service Worker
+ * 提供离线缓存和 PWA 支持
  */
 
-const CACHE_NAME = 'math-game-v1';
+const CACHE_NAME = 'math-game-v1'
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/src/main.js',
-  '/src/style.css',
-  '/manifest.json'
-];
+  '/manifest.json',
+  '/icons/icon.svg',
+  '/icons/icon-72x72.png',
+  '/icons/icon-96x96.png',
+  '/icons/icon-128x128.png',
+  '/icons/icon-144x144.png',
+  '/icons/icon-152x152.png',
+  '/icons/icon-192x192.png',
+  '/icons/icon-384x384.png',
+  '/icons/icon-512x512.png',
+]
 
-// 安装时缓存静态资源
+// 安装 - 缓存静态资源
 self.addEventListener('install', (event) => {
+  console.log('[SW] 安装中...')
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(STATIC_ASSETS);
+        console.log('[SW] 缓存静态资源')
+        return cache.addAll(STATIC_ASSETS)
       })
-      .then(() => self.skipWaiting())
-      .catch((err) => {
-        console.log('缓存静态资源失败:', err);
+      .then(() => {
+        console.log('[SW] 安装完成')
+        return self.skipWaiting()
       })
-  );
-});
+      .catch((error) => {
+        console.error('[SW] 缓存失败:', error)
+      })
+  )
+})
 
-// 激活时清理旧缓存
+// 激活 - 清理旧缓存
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-// 网络优先，离线回退缓存
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
+  console.log('[SW] 激活中...')
   
-  // 只处理 GET 请求
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('[SW] 删除旧缓存:', cacheName)
+              return caches.delete(cacheName)
+            }
+          })
+        )
+      })
+      .then(() => {
+        console.log('[SW] 激活完成')
+        return self.clients.claim()
+      })
+  )
+})
+
+// 拦截请求 - 缓存优先策略
+self.addEventListener('fetch', (event) => {
+  const { request } = event
+  const url = new URL(request.url)
+  
+  // 跳过非 GET 请求
   if (request.method !== 'GET') {
-    return;
+    return
   }
   
-  // 跳过非同源请求
-  if (!request.url.startsWith(self.location.origin)) {
-    return;
+  // 跳过 Chrome 扩展请求
+  if (url.protocol === 'chrome-extension:') {
+    return
+  }
+  
+  // 跳过 API 请求
+  if (url.pathname.startsWith('/api/')) {
+    return
   }
   
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        // 网络请求成功，更新缓存
-        const clonedResponse = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(request, clonedResponse);
-        });
-        return response;
+    caches.match(request)
+      .then((cachedResponse) => {
+        // 返回缓存的内容
+        if (cachedResponse) {
+          // 后台更新缓存
+          fetch(request)
+            .then((networkResponse) => {
+              if (networkResponse && networkResponse.status === 200) {
+                const responseToCache = networkResponse.clone()
+                caches.open(CACHE_NAME)
+                  .then((cache) => {
+                    cache.put(request, responseToCache)
+                  })
+              }
+            })
+            .catch(() => {
+              // 网络请求失败，使用缓存
+            })
+          
+          return cachedResponse
+        }
+        
+        // 没有缓存，从网络获取
+        return fetch(request)
+          .then((networkResponse) => {
+            if (!networkResponse || networkResponse.status !== 200) {
+              return networkResponse
+            }
+            
+            // 缓存新的资源
+            const responseToCache = networkResponse.clone()
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(request, responseToCache)
+              })
+            
+            return networkResponse
+          })
+          .catch((error) => {
+            console.error('[SW] 获取失败:', error)
+            
+            // 如果是页面请求，返回离线页面
+            if (request.mode === 'navigate') {
+              return caches.match('/index.html')
+            }
+            
+            throw error
+          })
       })
-      .catch(() => {
-        // 网络失败，使用缓存
-        return caches.match(request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // 缓存也没有，返回离线页面或错误
-          return new Response('离线模式暂不可用', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: { 'Content-Type': 'text/plain;charset=UTF-8' }
-          });
-        });
-      })
-  );
-});
+  )
+})
+
+// 处理消息
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
+})
+
+// 后台同步（可选）
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-scores') {
+    console.log('[SW] 后台同步分数')
+    // 可以在这里同步分数到服务器
+  }
+})

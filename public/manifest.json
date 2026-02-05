@@ -1,18 +1,114 @@
 {
   "name": "数学运算游戏",
   "short_name": "数学游戏",
-  "description": "专为儿童设计的数学运算游戏，包含加减法练习",
+  "description": "专为儿童设计的数学运算游戏，包含加减法练习，15个难度关卡",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F5DC",
+  "background_color": "#F0F0E8",
   "theme_color": "#4A7C59",
   "orientation": "portrait",
   "scope": "/",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["education", "games", "kids"],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "首页 - 查看成就和开始游戏"
+    },
+    {
+      "src": "/screenshots/game.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "游戏界面 - 数学题目和数字键盘"
+    }
+  ],
   "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/icons/icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "开始挑战",
+      "short_name": "开始",
+      "description": "直接进入难度选择",
+      "url": "/difficulty",
+      "icons": [
+        {
+          "src": "/icons/shortcut-play.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "查看成就",
+      "short_name": "成就",
+      "description": "查看已完成的关卡",
+      "url": "/difficulty",
+      "icons": [
+        {
+          "src": "/icons/shortcut-trophy.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

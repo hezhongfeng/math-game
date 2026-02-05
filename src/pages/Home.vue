@@ -92,6 +92,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* ============================================
+   Claymorphism 粘土风首页
+   ============================================ */
+
 .page {
   min-height: 100vh;
   display: flex;
@@ -99,7 +103,7 @@ onMounted(() => {
   justify-content: center;
   padding: 24px 16px;
   position: relative;
-  background: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg) 50%, var(--game-bg-dark) 100%);
+  background: linear-gradient(180deg, #F0F0E8 0%, #E5E5D8 50%, #DADAC8 100%);
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: max(24px, env(safe-area-inset-bottom));
@@ -117,19 +121,28 @@ onMounted(() => {
   margin-bottom: 40px;
 }
 
+/* 标题图标 - 粘土风3D效果 */
 .title-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, var(--game-primary) 0%, var(--game-primary-dark) 100%);
+  width: 88px;
+  height: 88px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, var(--game-primary-light) 0%, var(--game-primary) 50%, var(--game-primary-dark) 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
   box-shadow:
-    0 8px 16px rgba(79, 70, 229, 0.4),
-    0 4px 8px rgba(0, 0, 0, 0.1);
+    0 8px 0 0 var(--game-primary-dark),
+    0 12px 24px rgba(74, 124, 89, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .title {
@@ -137,6 +150,7 @@ onMounted(() => {
   margin-bottom: 8px;
   color: var(--game-text);
   letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .subtitle {
@@ -151,49 +165,64 @@ onMounted(() => {
   margin-bottom: 40px;
 }
 
-/* 统计卡片 */
+/* 统计卡片 - 粘土风 */
 .stat-card {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 20px 16px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f8f0 100%);
+  border-radius: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  padding: 24px 16px;
   text-align: center;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.1),
+    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+  box-shadow:
+    12px 12px 24px rgba(0, 0, 0, 0.12),
+    -12px -12px 24px rgba(255, 255, 255, 0.9),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .stat-card-primary {
-  background: linear-gradient(135deg, #ffffff 0%, rgba(79, 70, 229, 0.1) 100%);
+  background: linear-gradient(145deg, #ffffff 0%, rgba(74, 124, 89, 0.08) 100%);
 }
 
 .stat-card-secondary {
-  background: linear-gradient(135deg, #ffffff 0%, rgba(249, 115, 22, 0.1) 100%);
+  background: linear-gradient(145deg, #ffffff 0%, rgba(244, 208, 63, 0.08) 100%);
 }
 
+/* 统计图标 - 粘土风 */
 .stat-icon-wrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
+  margin: 0 auto 16px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
 }
 
 .icon-primary {
-  background: linear-gradient(135deg, var(--game-primary-light) 0%, var(--game-primary) 100%);
+  background: linear-gradient(145deg, var(--game-primary-light) 0%, var(--game-primary) 100%);
   color: white;
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.4);
+  box-shadow:
+    0 5px 0 0 var(--game-primary-dark),
+    0 8px 16px rgba(74, 124, 89, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .icon-secondary {
-  background: linear-gradient(135deg, var(--game-accent) 0%, var(--game-accent-dark) 100%);
+  background: linear-gradient(145deg, var(--game-accent) 0%, var(--game-accent-dark) 100%);
   color: white;
-  box-shadow: 0 4px 8px rgba(249, 115, 22, 0.4);
+  box-shadow:
+    0 5px 0 0 #B7950B,
+    0 8px 16px rgba(212, 172, 13, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .stat-value {
@@ -219,10 +248,10 @@ onMounted(() => {
 .buttons {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
-/* 主按钮 - 靛蓝 */
+/* 主按钮 - 粘土风 */
 .btn-primary {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -231,34 +260,37 @@ onMounted(() => {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 18px 24px;
+  padding: 20px 28px;
   font-weight: 700;
-  border-radius: 16px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: linear-gradient(180deg, var(--game-primary-light) 0%, var(--game-primary-dark) 100%);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(180deg, var(--game-primary-light) 0%, var(--game-primary) 50%, var(--game-primary-dark) 100%);
   color: white;
-  border: none;
+  border: 3px solid rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 4px 0 0 rgba(58, 99, 71, 0.4),
-    0 6px 12px rgba(74, 124, 89, 0.3);
+    0 6px 0 0 var(--game-primary-dark),
+    0 10px 24px rgba(74, 124, 89, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
+  transform: translateY(-3px);
   box-shadow:
-    0 5px 0 0 rgba(58, 99, 71, 0.4),
-    0 8px 16px rgba(74, 124, 89, 0.4);
+    0 9px 0 0 var(--game-primary-dark),
+    0 14px 32px rgba(74, 124, 89, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
 .btn-primary:active {
-  transform: translateY(2px) scale(0.98);
+  transform: translateY(3px) scale(0.98);
   box-shadow:
-    0 2px 0 0 rgba(58, 99, 71, 0.4),
-    0 3px 6px rgba(74, 124, 89, 0.3);
+    0 3px 0 0 var(--game-primary-dark),
+    0 6px 16px rgba(74, 124, 89, 0.3),
+    inset 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* 次按钮 - 白色 */
+/* 次按钮 - 粘土风 */
 .btn-secondary {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -267,33 +299,35 @@ onMounted(() => {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 18px 24px;
+  padding: 20px 28px;
   font-weight: 700;
-  border-radius: 16px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: var(--game-bg-light);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f0 100%);
   color: var(--game-primary-dark);
-  border: 2px solid var(--game-border);
+  border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 3px 0 0 var(--game-border),
-    0 4px 8px rgba(0, 0, 0, 0.06);
+    0 5px 0 0 var(--game-border),
+    0 8px 20px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .btn-secondary:hover {
-  transform: translateY(-1px);
-  background: var(--game-bg-light);
-  border-color: var(--game-primary);
+  transform: translateY(-3px);
+  border-color: var(--game-primary-light);
   box-shadow:
-    0 4px 0 0 var(--game-border),
-    0 6px 12px rgba(0, 0, 0, 0.08);
+    0 8px 0 0 var(--game-border),
+    0 12px 28px rgba(0, 0, 0, 0.12),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
 }
 
 .btn-secondary:active {
   transform: translateY(2px) scale(0.98);
   box-shadow:
-    0 1px 0 0 var(--game-border),
-    0 2px 4px rgba(0, 0, 0, 0.06);
+    0 2px 0 0 var(--game-border),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
 /* 动画 */

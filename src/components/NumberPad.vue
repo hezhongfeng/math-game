@@ -41,8 +41,8 @@ function handleSubmit() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="numpad-btn text-5xl md:text-6xl font-bold"
-        :class="{ 'numpad-btn-disabled': disabled }"
+        class="numpad-btn-clay text-5xl md:text-6xl font-bold"
+        :class="{ 'numpad-btn-clay-disabled': disabled }"
       >
         {{ num }}
       </button>
@@ -51,8 +51,8 @@ function handleSubmit() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="numpad-btn numpad-btn-delete"
-        :class="{ 'numpad-btn-disabled': disabled }"
+        class="numpad-btn-clay numpad-btn-clay-delete"
+        :class="{ 'numpad-btn-clay-disabled': disabled }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6M14 11v6"/>
@@ -63,8 +63,8 @@ function handleSubmit() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="numpad-btn text-5xl md:text-6xl font-bold"
-        :class="{ 'numpad-btn-disabled': disabled }"
+        class="numpad-btn-clay text-5xl md:text-6xl font-bold"
+        :class="{ 'numpad-btn-clay-disabled': disabled }"
       >
         0
       </button>
@@ -73,8 +73,8 @@ function handleSubmit() {
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="numpad-btn numpad-btn-confirm"
-        :class="{ 'numpad-btn-confirm-disabled': disabled }"
+        class="numpad-btn-clay numpad-btn-clay-confirm"
+        :class="{ 'numpad-btn-clay-confirm-disabled': disabled }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
@@ -85,124 +85,144 @@ function handleSubmit() {
 </template>
 
 <style scoped>
+/* ============================================
+   Claymorphism 粘土风数字键盘
+   ============================================ */
+
 .number-pad {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 16px 12px;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f5f0 100%);
+  border-radius: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  padding: 20px 16px;
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.1),
+    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 .number-pad-disabled {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
-.numpad-btn {
+/* 数字按钮 - 粘土风 */
+.numpad-btn-clay {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   aspect-ratio: 1;
-  border-radius: 16px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 56px;
   min-width: 56px;
-  background: var(--game-bg-light);
+  background: linear-gradient(145deg, #ffffff 0%, #f0f0e8 100%);
   color: var(--game-primary-dark);
-  border: 2px solid rgba(79, 70, 229, 0.1);
-  transition: all 0.15s ease;
-  box-shadow:
-    0 3px 0 0 var(--game-border),
-    0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.numpad-btn:hover:not(:disabled) {
-  background: var(--game-bg);
-  transform: translateY(-1px);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow:
     0 4px 0 0 var(--game-border),
-    0 8px 20px rgba(0, 0, 0, 0.12);
+    0 6px 12px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
 }
 
-.numpad-btn:active:not(:disabled) {
-  transform: translateY(1px) scale(0.97);
+.numpad-btn-clay:hover:not(:disabled) {
+  transform: translateY(-3px);
   box-shadow:
-    0 1px 0 0 var(--game-border),
-    0 2px 8px rgba(0, 0, 0, 0.06);
+    0 7px 0 0 var(--game-border),
+    0 10px 20px rgba(0, 0, 0, 0.12),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
 }
 
-.numpad-btn-disabled {
-  background: var(--game-bg-light) !important;
+.numpad-btn-clay:active:not(:disabled) {
+  transform: translateY(2px) scale(0.96);
+  box-shadow:
+    0 2px 0 0 var(--game-border),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.numpad-btn-clay-disabled {
+  background: linear-gradient(145deg, #f0f0e8 0%, #e8e8e0 100%) !important;
   color: var(--game-text-muted) !important;
   cursor: not-allowed;
   transform: none !important;
   box-shadow:
-    0 1px 0 0 var(--game-border),
-    0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    0 2px 0 0 var(--game-border),
+    0 3px 8px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 删除按钮 */
-.numpad-btn-delete {
-  background: linear-gradient(135deg, #FF8A80 0%, #FF6B6B 100%);
+/* 删除按钮 - 粘土风 */
+.numpad-btn-clay-delete {
+  background: linear-gradient(145deg, #FF8A80 0%, #EF5350 100%);
   color: white;
-  border: 2px solid rgba(255, 107, 107, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 3px 0 0 rgba(200, 70, 70, 0.4),
-    0 4px 12px rgba(255, 107, 107, 0.25);
+    0 4px 0 0 #C62828,
+    0 6px 12px rgba(239, 83, 80, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
-.numpad-btn-delete:hover:not(:disabled) {
-  background: linear-gradient(135deg, #FFB3B0 0%, #FF8A80 100%);
+.numpad-btn-clay-delete:hover:not(:disabled) {
+  background: linear-gradient(145deg, #FFAB91 0%, #FF8A80 100%);
   box-shadow:
-    0 4px 0 0 rgba(200, 70, 70, 0.4),
-    0 8px 20px rgba(255, 107, 107, 0.35);
+    0 7px 0 0 #C62828,
+    0 10px 20px rgba(239, 83, 80, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
-.numpad-btn-delete:active:not(:disabled) {
+.numpad-btn-clay-delete:active:not(:disabled) {
   box-shadow:
-    0 1px 0 0 rgba(200, 70, 70, 0.4),
-    0 2px 8px rgba(255, 107, 107, 0.25);
+    0 2px 0 0 #C62828,
+    0 4px 8px rgba(239, 83, 80, 0.25),
+    inset 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* 确认按钮 */
-.numpad-btn-confirm {
-  background: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
+/* 确认按钮 - 粘土风 */
+.numpad-btn-clay-confirm {
+  background: linear-gradient(145deg, #81C784 0%, #66BB6A 100%);
   color: white;
-  border: 2px solid rgba(102, 187, 106, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 3px 0 0 rgba(60, 140, 60, 0.4),
-    0 4px 12px rgba(102, 187, 106, 0.25);
+    0 4px 0 0 #2E7D32,
+    0 6px 12px rgba(102, 187, 106, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
-.numpad-btn-confirm:hover:not(:disabled) {
-  background: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%);
+.numpad-btn-clay-confirm:hover:not(:disabled) {
+  background: linear-gradient(145deg, #A5D6A7 0%, #81C784 100%);
   box-shadow:
-    0 4px 0 0 rgba(60, 140, 60, 0.4),
-    0 8px 20px rgba(102, 187, 106, 0.35);
+    0 7px 0 0 #2E7D32,
+    0 10px 20px rgba(102, 187, 106, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
-.numpad-btn-confirm:active:not(:disabled) {
+.numpad-btn-clay-confirm:active:not(:disabled) {
   box-shadow:
-    0 1px 0 0 rgba(60, 140, 60, 0.4),
-    0 2px 8px rgba(102, 187, 106, 0.25);
+    0 2px 0 0 #2E7D32,
+    0 4px 8px rgba(102, 187, 106, 0.25),
+    inset 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-.numpad-btn-confirm-disabled {
-  background: var(--game-bg-light) !important;
+.numpad-btn-clay-confirm-disabled {
+  background: linear-gradient(145deg, #f0f0e8 0%, #e8e8e0 100%) !important;
   color: var(--game-text-muted) !important;
   cursor: not-allowed;
   transform: none !important;
   box-shadow:
-    0 1px 0 0 var(--game-border),
-    0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    0 2px 0 0 var(--game-border),
+    0 3px 8px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* 响应式调整 */
 @media (min-width: 768px) {
-  .numpad-btn {
-    min-height: 64px;
-    min-width: 64px;
-    border-radius: 18px;
+  .numpad-btn-clay {
+    min-height: 72px;
+    min-width: 72px;
+    border-radius: 20px;
   }
 }
 </style>
