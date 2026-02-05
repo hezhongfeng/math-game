@@ -303,7 +303,7 @@
 
 /* 尊重用户的减少动画偏好设置 */
 @media (prefers-reduced-motion: reduce) {
-  /* 禁用所有装饰性动画 */
+  /* 禁用所有装饰性动画 - 包括 Tailwind 动画类 */
   .animate-answer-pop,
   .animate-answer-shake,
   .animate-confetti-fall,
@@ -314,7 +314,17 @@
   .animate-float,
   .animate-fade-in-up,
   .animate-card-entrance,
-  .animate-button-entrance {
+  .animate-button-entrance,
+  .animate-slide-in,
+  .animate-wiggle,
+  .animate-shake,
+  .animate-pop,
+  .animate-scale-in,
+  .animate-touch-feedback,
+  .animate-celebration,
+  .animate-gentle-bounce,
+  .animate-success-glow,
+  .animate-bounce-in {
     animation: none !important;
     transition: none !important;
   }
@@ -326,6 +336,18 @@
   .numpad-btn-clay:hover,
   .level-card:hover {
     transform: none !important;
+  }
+
+  /* Vue Transition 组件动画简化 */
+  .fade-enter-active,
+  .fade-leave-active,
+  .question-enter-active,
+  .question-leave-active,
+  .feedback-enter-active,
+  .feedback-leave-active,
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: opacity 0.15s ease !important;
   }
 
   /* 保持功能性过渡但减少时长 */

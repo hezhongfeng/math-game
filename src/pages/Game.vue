@@ -297,7 +297,7 @@ onUnmounted(() => {
 
     <!-- 题目卡片区 -->
     <main class="main">
-      <Transition name="question">
+      <Transition name="question" mode="out-in">
         <QuestionCard
           v-if="game.currentQuestion.value"
           :key="questionKey"
@@ -460,14 +460,33 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 题目切换 - 从下方快速滚入 */
-.question-enter-active {
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+/* 题目切换 - 流畅的进入和退出动画 */
+.question-enter-active,
+.question-leave-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .question-enter-from {
   opacity: 0;
-  transform: translateY(50px) scale(0.95);
+  transform: translateY(30px) scale(0.96);
+}
+
+.question-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.98);
+}
+
+/* 减少动画偏好 - 简化过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .question-enter-active,
+  .question-leave-active {
+    transition: opacity 0.15s ease;
+  }
+  
+  .question-enter-from,
+  .question-leave-to {
+    transform: none;
+  }
 }
 
 /* 反馈容器 */
