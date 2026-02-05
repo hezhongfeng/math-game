@@ -632,7 +632,17 @@ onUnmounted(() => {
   border: 4px solid transparent;
   border-top-color: var(--game-primary);
   border-radius: 50%;
+  /* 加载动画可以无限循环，因为它是功能性的 */
   animation: spin 1s linear infinite;
+}
+
+/* 减少动画偏好 - 静态显示 */
+@media (prefers-reduced-motion: reduce) {
+  .spinner-ring {
+    animation: none;
+    border: 4px solid var(--game-primary);
+    opacity: 0.6;
+  }
 }
 
 .spinner-ring:nth-child(1) {

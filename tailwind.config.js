@@ -181,12 +181,15 @@ export default {
         'child-card': '88px',
       },
       animation: {
-        'float': 'float 4s ease-in-out infinite',
-        'pulse-gentle': 'pulseGentle 2.5s ease-in-out infinite',
-        'fade-in-up': 'fadeInUp 0.6s ease-out',
+        // 有限次数的装饰性动画（3次后停止）
+        'float': 'float 4s ease-in-out 3',
+        'pulse-gentle': 'pulseGentle 2.5s ease-in-out 3',
+        // 入场动画 - 只播放一次
+        'fade-in-up': 'fadeInUp 0.6s ease-out both',
         'card-entrance': 'cardEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         'button-entrance': 'buttonEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both',
-        'slide-in': 'slideIn 0.5s ease-out',
+        'slide-in': 'slideIn 0.5s ease-out both',
+        // 交互反馈动画
         'wiggle': 'wiggle 0.5s ease-in-out',
         'shake': 'shake 0.5s ease-in-out',
         'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
@@ -196,6 +199,9 @@ export default {
         'gentle-bounce': 'gentleBounce 0.4s ease-out',
         'success-glow': 'successGlow 1s ease-out',
         'bounce-in': 'bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        // 悬停触发动画（通过类名控制）
+        'hover-float': 'float 3s ease-in-out',
+        'hover-pulse': 'pulseGentle 2s ease-in-out',
       },
       keyframes: {
         float: {
@@ -317,5 +323,11 @@ export default {
       },
     },
   },
-  plugins: [],
+  // 添加减少动画支持插件
+  plugins: [
+    function({ addVariant }) {
+      addVariant('reduced-motion', '@media (prefers-reduced-motion: reduce)')
+      addVariant('motion-safe', '@media (prefers-reduced-motion: no-preference)')
+    }
+  ],
 }

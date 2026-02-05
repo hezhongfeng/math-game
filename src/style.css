@@ -152,8 +152,14 @@
   animation: jelly 0.5s ease;
 }
 
+/* 有限次数的脉冲动画（3次后停止，符合无障碍标准） */
 .animate-pulse-gentle {
-  animation: pulse-gentle 2.5s ease-in-out infinite;
+  animation: pulse-gentle 2.5s ease-in-out 3;
+}
+
+/* 悬停触发的脉冲动画 */
+.hover-pulse:hover {
+  animation: pulse-gentle 2s ease-in-out;
 }
 
 .animate-slide-up {
@@ -503,25 +509,51 @@
 }
 
 /* ============================================
-   动画性能优化
+   动画性能优化 & 无障碍支持
    ============================================ */
 
+/* 尊重用户的减少动画偏好设置 */
 @media (prefers-reduced-motion: reduce) {
+  /* 禁用所有装饰性动画 */
   .animate-answer-pop,
   .animate-answer-shake,
   .animate-confetti-fall,
   .animate-jelly,
   .animate-pulse-gentle,
   .animate-slide-up,
-  .animate-bounce-scale {
-    animation: none;
+  .animate-bounce-scale,
+  .animate-float,
+  .animate-fade-in-up,
+  .animate-card-entrance,
+  .animate-button-entrance {
+    animation: none !important;
+    transition: none !important;
   }
 
+  /* 禁用悬停变换 */
   .card:hover,
   .btn-primary:hover,
   .btn-secondary:hover,
-  .btn-success:hover {
-    transform: none;
+  .btn-success:hover,
+  .numpad-btn:hover,
+  .numpad-btn-clay:hover,
+  .stat-card:hover,
+  .level-card:hover {
+    transform: none !important;
+  }
+
+  /* 禁用粘土风悬停效果 */
+  .clay-card:hover,
+  .clay-btn:hover,
+  .clay-container:hover {
+    transform: none !important;
+  }
+
+  /* 保持功能性过渡但减少时长 */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

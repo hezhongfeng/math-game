@@ -137,7 +137,13 @@ onMounted(() => {
     0 8px 0 0 var(--game-primary-dark),
     0 12px 24px rgba(74, 124, 89, 0.4),
     inset 0 3px 6px rgba(255, 255, 255, 0.3);
-  animation: iconFloat 3s ease-in-out infinite;
+  /* 只播放3次，避免干扰用户 */
+  animation: iconFloat 3s ease-in-out 3;
+}
+
+/* 悬停时再次触发动画 */
+.title-icon:hover {
+  animation: iconFloat 2s ease-in-out;
 }
 
 @keyframes iconFloat {
