@@ -316,10 +316,10 @@ onUnmounted(() => {
         <div v-if="shouldShowFeedback" class="feedback-container" @click="handleFeedbackClick">
           <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
             <div v-if="isCorrect" class="success-circle">
-              <Check :size="40" />
+              <Check :size="36" />
             </div>
-            <div v-else-if="isIncorrect" class="answer-number text-child-3xl">{{ currentQuestion.answer }}</div>
-            <div v-if="isIncorrect" class="hint-text text-child-sm">点击继续</div>
+            <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
+            <div v-if="isIncorrect" class="hint-text">点击继续</div>
           </div>
         </div>
       </Transition>
@@ -496,64 +496,81 @@ onUnmounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9998;
+  padding: 20px;
 }
 
-/* 反馈弹窗 */
+/* 反馈弹窗 - Claymorphism 粘土风 */
 .feedback-overlay {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 280px;
+  position: relative;
+  width: 100%;
+  max-width: 260px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 16px;
   z-index: 9999;
-  background: var(--game-bg-light);
-  border-radius: 24px;
-  padding: 28px 24px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f8f0 100%);
+  border-radius: 28px;
+  padding: 32px 28px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 4px 0 0 rgba(0, 0, 0, 0.06),
-    0 16px 40px rgba(0, 0, 0, 0.15);
+    0 8px 0 0 rgba(0, 0, 0, 0.08),
+    0 20px 50px rgba(0, 0, 0, 0.2),
+    8px 8px 16px rgba(0, 0, 0, 0.1),
+    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .feedback-overlay.correct {
-  border: 2px solid var(--game-success);
+  border: 3px solid var(--game-success);
+  box-shadow:
+    0 8px 0 0 rgba(56, 158, 13, 0.3),
+    0 20px 50px rgba(82, 196, 26, 0.25),
+    8px 8px 16px rgba(0, 0, 0, 0.08),
+    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .feedback-overlay.wrong {
-  border: 2px solid var(--game-warning);
+  border: 3px solid var(--game-warning);
   cursor: pointer;
+  box-shadow:
+    0 8px 0 0 rgba(212, 130, 13, 0.3),
+    0 20px 50px rgba(212, 130, 13, 0.2),
+    8px 8px 16px rgba(0, 0, 0, 0.08),
+    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
-/* 成功圆圈 */
+/* 成功圆圈 - Claymorphism 粘土风 */
 .success-circle {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--game-success) 0%, var(--game-success-dark) 100%);
+  background: linear-gradient(145deg, var(--game-success-light) 0%, var(--game-success) 50%, var(--game-success-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: circlePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 3px solid rgba(255, 255, 255, 0.4);
   box-shadow:
-    0 4px 0 0 rgba(56, 158, 13, 0.4),
-    0 8px 20px rgba(82, 196, 26, 0.35);
+    0 6px 0 0 var(--game-success-dark),
+    0 10px 24px rgba(82, 196, 26, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .success-circle svg {
   color: white;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 @keyframes circlePop {
@@ -570,26 +587,43 @@ onUnmounted(() => {
   }
 }
 
-/* 答案数字 - 错误反馈 */
+/* 答案数字 - 错误反馈 Claymorphism */
 .answer-number {
+  font-size: 56px;
   font-weight: 800;
   color: var(--game-warning);
   line-height: 1;
   text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* 点击提示文字 */
+/* 点击提示按钮 - Claymorphism 统一风格 */
 .hint-text {
   color: var(--game-warning-dark);
-  font-weight: 600;
-  background: rgba(212, 130, 13, 0.12);
-  padding: 6px 14px;
-  border-radius: 16px;
+  font-weight: 700;
+  font-size: 15px;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f5f0 100%);
+  padding: 10px 20px;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 4px 0 0 rgba(212, 130, 13, 0.3),
+    0 6px 16px rgba(212, 130, 13, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
 
-/* 反馈过渡 - 流畅衔接 */
+.feedback-overlay.wrong:active .hint-text {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 0 rgba(212, 130, 13, 0.3),
+    0 3px 8px rgba(212, 130, 13, 0.15),
+    inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* 反馈过渡 - 流畅的 Claymorphism 弹出效果 */
 .feedback-enter-active .feedback-container {
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.25s ease-out;
 }
 
 .feedback-leave-active .feedback-container {
@@ -605,21 +639,33 @@ onUnmounted(() => {
 }
 
 .feedback-enter-active .feedback-overlay {
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: feedbackPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .feedback-leave-active .feedback-overlay {
-  transition: all 0.2s ease-out;
+  animation: feedbackPopOut 0.2s ease-out forwards;
 }
 
-.feedback-enter-from .feedback-overlay {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
+@keyframes feedbackPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.feedback-leave-to .feedback-overlay {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.95);
+@keyframes feedbackPopOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
 }
 
 /* 加载状态 */
