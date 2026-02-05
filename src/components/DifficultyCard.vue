@@ -170,28 +170,78 @@ function handleSelect() {
     inset 2px 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* 锁定状态 - 粘土风凹陷效果 */
+/* 锁定状态 - 粘土风凹陷效果 + 灰度 */
 .level-locked {
   background: linear-gradient(145deg, #e0e0d5 0%, #d5d5c8 100%);
   cursor: not-allowed;
-  opacity: 0.85;
+  opacity: 0.6;
+  filter: grayscale(0.7);
   box-shadow:
-    inset 4px 4px 8px rgba(0, 0, 0, 0.08),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.6);
-  border: 2px solid rgba(255, 255, 255, 0.4);
+    inset 4px 4px 8px rgba(0, 0, 0, 0.12),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(180, 180, 160, 0.5);
 }
 
-/* 已完成状态 - 绿色发光边框 */
+.level-locked .level-num {
+  filter: grayscale(0.8);
+  opacity: 0.7;
+}
+
+/* 已完成状态 - 绿色发光边框 + 完成徽章 */
 .level-completed {
   border: 3px solid var(--game-success);
   box-shadow:
-    0 0 15px rgba(82, 196, 26, 0.2),
+    0 0 20px rgba(82, 196, 26, 0.25),
     6px 6px 12px rgba(0, 0, 0, 0.08),
     -6px -6px 12px rgba(255, 255, 255, 0.9),
     inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: visible;
 }
 
-/* 已解锁状态 - 主色发光边框 */
+/* 完成徽章 - 右上角 */
+.level-completed::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 26px;
+  height: 26px;
+  background: var(--game-success);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 3px 8px rgba(82, 196, 26, 0.4);
+  animation: completionBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 徽章对勾图标 */
+.level-completed::before {
+  content: '✓';
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+  z-index: 1;
+  animation: completionBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+@keyframes completionBadgePop {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* 已解锁状态 - 主色发光边框 + 脉冲动画 */
 .level-unlocked {
   border: 3px solid var(--game-primary-light);
   box-shadow:
@@ -199,6 +249,43 @@ function handleSelect() {
     6px 6px 12px rgba(0, 0, 0, 0.08),
     -6px -6px 12px rgba(255, 255, 255, 0.9),
     inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+  animation: unlockedPulse 2s ease-in-out 3;
+}
+
+.level-unlocked .level-num {
+  animation: numGlow 2s ease-in-out 3;
+}
+
+@keyframes unlockedPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(74, 124, 89, 0.15),
+      6px 6px 12px rgba(0, 0, 0, 0.08),
+      -6px -6px 12px rgba(255, 255, 255, 0.9),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(74, 124, 89, 0.3),
+      6px 6px 12px rgba(0, 0, 0, 0.08),
+      -6px -6px 12px rgba(255, 255, 255, 0.9),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+  }
+}
+
+@keyframes numGlow {
+  0%, 100% {
+    box-shadow:
+      3px 3px 6px rgba(0, 0, 0, 0.15),
+      -2px -2px 4px rgba(255, 255, 255, 0.3),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow:
+      3px 3px 10px rgba(74, 124, 89, 0.3),
+      -2px -2px 6px rgba(255, 255, 255, 0.5),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.4);
+  }
 }
 
 /* 序号圆形 - 粘土风 */

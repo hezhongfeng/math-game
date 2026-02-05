@@ -192,7 +192,7 @@ const answerDisplay = computed(() => {
 }
 
 .number {
-  font-family: 'Alimama ShuHeiTi', 'Noto Sans SC', sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
   font-size: 44px;
   font-weight: 700;
   color: var(--game-text);
@@ -218,7 +218,7 @@ const answerDisplay = computed(() => {
 
 /* 答案框 - 粘土风内凹效果 */
 .answer {
-  font-family: 'Alimama ShuHeiTi', 'Noto Sans SC', sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
   font-size: 48px;
   font-weight: 800;
   color: var(--game-text);

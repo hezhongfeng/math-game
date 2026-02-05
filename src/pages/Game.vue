@@ -317,6 +317,16 @@ onUnmounted(() => {
           <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
             <div v-if="isCorrect" class="success-circle">
               <Check :size="36" />
+              <div class="particle-container">
+                <div class="particle particle-1"></div>
+                <div class="particle particle-2"></div>
+                <div class="particle particle-3"></div>
+                <div class="particle particle-4"></div>
+                <div class="particle particle-5"></div>
+                <div class="particle particle-6"></div>
+                <div class="particle particle-7"></div>
+                <div class="particle particle-8"></div>
+              </div>
             </div>
             <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
             <div v-if="isIncorrect" class="hint-text">点击继续</div>
@@ -585,6 +595,59 @@ onUnmounted(() => {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* 粒子效果 - 正确反馈 */
+.particle-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: particleExplosion 0.8s ease-out forwards;
+}
+
+.particle-1 { background: var(--game-success); animation-delay: 0s; --angle: 0deg; --distance: 60px; }
+.particle-2 { background: var(--game-success-light); animation-delay: 0.05s; --angle: 45deg; --distance: 70px; }
+.particle-3 { background: var(--game-success); animation-delay: 0.1s; --angle: 90deg; --distance: 55px; }
+.particle-4 { background: var(--game-success-lighter); animation-delay: 0.15s; --angle: 135deg; --distance: 65px; }
+.particle-5 { background: var(--game-success); animation-delay: 0.2s; --angle: 180deg; --distance: 60px; }
+.particle-6 { background: var(--game-success-light); animation-delay: 0.25s; --angle: 225deg; --distance: 70px; }
+.particle-7 { background: var(--game-success); animation-delay: 0.3s; --angle: 270deg; --distance: 55px; }
+.particle-8 { background: var(--game-success-lighter); animation-delay: 0.35s; --angle: 315deg; --distance: 65px; }
+
+@keyframes particleExplosion {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* 连击效果 */
+.combo-text {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--game-success);
+  animation: comboPulse 0.5s ease-out;
+  text-shadow: 0 2px 8px rgba(82, 196, 26, 0.4);
+}
+
+@keyframes comboPulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* 答案数字 - 错误反馈 Claymorphism */

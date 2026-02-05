@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, Trophy, Lock, CheckCircle2 } from 'lucide-vue-next'
+import { ArrowLeft, Trophy } from 'lucide-vue-next'
 import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
@@ -13,9 +13,19 @@ const { playSound } = useSound()
 
 // 使用 ref 存储完成状态，确保响应式更新
 const completedDifficulties = ref(getCompletedDifficulties())
+const isReady = ref(false)
 
 // 计算完成的关卡数量（响应式）
 const completedCount = computed(() => completedDifficulties.value.length)
+
+// 页面加载动画
+onMounted(() => {
+  window.scrollTo(0, 0)
+  // 短暂延迟触发入场动画
+  requestAnimationFrame(() => {
+    isReady.value = true
+  })
+})
 
 function goBack() {
   playSound('click')
@@ -52,10 +62,6 @@ const lockedStatusMap = computed(() => {
 function isDifficultyLocked(difficulty) {
   return lockedStatusMap.value.get(difficulty.id) ?? false
 }
-
-onMounted(() => {
-  window.scrollTo(0, 0)
-})
 </script>
 
 <template>
@@ -101,7 +107,13 @@ onMounted(() => {
 
     <!-- 主内容 -->
     <main class="main-content">
-      <div v-for="(group, groupIndex) in DIFFICULTY_GROUPS" :key="group.name" class="section">
+      <div 
+        v-for="(group, groupIndex) in DIFFICULTY_GROUPS" 
+        :key="group.name" 
+        class="section"
+        :class="{ 'section-visible': isReady }"
+        :style="{ transitionDelay: `${groupIndex * 100}ms` }"
+      >
         <!-- 阶段标题 -->
         <div class="section-header" :style="{ animationDelay: `${groupIndex * 100}ms` }">
           <div class="section-badge text-child-sm" :class="`badge-${group.color}`">
@@ -250,6 +262,14 @@ onMounted(() => {
 
 .section {
   margin-bottom: 28px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.section-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* 阶段标题 */
@@ -337,5 +357,46 @@ onMounted(() => {
   color: var(--game-text-secondary);
   font-weight: 500;
   text-align: center;
+}
+
+/* 平板端双列布局 */
+@media (min-width: 768px) {
+  .card-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .section-header {
+    padding: 12px 18px;
+  }
+
+  .section-badge {
+    padding: 8px 16px;
+  }
+}
+
+/* 桌面端优化 */
+@media (min-width: 1024px) {
+  .page {
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+
+  .header {
+    padding: 16px 24px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .main-content {
+    padding: 16px 24px;
+  }
+
+  .section {
+    margin-bottom: 32px;
+  }
 }
 </style>
