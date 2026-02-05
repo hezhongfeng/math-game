@@ -226,7 +226,7 @@ onMounted(() => {
   background: linear-gradient(145deg, var(--game-accent) 0%, var(--game-accent-dark) 100%);
   color: white;
   box-shadow:
-    0 5px 0 0 #B7950B,
+    0 5px 0 0 var(--game-warning-dark),
     0 8px 16px rgba(212, 172, 13, 0.35),
     inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }

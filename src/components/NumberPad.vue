@@ -156,53 +156,53 @@ function handleSubmit() {
 
 /* 删除按钮 - 粘土风 */
 .numpad-btn-clay-delete {
-  background: linear-gradient(145deg, #FF8A80 0%, #EF5350 100%);
+  background: linear-gradient(145deg, var(--game-error-light) 0%, var(--game-error) 100%);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 4px 0 0 #C62828,
-    0 6px 12px rgba(239, 83, 80, 0.3),
+    0 4px 0 0 var(--game-error-dark),
+    0 6px 12px rgba(207, 74, 74, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .numpad-btn-clay-delete:hover:not(:disabled) {
-  background: linear-gradient(145deg, #FFAB91 0%, #FF8A80 100%);
+  background: linear-gradient(145deg, var(--game-error-lighter) 0%, var(--game-error-light) 100%);
   box-shadow:
-    0 7px 0 0 #C62828,
-    0 10px 20px rgba(239, 83, 80, 0.35),
+    0 7px 0 0 var(--game-error-dark),
+    0 10px 20px rgba(207, 74, 74, 0.35),
     inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
 .numpad-btn-clay-delete:active:not(:disabled) {
   box-shadow:
-    0 2px 0 0 #C62828,
-    0 4px 8px rgba(239, 83, 80, 0.25),
+    0 2px 0 0 var(--game-error-dark),
+    0 4px 8px rgba(207, 74, 74, 0.25),
     inset 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* 确认按钮 - 粘土风 */
 .numpad-btn-clay-confirm {
-  background: linear-gradient(145deg, #81C784 0%, #66BB6A 100%);
+  background: linear-gradient(145deg, var(--game-success-light) 0%, var(--game-success) 100%);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 4px 0 0 #2E7D32,
-    0 6px 12px rgba(102, 187, 106, 0.3),
+    0 4px 0 0 var(--game-success-dark),
+    0 6px 12px rgba(82, 196, 26, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .numpad-btn-clay-confirm:hover:not(:disabled) {
-  background: linear-gradient(145deg, #A5D6A7 0%, #81C784 100%);
+  background: linear-gradient(145deg, var(--game-success-lighter) 0%, var(--game-success-light) 100%);
   box-shadow:
-    0 7px 0 0 #2E7D32,
-    0 10px 20px rgba(102, 187, 106, 0.35),
+    0 7px 0 0 var(--game-success-dark),
+    0 10px 20px rgba(82, 196, 26, 0.35),
     inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
 .numpad-btn-clay-confirm:active:not(:disabled) {
   box-shadow:
-    0 2px 0 0 #2E7D32,
-    0 4px 8px rgba(102, 187, 106, 0.25),
+    0 2px 0 0 var(--game-success-dark),
+    0 4px 8px rgba(82, 196, 26, 0.25),
     inset 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 

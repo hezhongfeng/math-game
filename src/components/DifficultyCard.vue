@@ -261,7 +261,7 @@ function handleSelect() {
   border-radius: 8px;
   border: 2px solid rgba(255, 255, 255, 0.4);
   box-shadow:
-    0 2px 0 0 #A86608,
+    0 2px 0 0 var(--game-warning-dark),
     0 3px 6px rgba(212, 130, 13, 0.3);
 }
 
