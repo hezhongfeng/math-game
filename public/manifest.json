@@ -4,8 +4,8 @@
   "description": "专为儿童设计的数学运算游戏，包含加减法练习，15个难度关卡",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F0F0E8",
-  "theme_color": "#4A7C59",
+  "background_color": "#FFF9F5",
+  "theme_color": "#FF7B54",
   "orientation": "portrait",
   "scope": "/",
   "lang": "zh-CN",
@@ -29,58 +29,10 @@
   ],
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
       "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -91,9 +43,9 @@
       "url": "/difficulty",
       "icons": [
         {
-          "src": "/icons/shortcut-play.png",
-          "sizes": "96x96",
-          "type": "image/png"
+          "src": "/icons/shortcut-play.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -104,9 +56,9 @@
       "url": "/difficulty",
       "icons": [
         {
-          "src": "/icons/shortcut-trophy.png",
-          "sizes": "96x96",
-          "type": "image/png"
+          "src": "/icons/shortcut-trophy.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     }

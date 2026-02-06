@@ -1,13 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
+    <!-- 珊瑚橙渐变背景 -->
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#5D9A6E"/>
-      <stop offset="100%" style="stop-color:#3A6347"/>
+      <stop offset="0%" style="stop-color:#FF7B54"/>
+      <stop offset="100%" style="stop-color:#E86640"/>
     </linearGradient>
+    <!-- 薄荷绿渐变数字 -->
     <linearGradient id="numberGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#F7DC6F"/>
-      <stop offset="100%" style="stop-color:#F4D03F"/>
+      <stop offset="0%" style="stop-color:#6FE3DC"/>
+      <stop offset="100%" style="stop-color:#4ECDC4"/>
     </linearGradient>
+    <!-- 阴影滤镜 -->
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="4" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.2"/>
     </filter>
@@ -45,7 +48,7 @@
   </g>
   
   <!-- 装饰性小星星 -->
-  <circle cx="80" cy="420" r="12" fill="#F4D03F" opacity="0.8"/>
-  <circle cx="432" cy="100" r="8" fill="#F4D03F" opacity="0.6"/>
+  <circle cx="80" cy="420" r="12" fill="#4ECDC4" opacity="0.8"/>
+  <circle cx="432" cy="100" r="8" fill="#4ECDC4" opacity="0.6"/>
   <circle cx="460" cy="380" r="6" fill="white" opacity="0.4"/>
 </svg>

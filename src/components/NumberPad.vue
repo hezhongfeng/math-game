@@ -1,5 +1,5 @@
 <script setup>
-import { Delete, Zap } from 'lucide-vue-next'
+import { Delete, Check } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -36,42 +36,38 @@ function handleSubmit() {
 <template>
   <div class="number-pad" :class="{ 'is-disabled': disabled }">
     <div class="pad-grid">
-      <!-- 数字键 1-9 -->
       <button
         v-for="num in numbers"
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="tech-btn num-btn"
+        class="num-btn"
       >
         {{ num }}
       </button>
 
-      <!-- 清除按钮 -->
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="tech-btn num-btn btn-delete"
+        class="num-btn btn-delete"
       >
-        <Delete :size="24" stroke-width="2.5" />
+        <Delete :size="32" stroke-width="2.5" />
       </button>
 
-      <!-- 数字键 0 -->
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="tech-btn num-btn"
+        class="num-btn"
       >
         0
       </button>
 
-      <!-- 确认按钮 -->
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="tech-btn num-btn btn-submit"
+        class="num-btn btn-submit"
       >
-        <Zap :size="28" stroke-width="2.5" />
+        <Check :size="36" stroke-width="3" />
       </button>
     </div>
   </div>
@@ -79,13 +75,10 @@ function handleSubmit() {
 
 <style scoped>
 .number-pad {
-  padding: 20px;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border-radius: var(--radius-sharp-lg);
-  border: 2px solid rgba(0, 102, 255, 0.3);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 24px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .number-pad.is-disabled {
@@ -95,122 +88,95 @@ function handleSubmit() {
 .pad-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 16px;
+  justify-items: center;
 }
 
-.tech-btn {
-  position: relative;
+.num-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 88px;
+  max-height: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
-  font-size: 28px;
+  background: var(--white);
+  border: 3px solid #F0F0F0;
+  border-radius: var(--radius-md);
+  color: var(--text-dark);
+  font-size: 36px;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: white;
-  background: linear-gradient(145deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
-  border-radius: var(--radius-sharp-md);
-  border: 2px solid rgba(0, 102, 255, 0.3);
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 100ms ease;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
   cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  text-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
 }
 
-.tech-btn:hover:not(:disabled) {
-  border-color: rgba(0, 102, 255, 0.6);
-  box-shadow: 
-    0 0 20px rgba(0, 102, 255, 0.3),
-    0 4px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.num-btn:hover {
+  border-color: var(--coral);
+  color: var(--coral);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
-.tech-btn:active:not(:disabled) {
-  transform: scale(0.92) translateY(0);
-  background: linear-gradient(145deg, rgba(0, 102, 255, 0.8) 0%, rgba(0, 82, 204, 0.9) 100%);
-  border-color: rgba(0, 102, 255, 0.8);
-  box-shadow: 
-    0 0 30px rgba(0, 102, 255, 0.5),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+.num-btn:active {
+  transform: scale(0.95);
+  background: var(--coral);
+  color: white;
+  border-color: var(--coral);
 }
 
-.tech-btn:disabled {
+.num-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 .btn-delete {
-  background: linear-gradient(145deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.7) 100%);
-  border-color: rgba(148, 163, 184, 0.3);
-  color: rgba(255, 255, 255, 0.7);
+  background: #FFF5F3;
+  border-color: #FFE5E0;
+  color: var(--coral);
 }
 
-.btn-delete:hover:not(:disabled) {
-  border-color: rgba(255, 107, 53, 0.5);
-  box-shadow: 
-    0 0 15px rgba(255, 107, 53, 0.2),
-    0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.btn-delete:active:not(:disabled) {
-  background: linear-gradient(145deg, rgba(255, 107, 53, 0.8) 0%, rgba(229, 90, 43, 0.9) 100%);
-  border-color: rgba(255, 107, 53, 0.8);
-  box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+.btn-delete:hover {
+  background: var(--coral);
+  color: white;
 }
 
 .btn-submit {
-  background: linear-gradient(145deg, rgba(0, 208, 132, 0.8) 0%, rgba(0, 168, 107, 0.9) 100%);
-  border-color: rgba(0, 208, 132, 0.5);
-  box-shadow: 
-    0 0 20px rgba(0, 208, 132, 0.3),
-    0 4px 8px rgba(0, 0, 0, 0.3);
+  background: var(--mint);
+  border-color: var(--mint);
+  color: white;
 }
 
-.btn-submit:hover:not(:disabled) {
-  border-color: rgba(0, 208, 132, 0.8);
-  box-shadow: 
-    0 0 30px rgba(0, 208, 132, 0.5),
-    0 4px 12px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+.btn-submit:hover {
+  background: var(--mint-dark);
+  border-color: var(--mint-dark);
 }
 
-.btn-submit:active:not(:disabled) {
-  transform: scale(0.92) translateY(0);
-  background: linear-gradient(145deg, rgba(77, 232, 168, 0.9) 0%, rgba(0, 208, 132, 1) 100%);
-  box-shadow: 
-    0 0 40px rgba(0, 208, 132, 0.6),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* 响应式调整 */
 @media (min-width: 768px) {
   .pad-grid {
-    gap: 16px;
+    gap: 20px;
   }
-  
-  .tech-btn {
-    width: 80px;
-    height: 80px;
-    font-size: 32px;
+
+  .num-btn {
+    max-width: 100px;
+    max-height: 100px;
+    font-size: 42px;
   }
 }
 
-/* 确保触摸目标大小 */
 @media (max-width: 375px) {
-  .tech-btn {
-    width: 64px;
-    height: 64px;
-    font-size: 24px;
+  .number-pad {
+    padding: 16px;
   }
-  
+
   .pad-grid {
-    gap: 10px;
+    gap: 12px;
+  }
+
+  .num-btn {
+    max-width: 76px;
+    max-height: 76px;
+    font-size: 32px;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Lock, Star, CheckCircle2, ChevronRight, Zap } from 'lucide-vue-next'
+import { Lock, Star, CheckCircle2, ChevronRight } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -34,52 +34,15 @@ const stars = computed(() => {
   return 0
 })
 
-// 获取难度主题色
-const levelTheme = computed(() => {
-  const themes = {
-    '入门': {
-      color: '#00D084',
-      glow: 'rgba(0, 208, 132, 0.5)',
-      dark: '#00A86B',
-      name: 'forest'
-    },
-    '初级': {
-      color: '#0066FF',
-      glow: 'rgba(0, 102, 255, 0.5)',
-      dark: '#0052CC',
-      name: 'ocean'
-    },
-    '中级': {
-      color: '#FFC700',
-      glow: 'rgba(255, 199, 0, 0.5)',
-      dark: '#E6B200',
-      name: 'desert'
-    },
-    '进级': {
-      color: '#FF6B35',
-      glow: 'rgba(255, 107, 53, 0.5)',
-      dark: '#E55A2B',
-      name: 'volcano'
-    },
-    '高级': {
-      color: '#8B5CF6',
-      glow: 'rgba(139, 92, 246, 0.5)',
-      dark: '#7C3AED',
-      name: 'space'
-    }
+const levelColor = computed(() => {
+  const colors = {
+    '入门': '#4ECDC4',
+    '初级': '#45B7D1',
+    '中级': '#F9CA24',
+    '进级': '#FF7B54',
+    '高级': '#A55EEA'
   }
-  return themes[props.difficulty.level] || themes['入门']
-})
-
-// 动态样式
-const cardStyle = computed(() => {
-  if (props.isLocked) return {}
-  const theme = levelTheme.value
-  return {
-    '--level-color': theme.color,
-    '--level-glow': theme.glow,
-    '--level-dark': theme.dark
-  }
+  return colors[props.difficulty.level] || '#4ECDC4'
 })
 
 function handleSelect() {
@@ -95,275 +58,162 @@ function handleSelect() {
     class="difficulty-card"
     :class="{
       'is-locked': isLocked,
-      'is-completed': isCompleted && !isLocked,
-      'is-unlocked': !isLocked && !isCompleted
+      'is-completed': isCompleted && !isLocked
     }"
-    :style="cardStyle"
     @click="handleSelect"
   >
-    <!-- 能量边框效果 -->
-    <div class="energy-border"></div>
-    
-    <!-- 左侧关卡图标 -->
-    <div 
-      class="level-icon"
-      :class="{ 'is-locked': isLocked }"
-    >
-      <span v-if="!isLocked" class="level-number">{{ difficulty.id }}</span>
-      <Lock v-else :size="20" />
+    <div class="level-badge" :style="{ background: levelColor }">
+      {{ difficulty.id }}
     </div>
 
-    <!-- 中间内容 -->
     <div class="level-content">
-      <h3 class="level-name" :class="{ 'is-locked': isLocked }">
-        {{ difficulty.name }}
-      </h3>
+      <h3 class="level-name">{{ difficulty.name }}</h3>
       
       <div v-if="!isLocked" class="level-stats">
-        <!-- 能量星级 -->
-        <div class="energy-stars">
-          <Zap 
+        <div class="stars">
+          <Star 
             v-for="n in 3" 
             :key="n" 
-            :size="14" 
-            :class="['energy-star', n <= stars ? 'active' : '']"
+            :size="20" 
+            :class="['star', n <= stars ? 'active' : '']"
           />
         </div>
-        
-        <!-- 正确率 -->
-        <span v-if="bestScore" class="accuracy" :class="bestScore.accuracy >= 80 ? 'high' : ''">
-          {{ bestScore.accuracy }}%
-        </span>
-        
-        <!-- NEW 能量标签 -->
-        <span v-else-if="!isCompleted" class="energy-badge">NEW</span>
+        <span v-if="bestScore" class="accuracy">{{ bestScore.accuracy }}%</span>
+        <span v-else-if="!isCompleted" class="new-tag">NEW</span>
       </div>
       
-      <!-- 锁定提示 -->
-      <div v-else class="lock-text">
-        <span>能量不足</span>
+      <div v-else class="lock-hint">
+        <Lock :size="16" />
+        <span>需解锁</span>
       </div>
     </div>
 
-    <!-- 右侧状态 -->
-    <div class="level-status">
-      <!-- 完成标记 -->
-      <div v-if="isCompleted && !isLocked" class="status-icon completed">
-        <CheckCircle2 :size="24" />
-      </div>
-      
-      <!-- 锁定标记 -->
-      <div v-else-if="isLocked" class="status-icon locked">
-        <Lock :size="20" />
-      </div>
-      
-      <!-- 操作箭头 -->
-      <div v-else class="status-icon enter">
-        <ChevronRight :size="20" />
-      </div>
+    <div class="level-action">
+      <CheckCircle2 v-if="isCompleted && !isLocked" class="icon-completed" />
+      <Lock v-else-if="isLocked" class="icon-locked" />
+      <ChevronRight v-else class="icon-arrow" />
     </div>
   </div>
 </template>
 
 <style scoped>
 .difficulty-card {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border-radius: var(--radius-sharp-lg);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: all var(--duration-micro) var(--ease-standard);
+  gap: 20px;
+  padding: 24px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s ease;
   cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  will-change: transform;
-  overflow: hidden;
-}
-
-/* 能量边框动画 */
-.energy-border {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-sharp-lg);
-  border: 2px solid transparent;
-  background: linear-gradient(90deg, var(--level-color), var(--level-dark), var(--level-color)) border-box;
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) padding-box, 
-    linear-gradient(#fff 0 0);
-  mask: 
-    linear-gradient(#fff 0 0) padding-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity var(--duration-micro) ease;
-}
-
-.difficulty-card:hover:not(.is-locked) .energy-border {
-  opacity: 1;
 }
 
 .difficulty-card:hover:not(.is-locked) {
-  transform: translateY(-3px);
-  box-shadow: 
-    0 0 30px var(--level-glow),
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 .difficulty-card:active:not(.is-locked) {
-  transform: translateY(-1px) scale(0.98);
+  transform: scale(0.98);
 }
 
-/* 锁定状态 */
 .is-locked {
   opacity: 0.5;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.6) 100%);
   cursor: not-allowed;
 }
 
-/* 完成状态 */
 .is-completed {
-  border-color: rgba(0, 208, 132, 0.3);
+  border-left: 5px solid #00D084;
 }
 
-.is-completed .energy-border {
-  opacity: 0.5;
-  background: linear-gradient(90deg, #00D084, #00A86B, #00D084) border-box;
-}
-
-/* 关卡图标 */
-.level-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-sharp-md);
+.level-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: var(--font-h2);
   font-weight: 800;
   color: white;
   flex-shrink: 0;
-  background: linear-gradient(145deg, var(--level-color) 0%, var(--level-dark) 100%);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 20px var(--level-glow);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.level-icon.is-locked {
-  background: linear-gradient(145deg, #334155 0%, #1E293B 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* 内容区 */
 .level-content {
   flex: 1;
-  min-width: 0;
 }
 
 .level-name {
-  font-size: 18px;
+  font-size: var(--font-h3);
   font-weight: 700;
-  color: white;
-  margin: 0 0 6px 0;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: 8px;
 }
 
-.level-name.is-locked {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* 统计行 */
 .level-stats {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
-.energy-stars {
+.stars {
   display: flex;
   gap: 4px;
 }
 
-.energy-star {
-  color: rgba(255, 255, 255, 0.2);
-  transition: all var(--duration-micro) ease;
+.star {
+  color: #E0E0E0;
+  transition: color 0.2s ease;
 }
 
-.energy-star.active {
-  color: var(--energy-yellow);
-  filter: drop-shadow(0 0 6px rgba(255, 199, 0, 0.8));
+.star.active {
+  color: #FFB347;
+  fill: #FFB347;
 }
 
 .accuracy {
-  font-size: 14px;
+  font-size: var(--font-md);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.7);
-  font-variant-numeric: tabular-nums;
+  color: #00D084;
 }
 
-.accuracy.high {
-  color: var(--win-green);
-  text-shadow: 0 0 10px rgba(0, 208, 132, 0.5);
-}
-
-/* 能量标签 */
-.energy-badge {
-  padding: 3px 10px;
-  background: linear-gradient(145deg, var(--energy-yellow) 0%, var(--energy-yellow-dark) 100%);
-  color: var(--bg-dark-navy);
-  font-size: 10px;
+.new-tag {
+  padding: 4px 12px;
+  background: var(--coral);
+  color: white;
+  font-size: var(--font-sm);
   font-weight: 800;
   border-radius: var(--radius-full);
-  box-shadow: 0 0 12px rgba(255, 199, 0, 0.4);
 }
 
-/* 锁定提示 */
-.lock-text {
-  font-size: 12px;
-  color: rgba(148, 163, 184, 0.8);
-  font-weight: 500;
-}
-
-/* 状态图标 */
-.level-status {
-  flex-shrink: 0;
-}
-
-.status-icon {
+.lock-hint {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all var(--duration-micro) var(--ease-standard);
+  gap: 6px;
+  font-size: var(--font-md);
+  color: var(--text-gray);
 }
 
-.status-icon.completed {
-  color: var(--win-green);
-  filter: drop-shadow(0 0 8px rgba(0, 208, 132, 0.6));
+.level-action svg {
+  width: 28px;
+  height: 28px;
 }
 
-.status-icon.locked {
-  color: rgba(148, 163, 184, 0.5);
+.icon-completed {
+  color: #00D084;
 }
 
-.status-icon.enter {
-  color: rgba(255, 255, 255, 0.5);
+.icon-locked {
+  color: #B2BEC3;
 }
 
-.difficulty-card:hover .status-icon.enter {
-  color: var(--level-color);
-  filter: drop-shadow(0 0 8px var(--level-glow));
+.icon-arrow {
+  color: #B2BEC3;
+}
+
+.difficulty-card:hover .icon-arrow {
+  color: var(--coral);
   transform: translateX(4px);
 }
 </style>

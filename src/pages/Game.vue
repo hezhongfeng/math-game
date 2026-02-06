@@ -311,23 +311,29 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <!-- 答题反馈遮罩 -->
+      <!-- 答题反馈 - 友好活泼风格 -->
       <Transition name="feedback">
-        <div v-if="shouldShowFeedback" class="feedback-container" @click="handleFeedbackClick">
-          <div class="feedback-overlay" :class="{ correct: isCorrect, wrong: isIncorrect }">
-            <div v-if="isCorrect" class="success-circle">
-              <Check :size="36" />
-              <div class="particle-container">
-                <div class="particle particle-1"></div>
-                <div class="particle particle-2"></div>
-                <div class="particle particle-3"></div>
-                <div class="particle particle-4"></div>
-                <div class="particle particle-5"></div>
-                <div class="particle particle-6"></div>
-              </div>
+        <div v-if="shouldShowFeedback" class="feedback-wrap" @click="handleFeedbackClick">
+          <div class="feedback-card" :class="{ 'feedback-success': isCorrect, 'feedback-error': isIncorrect }">
+            <!--  mascot 表情 -->
+            <div class="mascot-face" :class="{ 'is-happy': isCorrect, 'is-sad': isIncorrect }">
+              <span v-if="isCorrect">🎉</span>
+              <span v-else>💪</span>
             </div>
-            <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
-            <div v-if="isIncorrect" class="hint-text">点击继续</div>
+            
+            <!-- 反馈文字 -->
+            <div class="feedback-text">
+              <h3 v-if="isCorrect" class="feedback-title success">太棒了！</h3>
+              <h3 v-else class="feedback-title error">继续加油</h3>
+              <p v-if="isCorrect" class="feedback-desc">答对了！真聪明！</p>
+              <p v-else class="feedback-desc">正确答案是 {{ currentQuestion.answer }}</p>
+            </div>
+            
+            <!-- 按钮提示 -->
+            <div class="feedback-hint">
+              <span v-if="isCorrect" class="hint-auto">自动继续...</span>
+              <button v-else class="hint-btn">点击继续</button>
+            </div>
           </div>
         </div>
       </Transition>
@@ -497,16 +503,14 @@ onUnmounted(() => {
   }
 }
 
-/* 反馈容器 */
-.feedback-container {
+/* 答题反馈 - 友好活泼 */
+.feedback-wrap {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -514,67 +518,24 @@ onUnmounted(() => {
   padding: 20px;
 }
 
-/* 反馈弹窗 - iOS 风格 */
-.feedback-overlay {
-  position: relative;
+.feedback-card {
   width: 100%;
-  max-width: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  z-index: 9999;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  max-width: 300px;
+  background: var(--white);
   border-radius: var(--radius-xl);
-  border: 0.5px solid rgba(255, 255, 255, 0.5);
-  padding: 40px 32px;
-  box-shadow: var(--shadow-float);
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: popIn 0.4s var(--ease-bounce);
 }
 
-.feedback-overlay.correct {
-  border-color: rgba(52, 199, 89, 0.3);
-  box-shadow: 
-    0 0 0 4px rgba(52, 199, 89, 0.15),
-    var(--shadow-float);
-}
-
-.feedback-overlay.wrong {
-  border-color: rgba(255, 149, 0, 0.3);
-  cursor: pointer;
-  box-shadow: 
-    0 0 0 4px rgba(255, 149, 0, 0.15),
-    var(--shadow-float);
-}
-
-/* 成功圆圈 - iOS 风格 */
-.success-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--ios-green);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: circlePop var(--duration-emphasis) var(--ease-spring);
-  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.4);
-}
-
-.success-circle svg {
-  color: white;
-  width: 40px;
-  height: 40px;
-}
-
-@keyframes circlePop {
+@keyframes popIn {
   0% {
     transform: scale(0.5);
     opacity: 0;
   }
   60% {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
   100% {
     transform: scale(1);
@@ -582,82 +543,94 @@ onUnmounted(() => {
   }
 }
 
-/* 粒子效果 - 简化版 */
-.particle-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
+.feedback-success {
+  border: 3px solid #00D084;
 }
 
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ios-green);
-  animation: particleExplosion 0.6s var(--ease-decelerate) forwards;
+.feedback-error {
+  border: 3px solid #FFB347;
 }
 
-.particle-1 { --angle: 0deg; --distance: 50px; }
-.particle-2 { --angle: 60deg; --distance: 55px; animation-delay: 50ms; }
-.particle-3 { --angle: 120deg; --distance: 50px; animation-delay: 100ms; }
-.particle-4 { --angle: 180deg; --distance: 55px; animation-delay: 150ms; }
-.particle-5 { --angle: 240deg; --distance: 50px; animation-delay: 200ms; }
-.particle-6 { --angle: 300deg; --distance: 55px; animation-delay: 250ms; }
-
-@keyframes particleExplosion {
-  0% {
-    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(20px) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance)) scale(0);
-    opacity: 0;
-  }
-}
-
-/* 连击效果 - iOS 风格 */
-.combo-text {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ios-green);
-  animation: comboPulse var(--duration-emphasis) var(--ease-spring);
-}
-
-@keyframes comboPulse {
-  0% { transform: scale(0.5); opacity: 0; }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* 答案数字 - 错误反馈 iOS 风格 */
-.answer-number {
+/* mascot 表情 */
+.mascot-face {
   font-size: 64px;
-  font-weight: 700;
-  color: var(--ios-orange);
   line-height: 1;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+  animation: bounce 0.6s ease;
 }
 
-/* 点击提示 - iOS 风格 */
-.hint-text {
-  color: var(--ios-orange);
+.mascot-face.is-happy {
+  animation: happyBounce 0.8s ease infinite;
+}
+
+.mascot-face.is-sad {
+  animation: sadShake 0.5s ease;
+}
+
+@keyframes happyBounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes sadShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* 反馈文字 */
+.feedback-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.feedback-title.success {
+  color: #00D084;
+}
+
+.feedback-title.error {
+  color: #FF7B54;
+}
+
+.feedback-desc {
+  font-size: 16px;
+  color: var(--text-gray);
+  margin-bottom: 24px;
+}
+
+/* 提示 */
+.feedback-hint {
+  margin-top: 8px;
+}
+
+.hint-auto {
+  font-size: 14px;
+  color: #00D084;
   font-weight: 600;
-  font-size: 15px;
-  background: rgba(255, 149, 0, 0.1);
-  padding: 10px 20px;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 149, 0, 0.2);
-  transition: all var(--duration-micro) var(--ease-standard);
 }
 
-.feedback-overlay.wrong:active .hint-text {
-  transform: scale(0.96);
-  background: rgba(255, 149, 0, 0.15);
+.hint-btn {
+  padding: 12px 28px;
+  background: var(--coral);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.hint-btn:hover {
+  background: var(--coral-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.hint-btn:active {
+  transform: scale(0.95);
 }
 
 /* 反馈过渡 - iOS 风格 */

@@ -2,153 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   Tech Adventure Design System - Boy Edition
-   数学游戏视觉规范 v3.0 - 科技冒险风
-   ============================================ */
-
 @layer base {
   :root {
-    /* ============================================
-       核心科技色 - 电光蓝主色
-       ============================================ */
-    /* 主色 - 电光蓝 */
-    --hero-blue: #0066FF;
-    --hero-blue-dark: #0052CC;
-    --hero-blue-light: #4D94FF;
-    --hero-blue-glow: rgba(0, 102, 255, 0.4);
+    /* 友好极简配色 */
+    --coral: #FF7B54;
+    --coral-dark: #E86640;
+    --coral-light: #FF9A7D;
     
-    /* 能量色 - 闪电黄 */
-    --energy-yellow: #FFC700;
-    --energy-yellow-dark: #E6B200;
-    --energy-yellow-light: #FFE066;
-    --energy-yellow-glow: rgba(255, 199, 0, 0.5);
+    --mint: #4ECDC4;
+    --mint-dark: #3DBEB5;
+    --mint-light: #6FE3DC;
     
-    /* 胜利色 - 科技绿 */
-    --win-green: #00D084;
-    --win-green-dark: #00A86B;
-    --win-green-light: #4DE8A8;
-    --win-green-glow: rgba(0, 208, 132, 0.4);
+    --cream: #FFF9F5;
+    --white: #FFFFFF;
     
-    /* 警示色 - 火焰橙 */
-    --alert-orange: #FF6B35;
-    --alert-orange-dark: #E55A2B;
-    --alert-orange-light: #FF8F6B;
+    --text-dark: #2D3436;
+    --text-gray: #636E72;
+    --text-light: #B2BEC3;
     
-    /* 进阶色 - 赛博紫 */
-    --cyber-purple: #8B5CF6;
-    --cyber-purple-dark: #7C3AED;
-    --cyber-purple-light: #A78BFA;
+    --success: #00D084;
+    --warning: #FFB347;
     
-    /* 科技色 - 电光青 */
-    --tech-cyan: #00D9FF;
-    --tech-cyan-dark: #00B8D9;
-    --tech-cyan-glow: rgba(0, 217, 255, 0.4);
+    /* 游戏映射 */
+    --game-primary: var(--coral);
+    --game-primary-dark: var(--coral-dark);
+    --game-success: var(--success);
+    --game-warning: var(--warning);
     
-    /* ============================================
-       暗色背景系统（科技感）
-       ============================================ */
-    --bg-dark-navy: #0F172A;
-    --bg-dark-slate: #1E293B;
-    --bg-dark-blue: #1E3A5F;
-    --bg-dark-panel: #334155;
+    --game-bg: var(--cream);
+    --game-bg-light: var(--white);
+    --game-card: var(--white);
+    --game-text: var(--text-dark);
+    --game-text-secondary: var(--text-gray);
     
-    /* 亮色背景（备用） */
-    --bg-white: #FFFFFF;
-    --bg-cloud: #F1F5F9;
-    --bg-ice: #E0F2FE;
-    
-    /* 文字色 */
-    --text-white: #FFFFFF;
-    --text-bright: #F8FAFC;
-    --text-muted: #94A3B8;
-    --text-dark: #0F172A;
-    
-    /* ============================================
-       游戏专用色彩映射
-       ============================================ */
-    --game-primary: var(--hero-blue);
-    --game-primary-dark: var(--hero-blue-dark);
-    --game-primary-light: var(--hero-blue-light);
-    
-    --game-success: var(--win-green);
-    --game-success-dark: var(--win-green-dark);
-    --game-success-light: var(--win-green-light);
-    
-    --game-warning: var(--alert-orange);
-    --game-warning-dark: var(--alert-orange-dark);
-    
-    --game-error: var(--alert-orange);
-    --game-error-dark: var(--alert-orange-dark);
-    
-    --game-accent: var(--energy-yellow);
-    
-    /* 背景映射 - 深色科技风 */
-    --game-bg: var(--bg-dark-navy);
-    --game-bg-light: var(--bg-dark-slate);
-    --game-bg-dark: #0B1221;
-    --game-card: rgba(30, 41, 59, 0.8);
-    --game-text: var(--text-white);
-    --game-text-secondary: var(--text-muted);
-    --game-text-muted: rgba(148, 163, 184, 0.7);
-    --game-border: rgba(0, 102, 255, 0.3);
-    --game-border-focus: var(--hero-blue);
-    
-    /* ============================================
-       圆角系统 - 利落科技风
-       ============================================ */
-    --radius-sharp-sm: 8px;
-    --radius-sharp-md: 12px;
-    --radius-sharp-lg: 16px;
-    --radius-sharp-xl: 20px;
+    /* 圆角 - 圆润友好 */
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 24px;
+    --radius-xl: 28px;
     --radius-full: 9999px;
     
-    /* 保持兼容性 */
-    --radius-sm: var(--radius-sharp-sm);
-    --radius-md: var(--radius-sharp-md);
-    --radius-lg: var(--radius-sharp-lg);
-    --radius-xl: var(--radius-sharp-xl);
+    /* 阴影 - 柔和简单 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
     
-    /* ============================================
-       阴影系统 - 霓虹光效
-       ============================================ */
-    --shadow-neon-blue: 
-      0 0 20px rgba(0, 102, 255, 0.4),
-      0 4px 12px rgba(0, 102, 255, 0.2);
-    --shadow-neon-yellow: 
-      0 0 20px rgba(255, 199, 0, 0.4),
-      0 4px 12px rgba(255, 199, 0, 0.2);
-    --shadow-neon-green: 
-      0 0 20px rgba(0, 208, 132, 0.4),
-      0 4px 12px rgba(0, 208, 132, 0.2);
-    --shadow-dark-elevated: 
-      0 4px 16px rgba(0, 0, 0, 0.4),
-      0 8px 32px rgba(0, 0, 0, 0.3);
+    /* 字体大小系统 - 移动优先 */
+    --font-hero: 48px;        /* 超大标题 */
+    --font-h1: 36px;          /* 大标题 */
+    --font-h2: 28px;          /* 中标题 */
+    --font-h3: 22px;          /* 小标题 */
+    --font-xl: 32px;          /* 超大号文字 */
+    --font-lg: 24px;          /* 大号文字 */
+    --font-md: 18px;          /* 中号文字 */
+    --font-base: 16px;        /* 常规文字 */
+    --font-sm: 14px;          /* 小号文字 */
     
-    /* 保持兼容性 */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-    --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.5);
-    
-    /* ============================================
-       动画系统 - 科技感
-       ============================================ */
-    /* 时长 */
-    --duration-quick: 100ms;
-    --duration-bounce: 300ms;
-    --duration-celebrate: 600ms;
-    --duration-micro: 150ms;
-    --duration-macro: 300ms;
-    --duration-emphasis: 500ms;
-    
-    /* 缓动函数 */
+    /* 动画 */
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
     --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
-    --ease-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
-    --ease-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
   }
 
   * {
@@ -158,18 +72,15 @@
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    background: linear-gradient(180deg, #0F172A 0%, #1E3A5F 50%, #0F172A 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: var(--cream);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 17px;
-    line-height: 1.47059;
+    font-size: 16px;
+    line-height: 1.5;
     touch-action: manipulation;
-    color: var(--text-white);
+    color: var(--text-dark);
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
   }
 
   #app {
@@ -661,99 +572,102 @@
     transform: scale(0.96) translateY(0);
   }
 
-  /* 科技面板按钮（数字键盘） */
-  .btn-circular {
-    @apply relative font-bold cursor-pointer touch-manipulation;
-    @apply flex items-center justify-center;
-    aspect-ratio: 1;
-    background: linear-gradient(145deg, var(--bg-dark-panel) 0%, var(--bg-dark-slate) 100%);
-    border-radius: var(--radius-sharp-md);
-    color: var(--text-white);
-    font-size: 28px;
-    border: 2px solid rgba(0, 102, 255, 0.3);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transition: all var(--duration-quick) var(--ease-standard);
-    will-change: transform;
-    text-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
-  }
-
-  .btn-circular:hover {
-    border-color: rgba(0, 102, 255, 0.6);
-    box-shadow: 0 0 20px rgba(0, 102, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-
-  .btn-circular:active {
-    transform: scale(0.92);
-    background: linear-gradient(145deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
-    border-color: rgba(0, 102, 255, 0.8);
-    box-shadow: 0 0 30px rgba(0, 102, 255, 0.5);
-  }
-
-  /* 功能按钮（深色圆形） */
-  .btn-circular-accent {
-    @apply relative font-bold cursor-pointer touch-manipulation;
-    @apply flex items-center justify-center;
-    aspect-ratio: 1;
-    background: linear-gradient(145deg, var(--win-green) 0%, var(--win-green-dark) 100%);
-    border-radius: var(--radius-sharp-md);
+  /* 友好按钮 */
+  .btn-primary {
+    height: 56px;
+    padding: 0 32px;
+    background: var(--coral);
+    border-radius: var(--radius-md);
     color: white;
-    font-size: 28px;
-    border: 2px solid rgba(0, 208, 132, 0.5);
-    box-shadow: 0 0 20px rgba(0, 208, 132, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: all var(--duration-quick) var(--ease-standard);
-    will-change: transform;
-  }
-
-  .btn-circular-accent:hover {
-    box-shadow: 0 0 30px rgba(0, 208, 132, 0.5), 0 0 50px rgba(0, 208, 132, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .btn-circular-accent:active {
-    transform: scale(0.92) translateY(0);
-    box-shadow: 0 0 40px rgba(0, 208, 132, 0.6);
-  }
-
-  /* ============================================
-     Apple iOS 卡片系统
-     ============================================ */
-
-  /* 基础卡片 - 毛玻璃效果 */
-  .card {
-    background: var(--game-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--radius-lg);
-    border: 0.5px solid var(--game-border);
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
     box-shadow: var(--shadow-md);
-    transition: all var(--duration-micro) var(--ease-standard);
-  }
-
-  .card-hover {
+    transition: all var(--duration-fast) var(--ease-out);
     cursor: pointer;
-    will-change: transform, box-shadow;
   }
 
-  .card-hover:hover {
+  .btn-primary:hover {
+    background: var(--coral-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
   }
 
-  .card-hover:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: var(--shadow-md);
+  .btn-primary:active {
+    transform: scale(0.98);
   }
 
-  /* 题目卡片 */
+  .btn-secondary {
+    height: 56px;
+    padding: 0 32px;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    color: var(--coral);
+    font-size: 18px;
+    font-weight: 600;
+    border: 2px solid var(--coral);
+    transition: all var(--duration-fast) var(--ease-out);
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    background: var(--coral);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary:active {
+    transform: scale(0.98);
+  }
+
+  /* 数字按钮 */
+  .btn-circular {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    color: var(--text-dark);
+    font-size: 28px;
+    font-weight: 600;
+    border: 2px solid #E8E8E8;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-fast) ease;
+    cursor: pointer;
+  }
+
+  .btn-circular:hover {
+    border-color: var(--coral);
+    color: var(--coral);
+  }
+
+  .btn-circular:active {
+    transform: scale(0.95);
+    background: var(--coral);
+    color: white;
+    border-color: var(--coral);
+  }
+
+  /* 卡片系统 */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--duration-fast) ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
   .card-question {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: var(--white);
     border-radius: var(--radius-xl);
-    padding: 48px 32px;
-    box-shadow: 
-      0 4px 16px rgba(0, 0, 0, 0.06),
-      0 8px 32px rgba(0, 0, 0, 0.02);
+    padding: 40px 32px;
+    box-shadow: var(--shadow-lg);
   }
 
   /* 完成状态卡片 */
