@@ -9,24 +9,13 @@
  * 2. 运行: node scripts/generate-icons.js
  */
 
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import sharp from 'sharp'
 
-// 检查是否安装了 sharp
-let sharp
-
-try {
-  sharp = require('sharp')
-} catch (error) {
-  console.log('
-❌ 缺少依赖: sharp')
-  console.log('请安装依赖后重试:')
-  console.log('  npm install sharp --save-dev')
-  console.log('  或')
-  console.log('  pnpm add sharp --save-dev')
-  console.log()
-  process.exit(1)
-}
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // 图标尺寸配置
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512]
@@ -42,17 +31,17 @@ if (!fs.existsSync(outputDir)) {
 
 // 检查输入文件
 if (!fs.existsSync(inputFile)) {
-  console.error(`❌ 找不到输入文件: ${inputFile}`)
+  console.error('[ERROR] 找不到输入文件:', inputFile)
   process.exit(1)
 }
 
-console.log('🎨 开始生成 PWA 图标...\n')
+console.log('[INFO] 开始生成 PWA 图标...')
 
 // 生成各尺寸图标
 async function generateIcons() {
   const promises = sizes.map(async (size) => {
     const outputFile = path.join(outputDir, `icon-${size}x${size}.png`)
-    
+
     try {
       await sharp(inputFile)
         .resize(size, size, {
@@ -61,29 +50,27 @@ async function generateIcons() {
         })
         .png({ quality: 90 })
         .toFile(outputFile)
-      
-      console.log(`✅ ${size}x${size}px`)
+
+      console.log(`[OK] ${size}x${size}px`)
       return { size, success: true }
     } catch (error) {
-      console.error(`❌ ${size}x${size}px:`, error.message)
+      console.error(`[FAIL] ${size}x${size}px:`, error.message)
       return { size, success: false, error }
     }
   })
-  
+
   const results = await Promise.all(promises)
-  
+
   // 统计结果
   const successCount = results.filter(r => r.success).length
   const failCount = results.length - successCount
-  
-  console.log(`\n📊 生成完成: ${successCount} 成功, ${failCount} 失败`)
-  
+
+  console.log(`[INFO] 生成完成: ${successCount} 成功, ${failCount} 失败`)
+
   if (failCount === 0) {
-    console.log('\n🎉 所有图标生成成功!')
-    console.log('\n提示:')
-    console.log('  - 图标已保存到 public/icons/')
-    console.log('  - 重新构建项目以包含新图标')
-    console.log('  - 在 Chrome DevTools > Application > Manifest 中验证')
+    console.log('[SUCCESS] 所有图标生成成功!')
+    console.log('[INFO] 图标已保存到 public/icons/')
+    console.log('[INFO] 重新构建项目以包含新图标')
   }
 }
 
