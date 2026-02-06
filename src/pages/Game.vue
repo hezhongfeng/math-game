@@ -311,29 +311,27 @@ onUnmounted(() => {
         />
       </Transition>
 
-      <!-- 答题反馈 - 友好活泼风格 -->
+      <!-- 答题反馈 -->
       <Transition name="feedback">
         <div v-if="shouldShowFeedback" class="feedback-wrap" @click="handleFeedbackClick">
           <div class="feedback-card" :class="{ 'feedback-success': isCorrect, 'feedback-error': isIncorrect }">
-            <!--  mascot 表情 -->
-            <div class="mascot-face" :class="{ 'is-happy': isCorrect, 'is-sad': isIncorrect }">
-              <span v-if="isCorrect">🎉</span>
-              <span v-else>💪</span>
-            </div>
+            <!-- 正确反馈 - 简洁风格 -->
+            <template v-if="isCorrect">
+              <div class="correct-highlight">
+                <span class="correct-number">✓</span>
+                <span class="correct-label">答对了</span>
+              </div>
+              <span class="hint-auto">自动继续...</span>
+            </template>
             
-            <!-- 反馈文字 -->
-            <div class="feedback-text">
-              <h3 v-if="isCorrect" class="feedback-title success">太棒了！</h3>
-              <h3 v-else class="feedback-title error">继续加油</h3>
-              <p v-if="isCorrect" class="feedback-desc">答对了！真聪明！</p>
-              <p v-else class="feedback-desc">正确答案是 {{ currentQuestion.answer }}</p>
-            </div>
-            
-            <!-- 按钮提示 -->
-            <div class="feedback-hint">
-              <span v-if="isCorrect" class="hint-auto">自动继续...</span>
-              <button v-else class="hint-btn">点击继续</button>
-            </div>
+            <!-- 错误反馈 - 简洁突出正确答案 -->
+            <template v-else>
+              <div class="correct-highlight">
+                <span class="correct-number">{{ currentQuestion.answer }}</span>
+                <span class="correct-label">正确答案</span>
+              </div>
+              <button class="hint-btn">点击继续</button>
+            </template>
           </div>
         </div>
       </Transition>
@@ -599,13 +597,33 @@ onUnmounted(() => {
   margin-bottom: 24px;
 }
 
-/* 提示 */
-.feedback-hint {
-  margin-top: 8px;
+/* 错误反馈 - 简洁突出正确答案 */
+.correct-highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.correct-number {
+  font-size: 72px;
+  font-weight: 800;
+  color: #00D084;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.feedback-success .correct-number {
+  font-size: 80px;
+}
+
+.correct-label {
+  font-size: 14px;
+  color: var(--text-gray);
 }
 
 .hint-auto {
-  font-size: 14px;
+  font-size: 13px;
   color: #00D084;
   font-weight: 600;
 }
@@ -633,13 +651,13 @@ onUnmounted(() => {
   transform: scale(0.95);
 }
 
-/* 反馈过渡 - iOS 风格 */
+/* 反馈过渡 - 流畅自然的动画 */
 .feedback-enter-active .feedback-container {
-  transition: opacity var(--duration-micro) var(--ease-standard);
+  transition: opacity var(--duration-normal) var(--ease-standard);
 }
 
 .feedback-leave-active .feedback-container {
-  transition: opacity var(--duration-micro) var(--ease-accelerate);
+  transition: opacity var(--duration-fast) var(--ease-accelerate);
 }
 
 .feedback-enter-from .feedback-container,
@@ -647,18 +665,22 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+/* 反馈弹窗动画 - 使用 transform 和 opacity 实现硬件加速 */
 .feedback-enter-active .feedback-overlay {
-  animation: feedbackPopIn var(--duration-macro) var(--ease-spring);
+  animation: feedbackShow var(--duration-macro) var(--ease-spring) forwards;
 }
 
 .feedback-leave-active .feedback-overlay {
-  animation: feedbackPopOut var(--duration-micro) var(--ease-accelerate) forwards;
+  animation: feedbackHide var(--duration-fast) var(--ease-accelerate) forwards;
 }
 
-@keyframes feedbackPopIn {
+@keyframes feedbackShow {
   0% {
     opacity: 0;
-    transform: scale(0.8) translateY(20px);
+    transform: scale(0.5) translateY(30px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-5px);
   }
   100% {
     opacity: 1;
@@ -666,14 +688,14 @@ onUnmounted(() => {
   }
 }
 
-@keyframes feedbackPopOut {
+@keyframes feedbackHide {
   0% {
     opacity: 1;
     transform: scale(1);
   }
   100% {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9) translateY(10px);
   }
 }
 

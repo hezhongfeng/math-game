@@ -58,11 +58,23 @@
     --font-base: 16px;        /* 常规文字 */
     --font-sm: 14px;          /* 小号文字 */
     
-    /* 动画 */
-    --duration-fast: 150ms;
-    --duration-normal: 300ms;
-    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    /* 动画时长 - 完整的层级系统 */
+    --duration-micro: 100ms;      /* 微交互：按钮点击 */
+    --duration-fast: 150ms;       /* 快速：颜色变化 */
+    --duration-normal: 300ms;     /* 常规：过渡动画 */
+    --duration-macro: 400ms;      /* 宏观：组件动画 */
+    --duration-emphasis: 500ms;   /* 强调：重要反馈 */
+    --duration-celebrate: 800ms;  /* 庆祝：成功动画 */
+    --duration-bounce: 600ms;     /* 弹性：跳跃动画 */
+    
+    /* 动画缓动函数 */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);     /* 标准 */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* 弹性 */
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 弹跳 */
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);            /* 减速 */
+    --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);     /* 加速 */
+    --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);     /* 减速 */
+    --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6); /* 弹性 */
   }
 
   * {

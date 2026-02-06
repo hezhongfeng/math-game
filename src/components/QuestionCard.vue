@@ -48,13 +48,7 @@ const answerDisplay = computed(() => {
 </script>
 
 <template>
-  <div 
-    class="question-card" 
-    :class="{ 
-      'is-success': isCorrect, 
-      'is-error': isIncorrect 
-    }"
-  >
+  <div class="question-card">
     <div class="card-header">
       <span class="counter">{{ currentIndex + 1 }} / {{ totalQuestions }}</span>
       <div class="timer">
@@ -90,15 +84,6 @@ const answerDisplay = computed(() => {
   width: 100%;
   max-width: 480px;
   box-shadow: var(--shadow-lg);
-  transition: all 0.2s ease;
-}
-
-.is-success {
-  box-shadow: 0 0 0 5px rgba(0, 208, 132, 0.3), var(--shadow-lg);
-}
-
-.is-error {
-  box-shadow: 0 0 0 5px rgba(255, 107, 53, 0.3), var(--shadow-lg);
 }
 
 .card-header {
@@ -171,21 +156,12 @@ const answerDisplay = computed(() => {
 
 .answer.is-correct {
   color: #00D084;
-  background: rgba(0, 208, 132, 0.1);
   border-color: #00D084;
 }
 
 .answer.is-wrong {
   color: #FF7B54;
-  background: rgba(255, 123, 84, 0.1);
   border-color: #FF7B54;
-  animation: shake 0.4s ease;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
 }
 
 @media (min-width: 768px) {
