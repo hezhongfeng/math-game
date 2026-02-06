@@ -1,5 +1,5 @@
 <script setup>
-import { Delete, Check } from 'lucide-vue-next'
+import { Delete, Zap } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -42,7 +42,7 @@ function handleSubmit() {
         :key="num"
         @click="handleInput(num)"
         :disabled="disabled"
-        class="btn-circular num-btn"
+        class="tech-btn num-btn"
       >
         {{ num }}
       </button>
@@ -51,7 +51,7 @@ function handleSubmit() {
       <button
         @click="handleDelete"
         :disabled="disabled"
-        class="btn-circular num-btn num-btn-delete"
+        class="tech-btn num-btn btn-delete"
       >
         <Delete :size="24" stroke-width="2.5" />
       </button>
@@ -60,7 +60,7 @@ function handleSubmit() {
       <button
         @click="handleInput(0)"
         :disabled="disabled"
-        class="btn-circular num-btn"
+        class="tech-btn num-btn"
       >
         0
       </button>
@@ -69,9 +69,9 @@ function handleSubmit() {
       <button
         @click="handleSubmit"
         :disabled="disabled"
-        class="btn-circular-accent num-btn num-btn-submit"
+        class="tech-btn num-btn btn-submit"
       >
-        <Check :size="28" stroke-width="3" />
+        <Zap :size="28" stroke-width="2.5" />
       </button>
     </div>
   </div>
@@ -79,12 +79,13 @@ function handleSubmit() {
 
 <style scoped>
 .number-pad {
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius-xl);
-  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-radius: var(--radius-sharp-lg);
+  border: 2px solid rgba(0, 102, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .number-pad.is-disabled {
@@ -97,34 +98,94 @@ function handleSubmit() {
   gap: 12px;
 }
 
-.num-btn {
+.tech-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 72px;
   height: 72px;
   font-size: 28px;
-  font-weight: 500;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  color: white;
+  background: linear-gradient(145deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-radius: var(--radius-sharp-md);
+  border: 2px solid rgba(0, 102, 255, 0.3);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 100ms ease;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  text-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
 }
 
-.num-btn:disabled {
+.tech-btn:hover:not(:disabled) {
+  border-color: rgba(0, 102, 255, 0.6);
+  box-shadow: 
+    0 0 20px rgba(0, 102, 255, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.tech-btn:active:not(:disabled) {
+  transform: scale(0.92) translateY(0);
+  background: linear-gradient(145deg, rgba(0, 102, 255, 0.8) 0%, rgba(0, 82, 204, 0.9) 100%);
+  border-color: rgba(0, 102, 255, 0.8);
+  box-shadow: 
+    0 0 30px rgba(0, 102, 255, 0.5),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tech-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.num-btn-delete {
-  background: var(--ios-gray-4);
-  color: var(--ios-text-primary);
+.btn-delete {
+  background: linear-gradient(145deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.7) 100%);
+  border-color: rgba(148, 163, 184, 0.3);
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.num-btn-delete:hover:not(:disabled) {
-  background: var(--ios-gray-3);
+.btn-delete:hover:not(:disabled) {
+  border-color: rgba(255, 107, 53, 0.5);
+  box-shadow: 
+    0 0 15px rgba(255, 107, 53, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.num-btn-submit {
-  background: var(--ios-green);
+.btn-delete:active:not(:disabled) {
+  background: linear-gradient(145deg, rgba(255, 107, 53, 0.8) 0%, rgba(229, 90, 43, 0.9) 100%);
+  border-color: rgba(255, 107, 53, 0.8);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
 }
 
-.num-btn-submit:hover:not(:disabled) {
-  background: var(--ios-green-dark);
+.btn-submit {
+  background: linear-gradient(145deg, rgba(0, 208, 132, 0.8) 0%, rgba(0, 168, 107, 0.9) 100%);
+  border-color: rgba(0, 208, 132, 0.5);
+  box-shadow: 
+    0 0 20px rgba(0, 208, 132, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-submit:hover:not(:disabled) {
+  border-color: rgba(0, 208, 132, 0.8);
+  box-shadow: 
+    0 0 30px rgba(0, 208, 132, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: scale(0.92) translateY(0);
+  background: linear-gradient(145deg, rgba(77, 232, 168, 0.9) 0%, rgba(0, 208, 132, 1) 100%);
+  box-shadow: 
+    0 0 40px rgba(0, 208, 132, 0.6),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* 响应式调整 */
@@ -133,7 +194,7 @@ function handleSubmit() {
     gap: 16px;
   }
   
-  .num-btn {
+  .tech-btn {
     width: 80px;
     height: 80px;
     font-size: 32px;
@@ -142,7 +203,7 @@ function handleSubmit() {
 
 /* 确保触摸目标大小 */
 @media (max-width: 375px) {
-  .num-btn {
+  .tech-btn {
     width: 64px;
     height: 64px;
     font-size: 24px;
