@@ -324,8 +324,6 @@ onUnmounted(() => {
                 <div class="particle particle-4"></div>
                 <div class="particle particle-5"></div>
                 <div class="particle particle-6"></div>
-                <div class="particle particle-7"></div>
-                <div class="particle particle-8"></div>
               </div>
             </div>
             <div v-else-if="isIncorrect" class="answer-number">{{ currentQuestion.answer }}</div>
@@ -506,8 +504,9 @@ onUnmounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -515,72 +514,58 @@ onUnmounted(() => {
   padding: 20px;
 }
 
-/* 反馈弹窗 - Claymorphism 粘土风 */
+/* 反馈弹窗 - iOS 风格 */
 .feedback-overlay {
   position: relative;
   width: 100%;
-  max-width: 260px;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 20px;
   z-index: 9999;
-  background: linear-gradient(145deg, #ffffff 0%, #f8f8f0 100%);
-  border-radius: 28px;
-  padding: 32px 28px;
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    0 8px 0 0 rgba(0, 0, 0, 0.08),
-    0 20px 50px rgba(0, 0, 0, 0.2),
-    8px 8px 16px rgba(0, 0, 0, 0.1),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  padding: 40px 32px;
+  box-shadow: var(--shadow-float);
 }
 
 .feedback-overlay.correct {
-  border: 3px solid var(--game-success);
-  box-shadow:
-    0 8px 0 0 rgba(56, 158, 13, 0.3),
-    0 20px 50px rgba(82, 196, 26, 0.25),
-    8px 8px 16px rgba(0, 0, 0, 0.08),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+  border-color: rgba(52, 199, 89, 0.3);
+  box-shadow: 
+    0 0 0 4px rgba(52, 199, 89, 0.15),
+    var(--shadow-float);
 }
 
 .feedback-overlay.wrong {
-  border: 3px solid var(--game-warning);
+  border-color: rgba(255, 149, 0, 0.3);
   cursor: pointer;
-  box-shadow:
-    0 8px 0 0 rgba(212, 130, 13, 0.3),
-    0 20px 50px rgba(212, 130, 13, 0.2),
-    8px 8px 16px rgba(0, 0, 0, 0.08),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 0 0 4px rgba(255, 149, 0, 0.15),
+    var(--shadow-float);
 }
 
-/* 成功圆圈 - Claymorphism 粘土风 */
+/* 成功圆圈 - iOS 风格 */
 .success-circle {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: linear-gradient(145deg, var(--game-success-light) 0%, var(--game-success) 50%, var(--game-success-dark) 100%);
+  background: var(--ios-green);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: circlePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 3px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    0 6px 0 0 var(--game-success-dark),
-    0 10px 24px rgba(82, 196, 26, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  animation: circlePop var(--duration-emphasis) var(--ease-spring);
+  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.4);
 }
 
 .success-circle svg {
   color: white;
-  width: 36px;
-  height: 36px;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  width: 40px;
+  height: 40px;
 }
 
 @keyframes circlePop {
@@ -597,7 +582,7 @@ onUnmounted(() => {
   }
 }
 
-/* 粒子效果 - 正确反馈 */
+/* 粒子效果 - 简化版 */
 .particle-container {
   position: absolute;
   top: 50%;
@@ -609,24 +594,23 @@ onUnmounted(() => {
 
 .particle {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  animation: particleExplosion 0.8s ease-out forwards;
+  background: var(--ios-green);
+  animation: particleExplosion 0.6s var(--ease-decelerate) forwards;
 }
 
-.particle-1 { background: var(--game-success); animation-delay: 0s; --angle: 0deg; --distance: 60px; }
-.particle-2 { background: var(--game-success-light); animation-delay: 0.05s; --angle: 45deg; --distance: 70px; }
-.particle-3 { background: var(--game-success); animation-delay: 0.1s; --angle: 90deg; --distance: 55px; }
-.particle-4 { background: var(--game-success-lighter); animation-delay: 0.15s; --angle: 135deg; --distance: 65px; }
-.particle-5 { background: var(--game-success); animation-delay: 0.2s; --angle: 180deg; --distance: 60px; }
-.particle-6 { background: var(--game-success-light); animation-delay: 0.25s; --angle: 225deg; --distance: 70px; }
-.particle-7 { background: var(--game-success); animation-delay: 0.3s; --angle: 270deg; --distance: 55px; }
-.particle-8 { background: var(--game-success-lighter); animation-delay: 0.35s; --angle: 315deg; --distance: 65px; }
+.particle-1 { --angle: 0deg; --distance: 50px; }
+.particle-2 { --angle: 60deg; --distance: 55px; animation-delay: 50ms; }
+.particle-3 { --angle: 120deg; --distance: 50px; animation-delay: 100ms; }
+.particle-4 { --angle: 180deg; --distance: 55px; animation-delay: 150ms; }
+.particle-5 { --angle: 240deg; --distance: 50px; animation-delay: 200ms; }
+.particle-6 { --angle: 300deg; --distance: 55px; animation-delay: 250ms; }
 
 @keyframes particleExplosion {
   0% {
-    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0) scale(1);
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(20px) scale(1);
     opacity: 1;
   }
   100% {
@@ -635,84 +619,73 @@ onUnmounted(() => {
   }
 }
 
-/* 连击效果 */
+/* 连击效果 - iOS 风格 */
 .combo-text {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--game-success);
-  animation: comboPulse 0.5s ease-out;
-  text-shadow: 0 2px 8px rgba(82, 196, 26, 0.4);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ios-green);
+  animation: comboPulse var(--duration-emphasis) var(--ease-spring);
 }
 
 @keyframes comboPulse {
   0% { transform: scale(0.5); opacity: 0; }
-  50% { transform: scale(1.2); }
+  50% { transform: scale(1.15); }
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* 答案数字 - 错误反馈 Claymorphism */
+/* 答案数字 - 错误反馈 iOS 风格 */
 .answer-number {
-  font-size: 56px;
-  font-weight: 800;
-  color: var(--game-warning);
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--ios-orange);
   line-height: 1;
   text-align: center;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+  font-variant-numeric: tabular-nums;
 }
 
-/* 点击提示按钮 - Claymorphism 统一风格 */
+/* 点击提示 - iOS 风格 */
 .hint-text {
-  color: var(--game-warning-dark);
-  font-weight: 700;
+  color: var(--ios-orange);
+  font-weight: 600;
   font-size: 15px;
-  background: linear-gradient(145deg, #ffffff 0%, #f5f5f0 100%);
+  background: rgba(255, 149, 0, 0.1);
   padding: 10px 20px;
-  border-radius: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    0 4px 0 0 rgba(212, 130, 13, 0.3),
-    0 6px 16px rgba(212, 130, 13, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8);
-  transition: all 0.2s ease;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  transition: all var(--duration-micro) var(--ease-standard);
 }
 
 .feedback-overlay.wrong:active .hint-text {
-  transform: translateY(2px);
-  box-shadow:
-    0 2px 0 0 rgba(212, 130, 13, 0.3),
-    0 3px 8px rgba(212, 130, 13, 0.15),
-    inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transform: scale(0.96);
+  background: rgba(255, 149, 0, 0.15);
 }
 
-/* 反馈过渡 - 流畅的 Claymorphism 弹出效果 */
+/* 反馈过渡 - iOS 风格 */
 .feedback-enter-active .feedback-container {
-  transition: opacity 0.25s ease-out;
+  transition: opacity var(--duration-micro) var(--ease-standard);
 }
 
 .feedback-leave-active .feedback-container {
-  transition: opacity 0.2s ease-out;
+  transition: opacity var(--duration-micro) var(--ease-accelerate);
 }
 
-.feedback-enter-from .feedback-container {
-  opacity: 0;
-}
-
+.feedback-enter-from .feedback-container,
 .feedback-leave-to .feedback-container {
   opacity: 0;
 }
 
 .feedback-enter-active .feedback-overlay {
-  animation: feedbackPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: feedbackPopIn var(--duration-macro) var(--ease-spring);
 }
 
 .feedback-leave-active .feedback-overlay {
-  animation: feedbackPopOut 0.2s ease-out forwards;
+  animation: feedbackPopOut var(--duration-micro) var(--ease-accelerate) forwards;
 }
 
 @keyframes feedbackPopIn {
   0% {
     opacity: 0;
-    transform: scale(0.7) translateY(20px);
+    transform: scale(0.8) translateY(20px);
   }
   100% {
     opacity: 1;
@@ -727,7 +700,7 @@ onUnmounted(() => {
   }
   100% {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
 }
 

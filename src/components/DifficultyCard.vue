@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Lock, Star, CheckCircle2 } from 'lucide-vue-next'
+import { Lock, Star, CheckCircle2, ChevronRight } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -34,16 +34,16 @@ const stars = computed(() => {
   return 0
 })
 
-// 获取难度颜色 - 统一使用 game 系列
+// 获取难度颜色
 const levelColorClass = computed(() => {
   const classes = {
-    '入门': 'bg-game-success',
-    '初级': 'bg-game-warning-dark',
-    '中级': 'bg-game-accent',
-    '进级': 'bg-game-primary',
-    '高级': 'bg-game-primary-dark'
+    '入门': 'bg-ios-green',
+    '初级': 'bg-ios-orange',
+    '中级': 'bg-ios-yellow',
+    '进级': 'bg-ios-blue',
+    '高级': 'bg-ios-purple'
   }
-  return classes[props.difficulty.level] || 'bg-game-neutral-border'
+  return classes[props.difficulty.level] || 'bg-ios-gray-3'
 })
 
 function handleSelect() {
@@ -56,334 +56,253 @@ function handleSelect() {
 
 <template>
   <div
-    class="level-card"
-    :class="[
-      {
-        'level-locked': isLocked,
-        'level-completed': isCompleted && !isLocked,
-        'level-unlocked': !isLocked && !isCompleted
-      }
-    ]"
+    class="difficulty-card"
+    :class="{
+      'is-locked': isLocked,
+      'is-completed': isCompleted && !isLocked,
+      'is-unlocked': !isLocked && !isCompleted
+    }"
     @click="handleSelect"
   >
     <!-- 左侧序号 -->
     <div 
-      class="level-num"
+      class="level-badge"
       :class="[
-        isLocked ? 'bg-game-neutral-border text-game-neutral-text-muted' : levelColorClass
+        isLocked ? 'bg-ios-gray-4 text-ios-gray-1' : levelColorClass
       ]"
     >
       {{ difficulty.id }}
     </div>
 
     <!-- 中间内容 -->
-    <div class="level-info">
-      <h3 class="level-title" :class="{ 'text-game-neutral-text-muted': isLocked }">
+    <div class="level-content">
+      <h3 class="level-name" :class="{ 'text-ios-gray-1': isLocked }">
         {{ difficulty.name }}
       </h3>
       
-      <div v-if="!isLocked" class="level-stats">
+      <div v-if="!isLocked" class="level-meta">
         <!-- 星星评分 -->
         <div class="stars">
           <Star 
             v-for="n in 3" 
             :key="n" 
-            :size="16" 
-            :class="n <= stars ? 'text-game-accent fill-game-accent' : 'text-game-neutral-text-muted'"
+            :size="14" 
+            :class="n <= stars ? 'text-ios-yellow fill-ios-yellow' : 'text-ios-gray-4'"
           />
         </div>
         
         <!-- 正确率 -->
-        <span v-if="bestScore" class="accuracy" :class="bestScore.accuracy >= 80 ? 'text-game-success' : 'text-game-neutral-text-secondary'">
+        <span v-if="bestScore" class="accuracy" :class="bestScore.accuracy >= 80 ? 'text-ios-green' : 'text-ios-gray-1'">
           {{ bestScore.accuracy }}%
         </span>
         
         <!-- NEW 标签 -->
-        <span v-else-if="!isCompleted" class="new-label">NEW</span>
+        <span v-else-if="!isCompleted" class="new-badge">NEW</span>
       </div>
       
       <!-- 锁定提示 -->
-      <div v-else class="lock-text">
-        <Lock :size="14" />
+      <div v-else class="lock-hint">
+        <Lock :size="12" />
         <span>需解锁</span>
       </div>
     </div>
 
     <!-- 右侧状态 -->
-    <div class="level-status">
+    <div class="level-action">
       <!-- 完成标记 -->
-      <div v-if="isCompleted && !isLocked" class="check-mark text-game-success">
-        <CheckCircle2 :size="28" />
+      <div v-if="isCompleted && !isLocked" class="status-icon completed">
+        <CheckCircle2 :size="24" />
       </div>
       
       <!-- 锁定标记 -->
-      <div v-else-if="isLocked" class="lock-mark text-game-neutral-text-muted">
-        <Lock :size="24" />
+      <div v-else-if="isLocked" class="status-icon locked">
+        <Lock :size="20" />
       </div>
       
       <!-- 操作箭头 -->
-      <div v-else class="go-arrow text-game-neutral-text-muted">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 18l6-6-6-6"/>
-        </svg>
+      <div v-else class="status-icon arrow">
+        <ChevronRight :size="20" />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* ============================================
-   Claymorphism 粘土风难度卡片
-   ============================================ */
-
-.level-card {
+.difficulty-card {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 18px 20px;
-  background: linear-gradient(145deg, #ffffff 0%, #f5f5f0 100%);
-  border-radius: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    6px 6px 12px rgba(0, 0, 0, 0.08),
-    -6px -6px 12px rgba(255, 255, 255, 0.9),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-md);
+  transition: all var(--duration-micro) var(--ease-standard);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  will-change: transform, box-shadow;
 }
 
-.level-card:hover:not(.level-locked) {
-  transform: translateY(-3px) translateX(2px);
-  box-shadow:
-    10px 10px 20px rgba(0, 0, 0, 0.1),
-    -10px -10px 20px rgba(255, 255, 255, 0.95),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+.difficulty-card:hover:not(.is-locked) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
-.level-card:active:not(.level-locked) {
-  transform: translateY(1px) translateX(1px);
-  box-shadow:
-    3px 3px 6px rgba(0, 0, 0, 0.08),
-    -3px -3px 6px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+.difficulty-card:active:not(.is-locked) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-md);
 }
 
-/* 锁定状态 - 粘土风凹陷效果 + 灰度 */
-.level-locked {
-  background: linear-gradient(145deg, #e0e0d5 0%, #d5d5c8 100%);
+/* 锁定状态 */
+.is-locked {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.4);
   cursor: not-allowed;
-  opacity: 0.6;
-  filter: grayscale(0.7);
-  box-shadow:
-    inset 4px 4px 8px rgba(0, 0, 0, 0.12),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
-  border: 2px solid rgba(180, 180, 160, 0.5);
 }
 
-.level-locked .level-num {
-  filter: grayscale(0.8);
-  opacity: 0.7;
+/* 完成状态 */
+.is-completed {
+  background: rgba(52, 199, 89, 0.08);
+  border-color: rgba(52, 199, 89, 0.2);
 }
 
-/* 已完成状态 - 绿色发光边框 + 完成徽章 */
-.level-completed {
-  border: 3px solid var(--game-success);
-  box-shadow:
-    0 0 20px rgba(82, 196, 26, 0.25),
-    6px 6px 12px rgba(0, 0, 0, 0.08),
-    -6px -6px 12px rgba(255, 255, 255, 0.9),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
-  position: relative;
-  overflow: visible;
-}
-
-/* 完成徽章 - 右上角 */
-.level-completed::after {
-  content: '';
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 26px;
-  height: 26px;
-  background: var(--game-success);
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 3px 8px rgba(82, 196, 26, 0.4);
-  animation: completionBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* 徽章对勾图标 */
-.level-completed::before {
-  content: '✓';
-  position: absolute;
-  top: -4px;
-  right: -2px;
-  font-size: 14px;
-  font-weight: 800;
-  color: white;
-  z-index: 1;
-  animation: completionBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
-}
-
-@keyframes completionBadgePop {
-  0% {
-    transform: scale(0) rotate(-45deg);
-    opacity: 0;
-  }
-  70% {
-    transform: scale(1.2) rotate(5deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-/* 已解锁状态 - 主色发光边框 + 脉冲动画 */
-.level-unlocked {
-  border: 3px solid var(--game-primary-light);
-  box-shadow:
-    0 0 15px rgba(74, 124, 89, 0.15),
-    6px 6px 12px rgba(0, 0, 0, 0.08),
-    -6px -6px 12px rgba(255, 255, 255, 0.9),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.8);
-  animation: unlockedPulse 2s ease-in-out 3;
-}
-
-.level-unlocked .level-num {
-  animation: numGlow 2s ease-in-out 3;
-}
-
-@keyframes unlockedPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 15px rgba(74, 124, 89, 0.15),
-      6px 6px 12px rgba(0, 0, 0, 0.08),
-      -6px -6px 12px rgba(255, 255, 255, 0.9),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.8);
-  }
-  50% {
-    box-shadow:
-      0 0 25px rgba(74, 124, 89, 0.3),
-      6px 6px 12px rgba(0, 0, 0, 0.08),
-      -6px -6px 12px rgba(255, 255, 255, 0.9),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.8);
-  }
-}
-
-@keyframes numGlow {
-  0%, 100% {
-    box-shadow:
-      3px 3px 6px rgba(0, 0, 0, 0.15),
-      -2px -2px 4px rgba(255, 255, 255, 0.3),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.3);
-  }
-  50% {
-    box-shadow:
-      3px 3px 10px rgba(74, 124, 89, 0.3),
-      -2px -2px 6px rgba(255, 255, 255, 0.5),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.4);
-  }
-}
-
-/* 序号圆形 - 粘土风 */
-.level-num {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+/* 序号徽章 */
+.level-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 700;
   color: white;
   flex-shrink: 0;
-  border: 3px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    3px 3px 6px rgba(0, 0, 0, 0.15),
-    -2px -2px 4px rgba(255, 255, 255, 0.3),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.3);
 }
 
-/* 信息区 */
-.level-info {
+/* 内容区 */
+.level-content {
   flex: 1;
   min-width: 0;
 }
 
-.level-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--game-text);
-  margin: 0 0 6px 0;
-  letter-spacing: -0.2px;
+.level-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ios-text-primary);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
 }
 
 /* 统计行 */
-.level-stats {
+.level-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .stars {
   display: flex;
-  gap: 3px;
+  gap: 2px;
 }
 
 .accuracy {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-/* NEW 标签 - 粘土风 */
-.new-label {
-  padding: 3px 10px;
-  background: linear-gradient(145deg, var(--game-warning-light) 0%, var(--game-warning) 100%);
+/* NEW 标签 */
+.new-badge {
+  padding: 2px 8px;
+  background: var(--ios-orange);
   color: white;
-  font-size: 11px;
-  font-weight: 800;
-  border-radius: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    0 2px 0 0 var(--game-warning-dark),
-    0 3px 6px rgba(212, 130, 13, 0.3);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
 }
 
 /* 锁定提示 */
-.lock-text {
+.lock-hint {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 14px;
-  color: var(--game-text-muted);
+  font-size: 12px;
+  color: var(--ios-gray-1);
   font-weight: 500;
 }
 
-/* 右侧状态 */
-.level-status {
+/* 状态图标 */
+.level-action {
   flex-shrink: 0;
 }
 
-.check-mark {
-  color: var(--game-success);
-  filter: drop-shadow(0 2px 4px rgba(82, 196, 26, 0.3));
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-micro) var(--ease-standard);
 }
 
-.lock-mark {
-  color: var(--game-text-muted);
-  opacity: 0.6;
+.status-icon.completed {
+  color: var(--ios-green);
 }
 
-.go-arrow {
-  color: var(--game-text-muted);
-  transition: all 0.2s ease;
+.status-icon.locked {
+  color: var(--ios-gray-2);
 }
 
-.level-card:hover .go-arrow {
-  color: var(--game-primary);
-  transform: translateX(4px);
+.status-icon.arrow {
+  color: var(--ios-gray-2);
+}
+
+.difficulty-card:hover .status-icon.arrow {
+  color: var(--ios-blue);
+  transform: translateX(2px);
+}
+
+/* 完成徽章 */
+.is-completed::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background: var(--ios-green);
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(52, 199, 89, 0.3);
+  animation: badgePop var(--duration-emphasis) var(--ease-spring);
+}
+
+.is-completed::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 8px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  z-index: 1;
+  animation: badgePop var(--duration-emphasis) var(--ease-spring) 50ms both;
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 </style>

@@ -50,12 +50,18 @@ const answerDisplay = computed(() => {
 </script>
 
 <template>
-  <div class="question-card" :class="{ 'success': isCorrect, 'error': isIncorrect }">
-    <!-- 简洁顶部栏 -->
+  <div 
+    class="question-card" 
+    :class="{ 
+      'is-success': isCorrect, 
+      'is-error': isIncorrect 
+    }"
+  >
+    <!-- 顶部栏 -->
     <div class="card-header">
       <span class="question-counter">{{ currentIndex + 1 }} / {{ totalQuestions }}</span>
       <div class="timer-badge">
-        <Clock :size="14" />
+        <Clock :size="14" stroke-width="2.5" />
         <span>{{ formattedTime }}</span>
       </div>
     </div>
@@ -67,9 +73,9 @@ const answerDisplay = computed(() => {
       <span class="number">{{ question.operand2 }}</span>
       <span class="equals">=</span>
       <span class="answer" :class="{ 
-        'placeholder': !userAnswer && !showAnswer,
-        'correct': isCorrect,
-        'wrong': isIncorrect 
+        'is-placeholder': !userAnswer && !showAnswer,
+        'is-correct': isCorrect,
+        'is-wrong': isIncorrect 
       }">
         {{ answerDisplay }}
       </span>
@@ -78,76 +84,75 @@ const answerDisplay = computed(() => {
 </template>
 
 <style scoped>
-/* ============================================
-   Claymorphism 粘土风题目卡片
-   ============================================ */
-
 .question-card {
-  background: linear-gradient(145deg, #ffffff 0%, #f8f8f0 100%);
-  border-radius: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.8);
-  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  box-shadow:
-    8px 8px 16px rgba(0, 0, 0, 0.1),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-    inset -2px -2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.02);
+  transition: all var(--duration-micro) var(--ease-standard);
+  will-change: transform, box-shadow;
 }
 
-/* 成功反馈 - 粘土风发光效果 */
-.success {
-  border: 3px solid var(--game-success);
-  box-shadow:
-    0 0 25px rgba(82, 196, 26, 0.4),
-    8px 8px 16px rgba(0, 0, 0, 0.1),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
-  animation: successPulse 0.6s ease-out;
+/* 成功反馈 */
+.is-success {
+  border-color: rgba(52, 199, 89, 0.3);
+  box-shadow: 
+    0 0 0 4px rgba(52, 199, 89, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.02);
+  animation: successFeedback var(--duration-emphasis) var(--ease-spring);
 }
 
-@keyframes successPulse {
+@keyframes successFeedback {
   0% {
-    box-shadow:
-      0 0 5px rgba(82, 196, 26, 0.2),
-      8px 8px 16px rgba(0, 0, 0, 0.1),
-      -8px -8px 16px rgba(255, 255, 255, 0.8);
+    transform: scale(1);
+    box-shadow: 
+      0 0 0 0 rgba(52, 199, 89, 0.3),
+      0 4px 16px rgba(0, 0, 0, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.02);
   }
   50% {
-    box-shadow:
-      0 0 35px rgba(82, 196, 26, 0.6),
-      8px 8px 16px rgba(0, 0, 0, 0.1),
-      -8px -8px 16px rgba(255, 255, 255, 0.8);
+    transform: scale(1.02);
+    box-shadow: 
+      0 0 0 12px rgba(52, 199, 89, 0),
+      0 4px 16px rgba(0, 0, 0, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.02);
   }
   100% {
-    box-shadow:
-      0 0 25px rgba(82, 196, 26, 0.4),
-      8px 8px 16px rgba(0, 0, 0, 0.1),
-      -8px -8px 16px rgba(255, 255, 255, 0.8);
+    transform: scale(1);
+    box-shadow: 
+      0 0 0 4px rgba(52, 199, 89, 0.15),
+      0 4px 16px rgba(0, 0, 0, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.02);
   }
 }
 
-/* 错误反馈 - 粘土风发光效果 */
-.error {
-  border: 3px solid var(--game-error);
-  box-shadow:
-    0 0 25px rgba(207, 74, 74, 0.4),
-    8px 8px 16px rgba(0, 0, 0, 0.1),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.8);
-  animation: errorShake 0.5s ease-out;
+/* 错误反馈 */
+.is-error {
+  border-color: rgba(255, 59, 48, 0.3);
+  box-shadow: 
+    0 0 0 4px rgba(255, 59, 48, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.02);
+  animation: errorFeedback var(--duration-emphasis) var(--ease-standard);
 }
 
-@keyframes errorShake {
+@keyframes errorFeedback {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
   60% { transform: translateX(-4px); }
   80% { transform: translateX(4px); }
 }
@@ -160,26 +165,23 @@ const answerDisplay = computed(() => {
 }
 
 .question-counter {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--game-text-secondary);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ios-gray-1);
+  letter-spacing: -0.01em;
 }
 
-/* 计时器徽章 - 粘土风 */
+/* 计时器徽章 */
 .timer-badge {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: linear-gradient(145deg, #f0f0e8 0%, #e8e8e0 100%);
-  border-radius: 16px;
+  background: var(--ios-gray-6);
+  border-radius: var(--radius-full);
   font-size: 14px;
   font-weight: 600;
-  color: var(--game-text-secondary);
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+  color: var(--ios-gray-1);
 }
 
 /* 算式区域 */
@@ -187,88 +189,72 @@ const answerDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   padding: 8px 0;
 }
 
 .number {
-  font-family: 'Noto Sans SC', sans-serif;
   font-size: 44px;
-  font-weight: 700;
-  color: var(--game-text);
+  font-weight: 600;
+  color: var(--ios-text-primary);
   line-height: 1;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .operator {
   font-size: 40px;
-  font-weight: 700;
-  color: var(--game-primary);
+  font-weight: 600;
+  color: var(--ios-blue);
   line-height: 1;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .equals {
   font-size: 40px;
-  font-weight: 700;
-  color: var(--game-success);
+  font-weight: 600;
+  color: var(--ios-gray-1);
   line-height: 1;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* 答案框 - 粘土风内凹效果 */
+/* 答案框 */
 .answer {
-  font-family: 'Noto Sans SC', sans-serif;
-  font-size: 48px;
-  font-weight: 800;
-  color: var(--game-text);
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--ios-text-primary);
   line-height: 1;
-  min-width: 64px;
+  min-width: 56px;
   text-align: center;
-  padding: 10px 14px;
-  background: linear-gradient(145deg, #e8e8e0 0%, #f0f0e8 100%);
-  border-radius: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    inset 4px 4px 8px rgba(0, 0, 0, 0.08),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
+  padding: 8px 12px;
+  background: var(--ios-gray-6);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--ios-gray-4);
+  font-variant-numeric: tabular-nums;
+  transition: all var(--duration-micro) var(--ease-standard);
 }
 
-.answer.placeholder {
-  color: var(--game-text-muted);
-  background: linear-gradient(145deg, #f0f0e8 0%, #f8f8f0 100%);
-  border: 2px dashed var(--game-border);
-  box-shadow: none;
+.answer.is-placeholder {
+  color: var(--ios-gray-2);
+  border-style: dashed;
 }
 
-.answer.correct {
-  color: var(--game-success);
-  background: linear-gradient(145deg, rgba(82, 196, 26, 0.15) 0%, rgba(82, 196, 26, 0.08) 100%);
-  border: 2px solid var(--game-success);
-  box-shadow:
-    inset 4px 4px 8px rgba(82, 196, 26, 0.1),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.9),
-    0 0 15px rgba(82, 196, 26, 0.3);
+.answer.is-correct {
+  color: var(--ios-green);
+  background: rgba(52, 199, 89, 0.1);
+  border-color: var(--ios-green);
 }
 
-.answer.wrong {
-  color: var(--game-error);
-  background: linear-gradient(145deg, rgba(207, 74, 74, 0.15) 0%, rgba(207, 74, 74, 0.08) 100%);
-  border: 2px solid var(--game-error);
-  box-shadow:
-    inset 4px 4px 8px rgba(207, 74, 74, 0.1),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.9),
-    0 0 15px rgba(207, 74, 74, 0.3);
+.answer.is-wrong {
+  color: var(--ios-red);
+  background: rgba(255, 59, 48, 0.1);
+  border-color: var(--ios-red);
 }
 
 /* 响应式 */
 @media (min-width: 768px) {
   .question-card {
-    padding: 24px 28px;
-    gap: 16px;
-    max-width: 480px;
-    border-radius: 28px;
+    padding: 28px 32px;
+    gap: 20px;
+    max-width: 440px;
   }
 
   .number {
@@ -281,18 +267,17 @@ const answerDisplay = computed(() => {
   }
 
   .answer {
-    font-size: 60px;
-    min-width: 80px;
-    padding: 12px 18px;
-    border-radius: 18px;
+    font-size: 56px;
+    min-width: 72px;
+    padding: 10px 16px;
   }
 
   .question-counter {
-    font-size: 20px;
+    font-size: 19px;
   }
 
   .timer-badge {
-    font-size: 16px;
+    font-size: 15px;
     padding: 8px 14px;
   }
 }
