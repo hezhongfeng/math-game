@@ -77,10 +77,10 @@ const answerDisplay = computed(() => {
 .question-card {
   background: var(--white);
   border-radius: var(--radius-xl);
-  padding: 24px 28px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   width: 100%;
   max-width: 480px;
   box-shadow: var(--shadow-lg);
@@ -114,8 +114,8 @@ const answerDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 12px 0;
+  gap: 12px;
+  padding: 4px 0;
 }
 
 .number {
@@ -140,9 +140,9 @@ const answerDisplay = computed(() => {
 .answer {
   font-size: var(--font-hero);
   font-weight: 800;
-  min-width: 100px;
+  min-width: 72px;
   text-align: center;
-  padding: 16px 24px;
+  padding: 8px 12px;
   background: #F8F9FA;
   border-radius: var(--radius-md);
   border: 3px solid #E8E8E8;
@@ -166,7 +166,7 @@ const answerDisplay = computed(() => {
 
 @media (min-width: 768px) {
   .question-card {
-    padding: 32px 36px;
+    padding: 20px 28px;
     max-width: 560px;
   }
 
@@ -179,18 +179,18 @@ const answerDisplay = computed(() => {
   }
 
   .answer {
-    min-width: 120px;
-    padding: 20px 32px;
+    min-width: 100px;
+    padding: 12px 16px;
   }
 }
 
 @media (max-width: 375px) {
   .question-card {
-    padding: 20px 20px;
+    padding: 12px 16px;
   }
 
   .math-display {
-    gap: 12px;
+    gap: 8px;
   }
 
   .number, .answer {
@@ -202,8 +202,8 @@ const answerDisplay = computed(() => {
   }
 
   .answer {
-    min-width: 80px;
-    padding: 12px 16px;
+    min-width: 64px;
+    padding: 6px 10px;
   }
 }
 </style>
