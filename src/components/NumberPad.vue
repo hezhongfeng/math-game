@@ -104,7 +104,7 @@ function handleSubmit() {
   border: 3px solid #F0F0F0;
   border-radius: var(--radius-md);
   color: var(--text-dark);
-  font-size: 36px;
+  font-size: 42px;
   font-weight: 700;
   box-shadow: var(--shadow-sm);
   transition: all 0.15s ease;
@@ -160,7 +160,7 @@ function handleSubmit() {
   .num-btn {
     max-width: 100px;
     max-height: 100px;
-    font-size: 42px;
+    font-size: 48px;
   }
 }
 
@@ -176,7 +176,7 @@ function handleSubmit() {
   .num-btn {
     max-width: 76px;
     max-height: 76px;
-    font-size: 32px;
+    font-size: 38px;
   }
 }
 </style>

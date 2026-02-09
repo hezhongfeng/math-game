@@ -77,10 +77,10 @@ const answerDisplay = computed(() => {
 .question-card {
   background: var(--white);
   border-radius: var(--radius-xl);
-  padding: 40px 32px;
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
   width: 100%;
   max-width: 480px;
   box-shadow: var(--shadow-lg);
@@ -114,8 +114,8 @@ const answerDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 24px 0;
+  gap: 16px;
+  padding: 12px 0;
 }
 
 .number {
@@ -166,7 +166,7 @@ const answerDisplay = computed(() => {
 
 @media (min-width: 768px) {
   .question-card {
-    padding: 48px 40px;
+    padding: 32px 36px;
     max-width: 560px;
   }
 
@@ -186,7 +186,7 @@ const answerDisplay = computed(() => {
 
 @media (max-width: 375px) {
   .question-card {
-    padding: 32px 24px;
+    padding: 20px 20px;
   }
 
   .math-display {
