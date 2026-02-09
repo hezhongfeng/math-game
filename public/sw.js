@@ -3,8 +3,9 @@
  * 提供离线缓存和 PWA 支持
  */
 
-// 每次更新时递增版本号
-const CACHE_VERSION = 'v2.1'
+// 每次更新时递增版本号（版本号格式: v主版本.次版本.修订号）
+// 更新日志见 CHANGELOG.md
+const CACHE_VERSION = 'v2.2'
 const CACHE_NAME = `math-game-${CACHE_VERSION}`
 const STATIC_ASSETS = [
   '/',

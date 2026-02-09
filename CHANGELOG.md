@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 优化按钮样式和入场动画
   - 改进响应式布局适配
 
+- **PWA 功能增强**:
+  - 完整 PWA 配置，支持离线访问
+  - 添加到主屏幕功能（iOS & Android）
+  - 快捷方式支持（Android）：开始挑战、查看成就
+  - 自动更新检测和提示
+  - 多尺寸图标适配（72px - 512px）
+
 ### Changed
 
 - **主题配色系统升级**:
@@ -23,6 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 添加完整的多主题配色支持（game/toddler/boy/macaron/candy）
   - 优化高对比度确保户外可读性
 
+- **Service Worker 更新**:
+  - 缓存版本升级至 v2.2
+  - 改进缓存策略：Cache First + 后台更新
+  - 优化离线页面回退机制
+
 ### Documentation
 
 - **完善项目文档**:
@@ -30,6 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 创建 `COMPONENTS.md` 组件文档
   - 更新 `CHANGELOG.md` 变更记录
   - 完善 `AGENTS.md` 开发规范
+  - 更新 `PWA.md` PWA 配置说明，添加完整的使用指南和兼容性说明
+  - 更新 `README.md`，添加 PWA 特性说明和文档索引
 
 ## [1.1.0] - 2026-01-30
 

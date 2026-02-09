@@ -1,14 +1,16 @@
 # PWA 配置说明
 
-本项目已配置为 Progressive Web App (PWA)，支持离线访问和添加到主屏幕。
+本项目已配置为 Progressive Web App (PWA)，支持离线访问、添加到主屏幕和原生应用般的体验。
 
 ## 功能特性
 
-- ✅ 离线缓存 - 游戏可在无网络时运行
-- ✅ 添加到主屏幕 - 像原生应用一样使用
-- ✅ 自动更新 - 检测到新版本时提示更新
-- ✅ 快速启动 - 缓存优先策略确保快速加载
-- ✅ 多尺寸图标 - 适配各种设备
+- ✅ **离线缓存** - 游戏可在无网络时运行
+- ✅ **添加到主屏幕** - 像原生应用一样使用，支持 iOS 和 Android
+- ✅ **自动更新** - 检测到新版本时提示用户刷新
+- ✅ **快速启动** - 缓存优先策略确保秒级加载
+- ✅ **多尺寸图标** - 适配各种设备和场景（72px-512px）
+- ✅ **快捷方式** - 支持从主屏幕直接进入游戏或查看成就
+- ✅ **主题颜色** - 根据系统主题自动调整状态栏颜色
 
 ## 文件结构
 
@@ -89,53 +91,137 @@ node scripts/generate-icons.js
 {
   "name": "数学运算游戏",
   "short_name": "数学游戏",
-  "description": "专为儿童设计的数学运算游戏",
+  "description": "专为儿童设计的数学运算游戏，包含加减法练习，15个难度关卡",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F0F0E8",
-  "theme_color": "#4A7C59",
-  "orientation": "portrait"
+  "background_color": "#FFF9F5",
+  "theme_color": "#FF7B54",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "zh-CN"
 }
 ```
 
+**配置说明：**
+- `background_color`: 启动画面背景色（温暖奶油色 #FFF9F5）
+- `theme_color`: 主题色（珊瑚橙 #FF7B54）
+- `display: standalone`: 以独立应用模式运行，无浏览器 UI
+- `orientation: portrait`: 固定竖屏显示
+- `scope`: 限定 PWA 作用域为根路径
+- `shortcuts`: 提供两个快捷入口（开始游戏、查看成就）
+
 ### Service Worker
 
-缓存策略: **Cache First, Network Fallback**
+缓存策略: **Cache First, Network Fallback with Background Update**
 
-- 优先从缓存读取
-- 后台更新缓存
-- 离线时返回缓存内容
+- **优先从缓存读取**: 确保快速响应，离线可用
+- **后台更新缓存**: 有网络时自动更新资源
+- **离线时返回缓存内容**: 保证核心功能可用
+- **版本管理**: 通过 `CACHE_VERSION` 控制缓存版本
+
+**缓存的资源：**
+- HTML 入口文件
+- 所有图标（SVG + PNG 全尺寸）
+- Manifest 文件
 
 ### 更新机制
 
 当检测到新版本时:
-1. Service Worker 在后台安装
-2. 提示用户有新版本
-3. 用户确认后刷新页面
+1. Service Worker 在后台安装新版本
+2. 提示用户有新版本可用
+3. 用户确认后调用 `skipWaiting()`
+4. 页面自动刷新加载新版本
+
+**手动触发更新代码：**
+```javascript
+// main.js 中的更新检测逻辑
+registration.addEventListener('updatefound', () => {
+  const newWorker = registration.installing
+  newWorker.addEventListener('statechange', () => {
+    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+      if (confirm('发现新版本！是否立即更新？')) {
+        newWorker.postMessage({ type: 'SKIP_WAITING' })
+        window.location.reload()
+      }
+    }
+  })
+})
+```
 
 ## 性能优化
 
-### 首次加载
+### 首次加载优化
 
-- 预加载关键字体
-- DNS 预解析外部资源
-- 关键 CSS 内联
+| 优化措施 | 实现方式 | 效果 |
+|---------|---------|------|
+| DNS 预解析 | `<link rel="dns-prefetch">` | 减少 DNS 查询时间 |
+| 预连接 | `<link rel="preconnect">` | 提前建立 HTTPS 连接 |
+| 字体优化 | `display=swap` | 避免字体加载阻塞渲染 |
+| 视口锁定 | `user-scalable=no` | 防止移动端缩放干扰 |
 
-### 运行时
+### 运行时优化
 
-- 图片懒加载
-- 路由级代码分割
-- 字体 display=swap
+- **缓存优先**: Service Worker 拦截所有请求，优先返回缓存
+- **后台更新**: 网络可用时静默更新缓存，下次访问生效
+- **离线回退**: 导航请求失败时返回 `index.html`，支持 SPA 路由
+- **资源压缩**: Vite 自动压缩 JS/CSS，减小传输体积
+
+### 移动端专项优化
+
+- 禁用双击缩放（防止游戏误操作）
+- 触摸反馈优化（`-webkit-tap-highlight-color`）
+- 安全区域适配（刘海屏/灵动岛支持）
+- 振动 API 反馈（增强交互体验）
 
 ## 浏览器兼容性
 
-| 浏览器 | 版本 | 支持状态 |
-|--------|------|----------|
-| Chrome | 90+ | ✅ 完全支持 |
-| Safari | 14+ | ✅ 完全支持 |
-| Firefox | 90+ | ✅ 支持 |
-| Edge | 90+ | ✅ 完全支持 |
-| Samsung | 15+ | ✅ 完全支持 |
+### 核心功能支持
+
+| 浏览器 | 版本 | PWA 支持 | 离线功能 | 添加到主屏幕 | 快捷方式 |
+|--------|------|---------|---------|-------------|---------|
+| Chrome (Android) | 90+ | ✅ 完全支持 | ✅ | ✅ | ✅ |
+| Safari (iOS) | 14+ | ✅ 完全支持 | ✅ | ✅ | ❌ 不支持 |
+| Chrome (iOS) | 90+ | ⚠️ 受限* | ❌ | ❌ | ❌ |
+| Firefox (Android) | 90+ | ✅ 支持 | ✅ | ✅ | ✅ |
+| Edge (Android/iOS) | 90+ | ✅ 完全支持 | ✅ | ✅ | ✅ |
+| Samsung Internet | 15+ | ✅ 完全支持 | ✅ | ✅ | ✅ |
+
+\* Chrome on iOS 使用 WKWebView，Service Worker 功能受限
+
+### 各平台详细说明
+
+**iOS Safari:**
+- ✅ 支持添加到主屏幕（使用 "分享" → "添加到主屏幕"）
+- ✅ 支持离线缓存
+- ✅ 支持主题颜色（iOS 15+）
+- ❌ 不支持快捷方式
+- ⚠️ 触觉反馈需用户先交互才能触发
+
+**Android Chrome:**
+- ✅ 完全支持所有 PWA 功能
+- ✅ 自动显示安装提示（满足条件时）
+- ✅ 支持快捷方式
+- ✅ 支持后台同步
+
+**微信内置浏览器:**
+- ✅ 支持基本 PWA 功能
+- ✅ 针对微信音频策略的特殊优化
+- ⚠️ 添加到主屏幕需使用系统浏览器
+
+## 快捷方式 (Shortcuts)
+
+PWA 支持从主屏幕长按图标快速进入特定功能：
+
+| 快捷方式 | 图标 | 功能描述 |
+|---------|------|---------|
+| **开始挑战** | ▶️ | 直接进入难度选择页面 |
+| **查看成就** | 🏆 | 查看已完成的关卡进度 |
+
+**支持平台：**
+- ✅ Android Chrome 84+
+- ✅ Android Samsung Internet 15+
+- ✅ Windows Edge/Chrome
+- ⚠️ iOS Safari 暂不支持
 
 ## 常见问题
 
@@ -143,18 +229,20 @@ node scripts/generate-icons.js
 
 检查以下几点:
 1. 图标文件是否存在于 `public/icons/`
-2. 文件名和尺寸是否正确
-3. 是否重新构建了项目
+2. 文件名和尺寸是否正确（参考文件结构部分）
+3. 是否重新构建了项目（`npm run build`）
+4. 是否使用 HTTPS（PWA 要求安全上下文）
 
 ### Q: 离线后无法访问?
 
-1. 检查 Service Worker 是否注册成功
-2. 查看 DevTools > Application > Cache Storage
-3. 确保访问过页面后才会缓存
+1. 检查 Service Worker 是否注册成功（DevTools > Application > Service Workers）
+2. 查看缓存内容（DevTools > Application > Cache Storage）
+3. 确保访问过页面后才会缓存（首次访问需在线）
+4. 检查是否允许第三方 Cookie（某些浏览器设置会影响 Service Worker）
 
 ### Q: 如何强制更新?
 
-在控制台执行:
+**方法 1 - 开发者控制台：**
 ```javascript
 navigator.serviceWorker.getRegistrations().then(regs => {
   for (let reg of regs) reg.unregister()
@@ -162,8 +250,83 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 location.reload()
 ```
 
+**方法 2 - 更新缓存版本：**
+修改 `public/sw.js` 中的 `CACHE_VERSION` 值（如 `v2.1` → `v2.2`）
+
+### Q: iOS 添加到主屏幕后打开是白屏？
+
+1. 确保 `manifest.json` 中的 `start_url` 正确
+2. 检查所有资源路径是否为绝对路径（以 `/` 开头）
+3. iOS 13+ 需要确保 Service Worker 注册成功
+4. 尝试在设置中清除 Safari 缓存后重新添加
+
+### Q: Android 上如何移除 PWA?
+
+- **Chrome**: 长按图标 → 应用信息 → 卸载
+- **系统设置**: 设置 → 应用 → 数学游戏 → 卸载
+- **快捷方式**: 长按图标拖至"卸载"区域
+
+## 代码中使用 PWA
+
+### 检测 PWA 状态
+
+```javascript
+import { usePWA } from '../composables/usePWA'
+
+const { 
+  isInstallable,    // 是否可以安装
+  isOnline,         // 网络状态
+  isStandalone,     // 是否以独立应用运行
+  updateAvailable   // 是否有新版本
+} = usePWA()
+```
+
+### 触发安装
+
+```javascript
+import { usePWA } from '../composables/usePWA'
+
+const { install } = usePWA()
+
+// 在按钮点击事件中
+async function handleInstall() {
+  const result = await install()
+  if (result.success) {
+    console.log('用户已接受安装')
+  }
+}
+```
+
+### 分享功能
+
+```javascript
+import { share } from '../composables/usePWA'
+
+async function shareGame() {
+  await share({
+    title: '数学运算游戏',
+    text: '来挑战数学运算游戏，训练你的思维能力！',
+    url: window.location.href
+  })
+}
+```
+
+### 震动反馈
+
+```javascript
+import { vibrate } from '../composables/usePWA'
+
+// 答题正确时
+vibrate(50)  // 震动 50ms
+
+// 答题错误时
+vibrate([50, 100, 50])  // 震动模式：短-停-短
+```
+
 ## 相关链接
 
 - [Web App Manifest](https://developer.mozilla.org/zh-CN/docs/Web/Manifest)
 - [Service Worker API](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
 - [PWA Checklist](https://web.dev/pwa-checklist/)
+- [Can I Use - Service Workers](https://caniuse.com/serviceworkers)
+- [Workbox](https://developer.chrome.com/docs/workbox/) - Google 的 PWA 工具库
