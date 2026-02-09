@@ -321,16 +321,14 @@ onUnmounted(() => {
                 <span class="correct-number">✓</span>
                 <span class="correct-label">答对了</span>
               </div>
-              <span class="hint-auto">自动继续...</span>
             </template>
-            
+
             <!-- 错误反馈 - 简洁突出正确答案 -->
             <template v-else>
               <div class="correct-highlight">
                 <span class="correct-number">{{ currentQuestion.answer }}</span>
                 <span class="correct-label">正确答案</span>
               </div>
-              <button class="hint-btn">点击继续</button>
             </template>
           </div>
         </div>
