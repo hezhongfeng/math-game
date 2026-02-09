@@ -14,11 +14,7 @@ export default {
     },
     extend: {
       colors: {
-        // ============================================
-        // 数学游戏配色 - 森林冒险系（自然清新）
-        // ============================================
         game: {
-          // 主色 - 森林绿
           primary: {
             DEFAULT: '#4A7C59',
             light: '#5D9A6E',
@@ -35,7 +31,6 @@ export default {
             800: '#243B2B',
             900: '#1A281E',
           },
-          // 辅色 - 阳光橙
           secondary: {
             DEFAULT: '#E8A838',
             light: '#F0BE5C',
@@ -52,7 +47,6 @@ export default {
             800: '#5C4011',
             900: '#3C2A0B',
           },
-          // 强调色 - 落叶黄
           accent: {
             DEFAULT: '#F4D03F',
             light: '#F7DC6F',

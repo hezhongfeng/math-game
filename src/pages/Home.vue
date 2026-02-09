@@ -36,7 +36,7 @@ onMounted(() => {
           <Calculator :size="48" />
         </div>
         <h1 class="title">数学大冒险</h1>
-        <p class="subtitle">快乐学习每一天</p>
+        <p class="subtitle">🐴 马年大吉 · 马到成功 🐴</p>
       </div>
 
       <div class="stats">
@@ -237,16 +237,16 @@ onMounted(() => {
   .content {
     max-width: 480px;
   }
-  
+
   .logo {
     width: 120px;
     height: 120px;
   }
-  
+
   .title {
     font-size: 56px;
   }
-  
+
   .stat-value {
     font-size: 42px;
   }

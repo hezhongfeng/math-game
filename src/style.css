@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    /* 友好极简配色 */
     --coral: #FF7B54;
     --coral-dark: #E86640;
     --coral-light: #FF9A7D;
