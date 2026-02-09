@@ -4,7 +4,7 @@
  */
 
 // 每次更新时递增版本号
-const CACHE_VERSION = 'v3'
+const CACHE_VERSION = 'v2.1'
 const CACHE_NAME = `math-game-${CACHE_VERSION}`
 const STATIC_ASSETS = [
   '/',
