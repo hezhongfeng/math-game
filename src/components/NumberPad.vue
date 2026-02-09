@@ -125,6 +125,28 @@ function handleSubmit() {
   border-color: var(--coral);
 }
 
+/* 移动端优化：移除 hover 粘滞效果 */
+@media (hover: none) {
+  .num-btn:hover {
+    border-color: #F0F0F0;
+    color: var(--text-dark);
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn-delete:hover {
+    background: #FFF5F3;
+    border-color: #FFE5E0;
+    color: var(--coral);
+  }
+  
+  .btn-submit:hover {
+    background: var(--mint);
+    border-color: var(--mint);
+    color: white;
+  }
+}
+
 .num-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -141,6 +163,13 @@ function handleSubmit() {
   color: white;
 }
 
+.btn-delete:active {
+  transform: scale(0.95);
+  background: var(--coral-dark);
+  border-color: var(--coral-dark);
+  color: white;
+}
+
 .btn-submit {
   background: var(--mint);
   border-color: var(--mint);
@@ -150,6 +179,12 @@ function handleSubmit() {
 .btn-submit:hover {
   background: var(--mint-dark);
   border-color: var(--mint-dark);
+}
+
+.btn-submit:active {
+  transform: scale(0.95);
+  background: var(--mint-darker, #00B36B);
+  border-color: var(--mint-darker, #00B36B);
 }
 
 @media (min-width: 768px) {
