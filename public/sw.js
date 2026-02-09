@@ -3,7 +3,9 @@
  * 提供离线缓存和 PWA 支持
  */
 
-const CACHE_NAME = 'math-game-v1'
+// 每次更新时递增版本号
+const CACHE_VERSION = 'v2'
+const CACHE_NAME = `math-game-${CACHE_VERSION}`
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -21,7 +23,7 @@ const STATIC_ASSETS = [
 
 // 安装 - 缓存静态资源
 self.addEventListener('install', (event) => {
-  console.log('[SW] 安装中...')
+  console.log('[SW] 安装中...', CACHE_VERSION)
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -30,7 +32,7 @@ self.addEventListener('install', (event) => {
         return cache.addAll(STATIC_ASSETS)
       })
       .then(() => {
-        console.log('[SW] 安装完成')
+        console.log('[SW] 安装完成，跳过等待')
         return self.skipWaiting()
       })
       .catch((error) => {
