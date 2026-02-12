@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Lock, Star, CheckCircle2, ChevronRight } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
+import { getStarCount } from '../utils/stars'
 
 const props = defineProps({
   difficulty: {
@@ -27,11 +28,7 @@ const { playSound } = useSound()
 
 const stars = computed(() => {
   if (!props.bestScore) return 0
-  const accuracy = props.bestScore.accuracy
-  if (accuracy === 100) return 3
-  if (accuracy >= 80) return 2
-  if (accuracy >= 60) return 1
-  return 0
+  return getStarCount(props.bestScore.accuracy)
 })
 
 const levelColor = computed(() => {

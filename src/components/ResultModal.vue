@@ -1,5 +1,6 @@
 <script setup>
 import { useSound } from '../composables/useSound'
+import { getStarCount, getRatingText, getCelebrationEmoji } from '../utils/stars'
 import { RotateCcw, Home, Target, CheckCircle, Clock, Star, Sparkles } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -26,18 +27,7 @@ function formatTime(seconds) {
   return `${minutes}:${secs.toString().padStart(2, '0')}`
 }
 
-function getRatingText() {
-  if (props.result.accuracy >= 90) return '🏆 完美！'
-  if (props.result.accuracy >= 70) return '⭐ 真棒！'
-  return '👍 完成！'
-}
-
-function getStarCount() {
-  if (props.result.accuracy >= 90) return 3
-  if (props.result.accuracy >= 70) return 2
-  return 1
-}
-
+// 使用共享的星星评级函数
 function handleRetry() {
   playSound('click')
   emit('retry')
@@ -56,7 +46,7 @@ function handleHome() {
         <div class="result-card">
           <!-- mascot 庆祝 -->
           <div class="celebration-mascot">
-            <span class="mascot-emoji">{{ result.accuracy >= 80 ? '🎉' : result.accuracy >= 60 ? '👏' : '💪' }}</span>
+            <span class="mascot-emoji">{{ getCelebrationEmoji(result.accuracy) }}</span>
             <div v-if="isNewBest" class="new-badge">
               <Sparkles :size="16" />
               <span>新纪录</span>
@@ -64,7 +54,7 @@ function handleHome() {
           </div>
           
           <!-- 标题 -->
-          <h2 class="result-title">{{ getRatingText() }}</h2>
+          <h2 class="result-title">{{ getRatingText(result.accuracy) }}</h2>
           <p class="result-subtitle">挑战完成啦！</p>
           
           <!-- 星星评级 -->
@@ -73,7 +63,7 @@ function handleHome() {
               v-for="n in 3" 
               :key="n"
               :size="44"
-              :class="['star-icon', n <= getStarCount() ? 'star-active' : 'star-inactive']"
+              :class="['star-icon', n <= getStarCount(result.accuracy) ? 'star-active' : 'star-inactive']"
               fill="currentColor"
             />
           </div>
