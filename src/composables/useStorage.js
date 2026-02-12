@@ -6,7 +6,6 @@ const STORAGE_KEY = STORAGE_KEYS.GAME_DATA
 
 // 内存缓存，避免重复读取 localStorage
 let cachedData = null
-let cacheTimestamp = 0
 
 // 监听其他标签页的 storage 变化，同步缓存
 if (typeof window !== 'undefined') {
@@ -14,7 +13,6 @@ if (typeof window !== 'undefined') {
     if (event.key === STORAGE_KEY) {
       // 清除缓存，下次读取时会从 localStorage 重新加载
       cachedData = null
-      cacheTimestamp = 0
     }
   })
 }
@@ -39,12 +37,10 @@ export function useStorage() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       cachedData = raw ? JSON.parse(raw) : { bestScores: {}, progress: {} }
-      cacheTimestamp = Date.now()
       return cachedData
     } catch (error) {
       showError('读取游戏数据失败，请检查浏览器存储设置')
       cachedData = { bestScores: {}, progress: {} }
-      cacheTimestamp = Date.now()
       return cachedData
     }
   }
@@ -57,14 +53,10 @@ export function useStorage() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
       cachedData = data
-      cacheTimestamp = Date.now()
     } catch (error) {
       showError('保存游戏数据失败，存储空间可能已满')
     }
   }
-  
-  // 确保数据已加载
-  loadData()
   
   /**
    * 获取某个难度的最佳成绩

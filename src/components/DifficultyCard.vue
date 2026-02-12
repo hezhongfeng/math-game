@@ -31,16 +31,7 @@ const stars = computed(() => {
   return getStarCount(props.bestScore.accuracy)
 })
 
-const levelColor = computed(() => {
-  const colors = {
-    '入门': '#4ECDC4',
-    '初级': '#45B7D1',
-    '中级': '#F9CA24',
-    '进级': '#FF7B54',
-    '高级': '#A55EEA'
-  }
-  return colors[props.difficulty.level] || '#4ECDC4'
-})
+const levelColor = computed(() => props.difficulty.color || '#4ECDC4')
 
 function handleSelect() {
   if (!props.isLocked) {

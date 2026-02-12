@@ -1,6 +1,7 @@
 <script setup>
 import { useSound } from '../composables/useSound'
 import { getStarCount, getRatingText, getCelebrationEmoji } from '../utils/stars'
+import { formatTime } from '../utils/format'
 import { RotateCcw, Home, Target, CheckCircle, Clock, Star, Sparkles } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -20,12 +21,6 @@ const props = defineProps({
 
 const emit = defineEmits(['retry', 'home'])
 const { playSound } = useSound()
-
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60)
-  const secs = seconds % 60
-  return `${minutes}:${secs.toString().padStart(2, '0')}`
-}
 
 // 使用共享的星星评级函数
 function handleRetry() {

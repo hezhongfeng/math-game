@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Trophy } from 'lucide-vue-next'
-import { DIFFICULTY_GROUPS, getDifficultyById } from '../config/difficulty'
+import { DIFFICULTY_GROUPS, getDifficultyById, TOTAL_LEVELS } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
@@ -95,7 +95,7 @@ function isDifficultyLocked(difficulty) {
               r="18"
               fill="none"
               :stroke-dasharray="`${113}, 113`"
-              :stroke-dashoffset="`${113 - ((completedCount / Math.max(DIFFICULTY_GROUPS.length, 1)) / 3) * 113}`"
+              :stroke-dashoffset="`${113 - (completedCount / Math.max(TOTAL_LEVELS, 1)) * 113}`"
             />
           </svg>
           <div class="progress-icon-center">

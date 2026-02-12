@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Clock, CheckCircle, TrendingUp, Star } from 'lucide-vue-next'
+import { formatTime } from '../utils/format'
 
 const props = defineProps({
   score: {
@@ -34,12 +35,7 @@ const progress = computed(() => {
   return Math.round((props.currentIndex / props.totalQuestions) * 100)
 })
 
-const formatTime = computed(() => {
-  const duration = Number(props.duration) || 0
-  const minutes = Math.floor(duration / 60)
-  const seconds = duration % 60
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
-})
+const formattedTime = computed(() => formatTime(props.duration))
 </script>
 
 <template>
@@ -88,7 +84,7 @@ const formatTime = computed(() => {
           <Clock :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value text-child-lg">{{ formatTime }}</span>
+          <span class="stat-value text-child-lg">{{ formattedTime }}</span>
           <span class="stat-label text-child-sm">用时</span>
         </div>
       </div>
@@ -98,7 +94,7 @@ const formatTime = computed(() => {
           <TrendingUp :size="20" />
         </div>
         <div class="stat-info">
-          <span class="stat-value text-child-lg">{{ Number(accuracy) || 0 }}%</span>
+          <span class="stat-value text-child-lg">{{ accuracy || 0 }}%</span>
           <span class="stat-label text-child-sm">正确率</span>
         </div>
       </div>

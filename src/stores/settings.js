@@ -20,7 +20,7 @@ export const useSettingsStore = defineStore('settings', () => {
         soundEnabled.value = settings.soundEnabled ?? true
       }
     } catch (error) {
-      // 加载失败使用默认设置
+      console.warn('加载设置失败:', error)
     }
   }
 
@@ -31,7 +31,7 @@ export const useSettingsStore = defineStore('settings', () => {
         soundEnabled: soundEnabled.value
       }))
     } catch (error) {
-      // 保存失败继续
+      console.warn('保存设置失败:', error)
     }
   }
 

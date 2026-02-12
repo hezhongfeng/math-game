@@ -197,6 +197,9 @@ export const DIFFICULTY_GROUPS = [
   { name: '高级', levels: [13, 14, 15], color: 'red' }
 ]
 
+// 总关卡数
+export const TOTAL_LEVELS = DIFFICULTY_LEVELS.length
+
 // 根据 ID 获取难度配置
 export function getDifficultyById(id) {
   return DIFFICULTY_LEVELS.find(d => d.id === parseInt(id))

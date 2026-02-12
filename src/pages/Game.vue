@@ -279,7 +279,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="page">
+  <div v-if="difficulty" class="page">
     <!-- 加载状态 -->
     <Transition name="fade">
       <div v-if="isLoading" class="loading-overlay">

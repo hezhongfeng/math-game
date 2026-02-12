@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Clock } from 'lucide-vue-next'
+import { formatTimePad } from '../utils/format'
 
 const props = defineProps({
   question: {
@@ -29,15 +30,11 @@ const props = defineProps({
   }
 })
 
-const shouldShowFeedback = computed(() => props.showAnswer && props.question.userAnswer !== null)
+const shouldShowFeedback = computed(() => props.showAnswer && props.question?.userAnswer !== null)
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
 
-const formattedTime = computed(() => {
-  const minutes = Math.floor(props.questionTimer / 60)
-  const seconds = props.questionTimer % 60
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-})
+const formattedTime = computed(() => formatTimePad(props.questionTimer))
 
 const answerDisplay = computed(() => {
   if (shouldShowFeedback.value) {

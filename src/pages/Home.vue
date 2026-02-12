@@ -1,17 +1,16 @@
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Trophy, Play, Star, Calculator } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
-import { DIFFICULTY_GROUPS } from '../config/difficulty'
+import { DIFFICULTY_GROUPS, TOTAL_LEVELS } from '../config/difficulty'
 
 const router = useRouter()
-const { getAllBestScores } = useStorage()
+const { bestScores } = useStorage()
 const { playSound, forceInitializeAudioContext } = useSound()
 
-const bestScores = getAllBestScores()
-const completedCount = Object.keys(bestScores).length
+const completedCount = computed(() => Object.keys(bestScores.value).length)
 
 function startGame() {
   playSound('click')
@@ -52,7 +51,7 @@ onMounted(() => {
           <div class="stat-icon mint">
             <Star :size="32" />
           </div>
-          <p class="stat-value">{{ DIFFICULTY_GROUPS.length * 3 }}</p>
+          <p class="stat-value">{{ TOTAL_LEVELS }}</p>
           <p class="stat-label">总关卡</p>
         </div>
       </div>

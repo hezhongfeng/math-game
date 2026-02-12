@@ -39,16 +39,20 @@ const colors = {
     shadow: 'shadow-game-primary'
   }
 }
+
+// 获取安全的颜色配置
+const getColor = (type) => colors[type] || colors.info
+const getIcon = (type) => icons[type] || icons.info
 </script>
 
 <template>
   <div
     class="toast-item flex items-center gap-4 px-6 py-5 rounded-cute-xl shadow-cute-lg min-w-[340px] max-w-md cursor-pointer hover:shadow-cute-lg hover:scale-102 transition-all duration-300"
-    :class="[colors[toast.type].bg, colors[toast.type].text]"
+    :class="[getColor(toast.type).bg, getColor(toast.type).text]"
     @click="$emit('remove', toast.id)"
   >
     <div class="icon-wrapper bg-white/20 rounded-full p-2 flex-shrink-0">
-      <component :is="icons[toast.type]" :size="26" class="drop-shadow-md" />
+      <component :is="getIcon(toast.type)" :size="26" class="drop-shadow-md" />
     </div>
     <span class="flex-1 font-medium font-rounded text-child-lg">{{ toast.message }}</span>
     <div class="close-btn opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-200 p-1">

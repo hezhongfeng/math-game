@@ -57,6 +57,26 @@ function generateMixed(min, max) {
 }
 
 /**
+ * 根据运算类型生成题目
+ * @param {string} operation - 运算类型
+ * @param {number} min - 最小值
+ * @param {number} max - 最大值
+ * @returns {Object} { operand1, operand2, operator, answer }
+ */
+function generateQuestionByOperation(operation, min, max) {
+  switch (operation) {
+    case 'add':
+      return generateAddition(min, max)
+    case 'subtract':
+      return generateSubtraction(min, max)
+    case 'mixed':
+      return generateMixed(min, max)
+    default:
+      return generateAddition(min, max)
+  }
+}
+
+/**
  * 根据难度配置生成题目列表
  * @param {Object} difficulty - 难度配置对象
  * @returns {Array} 题目列表
@@ -79,20 +99,7 @@ export function generateQuestions(difficulty) {
 
   while (questions.length < questionCount && attempts < maxAttempts) {
     attempts++
-    let question
-    switch (operation) {
-      case 'add':
-        question = generateAddition(min, max)
-        break
-      case 'subtract':
-        question = generateSubtraction(min, max)
-        break
-      case 'mixed':
-        question = generateMixed(min, max)
-        break
-      default:
-        question = generateAddition(min, max)
-    }
+    const question = generateQuestionByOperation(operation, min, max)
 
     // 生成唯一标识符
     const key = `${question.operand1}${question.operator}${question.operand2}`
@@ -106,20 +113,7 @@ export function generateQuestions(difficulty) {
 
   // 如果去重后题目不够，允许重复（对于极小范围的情况）
   while (questions.length < questionCount) {
-    let question
-    switch (operation) {
-      case 'add':
-        question = generateAddition(min, max)
-        break
-      case 'subtract':
-        question = generateSubtraction(min, max)
-        break
-      case 'mixed':
-        question = generateMixed(min, max)
-        break
-      default:
-        question = generateAddition(min, max)
-    }
+    const question = generateQuestionByOperation(operation, min, max)
     questions.push({ ...question, id: questions.length + 1, userAnswer: null, isCorrect: null })
   }
 

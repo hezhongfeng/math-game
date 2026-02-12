@@ -8,7 +8,12 @@ import { ref, onMounted, onUnmounted } from 'vue'
 // 全局状态
 const isInstallable = ref(false)
 const isOnline = ref(navigator.onLine)
-const isStandalone = ref(false)
+const isStandalone = ref(
+  typeof window !== 'undefined' && (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true
+  )
+)
 const updateAvailable = ref(false)
 
 // 私有变量
@@ -87,12 +92,6 @@ function removeGlobalListeners() {
  * @returns {Object} PWA 状态和操作方法
  */
 export function usePWA() {
-  // 检查是否以 standalone 模式运行
-  const checkStandalone = () => {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           window.navigator.standalone === true
-  }
-
   // 安装应用
   const install = async () => {
     if (!deferredPrompt) {
@@ -138,7 +137,6 @@ export function usePWA() {
 
   // 生命周期
   onMounted(() => {
-    isStandalone.value = checkStandalone()
     addGlobalListeners()
   })
 

@@ -26,7 +26,7 @@ export function useGame(difficulty) {
   })
 
   const accuracy = computed(() => {
-    if (!questions.value.length || correctCount.value === undefined || correctCount.value === null) return 0
+    if (!questions.value.length) return 0
     const result = Math.round((correctCount.value / questions.value.length) * 100)
     return isNaN(result) ? 0 : result
   })
