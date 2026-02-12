@@ -11,8 +11,76 @@ const isOnline = ref(navigator.onLine)
 const isStandalone = ref(false)
 const updateAvailable = ref(false)
 
+// 私有变量
 let deferredPrompt = null
-let updateCallback = null
+let updateCallbacks = new Set()  // 使用 Set 支持多个回调
+let listenerCount = 0           // 引用计数，跟踪有多少组件在使用
+
+// 事件处理器（定义为常量，便于添加和移除）
+const handleBeforeInstallPrompt = (e) => {
+  e.preventDefault()
+  deferredPrompt = e
+  isInstallable.value = true
+  console.log('[PWA] 应用可以安装')
+}
+
+const handleAppInstalled = () => {
+  deferredPrompt = null
+  isInstallable.value = false
+  console.log('[PWA] 应用已安装')
+}
+
+const handleOnline = () => {
+  isOnline.value = true
+  console.log('[PWA] 已连接到网络')
+}
+
+const handleOffline = () => {
+  isOnline.value = false
+  console.log('[PWA] 网络已断开')
+}
+
+const handleServiceWorkerMessage = (event) => {
+  if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+    updateAvailable.value = true
+    // 调用所有注册的回调
+    updateCallbacks.forEach(callback => callback())
+  }
+}
+
+/**
+ * 添加全局事件监听器（只添加一次）
+ */
+function addGlobalListeners() {
+  if (listenerCount === 0) {
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.addEventListener('appinstalled', handleAppInstalled)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
+    }
+  }
+  listenerCount++
+}
+
+/**
+ * 移除全局事件监听器（当没有组件使用时）
+ */
+function removeGlobalListeners() {
+  listenerCount--
+  if (listenerCount === 0) {
+    window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.removeEventListener('appinstalled', handleAppInstalled)
+    window.removeEventListener('online', handleOnline)
+    window.removeEventListener('offline', handleOffline)
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage)
+    }
+  }
+}
 
 /**
  * 使用 PWA 功能
@@ -23,40 +91,6 @@ export function usePWA() {
   const checkStandalone = () => {
     return window.matchMedia('(display-mode: standalone)').matches ||
            window.navigator.standalone === true
-  }
-
-  // 处理 beforeinstallprompt 事件
-  const handleBeforeInstallPrompt = (e) => {
-    e.preventDefault()
-    deferredPrompt = e
-    isInstallable.value = true
-    console.log('[PWA] 应用可以安装')
-  }
-
-  // 处理 appinstalled 事件
-  const handleAppInstalled = () => {
-    deferredPrompt = null
-    isInstallable.value = false
-    console.log('[PWA] 应用已安装')
-  }
-
-  // 处理在线状态变化
-  const handleOnline = () => {
-    isOnline.value = true
-    console.log('[PWA] 已连接到网络')
-  }
-
-  const handleOffline = () => {
-    isOnline.value = false
-    console.log('[PWA] 网络已断开')
-  }
-
-  // 处理 Service Worker 更新
-  const handleServiceWorkerUpdate = () => {
-    updateAvailable.value = true
-    if (updateCallback) {
-      updateCallback()
-    }
   }
 
   // 安装应用
@@ -95,38 +129,21 @@ export function usePWA() {
     }
   }
 
-  // 设置更新回调
+  // 设置更新回调（支持多个回调）
   const onUpdate = (callback) => {
-    updateCallback = callback
+    updateCallbacks.add(callback)
+    // 返回取消注册函数
+    return () => updateCallbacks.delete(callback)
   }
 
   // 生命周期
   onMounted(() => {
     isStandalone.value = checkStandalone()
-
-    // 监听安装事件
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-    window.addEventListener('appinstalled', handleAppInstalled)
-
-    // 监听网络状态
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-
-    // 监听 Service Worker 更新
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
-          handleServiceWorkerUpdate()
-        }
-      })
-    }
+    addGlobalListeners()
   })
 
   onUnmounted(() => {
-    window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-    window.removeEventListener('appinstalled', handleAppInstalled)
-    window.removeEventListener('online', handleOnline)
-    window.removeEventListener('offline', handleOffline)
+    removeGlobalListeners()
   })
 
   return {
