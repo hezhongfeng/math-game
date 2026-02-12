@@ -59,6 +59,9 @@ const gameTime = ref(0)
 let gameStartTime = null
 let gameTimeInterval = null
 
+// 反馈延时定时器
+let feedbackTimeout = null
+
 const isComplete = computed(() => game.isComplete.value)
 const currentQuestion = computed(() => game.currentQuestion.value)
 const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
@@ -152,7 +155,7 @@ function submitAnswer() {
   // 正确反馈：延迟后自动进入下一题
   // 错误反馈：点击任意位置关闭
   if (correct) {
-    setTimeout(() => {
+    feedbackTimeout = setTimeout(() => {
       if (game.currentIndex.value >= game.questions.value.length - 1) {
         showAnswer.value = false
         isWaiting.value = false
@@ -267,6 +270,10 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyPress)
   stopQuestionTimer() // 清理计时器
   stopGameTimeUpdater() // 清理游戏时间更新器
+  if (feedbackTimeout) {
+    clearTimeout(feedbackTimeout)
+    feedbackTimeout = null
+  }
   settingsStore.saveSettings()
 })
 </script>

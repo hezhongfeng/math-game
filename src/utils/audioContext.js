@@ -86,11 +86,11 @@ function setupAudioContextListeners() {
   ]
   
   // 在 document 上监听关键事件，passive: true 优化性能
+  // 注意：移除 once: true，因为 iOS Safari 可能在切换应用后再次暂停 AudioContext
   events.forEach(event => {
-    document.addEventListener(event, handleUserInteraction, { 
-      capture: true, 
-      passive: true,
-      once: true  // 首次交互后自动移除
+    document.addEventListener(event, handleUserInteraction, {
+      capture: true,
+      passive: true
     })
   })
 }

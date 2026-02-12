@@ -95,7 +95,7 @@ function isDifficultyLocked(difficulty) {
               r="18"
               fill="none"
               :stroke-dasharray="`${113}, 113`"
-              :stroke-dashoffset="`${113 - (completedCount / (DIFFICULTY_GROUPS.length * 3)) * 113}`"
+              :stroke-dashoffset="`${113 - ((completedCount / Math.max(DIFFICULTY_GROUPS.length, 1)) / 3) * 113}`"
             />
           </svg>
           <div class="progress-icon-center">

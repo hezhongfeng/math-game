@@ -70,9 +70,15 @@ export function generateQuestions(difficulty) {
 
   const { range, operation, questionCount } = difficulty
   const [min, max] = range
-  
+
+  // 使用 Set 来跟踪已生成的题目，避免重复
+  const questionSet = new Set()
   const questions = []
-  for (let i = 0; i < questionCount; i++) {
+  let attempts = 0
+  const maxAttempts = questionCount * 10 // 防止无限循环
+
+  while (questions.length < questionCount && attempts < maxAttempts) {
+    attempts++
     let question
     switch (operation) {
       case 'add':
@@ -87,9 +93,36 @@ export function generateQuestions(difficulty) {
       default:
         question = generateAddition(min, max)
     }
-    questions.push({ ...question, id: i + 1, userAnswer: null, isCorrect: null })
+
+    // 生成唯一标识符
+    const key = `${question.operand1}${question.operator}${question.operand2}`
+
+    // 如果题目未重复，则添加
+    if (!questionSet.has(key)) {
+      questionSet.add(key)
+      questions.push({ ...question, id: questions.length + 1, userAnswer: null, isCorrect: null })
+    }
   }
-  
+
+  // 如果去重后题目不够，允许重复（对于极小范围的情况）
+  while (questions.length < questionCount) {
+    let question
+    switch (operation) {
+      case 'add':
+        question = generateAddition(min, max)
+        break
+      case 'subtract':
+        question = generateSubtraction(min, max)
+        break
+      case 'mixed':
+        question = generateMixed(min, max)
+        break
+      default:
+        question = generateAddition(min, max)
+    }
+    questions.push({ ...question, id: questions.length + 1, userAnswer: null, isCorrect: null })
+  }
+
   return questions
 }
 
