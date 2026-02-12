@@ -5,7 +5,7 @@
 
 // 每次更新时递增版本号（版本号格式: v主版本.次版本.修订号）
 // 更新日志见 CHANGELOG.md
-const CACHE_VERSION = 'v2.3'
+const CACHE_VERSION = 'v2.4'
 const CACHE_NAME = `math-game-${CACHE_VERSION}`
 const STATIC_ASSETS = [
   '/',
