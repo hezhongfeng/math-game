@@ -62,6 +62,12 @@ function generateMixed(min, max) {
  * @returns {Array} 题目列表
  */
 export function generateQuestions(difficulty) {
+  // 防御性检查：如果 difficulty 无效，返回空数组
+  if (!difficulty || !difficulty.range) {
+    console.warn('[generator] 无效的难度配置:', difficulty)
+    return []
+  }
+
   const { range, operation, questionCount } = difficulty
   const [min, max] = range
   

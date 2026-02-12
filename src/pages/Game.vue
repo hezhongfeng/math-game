@@ -22,6 +22,12 @@ const props = defineProps({
 
 const router = useRouter()
 const difficulty = getDifficultyById(parseInt(props.id))
+
+// 检查难度是否有效，无效则重定向到难度选择页
+if (!difficulty) {
+  router.replace('/difficulty')
+}
+
 const settingsStore = useSettingsStore()
 const { updateBestScore } = useStorage()
 const { playSound } = useSound()
