@@ -17,6 +17,8 @@ import sharp from 'sharp'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+const THEME_COLOR = { r: 255, g: 123, b: 84 }
+
 // 图标尺寸配置
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512]
 
@@ -46,7 +48,7 @@ async function generateIcons() {
       await sharp(inputFile)
         .resize(size, size, {
           fit: 'contain',
-          background: { r: 74, g: 124, b: 89, alpha: 1 }
+          background: { ...THEME_COLOR, alpha: 1 }
         })
         .png({ quality: 90 })
         .toFile(outputFile)
