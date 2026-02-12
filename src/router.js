@@ -19,6 +19,11 @@ const routes = [
     name: 'Game',
     component: Game,
     props: true
+  },
+  // 404 - 未匹配的路由重定向到首页
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 
