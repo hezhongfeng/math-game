@@ -34,6 +34,68 @@ function generateAddition(min, max) {
  * @returns {Object} { operand1, operand2, operator, answer }
  */
 function generateSubtraction(min, max) {
+  // 确保结果为非负数
+  // 方法：生成 operand1 和 operand2，确保 operand1 >= operand2
+  let operand1, operand2;
+  do {
+    operand1 = randomInt(min, max);
+    operand2 = randomInt(min, max);
+  } while (operand1 < operand2); // 重试直到 operand1 >= operand2
+  return {
+    operand1,
+    operand2,
+    operator: '-',
+    answer: operand1 - operand2
+  };
+}
+  // 确保结果为非负数，同时增加题目多样性
+  // 方法：先生成 operand2，再生成 operand1 >= operand2
+  const operand2 = randomInt(min, max);
+  // operand1 至少为 operand2，最多为 max
+  const operand1 = randomInt(operand2, max);
+  return {
+    operand1,
+    operand2,
+    operator: '-',
+    answer: operand1 - operand2
+  };
+}
+  // 确保结果为非负数，但增加多样性
+  // 方法：先生成 operand2，再生成 operand1 >= operand2
+  const operand2 = randomInt(min, max);
+  // operand1 至少为 operand2，最多为 max
+  const operand1 = randomInt(operand2, max);
+  return {
+    operand1,
+    operand2,
+    operator: '-',
+    answer: operand1 - operand2
+  }
+}
+  // 确保结果为非负数，但增加多样性
+  // 方法：先生成 operand2，再生成 operand1 >= operand2
+  const operand2 = randomInt(min, max);
+  // operand1 至少为 operand2，最多为 max
+  const operand1 = randomInt(operand2, max);
+  return {
+    operand1,
+    operand2,
+    operator: '-',
+    answer: operand1 - operand2
+  }
+}
+  // 确保结果为非负数，但增加多样性
+  // 方法：先生成 operand2，再生成 operand1 >= operand2
+  const operand2 = randomInt(min, max);
+  // operand1 至少为 operand2，最多为 max
+  const operand1 = randomInt(operand2, max);
+  return {
+    operand1,
+    operand2,
+    operator: '-',
+    answer: operand1 - operand2
+  }
+}
   const operand1 = randomInt(min, max)
   const operand2 = randomInt(min, operand1) // 确保结果为非负数
   return {
