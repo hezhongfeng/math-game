@@ -129,9 +129,14 @@ async function initGame() {
   isLoading.value = false
 }
 
+  const { error: showError } = useToast()
 // 提交答案 - 带防抖
 function submitAnswer() {
-  if (isWaiting.value || !userAnswer.value) return
+  if (isWaiting.value || !userAnswer.value || userAnswer.value.trim() === '') {
+    // 用户尝试提交空答案，显示提示
+    showError('请先输入答案');
+    return;
+  }
   const now = Date.now()
   if (now - lastSubmitTime.value < SUBMIT_DEBOUNCE) return
   lastSubmitTime.value = now
