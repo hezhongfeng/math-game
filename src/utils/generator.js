@@ -6,7 +6,16 @@
  * @param {number} max - 最大值
  * @returns {number} 随机整数
  */
+/**
+ * 生成指定范围内的随机整数（包含边界）
+ * 使用 Math.floor(Math.random() * range) + min 算法确保均匀分布
+ * @param {number} min - 最小值（包含）
+ * @param {number} max - 最大值（包含）
+ * @returns {number} 范围 [min, max] 内的随机整数
+ */
 function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
@@ -145,7 +154,26 @@ function generateQuestionByOperation(operation, min, max) {
  */
 export function generateQuestions(difficulty) {
   // 防御性检查：如果 difficulty 无效，返回空数组
-  if (!difficulty || !difficulty.range) {
+  // 防御性检查：如果 difficulty 无效，返回空数组
+  if (!difficulty || !difficulty.range || !Array.isArray(difficulty.range) || difficulty.range.length !== 2) {
+    console.warn('[generator] 无效的难度配置 - 缺少范围:', difficulty)
+    return []
+  }
+  
+  // 检查范围值是否有效
+  const [min, max] = difficulty.range;
+  if (typeof min !== 'number' || typeof max !== 'number' || min > max) {
+    console.warn('[generator] 无效的范围值:', { min, max, originalRange: difficulty.range })
+    return [];
+  }
+  
+  // 检查其他必需字段
+  if (typeof difficulty.questionCount !== 'number' || difficulty.questionCount <= 0) {
+    console.warn('[generator] 无效的题目数量:', difficulty.questionCount);
+    return [];
+  }
+  
+  const { operation } = difficulty;
     console.warn('[generator] 无效的难度配置:', difficulty)
     return []
   }
@@ -163,8 +191,8 @@ export function generateQuestions(difficulty) {
     attempts++
     const question = generateQuestionByOperation(operation, min, max)
 
-    // 生成唯一标识符
-    const key = `${question.operand1}${question.operator}${question.operand2}`
+    // 生成唯一标识符（使用分隔符避免潜在的字符串拼接冲突）
+    const key = `${question.operand1}|${question.operator}|${question.operand2}`
 
     // 如果题目未重复，则添加
     if (!questionSet.has(key)) {

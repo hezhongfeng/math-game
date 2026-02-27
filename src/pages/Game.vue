@@ -176,6 +176,15 @@ function handleInput(num) {
   lastInputTime.value = now
   if (userAnswer.value.length < GAME_CONFIG.MAX_ANSWER_LENGTH) {
     userAnswer.value += num
+  } else {
+    // 输入已达到最大长度限制，提供用户反馈
+    playSound('wrong'); // 播放错误音效
+    // 可以考虑添加一个轻微的触觉反馈
+    if (navigator.vibrate) {
+      navigator.vibrate(30); // 短震动反馈
+    }
+  }
+    userAnswer.value += num
   }
 }
 
