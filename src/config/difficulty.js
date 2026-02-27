@@ -10,8 +10,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 20,
     description: '0-3 以内加法',
-    color: 'bg-game-success-light',
-    textColor: 'text-game-success-dark',
+    color: 'var(--win-green-light)',
+    textColor: 'var(--win-green-dark)',
     stars: 1
   },
   {
@@ -22,8 +22,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 20,
     description: '0-3 以内减法',
-    color: 'bg-game-success',
-    textColor: 'text-game-success-dark',
+    color: 'var(--win-green)',
+    textColor: 'var(--win-green-dark)',
     stars: 1
   },
   {
@@ -34,8 +34,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 20,
     description: '0-3 加减混合',
-    color: 'bg-game-success-dark',
-    textColor: 'text-game-success-dark',
+    color: 'var(--win-green-dark)',
+    textColor: 'var(--win-green-dark)',
     stars: 2
   },
   // 0-5 数值范围 - 主色蓝
@@ -47,8 +47,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 20,
     description: '0-5 以内加法',
-    color: 'bg-game-primary-light',
-    textColor: 'text-game-primary-dark',
+    color: 'var(--hero-blue-light)',
+    textColor: 'var(--hero-blue-dark)',
     stars: 2
   },
   {
@@ -59,8 +59,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 20,
     description: '0-5 以内减法',
-    color: 'bg-game-primary',
-    textColor: 'text-game-primary-dark',
+    color: 'var(--hero-blue)',
+    textColor: 'var(--hero-blue-dark)',
     stars: 2
   },
   {
@@ -71,8 +71,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 20,
     description: '0-5 加减混合',
-    color: 'bg-game-primary-dark',
-    textColor: 'text-game-primary-dark',
+    color: 'var(--hero-blue-dark)',
+    textColor: 'var(--hero-blue-dark)',
     stars: 3
   },
   // 0-10 数值范围 - 强调黄
@@ -84,8 +84,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 24,
     description: '0-10 以内加法',
-    color: 'bg-game-accent-light',
-    textColor: 'text-game-accent-dark',
+    color: 'var(--energy-yellow-light)',
+    textColor: 'var(--energy-yellow-dark)',
     stars: 3
   },
   {
@@ -96,8 +96,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 24,
     description: '0-10 以内减法',
-    color: 'bg-game-accent',
-    textColor: 'text-game-accent-dark',
+    color: 'var(--energy-yellow)',
+    textColor: 'var(--energy-yellow-dark)',
     stars: 3
   },
   {
@@ -108,8 +108,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 24,
     description: '0-10 加减混合',
-    color: 'bg-game-accent-dark',
-    textColor: 'text-game-accent-dark',
+    color: 'var(--energy-yellow-dark)',
+    textColor: 'var(--energy-yellow-dark)',
     stars: 4
   },
   // 0-20 数值范围 - 警告橙
@@ -121,8 +121,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 28,
     description: '0-20 以内加法',
-    color: 'bg-game-warning-light',
-    textColor: 'text-game-warning-dark',
+    color: 'var(--warning-orange-light)',
+    textColor: 'var(--warning-orange-dark)',
     stars: 4
   },
   {
@@ -133,8 +133,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 28,
     description: '0-20 以内减法',
-    color: 'bg-game-warning',
-    textColor: 'text-game-warning-dark',
+    color: 'var(--warning-orange)',
+    textColor: 'var(--warning-orange-dark)',
     stars: 4
   },
   {
@@ -145,8 +145,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 28,
     description: '0-20 加减混合',
-    color: 'bg-game-warning-dark',
-    textColor: 'text-game-warning-dark',
+    color: 'var(--warning-orange-dark)',
+    textColor: 'var(--warning-orange-dark)',
     stars: 5
   },
   // 0-100 数值范围 - 错误红
@@ -158,8 +158,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 32,
     description: '0-100 以内加法',
-    color: 'bg-game-error-light',
-    textColor: 'text-game-error-dark',
+    color: 'var(--error-red-light)',
+    textColor: 'var(--error-red-dark)',
     stars: 5
   },
   {
@@ -170,8 +170,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 32,
     description: '0-100 以内减法',
-    color: 'bg-game-error',
-    textColor: 'text-game-error-dark',
+    color: 'var(--error-red)',
+    textColor: 'var(--error-red-dark)',
     stars: 5
   },
   {
@@ -182,8 +182,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 32,
     description: '0-100 加减混合',
-    color: 'bg-game-error-dark',
-    textColor: 'text-game-error-dark',
+    color: 'var(--error-red-dark)',
+    textColor: 'var(--error-red-dark)',
     stars: 5
   }
 ]
