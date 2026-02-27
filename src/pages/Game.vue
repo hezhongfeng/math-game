@@ -471,7 +471,7 @@ onUnmounted(() => {
 .nav-btn:hover {
   background: var(--hero-blue);
   color: white;
-  box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--glow-blue);
 }
 
 .nav-btn:active {
@@ -481,12 +481,12 @@ onUnmounted(() => {
 .nav-btn-accent {
   background: linear-gradient(135deg, var(--energy-yellow) 0%, var(--energy-yellow-dark) 100%);
   color: white;
-  box-shadow: 0 0 20px rgba(255, 199, 0, 0.3);
+  box-shadow: var(--glow-yellow);
 }
 
 .nav-btn-accent:hover {
   background: linear-gradient(135deg, var(--energy-yellow-light) 0%, var(--energy-yellow) 100%);
-  box-shadow: 0 0 30px rgba(255, 199, 0, 0.4);
+  box-shadow: var(--glow-yellow);
 }
 
 .title-group {
@@ -579,12 +579,12 @@ onUnmounted(() => {
 
 .feedback-success {
   border: 3px solid var(--win-green);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 208, 132, 0.4);
+  box-shadow: var(--shadow-lg), var(--glow-green);
 }
 
 .feedback-error {
   border: 3px solid var(--warning-orange);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 107, 53, 0.4);
+  box-shadow: var(--shadow-lg), var(--glow-orange);
 }
 
 /* mascot 表情 */
@@ -677,13 +677,13 @@ onUnmounted(() => {
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-md), 0 0 20px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--shadow-md), var(--glow-blue);
 }
 
 .hint-btn:hover {
   background: var(--hero-blue-dark);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 102, 255, 0.4);
+  box-shadow: var(--shadow-lg), var(--glow-blue);
 }
 
 .hint-btn:active {

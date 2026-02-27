@@ -301,27 +301,27 @@ function isDifficultyLocked(difficulty) {
 
 /* 各阶段颜色 - 男童科技风 */
 .badge-green {
-  background: rgba(34, 197, 94, 0.15);
+  background: rgba(0, 208, 132, 0.1);
   color: var(--game-success-dark);
 }
 
 .badge-blue {
-  background: rgba(79, 70, 229, 0.15);
+  background: rgba(74, 144, 226, 0.1);
   color: var(--game-primary-dark);
 }
 
 .badge-yellow {
-  background: rgba(234, 179, 8, 0.15);
-  color: var(--game-warning-dark);
-}
-
-.badge-orange {
-  background: rgba(249, 115, 22, 0.15);
+  background: rgba(255, 199, 0, 0.1);
   color: var(--game-accent-dark);
 }
 
+.badge-orange {
+  background: rgba(255, 107, 53, 0.1);
+  color: var(--game-warning-dark);
+}
+
 .badge-red {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(255, 71, 87, 0.1);
   color: var(--game-error-dark);
 }
 

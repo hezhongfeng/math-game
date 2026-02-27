@@ -13,20 +13,22 @@
     --win-green: #00D084;
     --win-green-light: #33D99D;
     --win-green-dark: #00A86B;
-    --win-green-glow: rgba(0, 208, 132, 0.4);
+    --win-green-glow: rgba(0, 208, 132, 0.3);
 
     --energy-yellow: #FFC700;
     --energy-yellow-light: #FFD633;
     --energy-yellow-dark: #E6B300;
-    --energy-yellow-glow: rgba(255, 199, 0, 0.4);
+    --energy-yellow-glow: rgba(255, 199, 0, 0.3);
 
     --warning-orange: #FF6B35;
     --warning-orange-light: #FF8A5D;
     --warning-orange-dark: #E65A24;
+    --warning-orange-glow: rgba(255, 107, 53, 0.3);
 
     --error-red: #FF4757;
     --error-red-light: #FF6B79;
-    --error-red-dark: '#E63344';
+    --error-red-dark: #E63344;
+    --error-red-glow: rgba(255, 71, 87, 0.3);
 
     /* 中性色 */
     --bg-light: #F5F7FA;
@@ -97,7 +99,8 @@
     /* 发光效果 - 科技感 */
     --glow-blue: 0 0 20px rgba(74, 144, 226, 0.3);
     --glow-green: 0 0 20px rgba(0, 208, 132, 0.3);
-    --glow-yellow: 0 0 20px rgba(255, 199, 0, 0.4);
+    --glow-yellow: 0 0 20px rgba(255, 199, 0, 0.3);
+    --glow-orange: 0 0 20px rgba(255, 107, 53, 0.3);
 
     /* 字体大小系统 - 移动优先 */
     --font-hero: 48px;

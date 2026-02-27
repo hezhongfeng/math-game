@@ -115,7 +115,7 @@ function handleSubmit() {
   border-color: var(--hero-blue);
   color: var(--hero-blue);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-md), 0 0 20px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--shadow-md), var(--glow-blue);
 }
 
 .num-btn:active {

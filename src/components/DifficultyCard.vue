@@ -100,7 +100,7 @@ function handleSelect() {
 
 .difficulty-card:hover:not(.is-locked) {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 102, 255, 0.2);
+  box-shadow: var(--shadow-lg), var(--glow-blue);
   border-color: var(--hero-blue);
 }
 
@@ -118,7 +118,7 @@ function handleSelect() {
 }
 
 .is-completed:hover {
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 208, 132, 0.3);
+  box-shadow: var(--shadow-lg), var(--glow-green);
   border-color: var(--win-green);
 }
 
@@ -133,7 +133,7 @@ function handleSelect() {
   font-weight: 800;
   color: white;
   flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--glow-blue);
 }
 
 .level-content {
@@ -166,7 +166,7 @@ function handleSelect() {
 .star.active {
   color: var(--energy-yellow);
   fill: var(--energy-yellow);
-  filter: drop-shadow(0 0 8px rgba(255, 199, 0, 0.5));
+  filter: drop-shadow(0 0 8px rgba(255, 199, 0, 0.4));
 }
 
 .accuracy {
@@ -182,7 +182,7 @@ function handleSelect() {
   font-size: var(--font-sm);
   font-weight: 800;
   border-radius: var(--radius-full);
-  box-shadow: 0 0 15px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--glow-blue);
 }
 
 .lock-hint {

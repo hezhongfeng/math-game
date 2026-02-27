@@ -101,7 +101,7 @@ onMounted(() => {
   justify-content: center;
   margin: 0 auto 28px;
   color: white;
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--shadow-lg), var(--glow-blue);
   animation: bounce 2s ease infinite;
 }
 
@@ -159,12 +159,12 @@ onMounted(() => {
 
 .stat-icon.coral {
   background: var(--hero-blue);
-  box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+  box-shadow: var(--glow-blue);
 }
 
 .stat-icon.mint {
   background: var(--win-green);
-  box-shadow: 0 0 20px rgba(0, 208, 132, 0.4);
+  box-shadow: var(--glow-green);
 }
 
 .stat-value {
@@ -197,7 +197,7 @@ onMounted(() => {
   font-weight: 700;
   border: none;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 102, 255, 0.4);
+  box-shadow: var(--shadow-lg), var(--glow-blue);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -205,7 +205,7 @@ onMounted(() => {
 .btn-main:hover {
   background: var(--hero-blue-dark);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-xl), 0 0 40px rgba(0, 102, 255, 0.5);
+  box-shadow: var(--shadow-xl), 0 0 30px rgba(74, 144, 226, 0.4);
 }
 
 .btn-main:active {
@@ -232,7 +232,7 @@ onMounted(() => {
   background: var(--hero-blue);
   color: white;
   transform: translateY(-3px);
-  box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
+  box-shadow: var(--glow-blue);
 }
 
 @media (min-width: 768px) {

@@ -178,22 +178,22 @@ const formattedTime = computed(() => formatTime(props.duration))
 }
 
 .stat-icon.score-icon {
-  background: rgba(74, 124, 89, 0.1);
+  background: rgba(74, 144, 226, 0.1);
   color: var(--game-primary-dark);
 }
 
 .stat-icon.correct-icon {
-  background: rgba(82, 196, 26, 0.1);
+  background: rgba(0, 208, 132, 0.1);
   color: var(--game-success-dark);
 }
 
 .stat-icon.time-icon {
-  background: rgba(244, 208, 63, 0.1);
+  background: rgba(255, 199, 0, 0.1);
   color: var(--game-accent-dark);
 }
 
 .stat-icon.accuracy-icon {
-  background: rgba(232, 168, 56, 0.1);
+  background: rgba(255, 107, 53, 0.1);
   color: var(--game-warning-dark);
 }
 

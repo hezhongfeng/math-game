@@ -244,6 +244,8 @@ export default {
         // 霓虹发光效果 - 简约版
         'glow-blue': '0 0 20px rgba(74, 144, 226, 0.3)',
         'glow-green': '0 0 20px rgba(0, 208, 132, 0.3)',
+        'glow-yellow': '0 0 20px rgba(255, 199, 0, 0.3)',
+        'glow-orange': '0 0 20px rgba(255, 107, 53, 0.3)',
         'glow-yellow': '0 0 20px rgba(255, 199, 0, 0.4)',
         'glow-orange': '0 0 20px rgba(255, 107, 53, 0.4)',
         // 按钮阴影
