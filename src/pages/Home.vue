@@ -94,7 +94,7 @@ onMounted(() => {
 .logo {
   width: 100px;
   height: 100px;
-  background: linear-gradient(145deg, #FF9A7D 0%, #FF7B54 100%);
+  background: linear-gradient(145deg, var(--coral-light) 0%, var(--coral) 100%);
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;

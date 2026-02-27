@@ -4,22 +4,68 @@
 
 @layer base {
   :root {
-    --coral: #FF7B54;
-    --coral-dark: #E86640;
-    --coral-light: #FF9A7D;
+    --coral: #FF6B6B;        /* 活力珊瑚粉 - 主要按钮 */
+    --coral-dark: #E84E4E;   /* 深珊瑚色 - 按钮悬停 */
+    --coral-light: #FF9AA2;  /* 浅珊瑚色 - 柔和强调 */
     
-    --mint: #4ECDC4;
-    --mint-dark: #3DBEB5;
-    --mint-light: #6FE3DC;
+    --mint: #4ECDC4;       /* 薄荷蓝 - 辅助色 */
+    --mint-dark: #3DBEB5;   /* 深薄荷 - 辅助按钮悬停 */
+    --mint-light: #88D8D0;  /* 浅薄荷 - 背景色 */
     
-    --cream: #FFF9F5;
+    --sun-yellow: #FFE66D; /* 阳光黄 - 强调、奖励 */
+    --sun-yellow-dark: #FFD43B; /* 深阳光黄 */
+    --sun-yellow-light: #FFF4C3; /* 浅阳光黄 */
+    
+    --grass-green: #96CEB4; /* 草绿色 - 正确反馈 */
+    --grass-green-dark: #6CB694; /* 深草绿 */
+    --grass-green-light: #C1EAC5; /* 浅草绿 */
+    
+    --orange-warm: #FE9E7D; /* 温暖橙色 - 错误反馈 */
+    --orange-warm-dark: #F27A54; /* 深温暖橙 */
+    --orange-warm-light: #FFB396; /* 浅温暖橙 */
+    
+    --lavender: #D4A5A5;   /* 薰衣草紫 - 成就 */
+    --lavender-dark: #B57C7C; /* 深薰衣草 */
+    --lavender-light: #E7CACA; /* 浅薰衣草 */
+    
+    --sky-blue: #87CEEB;   /* 天空蓝 - 背景区块 */
+    --sky-blue-dark: #5B9BD5; /* 深天空蓝 */
+    --sky-blue-light: #B6D7FF; /* 浅天空蓝 */
+    
+    --cream: #FFFBF5;      /* 更柔和的奶油色背景 */
     --white: #FFFFFF;
+    
     
     --text-dark: #2D3436;
     --text-gray: #636E72;
     --text-light: #B2BEC3;
     
-    --success: #00D084;
+    --success: var(--grass-green);      /* 正确答案 */
+    --success-dark: var(--grass-green-dark);
+    --success-light: var(--grass-green-light);
+    --warning: var(--orange-warm);       /* 错误答案 */
+    --warning-dark: var(--orange-warm-dark);
+    --warning-light: var(--orange-warm-light);
+    
+    /* 游戏映射 */
+    --game-primary: var(--coral);          /* 主要操作 */
+    --game-primary-dark: var(--coral-dark);
+    --game-primary-light: var(--coral-light);
+    --game-secondary: var(--mint);         /* 次要操作 */
+    --game-secondary-dark: var(--mint-dark);
+    --game-secondary-light: var(--mint-light);
+    --game-accent: var(--sun-yellow);      /* 强调色 */
+    --game-accent-dark: var(--sun-yellow-dark);
+    --game-accent-light: var(--sun-yellow-light);
+    --game-success: var(--success);        /* 成功反馈 */
+    --game-warning: var(--warning);       /* 警告反馈 */
+    --game-achievement: var(--lavender);  /* 成就解锁 */
+    --game-bg: var(--cream);              /* 主背景 */
+    --game-bg-light: var(--white);        /* 浅背景 */
+    --game-bg-dark: var(--sky-blue-light); /* 深背景 */
+    --game-card: var(--white);            /* 卡片背景 */
+    --game-text: var(--text-dark);        /* 主文字 */
+    --game-text-secondary: var(--text-gray); /* 次要文字 */
     --warning: #FFB347;
     
     /* 游戏映射 */

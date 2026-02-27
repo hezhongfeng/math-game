@@ -31,7 +31,7 @@ const stars = computed(() => {
   return getStarCount(props.bestScore.accuracy)
 })
 
-const levelColor = computed(() => props.difficulty.color || '#4ECDC4')
+const levelColor = computed(() => props.difficulty.color || 'var(--mint)')
 
 function handleSelect() {
   if (!props.isLocked) {
@@ -112,7 +112,7 @@ function handleSelect() {
 }
 
 .is-completed {
-  border-left: 5px solid #00D084;
+  border-left: 5px solid var(--success);
 }
 
 .level-badge {
@@ -156,14 +156,14 @@ function handleSelect() {
 }
 
 .star.active {
-  color: #FFB347;
-  fill: #FFB347;
+  color: var(--warning);
+  fill: var(--warning);
 }
 
 .accuracy {
   font-size: var(--font-md);
   font-weight: 700;
-  color: #00D084;
+  color: var(--success);
 }
 
 .new-tag {
@@ -189,7 +189,7 @@ function handleSelect() {
 }
 
 .icon-completed {
-  color: #00D084;
+  color: var(--success);
 }
 
 .icon-locked {

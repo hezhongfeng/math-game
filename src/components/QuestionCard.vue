@@ -152,13 +152,13 @@ const answerDisplay = computed(() => {
 }
 
 .answer.is-correct {
-  color: #00D084;
-  border-color: #00D084;
+  color: var(--success);
+  border-color: var(--success);
 }
 
 .answer.is-wrong {
-  color: #FF7B54;
-  border-color: #FF7B54;
+  color: var(--coral);
+  border-color: var(--coral);
 }
 
 @media (min-width: 768px) {

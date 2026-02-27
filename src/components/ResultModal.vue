@@ -238,7 +238,7 @@ function handleHome() {
 }
 
 .star-active {
-  color: #FFB347;
+  color: var(--warning);
   filter: drop-shadow(0 0 10px rgba(255, 179, 71, 0.5));
   animation: starAppear 0.4s ease both;
 }
@@ -297,8 +297,8 @@ function handleHome() {
 }
 
 .stat-icon.coral { background: var(--coral); }
-.stat-icon.green { background: #00D084; }
-.stat-icon.yellow { background: #FFB347; }
+.stat-icon.green { background: var(--success); }
+.stat-icon.yellow { background: var(--warning); }
 .stat-icon.purple { background: #A55EEA; }
 
 .stat-info {

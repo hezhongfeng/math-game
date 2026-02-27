@@ -32,6 +32,7 @@ if (!difficulty) {
 const settingsStore = useSettingsStore()
 const { updateBestScore } = useStorage()
 const { playSound } = useSound()
+const { error: showError } = useToast()
 
 // 游戏状态
 const game = useGame(difficulty)
@@ -131,13 +132,15 @@ async function initGame() {
   isLoading.value = false
 }
 
-  const { error: showError } = useToast()
+
+
+
 // 提交答案 - 带防抖
 function submitAnswer() {
   if (isWaiting.value || !userAnswer.value || userAnswer.value.trim() === '') {
     // 用户尝试提交空答案，显示提示
-    showError('请先输入答案');
-    return;
+    showError('请先输入答案')
+    return
   }
   const now = Date.now()
   if (now - lastSubmitTime.value < SUBMIT_DEBOUNCE) return
@@ -161,13 +164,14 @@ function submitAnswer() {
 
   // 统一反馈状态管理
   if (correct) {
-    currentFeedbackState.value = 'correct-auto';
+    currentFeedbackState.value = 'correct-auto'
     feedbackTimeout = setTimeout(() => {
-      handleNextQuestion();
-    }, GAME_CONFIG.FEEDBACK_DELAY);
+      handleNextQuestion()
+    }, GAME_CONFIG.FEEDBACK_DELAY)
   } else {
-    currentFeedbackState.value = 'incorrect-wait';
+    currentFeedbackState.value = 'incorrect-wait'
   }
+}
 
 // 处理输入 - 带防抖
 function handleInput(num) {
@@ -179,11 +183,12 @@ function handleInput(num) {
     userAnswer.value += num
   } else {
     // 输入已达到最大长度限制，提供用户反馈
-    playSound('wrong'); // 播放错误音效
+    playSound('wrong') // 播放错误音效
     // 可以考虑添加一个轻微的触觉反馈
     if (navigator.vibrate) {
-      navigator.vibrate(30); // 短震动反馈
+      navigator.vibrate(30) // 短震动反馈
     }
+  }
 }
 
 // 处理删除 - 带防抖
@@ -271,23 +276,24 @@ function handleKeyPress(e) {
 }
 
 onMounted(() => {
-  settingsStore.loadSettings()
-  initGame()
-  window.addEventListener('keydown', handleKeyPress)
-})
+  settingsStore.loadSettings();
+  initGame();
+  window.addEventListener('keydown', handleKeyPress);
+});
 
 // onUnmounted 应该在顶层，不嵌套在 onMounted 内
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyPress)
-  stopQuestionTimer() // 清理计时器
-  stopGameTimeUpdater() // 清理游戏时间更新器
+  window.removeEventListener('keydown', handleKeyPress);
+  stopQuestionTimer(); // 清理计时器
+  stopGameTimeUpdater(); // 清理游戏时间更新器
   if (feedbackTimeout) {
-    clearTimeout(feedbackTimeout)
-    feedbackTimeout = null
+    clearTimeout(feedbackTimeout);
+    feedbackTimeout = null;
   }
-  settingsStore.saveSettings()
-})
+  settingsStore.saveSettings();
+});
 </script>
+
 
 <template>
   <div v-if="difficulty" class="page">

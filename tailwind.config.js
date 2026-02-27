@@ -14,7 +14,134 @@ export default {
     },
     extend: {
       colors: {
+      colors: {
         game: {
+          primary: {
+            DEFAULT: '#FF6B6B',        // 活力珊瑚粉 - 主要按钮
+            light: '#FF9AA2',         // 浅珊瑚色 - 柔和强调
+            lighter: '#FFB3B8',
+            dark: '#E84E4E',          // 深珊瑚色 - 按钮悬停
+            50: '#FFF5F5',
+            100: '#FFE6E6',
+            200: '#FFCCCC',
+            300: '#FFB3B3',
+            400: '#FF9999',
+            500: '#FF6B6B',
+            600: '#E84E4E',
+            700: '#C83E3E',
+            800: '#A83030',
+            900: '#882424',
+          },
+          secondary: {
+            DEFAULT: '#4ECDC4',       // 薄荷蓝 - 辅助色
+            light: '#88D8D0',       // 浅薄荷
+            lighter: '#A3DFD8',
+            dark: '#3DBEB5',          // 深薄荷
+            50: '#F0FAFA',
+            100: '#E0F5F5',
+            200: '#C0EAEA',
+            300: '#A0DFDF',
+            400: '#80D4D4',
+            500: '#4ECDC4',
+            600: '#3DBEB5',
+            700: '#2DAF9F',
+            800: '#1D9A8A',
+            900: '#127A6E',
+          },
+          accent: {
+            DEFAULT: '#FFE66D',       // 阳光黄 - 强调、奖励
+            light: '#FFF4C3',       // 浅阳光黄
+            lighter: '#FFF6CD',
+            dark: '#FFD43B',          // 深阳光黄
+            50: '#FFFCF0',
+            100: '#FFF9E1',
+            200: '#FFF3C2',
+            300: '#FFEDB3',
+            400: '#FFE694',
+            500: '#FFE66D',
+            600: '#FFD43B',
+            700: '#E6B800',
+            800: '#B39000',
+            900: '#806800',
+          },
+          // 成功状态 - 草绿色
+          success: {
+            DEFAULT: '#96CEB4',       // 草绿色
+            light: '#C1EAC5',       // 浅草绿
+            lighter: '#D0F0DA',
+            dark: '#6CB694',          // 深草绿
+            50: '#F0FAF5',
+            100: '#E0F5EA',
+            200: '#C0EAD9',
+            300: '#A0DFC9',
+            400: '#80D4B8',
+            500: '#96CEB4',
+            600: '#6CB694',
+            700: '#529C7A',
+            800: '#3D7E5F',
+            900: '#295F45',
+          },
+          // 警告 - 温暖橙色
+          warning: {
+            DEFAULT: '#FE9E7D',       // 温暖橙色
+            light: '#FFB396',       // 浅温暖橙
+            lighter: '#FFC2AB',
+            dark: '#F27A54',          // 深温暖橙
+            50: '#FFFAF8',
+            100: '#FFF5F0',
+            200: '#FFE8DD',
+            300: '#FFD8C7',
+            400: '#FFC8B0',
+            500: '#FE9E7D',
+            600: '#F27A54',
+            700: '#D45C38',
+            800: '#B64224',
+            900: '#982D17',
+          },
+          // 成就 - 薰衣草紫
+          achievement: {
+            DEFAULT: '#D4A5A5',       // 薰衣草紫
+            light: '#E7CACA',       // 浅薰衣草
+            lighter: '#EDD7D7',
+            dark: '#B57C7C',          // 深薰衣草
+            50: '#FBF5F5',
+            100: '#F6EAEA',
+            200: '#EDDADA',
+            300: '#E4C9C9',
+            400: '#DBB9B9',
+            500: '#D4A5A5',
+            600: '#B57C7C',
+            700: '#965D5D',
+            800: '#774545',
+            900: '#582F2F',
+          },
+          // 中性色 - 自然系
+          neutral: {
+            bg: {
+              DEFAULT: '#FFFBF5',      // 奶油色
+              light: '#FFFFFF',
+              dark: '#FAF7F0',
+              cream: '#FFFBF5',
+            },
+            card: {
+              DEFAULT: '#FFFFFF',
+              secondary: '#FDFCF8',
+              elevated: '#FFFFFF',
+            },
+            text: {
+              primary: '#2C3E2C',
+              secondary: '#4A5D4A',
+              muted: '#6B7D6B',
+              placeholder: '#8B9D8B',
+            },
+            border: {
+              DEFAULT: '#D4D4B8',
+              light: '#E8E8D0',
+              dark: '#B8B8A0',
+              focus: '#4A7C59',
+            },
+          },
+        },
           primary: {
             DEFAULT: '#4A7C59',
             light: '#5D9A6E',
