@@ -1,5 +1,5 @@
 <script setup>
-import { Delete, Check } from 'lucide-vue-next'
+import { X, Check } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -51,7 +51,7 @@ function handleSubmit() {
         :disabled="disabled"
         class="num-btn btn-delete"
       >
-        <Delete :size="32" stroke-width="2.5" />
+        <X :size="32" stroke-width="2.5" />
       </button>
 
       <button

@@ -16,22 +16,22 @@ export default {
       colors: {
         // 简约科技风格配色系统
         game: {
-          // 主色调 - 电光蓝
+          // 主色调 - 柔和蓝
           primary: {
-            DEFAULT: '#0066FF',
-            light: '#3385FF',
-            lighter: '#66A3FF',
-            dark: '#0052CC',
-            50: '#E6F0FF',
-            100: '#CCE0FF',
-            200: '#99C2FF',
-            300: '#66A3FF',
-            400: '#3385FF',
-            500: '#0066FF',
-            600: '#0052CC',
-            700: '#003D99',
-            800: '#002966',
-            900: '#001433',
+            DEFAULT: '#4A90E2',
+            light: '#6BA3E8',
+            lighter: '#8CB6EE',
+            dark: '#3A7BC8',
+            50: '#EBF3FC',
+            100: '#D7E7F9',
+            200: '#AFCFF3',
+            300: '#87B7ED',
+            400: '#6BA3E8',
+            500: '#4A90E2',
+            600: '#3A7BC8',
+            700: '#2A66AE',
+            800: '#1A5194',
+            900: '#0A3C7A',
           },
           // 辅助色 - 能量绿
           secondary: {
@@ -242,13 +242,13 @@ export default {
         'game-lg': '0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
         'game-xl': '0 8px 32px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1)',
         // 霓虹发光效果 - 简约版
-        'glow-blue': '0 0 20px rgba(0, 102, 255, 0.4)',
-        'glow-green': '0 0 20px rgba(0, 208, 132, 0.4)',
+        'glow-blue': '0 0 20px rgba(74, 144, 226, 0.3)',
+        'glow-green': '0 0 20px rgba(0, 208, 132, 0.3)',
         'glow-yellow': '0 0 20px rgba(255, 199, 0, 0.4)',
         'glow-orange': '0 0 20px rgba(255, 107, 53, 0.4)',
         // 按钮阴影
-        'game-button': '0 6px 20px rgba(0, 102, 255, 0.3)',
-        'game-button-hover': '0 8px 24px rgba(0, 102, 255, 0.4)',
+        'game-button': '0 6px 20px rgba(74, 144, 226, 0.25)',
+        'game-button-hover': '0 8px 24px rgba(74, 144, 226, 0.35)',
         // 卡片阴影
         'game-card': '0 2px 8px rgba(0, 0, 0, 0.08)',
         'game-card-hover': '0 4px 16px rgba(0, 0, 0, 0.12)',

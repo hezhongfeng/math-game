@@ -5,10 +5,10 @@
 @layer base {
   :root {
     /* 简约科技风格配色 */
-    --hero-blue: #0066FF;
-    --hero-blue-light: #3385FF;
-    --hero-blue-dark: #0052CC;
-    --hero-blue-glow: rgba(0, 102, 255, 0.4);
+    --hero-blue: #4A90E2;
+    --hero-blue-light: #6BA3E8;
+    --hero-blue-dark: #3A7BC8;
+    --hero-blue-glow: rgba(74, 144, 226, 0.3);
 
     --win-green: #00D084;
     --win-green-light: #33D99D;
@@ -95,8 +95,8 @@
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
 
     /* 发光效果 - 科技感 */
-    --glow-blue: 0 0 20px rgba(0, 102, 255, 0.4);
-    --glow-green: 0 0 20px rgba(0, 208, 132, 0.4);
+    --glow-blue: 0 0 20px rgba(74, 144, 226, 0.3);
+    --glow-green: 0 0 20px rgba(0, 208, 132, 0.3);
     --glow-yellow: 0 0 20px rgba(255, 199, 0, 0.4);
 
     /* 字体大小系统 - 移动优先 */
