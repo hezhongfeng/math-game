@@ -200,30 +200,32 @@ function handleDelete() {
   userAnswer.value = userAnswer.value.slice(0, -1)
 }
 
-  function handleNextQuestion() {
-    if (game.currentIndex.value >= game.questions.value.length - 1) {
-      showAnswer.value = false;
-      isWaiting.value = false;
-      handleGameComplete();
-    } else {
-      questionKey.value++;
-      userAnswer.value = '';
-      showAnswer.value = false;
-      isWaiting.value = false;
-      game.nextQuestion();
-      startQuestionTimer(); // 重置题目计时器
-    }
+// 进入下一题
+function handleNextQuestion() {
+  if (game.currentIndex.value >= game.questions.value.length - 1) {
+    showAnswer.value = false
+    isWaiting.value = false
+    handleGameComplete()
+  } else {
+    questionKey.value++
+    userAnswer.value = ''
+    showAnswer.value = false
+    isWaiting.value = false
+    game.nextQuestion()
+    startQuestionTimer() // 重置题目计时器
   }
+}
+
 // 点击反馈遮罩处理
-  function handleFeedbackClick() {
-    // 只有错误答题时才允许点击关闭，正确答题由自动延迟处理
-    if (!isCorrect.value && currentFeedbackState.value === 'incorrect-wait') {
-      // 重置反馈状态
-      currentFeedbackState.value = 'idle';
-      // 调用统一的推进逻辑
-      handleNextQuestion();
-    }
+function handleFeedbackClick() {
+  // 只有错误答题时才允许点击关闭，正确答题由自动延迟处理
+  if (!isCorrect.value && currentFeedbackState.value === 'incorrect-wait') {
+    // 重置反馈状态
+    currentFeedbackState.value = 'idle'
+    // 调用统一的推进逻辑
+    handleNextQuestion()
   }
+}
 
 // 游戏完成处理
 function handleGameComplete() {
@@ -252,9 +254,14 @@ function handleRetry() {
   userAnswer.value = ''  // 重置用户输入
   showAnswer.value = false  // 重置答案显示状态
   isWaiting.value = false  // 重置等待状态
+  currentFeedbackState.value = 'idle'  // 重置反馈状态
   questionKey.value = 0    // 重置题目key确保重新渲染
   stopQuestionTimer()      // 停止计时器
   stopGameTimeUpdater()    // 停止游戏时间更新器
+  if (feedbackTimeout) {   // 清理反馈定时器
+    clearTimeout(feedbackTimeout)
+    feedbackTimeout = null
+  }
   initGame()
 }
 
