@@ -154,7 +154,6 @@ function generateQuestionByOperation(operation, min, max) {
  */
 export function generateQuestions(difficulty) {
   // 防御性检查：如果 difficulty 无效，返回空数组
-  // 防御性检查：如果 difficulty 无效，返回空数组
   if (!difficulty || !difficulty.range || !Array.isArray(difficulty.range) || difficulty.range.length !== 2) {
     console.warn('[generator] 无效的难度配置 - 缺少范围:', difficulty)
     return []

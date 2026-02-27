@@ -7,6 +7,7 @@ import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
+import { useToast } from '../composables/useToast'
 import { useSettingsStore } from '../stores/settings'
 import QuestionCard from '../components/QuestionCard.vue'
 import ScoreBoard from '../components/ScoreBoard.vue'
@@ -183,9 +184,6 @@ function handleInput(num) {
     if (navigator.vibrate) {
       navigator.vibrate(30); // 短震动反馈
     }
-  }
-    userAnswer.value += num
-  }
 }
 
 // 处理删除 - 带防抖
