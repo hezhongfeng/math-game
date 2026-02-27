@@ -100,7 +100,7 @@ const answerDisplay = computed(() => {
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: #F8F9FA;
+  background: var(--bg-light);
   border-radius: var(--radius-full);
   font-size: var(--font-md);
   font-weight: 700;
@@ -140,15 +140,15 @@ const answerDisplay = computed(() => {
   min-width: 72px;
   text-align: center;
   padding: 8px 12px;
-  background: #F8F9FA;
+  background: var(--bg-light);
   border-radius: var(--radius-md);
-  border: 3px solid #E8E8E8;
+  border: 3px solid var(--border-light);
   font-variant-numeric: tabular-nums;
   transition: all 0.2s ease;
 }
 
 .answer.is-placeholder {
-  color: #CCC;
+  color: var(--border-default);
 }
 
 .answer.is-correct {

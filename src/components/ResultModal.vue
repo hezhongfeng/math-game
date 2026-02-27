@@ -188,7 +188,7 @@ function handleHome() {
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: linear-gradient(145deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(145deg, var(--energy-yellow) 0%, var(--warning-orange) 100%);
   color: white;
   font-size: var(--font-md);
   font-weight: 800;
@@ -239,12 +239,12 @@ function handleHome() {
 
 .star-active {
   color: var(--warning);
-  filter: drop-shadow(0 0 10px rgba(255, 179, 71, 0.5));
+  filter: drop-shadow(0 0 10px rgba(255, 199, 0, 0.4));
   animation: starAppear 0.4s ease both;
 }
 
 .star-inactive {
-  color: #E8E8E8;
+  color: var(--border-light);
 }
 
 @keyframes starAppear {
@@ -263,7 +263,7 @@ function handleHome() {
 
 /* 数据统计 */
 .stats-box {
-  background: #F8F9FA;
+  background: var(--bg-light);
   border-radius: var(--radius-lg);
   padding: 24px;
   margin-bottom: 28px;
@@ -299,7 +299,7 @@ function handleHome() {
 .stat-icon.coral { background: var(--coral); }
 .stat-icon.green { background: var(--success); }
 .stat-icon.yellow { background: var(--warning); }
-.stat-icon.purple { background: #A55EEA; }
+.stat-icon.purple { background: var(--hero-blue-light); }
 
 .stat-info {
   text-align: left;
@@ -360,7 +360,7 @@ function handleHome() {
 .btn-home {
   background: var(--white);
   color: var(--text-gray);
-  border: 3px solid #E8E8E8;
+  border: 3px solid var(--border-light);
 }
 
 .btn-home:hover {

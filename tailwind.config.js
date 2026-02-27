@@ -246,8 +246,6 @@ export default {
         'glow-green': '0 0 20px rgba(0, 208, 132, 0.3)',
         'glow-yellow': '0 0 20px rgba(255, 199, 0, 0.3)',
         'glow-orange': '0 0 20px rgba(255, 107, 53, 0.3)',
-        'glow-yellow': '0 0 20px rgba(255, 199, 0, 0.4)',
-        'glow-orange': '0 0 20px rgba(255, 107, 53, 0.4)',
         // 按钮阴影
         'game-button': '0 6px 20px rgba(74, 144, 226, 0.25)',
         'game-button-hover': '0 8px 24px rgba(74, 144, 226, 0.35)',
