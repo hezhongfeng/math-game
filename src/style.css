@@ -4,122 +4,122 @@
 
 @layer base {
   :root {
-    --coral: #FF6B6B;        /* 活力珊瑚粉 - 主要按钮 */
-    --coral-dark: #E84E4E;   /* 深珊瑚色 - 按钮悬停 */
-    --coral-light: #FF9AA2;  /* 浅珊瑚色 - 柔和强调 */
-    
-    --mint: #4ECDC4;       /* 薄荷蓝 - 辅助色 */
-    --mint-dark: #3DBEB5;   /* 深薄荷 - 辅助按钮悬停 */
-    --mint-light: #88D8D0;  /* 浅薄荷 - 背景色 */
-    
-    --sun-yellow: #FFE66D; /* 阳光黄 - 强调、奖励 */
-    --sun-yellow-dark: #FFD43B; /* 深阳光黄 */
-    --sun-yellow-light: #FFF4C3; /* 浅阳光黄 */
-    
-    --grass-green: #96CEB4; /* 草绿色 - 正确反馈 */
-    --grass-green-dark: #6CB694; /* 深草绿 */
-    --grass-green-light: #C1EAC5; /* 浅草绿 */
-    
-    --orange-warm: #FE9E7D; /* 温暖橙色 - 错误反馈 */
-    --orange-warm-dark: #F27A54; /* 深温暖橙 */
-    --orange-warm-light: #FFB396; /* 浅温暖橙 */
-    
-    --lavender: #D4A5A5;   /* 薰衣草紫 - 成就 */
-    --lavender-dark: #B57C7C; /* 深薰衣草 */
-    --lavender-light: #E7CACA; /* 浅薰衣草 */
-    
-    --sky-blue: #87CEEB;   /* 天空蓝 - 背景区块 */
-    --sky-blue-dark: #5B9BD5; /* 深天空蓝 */
-    --sky-blue-light: #B6D7FF; /* 浅天空蓝 */
-    
-    --cream: #FFFBF5;      /* 更柔和的奶油色背景 */
+    /* 简约科技风格配色 */
+    --hero-blue: #0066FF;
+    --hero-blue-light: #3385FF;
+    --hero-blue-dark: #0052CC;
+    --hero-blue-glow: rgba(0, 102, 255, 0.4);
+
+    --win-green: #00D084;
+    --win-green-light: #33D99D;
+    --win-green-dark: #00A86B;
+    --win-green-glow: rgba(0, 208, 132, 0.4);
+
+    --energy-yellow: #FFC700;
+    --energy-yellow-light: #FFD633;
+    --energy-yellow-dark: #E6B300;
+    --energy-yellow-glow: rgba(255, 199, 0, 0.4);
+
+    --warning-orange: #FF6B35;
+    --warning-orange-light: #FF8A5D;
+    --warning-orange-dark: #E65A24;
+
+    --error-red: #FF4757;
+    --error-red-light: #FF6B79;
+    --error-red-dark: '#E63344';
+
+    /* 中性色 */
+    --bg-light: #F5F7FA;
+    --bg-white: #FFFFFF;
+    --bg-dark: #E8ECF1;
+
+    --text-primary: #1A1A1A;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+
+    --border-light: #E5E5E5;
+    --border-default: #CCCCCC;
+
+    /* 游戏映射 - 兼容现有代码 */
+    --game-primary: var(--hero-blue);
+    --game-primary-light: var(--hero-blue-light);
+    --game-primary-dark: var(--hero-blue-dark);
+
+    --game-secondary: var(--win-green);
+    --game-secondary-light: var(--win-green-light);
+    --game-secondary-dark: var(--win-green-dark);
+
+    --game-accent: var(--energy-yellow);
+    --game-accent-light: var(--energy-yellow-light);
+    --game-accent-dark: var(--energy-yellow-dark);
+
+    --game-success: var(--win-green);
+    --game-warning: var(--warning-orange);
+    --game-error: var(--error-red);
+
+    --game-bg: var(--bg-light);
+    --game-bg-light: var(--bg-white);
+    --game-bg-dark: var(--bg-dark);
+
+    --game-card: var(--bg-white);
+    --game-text: var(--text-primary);
+    --game-text-secondary: var(--text-secondary);
+
+    --coral: var(--hero-blue);  /* 兼容旧代码 */
+    --coral-dark: var(--hero-blue-dark);
+    --coral-light: var(--hero-blue-light);
+
+    --mint: var(--win-green);  /* 兼容旧代码 */
+    --mint-dark: var(--win-green-dark);
+    --mint-light: var(--win-green-light);
+
+    --text-dark: var(--text-primary);
+    --text-gray: var(--text-secondary);
+
+    --success: var(--win-green);
+    --warning: var(--warning-orange);
+
     --white: #FFFFFF;
-    
-    
-    --text-dark: #2D3436;
-    --text-gray: #636E72;
-    --text-light: #B2BEC3;
-    
-    --success: var(--grass-green);      /* 正确答案 */
-    --success-dark: var(--grass-green-dark);
-    --success-light: var(--grass-green-light);
-    --warning: var(--orange-warm);       /* 错误答案 */
-    --warning-dark: var(--orange-warm-dark);
-    --warning-light: var(--orange-warm-light);
-    
-    /* 游戏映射 */
-    --game-primary: var(--coral);          /* 主要操作 */
-    --game-primary-dark: var(--coral-dark);
-    --game-primary-light: var(--coral-light);
-    --game-secondary: var(--mint);         /* 次要操作 */
-    --game-secondary-dark: var(--mint-dark);
-    --game-secondary-light: var(--mint-light);
-    --game-accent: var(--sun-yellow);      /* 强调色 */
-    --game-accent-dark: var(--sun-yellow-dark);
-    --game-accent-light: var(--sun-yellow-light);
-    --game-success: var(--success);        /* 成功反馈 */
-    --game-warning: var(--warning);       /* 警告反馈 */
-    --game-achievement: var(--lavender);  /* 成就解锁 */
-    --game-bg: var(--cream);              /* 主背景 */
-    --game-bg-light: var(--white);        /* 浅背景 */
-    --game-bg-dark: var(--sky-blue-light); /* 深背景 */
-    --game-card: var(--white);            /* 卡片背景 */
-    --game-text: var(--text-dark);        /* 主文字 */
-    --game-text-secondary: var(--text-gray); /* 次要文字 */
-    --warning: #FFB347;
-    
-    /* 游戏映射 */
-    --game-primary: var(--coral);
-    --game-primary-dark: var(--coral-dark);
-    --game-success: var(--success);
-    --game-warning: var(--warning);
-    
-    --game-bg: var(--cream);
-    --game-bg-light: var(--white);
-    --game-card: var(--white);
-    --game-text: var(--text-dark);
-    --game-text-secondary: var(--text-gray);
-    
-    /* 圆角 - 圆润友好 */
+    --cream: #F5F7FA;
+
+    /* 圆角 - 简约 */
     --radius-sm: 12px;
-    --radius-md: 20px;
-    --radius-lg: 24px;
-    --radius-xl: 28px;
+    --radius-md: 16px;
+    --radius-lg: 20px;
+    --radius-xl: 24px;
     --radius-full: 9999px;
-    
-    /* 阴影 - 柔和简单 */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
-    
+
+    /* 阴影 - 简约 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+    /* 发光效果 - 科技感 */
+    --glow-blue: 0 0 20px rgba(0, 102, 255, 0.4);
+    --glow-green: 0 0 20px rgba(0, 208, 132, 0.4);
+    --glow-yellow: 0 0 20px rgba(255, 199, 0, 0.4);
+
     /* 字体大小系统 - 移动优先 */
-    --font-hero: 48px;        /* 超大标题 */
-    --font-h1: 36px;          /* 大标题 */
-    --font-h2: 28px;          /* 中标题 */
-    --font-h3: 22px;          /* 小标题 */
-    --font-xl: 32px;          /* 超大号文字 */
-    --font-lg: 24px;          /* 大号文字 */
-    --font-md: 18px;          /* 中号文字 */
-    --font-base: 16px;        /* 常规文字 */
-    --font-sm: 14px;          /* 小号文字 */
-    
-    /* 动画时长 - 完整的层级系统 */
-    --duration-micro: 100ms;      /* 微交互：按钮点击 */
-    --duration-fast: 150ms;       /* 快速：颜色变化 */
-    --duration-normal: 300ms;     /* 常规：过渡动画 */
-    --duration-macro: 400ms;      /* 宏观：组件动画 */
-    --duration-emphasis: 500ms;   /* 强调：重要反馈 */
-    --duration-celebrate: 800ms;  /* 庆祝：成功动画 */
-    --duration-bounce: 600ms;     /* 弹性：跳跃动画 */
-    
-    /* 动画缓动函数 */
-    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);     /* 标准 */
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* 弹性 */
-    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 弹跳 */
-    --ease-out: cubic-bezier(0, 0, 0.2, 1);            /* 减速 */
-    --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);     /* 加速 */
-    --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);     /* 减速 */
-    --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6); /* 弹性 */
+    --font-hero: 48px;
+    --font-h1: 36px;
+    --font-h2: 28px;
+    --font-h3: 22px;
+    --font-xl: 32px;
+    --font-lg: 24px;
+    --font-md: 18px;
+    --font-base: 16px;
+    --font-sm: 14px;
+
+    /* 动画时长 - 简约 */
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-macro: 400ms;
+    --duration-emphasis: 500ms;
+
+    /* 动画缓动函数 - 简约 */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
   }
 
   * {
@@ -130,13 +130,13 @@
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    background: var(--cream);
+    background: var(--bg-light);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
     line-height: 1.5;
     touch-action: manipulation;
-    color: var(--text-dark);
+    color: var(--text-primary);
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -147,141 +147,93 @@
 }
 
 /* ============================================
-   Apple 动画系统 - iOS 标准缓动
+   简约动效系统 - Minimalist Animation
    ============================================ */
 
-/* Micro 动画 - 150ms - 按钮点击、状态切换 */
+/* 入场动画 */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 交互反馈动画 */
 @keyframes scale-press {
   0% { transform: scale(1); }
   100% { transform: scale(0.96); }
 }
 
-@keyframes scale-release {
-  0% { transform: scale(0.96); }
-  100% { transform: scale(1); }
-}
-
-/* Macro 动画 - 300ms - 页面过渡、卡片展开 */
-@keyframes slide-up-fade {
-  0% { 
-    opacity: 0; 
-    transform: translateY(20px) scale(0.98); 
-  }
-  100% { 
-    opacity: 1; 
-    transform: translateY(0) scale(1); 
-  }
-}
-
-@keyframes slide-down-fade {
-  0% { 
-    opacity: 1; 
-    transform: translateY(0) scale(1); 
-  }
-  100% { 
-    opacity: 0; 
-    transform: translateY(20px) scale(0.98); 
-  }
-}
-
-/* Emphasis 动画 - 500ms - 成功反馈、成就解锁 */
-@keyframes success-pulse {
-  0% { 
-    transform: scale(1); 
-    box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.4); 
-  }
-  50% { 
-    transform: scale(1.05); 
-    box-shadow: 0 0 0 20px rgba(52, 199, 89, 0); 
-  }
-  100% { 
-    transform: scale(1); 
-    box-shadow: 0 0 0 0 rgba(52, 199, 89, 0); 
-  }
-}
-
 @keyframes error-shake {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-8px); }
-  40% { transform: translateX(8px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-4px); }
 }
 
-@keyframes feedback-pop {
-  0% { 
-    opacity: 0; 
-    transform: scale(0.8); 
+/* 发光动画 - 科技感 */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 10px currentColor;
   }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.02); 
-  }
-  100% { 
-    opacity: 0; 
-    transform: scale(1); 
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
   }
 }
 
-/* Ambient 动画 - 3-8s - 背景元素 */
-@keyframes float-subtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-/* 交错进入动画 */
-@keyframes card-enter {
-  0% { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  100% { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
+@keyframes successGlow {
+  0% { box-shadow: 0 0 0 rgba(0, 208, 132, 0); }
+  50% { box-shadow: 0 0 20px rgba(0, 208, 132, 0.6); }
+  100% { box-shadow: 0 0 0 rgba(0, 208, 132, 0); }
 }
 
 /* 应用类 */
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-pop {
+  animation: pop var(--duration-normal) var(--ease-spring);
+}
+
 .animate-scale-press {
-  animation: scale-press var(--duration-micro) var(--ease-standard) forwards;
+  animation: scale-press var(--duration-fast) var(--ease-standard) forwards;
 }
 
-.animate-slide-up {
-  animation: slide-up-fade var(--duration-macro) var(--ease-decelerate) forwards;
+.animate-error-shake {
+  animation: error-shake var(--duration-macro) var(--ease-standard);
 }
 
-.animate-slide-down {
-  animation: slide-down-fade var(--duration-macro) var(--ease-accelerate) forwards;
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
 }
 
-.animate-success {
-  animation: success-pulse var(--duration-emphasis) var(--ease-spring);
+.animate-success-glow {
+  animation: successGlow var(--duration-emphasis) var(--ease-standard);
 }
-
-.animate-error {
-  animation: error-shake var(--duration-emphasis) var(--ease-standard);
-}
-
-.animate-feedback {
-  animation: feedback-pop var(--duration-emphasis) var(--ease-spring);
-}
-
-.animate-float {
-  animation: float-subtle 4s ease-in-out infinite;
-}
-
-/* 交错动画延迟 */
-.stagger-1 { animation-delay: 0ms; }
-.stagger-2 { animation-delay: 50ms; }
-.stagger-3 { animation-delay: 100ms; }
-.stagger-4 { animation-delay: 150ms; }
-.stagger-5 { animation-delay: 200ms; }
-.stagger-6 { animation-delay: 250ms; }
 
 /* Vue Transition 组件标准过渡 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity var(--duration-micro) var(--ease-standard);
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
 .fade-enter-from,
@@ -290,153 +242,17 @@
 }
 
 .slide-up-enter-active {
-  transition: all var(--duration-macro) var(--ease-decelerate);
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 .slide-up-leave-active {
-  transition: all var(--duration-macro) var(--ease-accelerate);
+  transition: all var(--duration-normal) var(--ease-standard);
 }
 
 .slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
   transform: translateY(20px);
-}
-
-/* ============================================
-   科技感动画系统 - Tech Animations
-   ============================================ */
-
-/* 能量脉冲 - 霓虹发光效果 */
-@keyframes energyPulse {
-  0%, 100% { 
-    box-shadow: 0 0 20px var(--hero-blue-glow), 0 0 40px var(--hero-blue-glow);
-  }
-  50% { 
-    box-shadow: 0 0 30px var(--hero-blue-glow), 0 0 60px var(--hero-blue-glow), 0 0 80px var(--hero-blue-glow);
-  }
-}
-
-/* 扫描线效果 */
-@keyframes scanLine {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(100%); opacity: 0; }
-}
-
-/* 数字跳动 - 得分增加 */
-@keyframes numberPop {
-  0% { transform: scale(1); filter: brightness(1); }
-  50% { transform: scale(1.5); filter: brightness(1.5); }
-  100% { transform: scale(1); filter: brightness(1); }
-}
-
-/* 激光发射 */
-@keyframes laserShoot {
-  0% { width: 0; opacity: 0; }
-  50% { opacity: 1; }
-  100% { width: 100%; opacity: 0; }
-}
-
-/* 能量充能 */
-@keyframes powerUp {
-  0% { transform: scale(0.8); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* 科技感成功动画 */
-@keyframes techSuccess {
-  0% { 
-    transform: scale(0.8); 
-    opacity: 0;
-    filter: hue-rotate(0deg);
-  }
-  50% { 
-    transform: scale(1.1); 
-    filter: hue-rotate(30deg) brightness(1.3);
-  }
-  100% { 
-    transform: scale(1); 
-    opacity: 1;
-    filter: hue-rotate(0deg);
-  }
-}
-
-/* 数据流动 */
-@keyframes dataFlow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
-/* 闪烁光标 */
-@keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-/* 浮动动画 - mascot */
-@keyframes mascotFloat {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-15px) rotate(3deg); }
-}
-
-/* 震动反馈 - 科技感 */
-@keyframes techShake {
-  0%, 100% { transform: translateX(0) rotate(0deg); }
-  20% { transform: translateX(-6px) rotate(-1deg); }
-  40% { transform: translateX(6px) rotate(1deg); }
-  60% { transform: translateX(-3px) rotate(-0.5deg); }
-  80% { transform: translateX(3px) rotate(0.5deg); }
-}
-
-/* 边框发光流动 */
-@keyframes borderGlow {
-  0%, 100% { border-color: rgba(0, 102, 255, 0.3); }
-  50% { border-color: rgba(0, 102, 255, 0.8); }
-}
-
-/* 应用类 */
-.animate-energy-pulse {
-  animation: energyPulse 2s ease-in-out infinite;
-}
-
-.animate-scan-line {
-  animation: scanLine 2s linear infinite;
-}
-
-.animate-number-pop {
-  animation: numberPop var(--duration-celebrate) var(--ease-bounce);
-}
-
-.animate-power-up {
-  animation: powerUp var(--duration-celebrate) var(--ease-elastic);
-}
-
-.animate-tech-success {
-  animation: techSuccess var(--duration-celebrate) var(--ease-elastic);
-}
-
-.animate-data-flow {
-  animation: dataFlow 3s linear infinite;
-  background-size: 200% 100%;
-}
-
-.animate-cursor-blink {
-  animation: cursorBlink 1s ease-in-out infinite;
-}
-
-.animate-mascot-float {
-  animation: mascotFloat 3s ease-in-out infinite;
-}
-
-.animate-tech-shake {
-  animation: techShake var(--duration-bounce) var(--ease-standard);
-}
-
-.animate-border-glow {
-  animation: borderGlow 2s ease-in-out infinite;
 }
 
 @layer utilities {
@@ -474,7 +290,7 @@
 
   @keyframes scorePop {
     0% { transform: scale(1); }
-    50% { transform: scale(1.3); color: var(--game-success); }
+    50% { transform: scale(1.3); color: var(--win-green); }
     100% { transform: scale(1); }
   }
 
@@ -488,152 +304,20 @@
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
   }
-
-  /* 微交互 - 按钮波纹 */
-  .btn-ripple {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-ripple::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s ease, height 0.3s ease;
-  }
-
-  .btn-ripple:active::after {
-    width: 200%;
-    height: 200%;
-  }
 }
 
 @layer components {
   /* ============================================
-     科技感按钮系统 - Tech Button System
+     简约按钮系统 - Minimalist Buttons
      ============================================ */
 
-  /* 主按钮 - 电光蓝霓虹 */
+  /* 主按钮 - 电光蓝 */
   .btn-primary {
     @apply relative font-bold cursor-pointer touch-manipulation;
     @apply flex items-center justify-center;
     height: 56px;
     padding: 0 32px;
-    background: linear-gradient(145deg, var(--hero-blue-light) 0%, var(--hero-blue) 50%, var(--hero-blue-dark) 100%);
-    border-radius: var(--radius-sharp-md);
-    color: white;
-    font-size: 18px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    border: 2px solid rgba(0, 102, 255, 0.5);
-    box-shadow: var(--shadow-neon-blue);
-    transition: all var(--duration-micro) var(--ease-standard);
-    will-change: transform;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 0 30px rgba(0, 102, 255, 0.6), 0 0 60px rgba(0, 102, 255, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .btn-primary:active {
-    transform: scale(0.96) translateY(0);
-    box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
-  }
-
-  /* 次要按钮 - 深色面板 */
-  .btn-secondary {
-    @apply relative font-bold cursor-pointer touch-manipulation;
-    @apply flex items-center justify-center;
-    height: 56px;
-    padding: 0 32px;
-    background: var(--bg-dark-panel);
-    border-radius: var(--radius-sharp-md);
-    color: var(--hero-blue);
-    font-size: 18px;
-    letter-spacing: 0.02em;
-    border: 2px solid rgba(0, 102, 255, 0.3);
-    transition: all var(--duration-micro) var(--ease-standard);
-    will-change: transform;
-  }
-
-  .btn-secondary:hover {
-    background: var(--bg-dark-slate);
-    border-color: rgba(0, 102, 255, 0.6);
-    box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
-  }
-
-  .btn-secondary:active {
-    transform: scale(0.96);
-  }
-
-  /* 成功按钮 - 科技绿霓虹 */
-  .btn-success {
-    @apply relative font-bold cursor-pointer touch-manipulation;
-    @apply flex items-center justify-center;
-    height: 56px;
-    padding: 0 32px;
-    background: linear-gradient(145deg, var(--win-green-light) 0%, var(--win-green) 50%, var(--win-green-dark) 100%);
-    border-radius: var(--radius-sharp-md);
-    color: white;
-    font-size: 18px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    border: 2px solid rgba(0, 208, 132, 0.5);
-    box-shadow: var(--shadow-neon-green);
-    transition: all var(--duration-micro) var(--ease-standard);
-    will-change: transform;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  }
-
-  .btn-success:hover {
-    box-shadow: 0 0 30px rgba(0, 208, 132, 0.6), 0 0 60px rgba(0, 208, 132, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .btn-success:active {
-    transform: scale(0.96) translateY(0);
-  }
-
-  /* 能量按钮 - 闪电黄 */
-  .btn-energy {
-    @apply relative font-bold cursor-pointer touch-manipulation;
-    @apply flex items-center justify-center;
-    height: 56px;
-    padding: 0 32px;
-    background: linear-gradient(145deg, var(--energy-yellow-light) 0%, var(--energy-yellow) 50%, var(--energy-yellow-dark) 100%);
-    border-radius: var(--radius-sharp-md);
-    color: var(--bg-dark-navy);
-    font-size: 18px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    border: 2px solid rgba(255, 199, 0, 0.5);
-    box-shadow: var(--shadow-neon-yellow);
-    transition: all var(--duration-micro) var(--ease-standard);
-    will-change: transform;
-  }
-
-  .btn-energy:hover {
-    box-shadow: 0 0 30px rgba(255, 199, 0, 0.6), 0 0 60px rgba(255, 199, 0, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .btn-energy:active {
-    transform: scale(0.96) translateY(0);
-  }
-
-  /* 友好按钮 */
-  .btn-primary {
-    height: 56px;
-    padding: 0 32px;
-    background: var(--coral);
+    background: var(--hero-blue);
     border-radius: var(--radius-md);
     color: white;
     font-size: 18px;
@@ -641,40 +325,69 @@
     border: none;
     box-shadow: var(--shadow-md);
     transition: all var(--duration-fast) var(--ease-out);
-    cursor: pointer;
   }
 
   .btn-primary:hover {
-    background: var(--coral-dark);
+    background: var(--hero-blue-dark);
+    box-shadow: var(--glow-blue), var(--shadow-lg);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
   }
 
   .btn-primary:active {
     transform: scale(0.98);
+    box-shadow: var(--shadow-sm);
   }
 
+  /* 次要按钮 */
   .btn-secondary {
     height: 56px;
     padding: 0 32px;
     background: var(--white);
     border-radius: var(--radius-md);
-    color: var(--coral);
+    color: var(--hero-blue);
     font-size: 18px;
     font-weight: 600;
-    border: 2px solid var(--coral);
+    border: 2px solid var(--hero-blue);
     transition: all var(--duration-fast) var(--ease-out);
     cursor: pointer;
   }
 
   .btn-secondary:hover {
-    background: var(--coral);
+    background: var(--hero-blue);
     color: white;
+    box-shadow: var(--glow-blue);
     transform: translateY(-2px);
   }
 
   .btn-secondary:active {
     transform: scale(0.98);
+  }
+
+  /* 成功按钮 - 能量绿 */
+  .btn-success {
+    @apply relative font-bold cursor-pointer touch-manipulation;
+    @apply flex items-center justify-center;
+    height: 56px;
+    padding: 0 32px;
+    background: var(--win-green);
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    box-shadow: var(--shadow-md);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .btn-success:hover {
+    background: var(--win-green-dark);
+    box-shadow: var(--glow-green), var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .btn-success:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-sm);
   }
 
   /* 数字按钮 */
@@ -686,25 +399,27 @@
     height: 72px;
     background: var(--white);
     border-radius: var(--radius-md);
-    color: var(--text-dark);
+    color: var(--text-primary);
     font-size: 28px;
     font-weight: 600;
-    border: 2px solid #E8E8E8;
+    border: 2px solid var(--border-light);
     box-shadow: var(--shadow-sm);
     transition: all var(--duration-fast) ease;
     cursor: pointer;
   }
 
   .btn-circular:hover {
-    border-color: var(--coral);
-    color: var(--coral);
+    border-color: var(--hero-blue);
+    color: var(--hero-blue);
+    box-shadow: var(--glow-blue);
+    transform: translateY(-2px);
   }
 
   .btn-circular:active {
     transform: scale(0.95);
-    background: var(--coral);
+    background: var(--hero-blue);
     color: white;
-    border-color: var(--coral);
+    border-color: var(--hero-blue);
   }
 
   /* 卡片系统 */
@@ -729,8 +444,8 @@
 
   /* 完成状态卡片 */
   .card-completed {
-    background: rgba(52, 199, 89, 0.1);
-    border-color: rgba(52, 199, 89, 0.3);
+    background: rgba(0, 208, 132, 0.1);
+    border-left: 4px solid var(--win-green);
   }
 
   /* 锁定状态卡片 */
@@ -748,13 +463,12 @@
 /* 尊重用户的减少动画偏好设置 */
 @media (prefers-reduced-motion: reduce) {
   /* 禁用所有装饰性动画 */
+  .animate-fade-in-up,
+  .animate-pop,
   .animate-scale-press,
-  .animate-slide-up,
-  .animate-slide-down,
-  .animate-success,
-  .animate-error,
-  .animate-feedback,
-  .animate-float {
+  .animate-error-shake,
+  .animate-glow,
+  .animate-success-glow {
     animation: none !important;
   }
 
@@ -763,20 +477,14 @@
   .btn-secondary:hover,
   .btn-success:hover,
   .btn-circular:hover,
-  .btn-circular-accent:hover,
-  .card-hover:hover,
-  .difficulty-card:hover,
-  .stat-card:hover {
+  .card-hover:hover {
     transform: none !important;
   }
 
   .btn-primary:active,
   .btn-secondary:active,
   .btn-success:active,
-  .btn-circular:active,
-  .btn-circular-accent:active,
-  .card-hover:active,
-  .difficulty-card:active {
+  .btn-circular:active {
     transform: none !important;
   }
 
@@ -787,7 +495,7 @@
   .slide-up-leave-active {
     transition: opacity 0.01ms ease !important;
   }
-  
+
   .slide-up-enter-from,
   .slide-up-leave-to {
     opacity: 0;
@@ -811,28 +519,25 @@
 
 @media (prefers-contrast: high) {
   :root {
-    --game-text: #0A0A0A;
-    --game-text-secondary: #1A1A1A;
-    --game-text-muted: #333333;
-    --game-border: #666666;
-    --game-border-focus: #000000;
+    --text-primary: #0A0A0A;
+    --text-secondary: #1A1A1A;
+    --text-muted: #333333;
+    --border-default: #666666;
+    --border-focus: #000000;
   }
 
   .btn-primary {
-    @apply border-2 border-black;
+    border: 2px solid black;
     box-shadow: 0 4px 0 0 #000000, 0 8px 16px rgba(0, 0, 0, 0.3);
   }
 
   .btn-secondary {
-    @apply border-2 border-black bg-white text-black;
+    border: 2px solid black;
+    background: white;
+    color: black;
   }
 
-  .level-card,
-  .stat-card {
-    border: 2px solid #000000;
-  }
-
-  .numpad-btn-clay {
+  .card {
     border: 2px solid #000000;
   }
 }
@@ -846,9 +551,7 @@
 .btn-secondary,
 .btn-success,
 .btn-circular,
-.btn-circular-accent,
-.card-hover,
-.difficulty-card {
+.card-hover {
   will-change: transform;
 }
 
@@ -858,10 +561,8 @@
 }
 
 /* 合成层优化 */
-.animate-slide-up,
-.animate-success,
-.animate-error,
-.question-card,
+.animate-fade-in-up,
+.animate-pop,
 .card-question {
   transform: translateZ(0);
   contain: layout style;
@@ -870,7 +571,7 @@
 /* 焦点指示器 */
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid var(--ios-blue);
+  outline: 3px solid var(--hero-blue);
   outline-offset: 4px;
   border-radius: var(--radius-sm);
 }

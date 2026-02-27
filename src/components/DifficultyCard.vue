@@ -95,11 +95,13 @@ function handleSelect() {
   box-shadow: var(--shadow-md);
   transition: all 0.2s ease;
   cursor: pointer;
+  border: 2px solid transparent;
 }
 
 .difficulty-card:hover:not(.is-locked) {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 102, 255, 0.2);
+  border-color: var(--hero-blue);
 }
 
 .difficulty-card:active:not(.is-locked) {
@@ -112,7 +114,12 @@ function handleSelect() {
 }
 
 .is-completed {
-  border-left: 5px solid var(--success);
+  border-left: 5px solid var(--win-green);
+}
+
+.is-completed:hover {
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 208, 132, 0.3);
+  border-color: var(--win-green);
 }
 
 .level-badge {
@@ -126,6 +133,7 @@ function handleSelect() {
   font-weight: 800;
   color: white;
   flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
 }
 
 .level-content {
@@ -135,7 +143,7 @@ function handleSelect() {
 .level-name {
   font-size: var(--font-h3);
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
@@ -156,23 +164,25 @@ function handleSelect() {
 }
 
 .star.active {
-  color: var(--warning);
-  fill: var(--warning);
+  color: var(--energy-yellow);
+  fill: var(--energy-yellow);
+  filter: drop-shadow(0 0 8px rgba(255, 199, 0, 0.5));
 }
 
 .accuracy {
   font-size: var(--font-md);
   font-weight: 700;
-  color: var(--success);
+  color: var(--win-green);
 }
 
 .new-tag {
   padding: 4px 12px;
-  background: var(--coral);
+  background: var(--hero-blue);
   color: white;
   font-size: var(--font-sm);
   font-weight: 800;
   border-radius: var(--radius-full);
+  box-shadow: 0 0 15px rgba(0, 102, 255, 0.3);
 }
 
 .lock-hint {
@@ -180,7 +190,7 @@ function handleSelect() {
   align-items: center;
   gap: 6px;
   font-size: var(--font-md);
-  color: var(--text-gray);
+  color: var(--text-secondary);
 }
 
 .level-action svg {
@@ -189,7 +199,7 @@ function handleSelect() {
 }
 
 .icon-completed {
-  color: var(--success);
+  color: var(--win-green);
 }
 
 .icon-locked {
@@ -201,7 +211,7 @@ function handleSelect() {
 }
 
 .difficulty-card:hover .icon-arrow {
-  color: var(--coral);
+  color: var(--hero-blue);
   transform: translateX(4px);
 }
 </style>

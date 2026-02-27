@@ -78,7 +78,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 24px 20px;
-  background: linear-gradient(180deg, #FFF9F5 0%, #FFF5F0 100%);
+  background: linear-gradient(180deg, #F5F7FA 0%, #E8ECF1 100%);
 }
 
 .content {
@@ -94,14 +94,14 @@ onMounted(() => {
 .logo {
   width: 100px;
   height: 100px;
-  background: linear-gradient(145deg, var(--coral-light) 0%, var(--coral) 100%);
+  background: linear-gradient(145deg, var(--hero-blue-light) 0%, var(--hero-blue) 100%);
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 28px;
   color: white;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 102, 255, 0.3);
   animation: bounce 2s ease infinite;
 }
 
@@ -113,13 +113,13 @@ onMounted(() => {
 .title {
   font-size: var(--font-hero);
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--text-primary);
   margin-bottom: 12px;
 }
 
 .subtitle {
   font-size: var(--font-lg);
-  color: var(--text-gray);
+  color: var(--text-secondary);
 }
 
 .stats {
@@ -158,23 +158,25 @@ onMounted(() => {
 }
 
 .stat-icon.coral {
-  background: var(--coral);
+  background: var(--hero-blue);
+  box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
 }
 
 .stat-icon.mint {
-  background: var(--mint);
+  background: var(--win-green);
+  box-shadow: 0 0 20px rgba(0, 208, 132, 0.4);
 }
 
 .stat-value {
   font-size: var(--font-h1);
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: var(--font-md);
-  color: var(--text-gray);
+  color: var(--text-secondary);
 }
 
 .actions {
@@ -189,21 +191,21 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: var(--coral);
+  background: var(--hero-blue);
   color: white;
   font-size: var(--font-h3);
   font-weight: 700;
   border: none;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 102, 255, 0.4);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-main:hover {
-  background: var(--coral-dark);
+  background: var(--hero-blue-dark);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl), 0 0 40px rgba(0, 102, 255, 0.5);
 }
 
 .btn-main:active {
@@ -217,19 +219,20 @@ onMounted(() => {
   justify-content: center;
   gap: 10px;
   background: var(--white);
-  color: var(--coral);
+  color: var(--hero-blue);
   font-size: var(--font-lg);
   font-weight: 700;
-  border: 3px solid var(--coral);
+  border: 3px solid var(--hero-blue);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background: var(--coral);
+  background: var(--hero-blue);
   color: white;
   transform: translateY(-3px);
+  box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
 }
 
 @media (min-width: 768px) {

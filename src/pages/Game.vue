@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw, Check } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -409,7 +409,7 @@ onUnmounted(() => {
 <style scoped>
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg) 50%, var(--game-bg-dark) 100%);
+  background: linear-gradient(180deg, #F5F7FA 0%, #E8ECF1 100%);
   display: flex;
   flex-direction: column;
   padding: 12px 12px 20px;
@@ -449,9 +449,7 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-radius: 16px;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
   margin: 0 4px 12px;
   padding-top: max(10px, env(safe-area-inset-top));
 }
@@ -463,16 +461,17 @@ onUnmounted(() => {
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: var(--game-bg-light);
-  color: var(--game-text-secondary);
+  background: var(--bg-light);
+  color: var(--text-secondary);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .nav-btn:hover {
-  background: var(--game-bg);
-  color: var(--game-primary-dark);
+  background: var(--hero-blue);
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
 }
 
 .nav-btn:active {
@@ -480,12 +479,14 @@ onUnmounted(() => {
 }
 
 .nav-btn-accent {
-  background: linear-gradient(135deg, var(--game-accent) 0%, var(--game-accent-dark) 100%);
+  background: linear-gradient(135deg, var(--energy-yellow) 0%, var(--energy-yellow-dark) 100%);
   color: white;
+  box-shadow: 0 0 20px rgba(255, 199, 0, 0.3);
 }
 
 .nav-btn-accent:hover {
-  background: linear-gradient(135deg, var(--game-accent-light) 0%, var(--game-accent) 100%);
+  background: linear-gradient(135deg, var(--energy-yellow-light) 0%, var(--energy-yellow) 100%);
+  box-shadow: 0 0 30px rgba(255, 199, 0, 0.4);
 }
 
 .title-group {
@@ -497,12 +498,12 @@ onUnmounted(() => {
 
 .title {
   font-weight: 700;
-  color: var(--game-text);
+  color: var(--text-primary);
   letter-spacing: 0.5px;
 }
 
 .subtitle {
-  color: var(--game-text-secondary);
+  color: var(--text-secondary);
   margin-top: 2px;
   font-weight: 500;
 }
@@ -529,14 +530,14 @@ onUnmounted(() => {
   .question-leave-active {
     transition: opacity 0.15s ease;
   }
-  
+
   .question-enter-from,
   .question-leave-to {
     transform: none;
   }
 }
 
-/* 答题反馈 - 友好活泼 */
+/* 答题反馈 - 简约科技风格 */
 .feedback-wrap {
   position: fixed;
   top: 0;
@@ -559,7 +560,7 @@ onUnmounted(() => {
   padding: 36px 28px;
   text-align: center;
   box-shadow: var(--shadow-lg);
-  animation: popIn 0.4s var(--ease-bounce);
+  animation: popIn 0.4s var(--ease-spring);
 }
 
 @keyframes popIn {
@@ -577,11 +578,13 @@ onUnmounted(() => {
 }
 
 .feedback-success {
-  border: 3px solid #00D084;
+  border: 3px solid var(--win-green);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 208, 132, 0.4);
 }
 
 .feedback-error {
-  border: 3px solid #FFB347;
+  border: 3px solid var(--warning-orange);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 107, 53, 0.4);
 }
 
 /* mascot 表情 */
@@ -619,16 +622,16 @@ onUnmounted(() => {
 }
 
 .feedback-title.success {
-  color: #00D084;
+  color: var(--win-green);
 }
 
 .feedback-title.error {
-  color: #FF7B54;
+  color: var(--warning-orange);
 }
 
 .feedback-desc {
   font-size: 16px;
-  color: var(--text-gray);
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -643,9 +646,10 @@ onUnmounted(() => {
 .correct-number {
   font-size: 72px;
   font-weight: 800;
-  color: #00D084;
+  color: var(--win-green);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
 }
 
 .feedback-success .correct-number {
@@ -654,18 +658,18 @@ onUnmounted(() => {
 
 .correct-label {
   font-size: 14px;
-  color: var(--text-gray);
+  color: var(--text-secondary);
 }
 
 .hint-auto {
   font-size: 13px;
-  color: #00D084;
+  color: var(--win-green);
   font-weight: 600;
 }
 
 .hint-btn {
   padding: 12px 28px;
-  background: var(--coral);
+  background: var(--hero-blue);
   color: white;
   font-size: 15px;
   font-weight: 600;
@@ -673,13 +677,13 @@ onUnmounted(() => {
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(0, 102, 255, 0.3);
 }
 
 .hint-btn:hover {
-  background: var(--coral-dark);
+  background: var(--hero-blue-dark);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 102, 255, 0.4);
 }
 
 .hint-btn:active {
@@ -692,7 +696,7 @@ onUnmounted(() => {
 }
 
 .feedback-leave-active .feedback-container {
-  transition: opacity var(--duration-fast) var(--ease-accelerate);
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
 .feedback-enter-from .feedback-container,
@@ -706,7 +710,7 @@ onUnmounted(() => {
 }
 
 .feedback-leave-active .feedback-overlay {
-  animation: feedbackHide var(--duration-fast) var(--ease-accelerate) forwards;
+  animation: feedbackHide var(--duration-fast) var(--ease-standard) forwards;
 }
 
 @keyframes feedbackShow {
@@ -761,7 +765,7 @@ onUnmounted(() => {
   position: absolute;
   inset: 0;
   border: 4px solid transparent;
-  border-top-color: var(--game-primary);
+  border-top-color: var(--hero-blue);
   border-radius: 50%;
   /* 加载动画可以无限循环，因为它是功能性的 */
   animation: spin 1s linear infinite;
@@ -771,7 +775,7 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: reduce) {
   .spinner-ring {
     animation: none;
-    border: 4px solid var(--game-primary);
+    border: 4px solid var(--hero-blue);
     opacity: 0.6;
   }
 }
@@ -783,18 +787,18 @@ onUnmounted(() => {
 .spinner-ring:nth-child(2) {
   animation-duration: 1.2s;
   animation-direction: reverse;
-  border-top-color: var(--game-success);
+  border-top-color: var(--win-green);
   inset: 8px;
 }
 
 .spinner-ring:nth-child(3) {
   animation-duration: 0.8s;
-  border-top-color: var(--game-accent);
+  border-top-color: var(--energy-yellow);
   inset: 16px;
 }
 
 .loading-text {
-  color: var(--game-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 

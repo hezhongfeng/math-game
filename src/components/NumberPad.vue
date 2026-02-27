@@ -101,9 +101,9 @@ function handleSubmit() {
   align-items: center;
   justify-content: center;
   background: var(--white);
-  border: 3px solid #F0F0F0;
+  border: 2px solid var(--border-light);
   border-radius: var(--radius-md);
-  color: var(--text-dark);
+  color: var(--text-primary);
   font-size: 42px;
   font-weight: 700;
   box-shadow: var(--shadow-sm);
@@ -112,37 +112,37 @@ function handleSubmit() {
 }
 
 .num-btn:hover {
-  border-color: var(--coral);
-  color: var(--coral);
+  border-color: var(--hero-blue);
+  color: var(--hero-blue);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(0, 102, 255, 0.3);
 }
 
 .num-btn:active {
   transform: scale(0.95);
-  background: var(--coral);
+  background: var(--hero-blue);
   color: white;
-  border-color: var(--coral);
+  border-color: var(--hero-blue);
 }
 
 /* 移动端优化：移除 hover 粘滞效果 */
 @media (hover: none) {
   .num-btn:hover {
-    border-color: #F0F0F0;
-    color: var(--text-dark);
+    border-color: var(--border-light);
+    color: var(--text-primary);
     transform: none;
     box-shadow: var(--shadow-sm);
   }
-  
+
   .btn-delete:hover {
-    background: #FFF5F3;
-    border-color: #FFE5E0;
-    color: var(--coral);
+    background: #FFF5F0;
+    border-color: #FFE5DC;
+    color: var(--warning-orange);
   }
-  
+
   .btn-submit:hover {
-    background: var(--mint);
-    border-color: var(--mint);
+    background: var(--win-green);
+    border-color: var(--win-green);
     color: white;
   }
 }
@@ -153,38 +153,41 @@ function handleSubmit() {
 }
 
 .btn-delete {
-  background: #FFF5F3;
-  border-color: #FFE5E0;
-  color: var(--coral);
+  background: #FFF5F0;
+  border-color: #FFE5DC;
+  color: var(--warning-orange);
 }
 
 .btn-delete:hover {
-  background: var(--coral);
+  background: var(--warning-orange);
   color: white;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
 }
 
 .btn-delete:active {
   transform: scale(0.95);
-  background: var(--coral-dark);
-  border-color: var(--coral-dark);
+  background: var(--warning-orange-dark);
+  border-color: var(--warning-orange-dark);
   color: white;
 }
 
 .btn-submit {
-  background: var(--mint);
-  border-color: var(--mint);
+  background: var(--win-green);
+  border-color: var(--win-green);
   color: white;
+  box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
 }
 
 .btn-submit:hover {
-  background: var(--mint-dark);
-  border-color: var(--mint-dark);
+  background: var(--win-green-dark);
+  border-color: var(--win-green-dark);
+  box-shadow: 0 0 30px rgba(0, 208, 132, 0.4);
 }
 
 .btn-submit:active {
   transform: scale(0.95);
-  background: var(--mint-darker, #00B36B);
-  border-color: var(--mint-darker, #00B36B);
+  background: var(--win-green-dark);
+  border-color: var(--win-green-dark);
 }
 
 @media (min-width: 768px) {

@@ -1,10 +1,36 @@
 # AGENTS.md
 
-> **⚠️ CRITICAL: This project is designed for mobile browsers ONLY.**
-> All code changes MUST be tested on mobile devices before merging.
-> Mobile-first is not optional - it's the core design requirement.
+> **⚠️ CRITICAL: This project follows MINIMALIST DESIGN PRINCIPLES.**
+> All UI/UX changes must be simple, functional, and purposeful.
+> Minimalist design is not optional - it's the core design philosophy.
 
 This guide helps agentic coding agents work effectively in this math-game repository.
+
+## 🎯 Core Design Principles
+
+### 1. Minimalist First
+- **Avoid over-decoration**: No unnecessary visual elements
+- **Function-driven**: Every animation, color, shape must have a clear purpose
+- **Restrained effects**: Use glow, shadow, gradients sparingly
+- **High contrast**: Ensure content readability is never compromised
+
+**What NOT to do:**
+- ❌ Complex 3D effects
+- ❌ Redundant decorative animations
+- ❌ Excessive gradients and textures
+- ❌ Complex storylines and characters
+
+**What to do:**
+- ✅ Flat design + subtle glow effects
+- ✅ Functional animations with clear purpose
+- ✅ Simple solid colors + light glow
+- ✅ Clear information hierarchy
+
+### 2. Tech & Cool (Boy-Friendly)
+- **Color scheme**: Blue/Green tones (cool colors)
+- **Effects**: Neon glow, energy pulse - but minimal
+- **Theme**: Adventure, challenge, hero narrative
+- **Keep it simple**: Cool but not cluttered
 
 ## Build & Run Commands
 
@@ -155,9 +181,9 @@ export const useSettingsStore = defineStore('settings', () => {
 
 **Use Tailwind utility classes extensively:**
 
-**Custom theme colors (from tailwind.config.js):**
-- `peppa-blue`, `peppa-cyan`, `peppa-green`, `peppa-yellow`, `peppa-orange`, `peppa-purple`, `peppa-red`
-- Each has light/dark variants: `peppa-blue-light`, `peppa-blue-dark`
+**Custom theme colors (简约科技风格 - from tailwind.config.js):**
+- `hero-blue`, `hero-green`, `energy-yellow`, `warning-orange`
+- Each has light/dark variants: `hero-blue-light`, `hero-blue-dark`
 
 **Custom border radius:**
 - `rounded-cute` (16px)
@@ -181,9 +207,16 @@ export const useSettingsStore = defineStore('settings', () => {
 - `animate-button-entrance` (button entry)
 - `animate-title-glow` (glowing title)
 
-**Gradients:** Use extensively for buttons and backgrounds
+**Gradients:** Use sparingly for buttons, prefer simple solid colors with subtle glow
 ```vue
-class="bg-gradient-to-br from-peppa-blue to-peppa-blue-dark"
+class="bg-hero-blue hover:shadow-glow-blue"
+```
+
+**Minimal Glow Effects:**
+```vue
+class="shadow-glow-blue"    <!-- Subtle blue glow -->
+class="shadow-glow-green"   <!-- Subtle green glow -->
+class="shadow-glow-yellow"  <!-- Subtle yellow glow -->
 ```
 
 **Responsive:** Mobile-first, use `md:` prefix for tablet/desktop
