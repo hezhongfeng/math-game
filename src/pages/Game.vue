@@ -42,6 +42,7 @@ const resultData = ref(null)
 const isNewBest = ref(false)
 const questionKey = ref(0)
 const isLoading = ref(true)
+const currentFeedbackState = ref('idle') // 'idle' | 'showing' | 'correct-auto' | 'incorrect-wait'
 
 // 防抖控制 - 防止快速连击
 const lastInputTime = ref(0)
@@ -157,25 +158,15 @@ function submitAnswer() {
   // 触发触觉反馈
   triggerHapticFeedback()
 
-  // 正确反馈：延迟后自动进入下一题
-  // 错误反馈：点击任意位置关闭
+  // 统一反馈状态管理
   if (correct) {
+    currentFeedbackState.value = 'correct-auto';
     feedbackTimeout = setTimeout(() => {
-      if (game.currentIndex.value >= game.questions.value.length - 1) {
-        showAnswer.value = false
-        isWaiting.value = false
-        handleGameComplete()
-      } else {
-        questionKey.value++
-        userAnswer.value = ''
-        showAnswer.value = false
-        isWaiting.value = false
-        game.nextQuestion()
-        startQuestionTimer() // 重置题目计时器
-      }
-    }, GAME_CONFIG.FEEDBACK_DELAY)
+      handleNextQuestion();
+    }, GAME_CONFIG.FEEDBACK_DELAY);
+  } else {
+    currentFeedbackState.value = 'incorrect-wait';
   }
-}
 
 // 处理输入 - 带防抖
 function handleInput(num) {
@@ -197,22 +188,30 @@ function handleDelete() {
   userAnswer.value = userAnswer.value.slice(0, -1)
 }
 
-// 点击反馈遮罩处理
-function handleFeedbackClick() {
-  // 只有错误答题时才允许点击关闭，正确答题由自动延迟处理
-  if (!isCorrect.value) {
-    showAnswer.value = false
-    isWaiting.value = false
+  function handleNextQuestion() {
     if (game.currentIndex.value >= game.questions.value.length - 1) {
-      handleGameComplete()
+      showAnswer.value = false;
+      isWaiting.value = false;
+      handleGameComplete();
     } else {
-      questionKey.value++
-      userAnswer.value = ''
-      game.nextQuestion()
-      startQuestionTimer() // 重置题目计时器
+      questionKey.value++;
+      userAnswer.value = '';
+      showAnswer.value = false;
+      isWaiting.value = false;
+      game.nextQuestion();
+      startQuestionTimer(); // 重置题目计时器
     }
   }
-}
+// 点击反馈遮罩处理
+  function handleFeedbackClick() {
+    // 只有错误答题时才允许点击关闭，正确答题由自动延迟处理
+    if (!isCorrect.value && currentFeedbackState.value === 'incorrect-wait') {
+      // 重置反馈状态
+      currentFeedbackState.value = 'idle';
+      // 调用统一的推进逻辑
+      handleNextQuestion();
+    }
+  }
 
 // 游戏完成处理
 function handleGameComplete() {
