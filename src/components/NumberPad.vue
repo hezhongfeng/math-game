@@ -111,41 +111,7 @@ function handleSubmit() {
   cursor: pointer;
 }
 
-.num-btn:hover {
-  border-color: var(--hero-blue);
-  color: var(--hero-blue);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md), var(--glow-blue);
-}
 
-.num-btn:active {
-  transform: scale(0.95);
-  background: var(--hero-blue);
-  color: white;
-  border-color: var(--hero-blue);
-}
-
-/* 移动端优化：移除 hover 粘滞效果 */
-@media (hover: none) {
-  .num-btn:hover {
-    border-color: var(--border-light);
-    color: var(--text-primary);
-    transform: none;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .btn-delete:hover {
-    background: #FFF5F0;
-    border-color: #FFE5DC;
-    color: var(--warning-orange);
-  }
-
-  .btn-submit:hover {
-    background: var(--win-green);
-    border-color: var(--win-green);
-    color: white;
-  }
-}
 
 .num-btn:disabled {
   opacity: 0.4;
@@ -158,18 +124,7 @@ function handleSubmit() {
   color: var(--warning-orange);
 }
 
-.btn-delete:hover {
-  background: var(--warning-orange);
-  color: white;
-  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-}
 
-.btn-delete:active {
-  transform: scale(0.95);
-  background: var(--warning-orange-dark);
-  border-color: var(--warning-orange-dark);
-  color: white;
-}
 
 .btn-submit {
   background: var(--win-green);
@@ -178,17 +133,7 @@ function handleSubmit() {
   box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
 }
 
-.btn-submit:hover {
-  background: var(--win-green-dark);
-  border-color: var(--win-green-dark);
-  box-shadow: 0 0 30px rgba(0, 208, 132, 0.4);
-}
 
-.btn-submit:active {
-  transform: scale(0.95);
-  background: var(--win-green-dark);
-  border-color: var(--win-green-dark);
-}
 
 @media (min-width: 768px) {
   .pad-grid {

@@ -202,15 +202,6 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
-.btn-main:hover {
-  background: var(--hero-blue-dark);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(74, 144, 226, 0.4);
-}
-
-.btn-main:active {
-  transform: scale(0.98);
-}
 
 .btn-secondary {
   height: 60px;
@@ -228,12 +219,6 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
-.btn-secondary:hover {
-  background: var(--hero-blue);
-  color: white;
-  transform: translateY(-3px);
-  box-shadow: var(--glow-blue);
-}
 
 @media (min-width: 768px) {
   .content {

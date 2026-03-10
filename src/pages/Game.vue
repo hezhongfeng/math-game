@@ -468,15 +468,6 @@ onUnmounted(() => {
   transition: all 0.2s ease;
 }
 
-.nav-btn:hover {
-  background: var(--hero-blue);
-  color: white;
-  box-shadow: var(--glow-blue);
-}
-
-.nav-btn:active {
-  transform: scale(0.95);
-}
 
 .nav-btn-accent {
   background: linear-gradient(135deg, var(--energy-yellow) 0%, var(--energy-yellow-dark) 100%);
@@ -484,10 +475,6 @@ onUnmounted(() => {
   box-shadow: var(--glow-yellow);
 }
 
-.nav-btn-accent:hover {
-  background: linear-gradient(135deg, var(--energy-yellow-light) 0%, var(--energy-yellow) 100%);
-  box-shadow: var(--glow-yellow);
-}
 
 .title-group {
   display: flex;
@@ -680,15 +667,7 @@ onUnmounted(() => {
   box-shadow: var(--shadow-md), var(--glow-blue);
 }
 
-.hint-btn:hover {
-  background: var(--hero-blue-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), var(--glow-blue);
-}
 
-.hint-btn:active {
-  transform: scale(0.95);
-}
 
 /* 反馈过渡 - 流畅自然的动画 */
 .feedback-enter-active .feedback-container {

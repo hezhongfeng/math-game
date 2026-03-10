@@ -189,14 +189,6 @@ function isDifficultyLocked(difficulty) {
   min-width: 80px;
 }
 
-.btn-back:hover {
-  background: var(--game-bg);
-  color: var(--game-primary-dark);
-}
-
-.btn-back:active {
-  transform: scale(0.95);
-}
 
 .title {
   font-weight: 700;

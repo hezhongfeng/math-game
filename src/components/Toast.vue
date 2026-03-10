@@ -67,9 +67,6 @@ const getIcon = (type) => icons[type] || icons.info
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.hover\:scale-102:hover {
-  transform: scale(1.02);
-}
 
 .icon-wrapper {
   backdrop-filter: blur(4px);

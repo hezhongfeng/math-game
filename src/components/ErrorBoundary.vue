@@ -180,15 +180,6 @@ function retry() {
   box-shadow: 0 4px 0 0 rgba(58, 99, 71, 0.4), 0 6px 12px rgba(74, 124, 89, 0.3);
 }
 
-.btn-retry:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 5px 0 0 rgba(58, 99, 71, 0.4), 0 8px 16px rgba(74, 124, 89, 0.4);
-}
-
-.btn-retry:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 0 rgba(58, 99, 71, 0.4), 0 3px 6px rgba(74, 124, 89, 0.3);
-}
 
 .btn-home {
   touch-action: manipulation;
@@ -209,14 +200,4 @@ function retry() {
   box-shadow: 0 3px 0 0 var(--game-border), 0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
-.btn-home:hover {
-  background: var(--game-bg);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 0 0 var(--game-border), 0 6px 12px rgba(0, 0, 0, 0.08);
-}
-
-.btn-home:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 0 var(--game-border), 0 2px 4px rgba(0, 0, 0, 0.06);
-}
 </style>

@@ -98,15 +98,6 @@ function handleSelect() {
   border: 2px solid transparent;
 }
 
-.difficulty-card:hover:not(.is-locked) {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg), var(--glow-blue);
-  border-color: var(--hero-blue);
-}
-
-.difficulty-card:active:not(.is-locked) {
-  transform: scale(0.98);
-}
 
 .is-locked {
   opacity: 0.5;
@@ -117,10 +108,6 @@ function handleSelect() {
   border-left: 5px solid var(--win-green);
 }
 
-.is-completed:hover {
-  box-shadow: var(--shadow-lg), var(--glow-green);
-  border-color: var(--win-green);
-}
 
 .level-badge {
   width: 56px;
@@ -210,8 +197,4 @@ function handleSelect() {
   color: #B2BEC3;
 }
 
-.difficulty-card:hover .icon-arrow {
-  color: var(--hero-blue);
-  transform: translateX(4px);
-}
 </style>

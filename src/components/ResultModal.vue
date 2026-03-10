@@ -347,15 +347,6 @@ function handleHome() {
   box-shadow: var(--shadow-sm);
 }
 
-.btn-retry:hover {
-  background: var(--coral-dark);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-retry:active {
-  transform: scale(0.98);
-}
 
 .btn-home {
   background: var(--white);
@@ -363,10 +354,6 @@ function handleHome() {
   border: 3px solid var(--border-light);
 }
 
-.btn-home:hover {
-  border-color: var(--coral);
-  color: var(--coral);
-}
 
 /* 过渡动画 */
 .modal-enter-active,

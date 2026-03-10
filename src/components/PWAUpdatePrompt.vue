@@ -127,13 +127,6 @@ function handleDismiss() {
   flex-shrink: 0;
 }
 
-.btn-update:hover {
-  background: var(--hero-blue-dark);
-}
-
-.btn-update:active {
-  transform: scale(0.95);
-}
 
 .btn-dismiss {
   width: 36px;
@@ -150,10 +143,6 @@ function handleDismiss() {
   flex-shrink: 0;
 }
 
-.btn-dismiss:hover {
-  background: var(--bg-light);
-  color: var(--text-primary);
-}
 
 /* 动画 */
 .slide-up-enter-active,
