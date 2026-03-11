@@ -111,6 +111,27 @@ function handleSubmit() {
   cursor: pointer;
 }
 
+/* Active state for tactile feedback */
+.num-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-delete:active:not(:disabled) {
+  transform: scale(0.95);
+  background: #FFE5DC;
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(0, 208, 132, 0.2);
+}
+
+
+.num-btn:disabled {
+  cursor: pointer;
+}
+
 
 
 .num-btn:disabled {

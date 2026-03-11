@@ -185,7 +185,19 @@ function isDifficultyLocked(difficulty) {
   border: none;
   border-radius: 12px;
   cursor: pointer;
+  cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+/* Active state for tactile feedback */
+.btn-back:active {
+  transform: scale(0.95);
+  background: var(--game-border);
+}
+
+
+KM|.title {
   min-width: 80px;
 }
 

@@ -340,6 +340,23 @@ function handleHome() {
   transition: all 0.2s ease;
 }
 
+/* Active state for tactile feedback */
+.btn-retry:active {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.btn-home:active {
+  transform: scale(0.95);
+  background: var(--bg-light);
+}
+
+
+.btn-retry {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
 .btn-retry {
   background: var(--coral);
   color: white;

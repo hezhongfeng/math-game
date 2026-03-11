@@ -468,6 +468,20 @@ onUnmounted(() => {
   transition: all 0.2s ease;
 }
 
+/* Active state for tactile feedback */
+.nav-btn:active {
+  transform: scale(0.92);
+}
+
+.nav-btn-accent:active {
+  transform: scale(0.92);
+}
+
+
+MX|.nav-btn-accent {
+  transition: all 0.2s ease;
+}
+
 
 .nav-btn-accent {
   background: linear-gradient(135deg, var(--energy-yellow) 0%, var(--energy-yellow-dark) 100%);

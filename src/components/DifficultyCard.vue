@@ -98,6 +98,19 @@ function handleSelect() {
   border: 2px solid transparent;
 }
 
+/* Active state for tactile feedback */
+.difficulty-card:active:not(.is-locked) {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+
+.is-locked {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
 
 .is-locked {
   opacity: 0.5;

@@ -202,6 +202,11 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
+/* Active state for tactile feedback */
+.btn-main:active {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-md);
+}
 
 .btn-secondary {
   height: 60px;
@@ -219,6 +224,11 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
+/* Active state for tactile feedback */
+.btn-secondary:active {
+  transform: scale(0.95);
+  background: var(--bg-light);
+}
 
 @media (min-width: 768px) {
   .content {
