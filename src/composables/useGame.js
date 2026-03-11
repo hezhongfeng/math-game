@@ -15,6 +15,7 @@ export function useGame(difficulty) {
   const score = ref(0)
   const isComplete = ref(false)
   const correctCount = ref(0)
+  const incorrectQuestions = ref([])  // 记录错题
   const startTime = ref(null)
   const endTime = ref(null)
   const currentQuestion = computed(() => questions.value[currentIndex.value])
@@ -47,6 +48,7 @@ export function useGame(difficulty) {
     score.value = 0
     isComplete.value = false
     correctCount.value = 0
+    incorrectQuestions.value = []  // 重置错题记录
     startTime.value = Date.now()
     endTime.value = null
   }
@@ -66,6 +68,15 @@ export function useGame(difficulty) {
     if (isCorrect) {
       score.value += 10
       correctCount.value++
+    } else {
+      // 记录错题
+      incorrectQuestions.value.push({
+        question: question.question,
+        questionText: question.questionText,
+        userAnswer: answer,
+        correctAnswer: question.answer,
+        operation: question.operation
+      })
     }
 
     // 不在这里切换到下一题，由外部控制
@@ -102,7 +113,8 @@ export function useGame(difficulty) {
       accuracy: accuracy.value,
       duration: duration.value,
       difficulty: difficultyValue.value,
-      completedAt: new Date().toISOString()
+      completedAt: new Date().toISOString(),
+      incorrectQuestions: incorrectQuestions.value  // 返回错题列表
     }
   }
 

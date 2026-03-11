@@ -259,7 +259,18 @@ Modal displayed when game is completed, showing statistics and next actions.
   duration: 120,        // Duration in seconds
   difficulty: { ... },  // Difficulty config object
   completedAt: "..."    // ISO timestamp
-}
+  difficulty: { ... },  // Difficulty config object
+  completedAt: "...",   // ISO timestamp
+  incorrectQuestions: [
+    {
+      question: "5 + 3 = ?",
+      questionText: "5 + 3 = ?",
+      userAnswer: 8,
+      correctAnswer: 10,
+      operation: "+"
+    }
+  ]
+}```
 ```
 
 #### Events
@@ -276,7 +287,25 @@ Modal displayed when game is completed, showing statistics and next actions.
   :show="showModal"
   :result="resultData"
   :is-new-best="isNewBest"
+  :result="resultData"
+  :is-new-best="isNewBest"
   @retry="handleRetry"
+  @home="handleHome"
+/>
+```
+
+#### Incorrect Questions Review
+
+The ResultModal now includes an expandable section showing incorrect questions:
+
+- **Toggle Button**: Shows "查看错题 (N题)" button when there are incorrect questions
+- **Expandable List**: Click to expand/collapse the incorrect questions list
+- **Question Display**: Shows the question text and answers
+  - **Your Answer**: Displayed in orange (`answer wrong`)
+  - **Correct Answer**: Displayed in green (`answer correct`)
+- **Animation**: Smooth expand/collapse animation using CSS transitions
+
+**Note**: Incorrect questions are tracked in `useGame.js` and passed to the ResultModal through the `result.incorrectQuestions` array.
   @home="handleHome"
 />
 ```

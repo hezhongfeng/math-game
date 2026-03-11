@@ -1,8 +1,9 @@
 <script setup>
+import { ref, computed } from 'vue'
 import { useSound } from '../composables/useSound'
 import { getStarCount, getRatingText, getCelebrationEmoji } from '../utils/stars'
 import { formatTime } from '../utils/format'
-import { RotateCcw, Home, Target, CheckCircle, Clock, Star, Sparkles } from 'lucide-vue-next'
+import { RotateCcw, Home, Target, CheckCircle, Clock, Star, Sparkles, ChevronDown } from 'lucide-vue-next'
 
 const props = defineProps({
   show: {
@@ -21,6 +22,24 @@ const props = defineProps({
 
 const emit = defineEmits(['retry', 'home'])
 const { playSound } = useSound()
+
+// 错题查看展开状态
+const showIncorrectReview = ref(false)
+
+// 是否有错题
+const hasIncorrectQuestions = computed(() => {
+  return props.result.incorrectQuestions && props.result.incorrectQuestions.length > 0
+})
+
+// 错题数量
+const incorrectCount = computed(() => {
+  return props.result.incorrectQuestions ? props.result.incorrectQuestions.length : 0
+})
+
+function toggleIncorrectReview() {
+  playSound('click')
+  showIncorrectReview.value = !showIncorrectReview.value
+}
 
 // 使用共享的星星评级函数
 function handleRetry() {
@@ -320,6 +339,104 @@ function handleHome() {
   font-variant-numeric: tabular-nums;
 }
 
+/* 错题回顾 */
+.incorrect-review {
+  margin-bottom: 24px;
+}
+
+.review-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  background: rgba(255, 107, 53, 0.08);
+  border: 2px solid rgba(255, 107, 53, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--warning-orange);
+  font-size: var(--font-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.review-toggle:active {
+  transform: scale(0.98);
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon.is-expanded {
+  transform: rotate(180deg);
+}
+
+.review-content {
+  margin-top: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.review-item {
+  padding: 12px;
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+.review-question {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.review-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.answer {
+  font-size: var(--font-sm);
+}
+
+.answer.wrong {
+  color: var(--warning-orange);
+}
+
+.answer.correct {
+  color: var(--success);
+}
+
+/* 展开动画 */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.expand-enter-to,
+.expand-leave-from {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 12px;
+}
+
 /* 按钮 */
 .action-btns {
   display: flex;
@@ -351,11 +468,6 @@ function handleHome() {
   background: var(--bg-light);
 }
 
-
-.btn-retry {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
 .btn-retry {
   background: var(--coral);
