@@ -114,30 +114,21 @@ function handleSubmit() {
 /* Active state for tactile feedback */
 .num-btn:active:not(:disabled) {
   transform: scale(0.95);
+  background: #F0F4F8;
   box-shadow: var(--shadow-sm);
 }
 
 .btn-delete:active:not(:disabled) {
   transform: scale(0.95);
-  background: #FFE5DC;
+  background: #FFD5C8;
 }
 
 .btn-submit:active:not(:disabled) {
   transform: scale(0.95);
-  box-shadow: 0 0 10px rgba(0, 208, 132, 0.2);
+  background: #00B870;
+  box-shadow: 0 0 15px rgba(0, 208, 132, 0.4);
 }
 
-
-.num-btn:disabled {
-  cursor: pointer;
-}
-
-
-
-.num-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
 
 .btn-delete {
   background: #FFF5F0;
