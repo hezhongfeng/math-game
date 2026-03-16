@@ -341,21 +341,25 @@ onUnmounted(() => {
       </section>
 
       <section class="control-section">
-        <ScoreBoard
-          :score="game.score.value"
-          :current-index="game.currentIndex.value"
-          :total-questions="game.questions.value.length"
-          :correct-count="game.correctCount.value"
-          :duration="gameTime"
-          :accuracy="game.accuracy.value"
-        />
+        <div class="score-wrap">
+          <ScoreBoard
+            :score="game.score.value"
+            :current-index="game.currentIndex.value"
+            :total-questions="game.questions.value.length"
+            :correct-count="game.correctCount.value"
+            :duration="gameTime"
+            :accuracy="game.accuracy.value"
+          />
+        </div>
 
-        <NumberPad
-          :disabled="isWaiting || isComplete"
-          @input="handleInput"
-          @delete="handleDelete"
-          @submit="submitAnswer"
-        />
+        <div class="keypad-wrap">
+          <NumberPad
+            :disabled="isWaiting || isComplete"
+            @input="handleInput"
+            @delete="handleDelete"
+            @submit="submitAnswer"
+          />
+        </div>
       </section>
     </main>
 
@@ -452,20 +456,28 @@ onUnmounted(() => {
 
 .main-layout {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .question-section,
 .control-section {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .question-section {
   position: relative;
-  justify-content: center;
-  min-height: 320px;
+  justify-content: flex-start;
+  min-height: 272px;
+}
+
+.score-wrap {
+  order: 1;
+}
+
+.keypad-wrap {
+  order: 2;
 }
 
 .feedback-wrap {
@@ -580,6 +592,7 @@ onUnmounted(() => {
   }
 
   .question-section {
+    justify-content: center;
     min-height: 560px;
   }
 
@@ -627,7 +640,7 @@ onUnmounted(() => {
   }
 
   .question-section {
-    min-height: 260px;
+    min-height: 220px;
   }
 
   .feedback-card {
@@ -637,6 +650,16 @@ onUnmounted(() => {
 
   .feedback-main {
     font-size: 28px;
+  }
+}
+
+@media (max-width: 959px) {
+  .score-wrap {
+    order: 2;
+  }
+
+  .keypad-wrap {
+    order: 1;
   }
 }
 </style>
