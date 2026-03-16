@@ -1,5 +1,5 @@
 <script setup>
-import { X, Check } from 'lucide-vue-next'
+import { Check, X } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 
 const props = defineProps({
@@ -39,35 +39,23 @@ function handleSubmit() {
       <button
         v-for="num in numbers"
         :key="num"
-        @click="handleInput(num)"
-        :disabled="disabled"
         class="num-btn"
+        :disabled="disabled"
+        @click="handleInput(num)"
       >
         {{ num }}
       </button>
 
-      <button
-        @click="handleDelete"
-        :disabled="disabled"
-        class="num-btn btn-delete"
-      >
-        <X :size="32" stroke-width="2.5" />
+      <button class="num-btn btn-delete" :disabled="disabled" @click="handleDelete">
+        <X :size="28" stroke-width="2.5" />
       </button>
 
-      <button
-        @click="handleInput(0)"
-        :disabled="disabled"
-        class="num-btn"
-      >
+      <button class="num-btn" :disabled="disabled" @click="handleInput(0)">
         0
       </button>
 
-      <button
-        @click="handleSubmit"
-        :disabled="disabled"
-        class="num-btn btn-submit"
-      >
-        <Check :size="36" stroke-width="3" />
+      <button class="num-btn btn-submit" :disabled="disabled" @click="handleSubmit">
+        <Check :size="30" stroke-width="3" />
       </button>
     </div>
   </div>
@@ -75,102 +63,86 @@ function handleSubmit() {
 
 <style scoped>
 .number-pad {
-  padding: 24px;
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  padding: 16px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(16px);
 }
 
 .number-pad.is-disabled {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .pad-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  justify-items: center;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .num-btn {
-  width: 100%;
+  min-width: 64px;
+  min-height: 64px;
   aspect-ratio: 1;
-  max-width: 88px;
-  max-height: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--white);
-  border: 2px solid var(--border-light);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
   color: var(--text-primary);
-  font-size: 42px;
-  font-weight: 700;
   box-shadow: var(--shadow-sm);
-  transition: all 0.15s ease;
+  font-size: 34px;
+  font-weight: 800;
   cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
 }
 
-/* Active state for tactile feedback */
 .num-btn:active:not(:disabled) {
-  transform: scale(0.95);
-  background: #F0F4F8;
-  box-shadow: var(--shadow-sm);
+  transform: scale(0.96);
+  background: #eef4fb;
 }
 
-.btn-delete:active:not(:disabled) {
-  transform: scale(0.95);
-  background: #FFD5C8;
-}
+@media (hover: hover) {
+  .num-btn:hover:not(:disabled) {
+    border-color: var(--border-strong);
+    background: #f8fbff;
+  }
 
-.btn-submit:active:not(:disabled) {
-  transform: scale(0.95);
-  background: #00B870;
-  box-shadow: 0 0 15px rgba(0, 208, 132, 0.4);
-}
+  .btn-delete:hover:not(:disabled) {
+    background: #fff1e8;
+  }
 
+  .btn-submit:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg), var(--glow-green);
+  }
+}
 
 .btn-delete {
-  background: #FFF5F0;
-  border-color: #FFE5DC;
-  color: var(--warning-orange);
+  color: var(--warning-orange-dark);
+  background: #fff6f1;
 }
-
-
 
 .btn-submit {
-  background: var(--win-green);
-  border-color: var(--win-green);
   color: white;
-  box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
+  background: linear-gradient(135deg, var(--win-green) 0%, var(--win-green-dark) 100%);
+  border-color: transparent;
+  box-shadow: var(--shadow-md), var(--glow-green);
 }
-
-
 
 @media (min-width: 768px) {
-  .pad-grid {
-    gap: 20px;
-  }
-
-  .num-btn {
-    max-width: 100px;
-    max-height: 100px;
-    font-size: 48px;
-  }
-}
-
-@media (max-width: 375px) {
   .number-pad {
-    padding: 16px;
+    padding: 18px;
   }
 
   .pad-grid {
-    gap: 12px;
+    gap: 14px;
   }
 
   .num-btn {
-    max-width: 76px;
-    max-height: 76px;
+    min-height: 78px;
     font-size: 38px;
   }
 }

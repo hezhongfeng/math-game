@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Clock, CheckCircle, TrendingUp, Star } from 'lucide-vue-next'
+import { CheckCircle, Clock, Star, TrendingUp } from 'lucide-vue-next'
 import { formatTime } from '../utils/format'
 
 const props = defineProps({
@@ -40,62 +40,54 @@ const formattedTime = computed(() => formatTime(props.duration))
 
 <template>
   <div class="score-board">
-    <!-- 进度条 -->
     <div class="progress-section">
       <div class="progress-header">
-        <span class="progress-label text-child-sm">进度 {{ currentIndex }}/{{ totalQuestions }}</span>
-        <span class="progress-pct text-child-sm">{{ progress }}%</span>
+        <span>进度 {{ currentIndex }}/{{ totalQuestions }}</span>
+        <strong>{{ progress }}%</strong>
       </div>
-      <div class="progress-bar">
-        <div
-          class="progress-fill"
-          :style="{ width: `${progress}%` }"
-        ></div>
+      <div class="progress-track">
+        <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
       </div>
     </div>
 
-    <!-- 第一行：得分、正确 -->
-    <div class="stats-row">
+    <div class="stats-grid">
       <div class="stat-item">
         <div class="stat-icon score-icon">
-          <Star :size="20" />
+          <Star :size="18" />
         </div>
-        <div class="stat-info">
-          <span class="stat-value text-child-lg">{{ score }}</span>
-          <span class="stat-label text-child-sm">得分</span>
+        <div>
+          <p class="stat-value">{{ score }}</p>
+          <p class="stat-label">得分</p>
         </div>
       </div>
 
       <div class="stat-item">
         <div class="stat-icon correct-icon">
-          <CheckCircle :size="20" />
+          <CheckCircle :size="18" />
         </div>
-        <div class="stat-info">
-          <span class="stat-value text-child-lg">{{ correctCount }}</span>
-          <span class="stat-label text-child-sm">正确</span>
+        <div>
+          <p class="stat-value">{{ correctCount }}</p>
+          <p class="stat-label">答对</p>
         </div>
       </div>
-    </div>
 
-    <!-- 第二行：用时、正确率 -->
-    <div class="stats-row">
       <div class="stat-item">
         <div class="stat-icon time-icon">
-          <Clock :size="20" />
+          <Clock :size="18" />
         </div>
-        <div class="stat-info">
-          <span class="stat-value text-child-lg">{{ formattedTime }}</span>
-          <span class="stat-label text-child-sm">用时</span>
+        <div>
+          <p class="stat-value">{{ formattedTime }}</p>
+          <p class="stat-label">用时</p>
         </div>
       </div>
 
       <div class="stat-item">
         <div class="stat-icon accuracy-icon">
-          <TrendingUp :size="20" />
+          <TrendingUp :size="18" />
         </div>
-        <div class="stat-info">
-          <span class="stat-value text-child-lg">{{ accuracy || 0 }}%</span>
-          <span class="stat-label text-child-sm">正确率</span>
+        <div>
+          <p class="stat-value">{{ accuracy || 0 }}%</p>
+          <p class="stat-label">正确率</p>
         </div>
       </div>
     </div>
@@ -104,114 +96,117 @@ const formattedTime = computed(() => formatTime(props.duration))
 
 <style scoped>
 .score-board {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  padding: 16px 18px;
+  padding: 16px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(16px);
 }
 
-/* 进度条 */
-.progress-section {
-  margin-bottom: 14px;
+.progress-header,
+.stat-item {
+  display: flex;
+  align-items: center;
 }
 
 .progress-header {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.progress-label {
-  font-weight: 600;
-  color: var(--game-text-secondary);
-}
-
-.progress-pct {
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
   font-weight: 700;
-  color: var(--game-primary-dark);
 }
 
-.progress-bar {
-  height: 8px;
-  background: var(--game-bg-light);
-  border-radius: 8px;
+.progress-header strong {
+  color: var(--text-primary);
+}
+
+.progress-track {
+  height: 10px;
+  margin-bottom: 14px;
   overflow: hidden;
+  border-radius: var(--radius-full);
+  background: #dde7f2;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--game-primary), var(--game-primary-light));
-  border-radius: 8px;
-  transition: width 0.3s ease;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--hero-blue), var(--win-green));
 }
 
-/* 统计行 */
-.stats-row {
-  display: flex;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 10px;
-}
-
-.stats-row:first-of-type {
-  margin-top: 0;
 }
 
 .stat-item {
-  flex: 1;
-  display: flex;
-  align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  background: var(--game-bg-light);
-  border-radius: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border-light);
 }
 
 .stat-icon {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  border-radius: 12px;
 }
 
-.stat-icon.score-icon {
-  background: rgba(74, 144, 226, 0.1);
-  color: var(--game-primary-dark);
+.score-icon {
+  color: var(--energy-yellow-dark);
+  background: var(--energy-yellow-soft);
 }
 
-.stat-icon.correct-icon {
-  background: rgba(0, 208, 132, 0.1);
-  color: var(--game-success-dark);
+.correct-icon {
+  color: var(--win-green-dark);
+  background: var(--win-green-soft);
 }
 
-.stat-icon.time-icon {
-  background: rgba(255, 199, 0, 0.1);
-  color: var(--game-accent-dark);
+.time-icon {
+  color: var(--hero-blue-dark);
+  background: var(--hero-blue-soft);
 }
 
-.stat-icon.accuracy-icon {
-  background: rgba(255, 107, 53, 0.1);
-  color: var(--game-warning-dark);
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
+.accuracy-icon {
+  color: var(--warning-orange-dark);
+  background: rgba(255, 122, 69, 0.12);
 }
 
 .stat-value {
-  font-weight: 700;
-  color: var(--game-text);
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  font-weight: 800;
   line-height: 1.2;
 }
 
 .stat-label {
-  color: var(--game-text-secondary);
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+@media (max-width: 360px) {
+  .score-board {
+    padding: 14px;
+  }
+
+  .progress-track {
+    margin-bottom: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-item {
+    padding: 10px 12px;
+  }
 }
 </style>

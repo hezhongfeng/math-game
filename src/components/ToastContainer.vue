@@ -23,43 +23,50 @@ const { toasts, removeToast } = useToast()
 <style scoped>
 .toast-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: max(16px, env(safe-area-inset-top));
+  right: 16px;
+  left: 16px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: flex-end;
   pointer-events: none;
 }
 
-/* 入场动画 */
 .toast-enter-active {
-  animation: toastSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: toastSlideIn 0.28s var(--ease-out);
 }
 
 .toast-leave-active {
-  animation: toastSlideOut 0.3s ease-out;
+  animation: toastSlideOut 0.22s var(--ease-standard);
 }
 
 @keyframes toastSlideIn {
   0% {
     opacity: 0;
-    transform: translateX(100px) scale(0.8);
+    transform: translateY(-10px) scale(0.98);
   }
   100% {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes toastSlideOut {
   0% {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateY(0) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translateX(50px) scale(0.8);
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+@media (max-width: 640px) {
+  .toast-container {
+    align-items: stretch;
   }
 }
 </style>

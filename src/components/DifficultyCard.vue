@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Lock, Star, CheckCircle2, ChevronRight } from 'lucide-vue-next'
+import { CheckCircle2, ChevronRight, Lock, Star } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
 import { getStarCount } from '../utils/stars'
 
@@ -31,18 +31,23 @@ const stars = computed(() => {
   return getStarCount(props.bestScore.accuracy)
 })
 
-const levelColor = computed(() => props.difficulty.color || 'var(--mint)')
+const levelColor = computed(() => props.difficulty.color || 'var(--hero-blue)')
+
+const statusText = computed(() => {
+  if (props.isLocked) return '完成上一关后解锁'
+  if (props.bestScore) return `最佳正确率 ${props.bestScore.accuracy}%`
+  return '首次尝试'
+})
 
 function handleSelect() {
-  if (!props.isLocked) {
-    playSound('click')
-    emit('select', props.difficulty)
-  }
+  if (props.isLocked) return
+  playSound('click')
+  emit('select', props.difficulty)
 }
 </script>
 
 <template>
-  <div
+  <article
     class="difficulty-card"
     :class="{
       'is-locked': isLocked,
@@ -50,107 +55,142 @@ function handleSelect() {
     }"
     @click="handleSelect"
   >
-    <div class="level-badge" :style="{ background: levelColor }">
-      {{ difficulty.id }}
-    </div>
+    <div class="leading">
+      <div class="level-badge" :style="{ background: levelColor }">
+        {{ difficulty.id }}
+      </div>
 
-    <div class="level-content">
-      <h3 class="level-name">{{ difficulty.name }}</h3>
-      
-      <div v-if="!isLocked" class="level-stats">
-        <div class="stars">
-          <Star 
-            v-for="n in 3" 
-            :key="n" 
-            :size="20" 
-            :class="['star', n <= stars ? 'active' : '']"
-          />
+      <div class="level-content">
+        <div class="title-row">
+          <h3 class="level-name">{{ difficulty.name }}</h3>
+          <span v-if="!isLocked && !bestScore" class="new-tag">NEW</span>
         </div>
-        <span v-if="bestScore" class="accuracy">{{ bestScore.accuracy }}%</span>
-        <span v-else-if="!isCompleted" class="new-tag">NEW</span>
-      </div>
-      
-      <div v-else class="lock-hint">
-        <Lock :size="16" />
-        <span>需解锁</span>
+        <p class="level-desc">{{ difficulty.description }}</p>
+        <p class="level-status">{{ statusText }}</p>
       </div>
     </div>
 
-    <div class="level-action">
-      <CheckCircle2 v-if="isCompleted && !isLocked" class="icon-completed" />
-      <Lock v-else-if="isLocked" class="icon-locked" />
-      <ChevronRight v-else class="icon-arrow" />
+    <div class="trailing">
+      <div v-if="!isLocked" class="stars">
+        <Star
+          v-for="n in 3"
+          :key="n"
+          :size="16"
+          :class="['star', n <= stars ? 'active' : '']"
+          fill="currentColor"
+        />
+      </div>
+
+      <CheckCircle2 v-if="isCompleted && !isLocked" class="state-icon completed" />
+      <Lock v-else-if="isLocked" class="state-icon locked" />
+      <ChevronRight v-else class="state-icon arrow" />
     </div>
-  </div>
+  </article>
 </template>
 
 <style scoped>
 .difficulty-card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
-  background: var(--white);
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
-/* Active state for tactile feedback */
-.difficulty-card:active:not(.is-locked) {
-  transform: scale(0.98);
+  background: var(--bg-panel-strong);
+  border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
-}
-
-
-.is-locked {
-  transition: all 0.2s ease;
   cursor: pointer;
-  border: 2px solid transparent;
+  transition: transform var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
 }
 
+.difficulty-card:active:not(.is-locked) {
+  transform: scale(0.985);
+}
 
-.is-locked {
-  opacity: 0.5;
+@media (hover: hover) {
+  .difficulty-card:hover:not(.is-locked) {
+    transform: translateY(-1px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.difficulty-card.is-completed {
+  border-color: rgba(18, 185, 129, 0.28);
+}
+
+.difficulty-card.is-locked {
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
-.is-completed {
-  border-left: 5px solid var(--win-green);
-}
-
-
-.level-badge {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-md);
+.leading,
+.title-row,
+.trailing {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: var(--font-h2);
-  font-weight: 800;
-  color: white;
-  flex-shrink: 0;
-  box-shadow: var(--glow-blue);
 }
 
-.level-content {
+.leading {
+  min-width: 0;
+  gap: 14px;
   flex: 1;
 }
 
-.level-name {
-  font-size: var(--font-h3);
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-}
-
-.level-stats {
+.level-badge {
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  border-radius: 18px;
+  color: white;
+  font-size: var(--font-h3);
+  font-weight: 800;
+  box-shadow: inset 0 -8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.level-content {
+  min-width: 0;
+}
+
+.title-row {
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.level-name {
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  font-weight: 800;
+}
+
+.new-tag {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--hero-blue-soft);
+  color: var(--hero-blue-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.level-desc,
+.level-status {
+  font-size: var(--font-sm);
+}
+
+.level-desc {
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+}
+
+.level-status {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.trailing {
+  gap: 12px;
 }
 
 .stars {
@@ -159,55 +199,24 @@ function handleSelect() {
 }
 
 .star {
-  color: #E0E0E0;
-  transition: color 0.2s ease;
+  color: #d7dfeb;
 }
 
 .star.active {
   color: var(--energy-yellow);
-  fill: var(--energy-yellow);
-  filter: drop-shadow(0 0 8px rgba(255, 199, 0, 0.4));
 }
 
-.accuracy {
-  font-size: var(--font-md);
-  font-weight: 700;
+.state-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.state-icon.completed {
   color: var(--win-green);
 }
 
-.new-tag {
-  padding: 4px 12px;
-  background: var(--hero-blue);
-  color: white;
-  font-size: var(--font-sm);
-  font-weight: 800;
-  border-radius: var(--radius-full);
-  box-shadow: var(--glow-blue);
+.state-icon.locked,
+.state-icon.arrow {
+  color: var(--text-muted);
 }
-
-.lock-hint {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--font-md);
-  color: var(--text-secondary);
-}
-
-.level-action svg {
-  width: 28px;
-  height: 28px;
-}
-
-.icon-completed {
-  color: var(--win-green);
-}
-
-.icon-locked {
-  color: #B2BEC3;
-}
-
-.icon-arrow {
-  color: #B2BEC3;
-}
-
 </style>

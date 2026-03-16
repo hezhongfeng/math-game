@@ -1,11 +1,12 @@
 <template>
   <div class="skeleton-card">
-    <div class="skeleton-circle"></div>
+    <div class="skeleton-badge"></div>
     <div class="skeleton-content">
-      <div class="skeleton-line skeleton-line-title"></div>
-      <div class="skeleton-line skeleton-line-short"></div>
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="skeleton-line skeleton-desc"></div>
+      <div class="skeleton-line skeleton-meta"></div>
     </div>
-    <div class="skeleton-arrow"></div>
+    <div class="skeleton-tail"></div>
   </div>
 </template>
 
@@ -13,23 +14,26 @@
 .skeleton-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  background: linear-gradient(145deg, #f0f0e8 0%, #e8e8e0 100%);
-  border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow:
-    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
-    inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel-strong);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
-.skeleton-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #e0e0d5 25%, #d5d5c8 50%, #e0e0d5 75%);
+.skeleton-badge,
+.skeleton-line,
+.skeleton-tail {
+  background: linear-gradient(90deg, #e8eff7 0%, #f7fbff 50%, #e8eff7 100%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.skeleton-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
   flex-shrink: 0;
 }
 
@@ -41,29 +45,28 @@
 }
 
 .skeleton-line {
-  height: 14px;
-  border-radius: 7px;
-  background: linear-gradient(90deg, #e0e0d5 25%, #d5d5c8 50%, #e0e0d5 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  border-radius: 999px;
 }
 
-.skeleton-line-title {
-  width: 70%;
+.skeleton-title {
+  width: 62%;
+  height: 16px;
 }
 
-.skeleton-line-short {
-  width: 40%;
-  height: 10px;
+.skeleton-desc {
+  width: 78%;
+  height: 12px;
 }
 
-.skeleton-arrow {
+.skeleton-meta {
+  width: 42%;
+  height: 12px;
+}
+
+.skeleton-tail {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #e0e0d5 25%, #d5d5c8 50%, #e0e0d5 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  border-radius: 10px;
   flex-shrink: 0;
 }
 
@@ -71,17 +74,18 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-circle,
+  .skeleton-badge,
   .skeleton-line,
-  .skeleton-arrow {
+  .skeleton-tail {
     animation: none;
-    background: #e0e0d5;
+    background: #e8eff7;
   }
 }
 </style>

@@ -9,10 +9,10 @@ import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { useToast } from '../composables/useToast'
 import { useSettingsStore } from '../stores/settings'
-import QuestionCard from '../components/QuestionCard.vue'
-import ScoreBoard from '../components/ScoreBoard.vue'
 import NumberPad from '../components/NumberPad.vue'
+import QuestionCard from '../components/QuestionCard.vue'
 import ResultModal from '../components/ResultModal.vue'
+import ScoreBoard from '../components/ScoreBoard.vue'
 
 const props = defineProps({
   id: {
@@ -24,7 +24,6 @@ const props = defineProps({
 const router = useRouter()
 const difficulty = getDifficultyById(parseInt(props.id))
 
-// 检查难度是否有效，无效则重定向到难度选择页
 if (!difficulty) {
   router.replace('/difficulty')
 }
@@ -34,7 +33,6 @@ const { updateBestScore } = useStorage()
 const { playSound } = useSound()
 const { error: showError } = useToast()
 
-// 游戏状态
 const game = useGame(difficulty)
 const showAnswer = ref(false)
 const isWaiting = ref(false)
@@ -44,25 +42,21 @@ const resultData = ref(null)
 const isNewBest = ref(false)
 const questionKey = ref(0)
 const isLoading = ref(true)
-const currentFeedbackState = ref('idle') // 'idle' | 'showing' | 'correct-auto' | 'incorrect-wait'
+const currentFeedbackState = ref('idle')
 
-// 防抖控制 - 防止快速连击
 const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
-const INPUT_DEBOUNCE = 100 // 输入防抖 100ms
-const SUBMIT_DEBOUNCE = 300 // 提交防抖 300ms
+const INPUT_DEBOUNCE = 100
+const SUBMIT_DEBOUNCE = 300
 
-// 当前题目计时器
 const questionTimer = ref(0)
 let questionStartTime = null
 let timerInterval = null
 
-// 游戏时间更新器
 const gameTime = ref(0)
 let gameStartTime = null
 let gameTimeInterval = null
 
-// 反馈延时定时器
 let feedbackTimeout = null
 
 const isComplete = computed(() => game.isComplete.value)
@@ -71,26 +65,25 @@ const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
 const isIncorrect = computed(() => currentQuestion.value?.isCorrect === false)
 const shouldShowFeedback = computed(() => showAnswer.value && currentQuestion.value?.userAnswer !== null)
 
-// 触发触觉反馈（振动）
 function triggerHapticFeedback() {
   if (navigator.vibrate) {
     navigator.vibrate(50)
   }
 }
 
-// 启动游戏时间更新器 - 使用 Date.now() 避免 setInterval 漂移
 function startGameTimeUpdater() {
   gameStartTime = Date.now()
   gameTime.value = 0
+
   if (gameTimeInterval) {
     clearInterval(gameTimeInterval)
   }
+
   gameTimeInterval = setInterval(() => {
     gameTime.value = Math.floor((Date.now() - gameStartTime) / 1000)
-  }, 200) // 200ms 更新一次，确保流畅且精准
+  }, 200)
 }
 
-// 停止游戏时间更新器
 function stopGameTimeUpdater() {
   if (gameTimeInterval) {
     clearInterval(gameTimeInterval)
@@ -98,19 +91,19 @@ function stopGameTimeUpdater() {
   }
 }
 
-// 启动题目计时器 - 使用 Date.now() 避免 setInterval 漂移
 function startQuestionTimer() {
   questionStartTime = Date.now()
   questionTimer.value = 0
+
   if (timerInterval) {
     clearInterval(timerInterval)
   }
+
   timerInterval = setInterval(() => {
     questionTimer.value = Math.floor((Date.now() - questionStartTime) / 1000)
-  }, 200) // 200ms 更新一次，确保流畅且精准
+  }, 200)
 }
 
-// 停止题目计时器
 function stopQuestionTimer() {
   if (timerInterval) {
     clearInterval(timerInterval)
@@ -118,30 +111,21 @@ function stopQuestionTimer() {
   }
 }
 
-// 初始化游戏 - 带加载状态
 async function initGame() {
   isLoading.value = true
-  
-  // 模拟加载延迟，让用户体验更流畅
-  await new Promise(resolve => setTimeout(resolve, 300))
-  
+  await new Promise((resolve) => setTimeout(resolve, 240))
   game.startGame()
   startQuestionTimer()
   startGameTimeUpdater()
-  
   isLoading.value = false
 }
 
-
-
-
-// 提交答案 - 带防抖
 function submitAnswer() {
   if (isWaiting.value || !userAnswer.value || userAnswer.value.trim() === '') {
-    // 用户尝试提交空答案，显示提示
     showError('请先输入答案')
     return
   }
+
   const now = Date.now()
   if (now - lastSubmitTime.value < SUBMIT_DEBOUNCE) return
   lastSubmitTime.value = now
@@ -152,86 +136,80 @@ function submitAnswer() {
   showAnswer.value = true
   isWaiting.value = true
 
-  // 播放反馈音效
   if (correct) {
     playSound('correct')
   } else {
     playSound('wrong')
   }
 
-  // 触发触觉反馈
   triggerHapticFeedback()
 
-  // 统一反馈状态管理
   if (correct) {
     currentFeedbackState.value = 'correct-auto'
     feedbackTimeout = setTimeout(() => {
       handleNextQuestion()
     }, GAME_CONFIG.FEEDBACK_DELAY)
-  } else {
-    currentFeedbackState.value = 'incorrect-wait'
+    return
   }
+
+  currentFeedbackState.value = 'incorrect-wait'
 }
 
-// 处理输入 - 带防抖
 function handleInput(num) {
   if (isWaiting.value) return
+
   const now = Date.now()
   if (now - lastInputTime.value < INPUT_DEBOUNCE) return
   lastInputTime.value = now
+
   if (userAnswer.value.length < GAME_CONFIG.MAX_ANSWER_LENGTH) {
     userAnswer.value += num
-  } else {
-    // 输入已达到最大长度限制，提供用户反馈
-    playSound('wrong') // 播放错误音效
-    // 可以考虑添加一个轻微的触觉反馈
-    if (navigator.vibrate) {
-      navigator.vibrate(30) // 短震动反馈
-    }
+    return
+  }
+
+  playSound('wrong')
+  if (navigator.vibrate) {
+    navigator.vibrate(30)
   }
 }
 
-// 处理删除 - 带防抖
 function handleDelete() {
   if (isWaiting.value) return
+
   const now = Date.now()
   if (now - lastInputTime.value < INPUT_DEBOUNCE) return
   lastInputTime.value = now
   userAnswer.value = userAnswer.value.slice(0, -1)
 }
 
-// 进入下一题
 function handleNextQuestion() {
   if (game.currentIndex.value >= game.questions.value.length - 1) {
     showAnswer.value = false
     isWaiting.value = false
     handleGameComplete()
-  } else {
-    questionKey.value++
-    userAnswer.value = ''
-    showAnswer.value = false
-    isWaiting.value = false
-    game.nextQuestion()
-    startQuestionTimer() // 重置题目计时器
+    return
   }
+
+  questionKey.value += 1
+  userAnswer.value = ''
+  showAnswer.value = false
+  isWaiting.value = false
+  currentFeedbackState.value = 'idle'
+  game.nextQuestion()
+  startQuestionTimer()
 }
 
-// 点击反馈遮罩处理
 function handleFeedbackClick() {
-  // 只有错误答题时才允许点击关闭，正确答题由自动延迟处理
   if (!isCorrect.value && currentFeedbackState.value === 'incorrect-wait') {
-    // 重置反馈状态
     currentFeedbackState.value = 'idle'
-    // 调用统一的推进逻辑
     handleNextQuestion()
   }
 }
 
-// 游戏完成处理
 function handleGameComplete() {
-  stopQuestionTimer() // 停止题目计时器
-  stopGameTimeUpdater() // 停止游戏时间更新器
-  game.completeGame()  // 先设置结束时间
+  stopQuestionTimer()
+  stopGameTimeUpdater()
+  game.completeGame()
   const result = game.getResult()
   const best = updateBestScore(parseInt(props.id), result)
 
@@ -242,7 +220,6 @@ function handleGameComplete() {
   showModal.value = true
 }
 
-// 返回难度选择
 function goBack() {
   playSound('click')
   router.push('/difficulty')
@@ -251,17 +228,19 @@ function goBack() {
 function handleRetry() {
   playSound('click')
   showModal.value = false
-  userAnswer.value = ''  // 重置用户输入
-  showAnswer.value = false  // 重置答案显示状态
-  isWaiting.value = false  // 重置等待状态
-  currentFeedbackState.value = 'idle'  // 重置反馈状态
-  questionKey.value = 0    // 重置题目key确保重新渲染
-  stopQuestionTimer()      // 停止计时器
-  stopGameTimeUpdater()    // 停止游戏时间更新器
-  if (feedbackTimeout) {   // 清理反馈定时器
+  userAnswer.value = ''
+  showAnswer.value = false
+  isWaiting.value = false
+  currentFeedbackState.value = 'idle'
+  questionKey.value = 0
+  stopQuestionTimer()
+  stopGameTimeUpdater()
+
+  if (feedbackTimeout) {
     clearTimeout(feedbackTimeout)
     feedbackTimeout = null
   }
+
   initGame()
 }
 
@@ -271,130 +250,115 @@ function handleHome() {
   router.push('/difficulty')
 }
 
-// 键盘事件处理器 - 提取为命名函数便于清理
-function handleKeyPress(e) {
-  if (e.key >= '0' && e.key <= '9') {
-    handleInput(parseInt(e.key))
-  } else if (e.key === 'Backspace') {
+function handleKeyPress(event) {
+  if (event.key >= '0' && event.key <= '9') {
+    handleInput(parseInt(event.key))
+  } else if (event.key === 'Backspace') {
     handleDelete()
-  } else if (e.key === 'Enter') {
+  } else if (event.key === 'Enter') {
     submitAnswer()
   }
 }
 
 onMounted(() => {
-  settingsStore.loadSettings();
-  initGame();
-  window.addEventListener('keydown', handleKeyPress);
-});
+  settingsStore.loadSettings()
+  initGame()
+  window.addEventListener('keydown', handleKeyPress)
+})
 
-// onUnmounted 应该在顶层，不嵌套在 onMounted 内
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyPress);
-  stopQuestionTimer(); // 清理计时器
-  stopGameTimeUpdater(); // 清理游戏时间更新器
-  if (feedbackTimeout) {
-    clearTimeout(feedbackTimeout);
-    feedbackTimeout = null;
-  }
-  settingsStore.saveSettings();
-});
-</script>
+  window.removeEventListener('keydown', handleKeyPress)
+  stopQuestionTimer()
+  stopGameTimeUpdater()
 
+  if (feedbackTimeout) {
+    clearTimeout(feedbackTimeout)
+    feedbackTimeout = null
+  }
+
+  settingsStore.saveSettings()
+})
+</script>
 
 <template>
   <div v-if="difficulty" class="page">
-    <!-- 加载状态 -->
     <Transition name="fade">
       <div v-if="isLoading" class="loading-overlay">
-        <div class="loading-spinner">
-          <div class="spinner-ring"></div>
-          <div class="spinner-ring"></div>
-          <div class="spinner-ring"></div>
+        <div class="loading-panel">
+          <div class="spinner"></div>
+          <p class="loading-text text-child-base">加载中...</p>
         </div>
-        <p class="loading-text text-child-base">加载中...</p>
       </div>
     </Transition>
 
-    <!-- 顶部导航 -->
-    <header class="header">
-      <button class="nav-btn" @click="goBack">
-        <ArrowLeft :size="22" />
+    <header class="header-panel">
+      <button class="nav-btn" @click="goBack" aria-label="返回关卡页">
+        <ArrowLeft :size="20" />
       </button>
 
       <div class="title-group">
-        <h2 class="title text-child-xl">{{ difficulty.name }}</h2>
+        <p class="eyebrow">Mission Running</p>
+        <h1 class="title text-child-lg">{{ difficulty.name }}</h1>
         <p class="subtitle text-child-sm">{{ difficulty.description }}</p>
       </div>
 
-      <button class="nav-btn nav-btn-accent" @click="handleRetry" title="重新开始">
-        <RotateCcw :size="20" />
+      <button class="nav-btn nav-btn-accent" title="重新开始" aria-label="重新开始" @click="handleRetry">
+        <RotateCcw :size="18" />
       </button>
     </header>
 
-    <!-- 题目卡片区 -->
-    <main class="main">
-      <Transition name="question" mode="out-in">
-        <QuestionCard
-          v-if="game.currentQuestion.value"
-          :key="questionKey"
-          :question="game.currentQuestion.value"
-          :show-answer="showAnswer"
-          :user-answer="userAnswer"
+    <main class="main-layout">
+      <section class="question-section">
+        <Transition name="question" mode="out-in">
+          <QuestionCard
+            v-if="game.currentQuestion.value"
+            :key="questionKey"
+            :question="game.currentQuestion.value"
+            :show-answer="showAnswer"
+            :user-answer="userAnswer"
+            :current-index="game.currentIndex.value"
+            :total-questions="game.questions.value.length"
+            :question-timer="questionTimer"
+          />
+        </Transition>
+
+        <Transition name="feedback">
+          <div v-if="shouldShowFeedback" class="feedback-wrap" @click="handleFeedbackClick">
+            <div class="feedback-card" :class="{ success: isCorrect, error: isIncorrect }">
+              <template v-if="isCorrect">
+                <span class="feedback-kicker">回答正确</span>
+                <strong class="feedback-main">继续</strong>
+              </template>
+
+              <template v-else>
+                <span class="feedback-kicker">正确答案</span>
+                <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
+                <span class="feedback-note">点按继续</span>
+              </template>
+            </div>
+          </div>
+        </Transition>
+      </section>
+
+      <section class="control-section">
+        <ScoreBoard
+          :score="game.score.value"
           :current-index="game.currentIndex.value"
           :total-questions="game.questions.value.length"
-          :question-timer="questionTimer"
+          :correct-count="game.correctCount.value"
+          :duration="gameTime"
+          :accuracy="game.accuracy.value"
+        />
+
+        <NumberPad
+          :disabled="isWaiting || isComplete"
+          @input="handleInput"
+          @delete="handleDelete"
           @submit="submitAnswer"
         />
-      </Transition>
-
-      <!-- 答题反馈 -->
-      <Transition name="feedback">
-        <div v-if="shouldShowFeedback" class="feedback-wrap" @click="handleFeedbackClick">
-          <div class="feedback-card" :class="{ 'feedback-success': isCorrect, 'feedback-error': isIncorrect }">
-            <!-- 正确反馈 - 简洁风格 -->
-            <template v-if="isCorrect">
-              <div class="correct-highlight">
-                <span class="correct-number">✓</span>
-                <span class="correct-label">答对了</span>
-              </div>
-            </template>
-
-            <!-- 错误反馈 - 简洁突出正确答案 -->
-            <template v-else>
-              <div class="correct-highlight">
-                <span class="correct-number">{{ currentQuestion.answer }}</span>
-                <span class="correct-label">正确答案</span>
-              </div>
-            </template>
-          </div>
-        </div>
-      </Transition>
+      </section>
     </main>
 
-    <!-- 数字键盘 -->
-    <section class="numpad-section">
-      <NumberPad
-        :disabled="isWaiting || isComplete"
-        @input="handleInput"
-        @delete="handleDelete"
-        @submit="submitAnswer"
-      />
-    </section>
-
-    <!-- 得分板 -->
-    <footer class="footer">
-      <ScoreBoard
-        :score="game.score.value"
-        :current-index="game.currentIndex.value"
-        :total-questions="game.questions.value.length"
-        :correct-count="game.correctCount.value"
-        :duration="gameTime"
-        :accuracy="game.accuracy.value"
-      />
-    </footer>
-
-    <!-- 结果弹窗 -->
     <ResultModal
       v-if="resultData"
       :show="showModal"
@@ -409,409 +373,270 @@ onUnmounted(() => {
 <style scoped>
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #F5F7FA 0%, #E8ECF1 100%);
-  display: flex;
-  flex-direction: column;
-  padding: 12px 12px 20px;
-  touch-action: manipulation;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  padding: 14px;
 }
 
-.main {
-  flex: 1;
+.header-panel,
+.loading-panel {
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(18px);
+}
+
+.header-panel {
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: var(--radius-xl);
+}
+
+.nav-btn,
+.loading-panel {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 0;
-  position: relative;
-}
-
-.numpad-section {
-  margin: 8px 0;
-}
-
-.footer {
-  margin-top: auto;
-}
-
-/* 顶部导航 */
-.header {
-  position: sticky;
-  top: 8px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  box-shadow: var(--shadow-md);
-  margin: 0 4px 12px;
-  padding-top: max(10px, env(safe-area-inset-top));
 }
 
 .nav-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--bg-light);
-  color: var(--text-secondary);
+  width: 48px;
+  height: 48px;
   border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--text-secondary);
 }
 
-/* Active state for tactile feedback */
 .nav-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.97);
 }
 
-.nav-btn-accent:active {
-  transform: scale(0.92);
+@media (hover: hover) {
+  .nav-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.92);
+  }
 }
-
-
-MX|.nav-btn-accent {
-  transition: all 0.2s ease;
-}
-
 
 .nav-btn-accent {
-  background: linear-gradient(135deg, var(--energy-yellow) 0%, var(--energy-yellow-dark) 100%);
-  color: white;
-  box-shadow: var(--glow-yellow);
+  color: var(--hero-blue-dark);
+  background: var(--hero-blue-soft);
 }
 
-
 .title-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  min-width: 0;
   text-align: center;
+}
+
+.eyebrow {
+  margin-bottom: 4px;
+  color: var(--hero-blue);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .title {
-  font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: 0.5px;
+  font-weight: 800;
 }
 
 .subtitle {
+  margin-top: 4px;
   color: var(--text-secondary);
-  margin-top: 2px;
-  font-weight: 500;
 }
 
-/* 题目切换 - 流畅的进入和退出动画 */
-.question-enter-active,
-.question-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+.main-layout {
+  display: grid;
+  gap: 14px;
 }
 
-.question-enter-from {
-  opacity: 0;
-  transform: translateY(30px) scale(0.96);
+.question-section,
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.question-leave-to {
-  opacity: 0;
-  transform: translateY(-20px) scale(0.98);
+.question-section {
+  position: relative;
+  justify-content: center;
+  min-height: 320px;
 }
 
-/* 减少动画偏好 - 简化过渡 */
-@media (prefers-reduced-motion: reduce) {
-  .question-enter-active,
-  .question-leave-active {
-    transition: opacity 0.15s ease;
-  }
-
-  .question-enter-from,
-  .question-leave-to {
-    transform: none;
-  }
-}
-
-/* 答题反馈 - 简约科技风格 */
 .feedback-wrap {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9998;
-  padding: 20px;
+  padding: 12px;
 }
 
 .feedback-card {
-  width: 100%;
-  max-width: 300px;
-  background: var(--white);
-  border-radius: var(--radius-xl);
-  padding: 36px 28px;
-  text-align: center;
-  box-shadow: var(--shadow-lg);
-  animation: popIn 0.4s var(--ease-spring);
-}
-
-@keyframes popIn {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.feedback-success {
-  border: 3px solid var(--win-green);
-  box-shadow: var(--shadow-lg), var(--glow-green);
-}
-
-.feedback-error {
-  border: 3px solid var(--warning-orange);
-  box-shadow: var(--shadow-lg), var(--glow-orange);
-}
-
-/* mascot 表情 */
-.mascot-face {
-  font-size: 64px;
-  line-height: 1;
-  margin-bottom: 16px;
-  animation: bounce 0.6s ease;
-}
-
-.mascot-face.is-happy {
-  animation: happyBounce 0.8s ease infinite;
-}
-
-.mascot-face.is-sad {
-  animation: sadShake 0.5s ease;
-}
-
-@keyframes happyBounce {
-  0%, 100% { transform: translateY(0) rotate(-5deg); }
-  50% { transform: translateY(-10px) rotate(5deg); }
-}
-
-@keyframes sadShake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-/* 反馈文字 */
-.feedback-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.feedback-title.success {
-  color: var(--win-green);
-}
-
-.feedback-title.error {
-  color: var(--warning-orange);
-}
-
-.feedback-desc {
-  font-size: 16px;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-}
-
-/* 错误反馈 - 简洁突出正确答案 */
-.correct-highlight {
+  width: min(100%, 280px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  padding: 20px 18px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
 }
 
-.correct-number {
-  font-size: 72px;
-  font-weight: 800;
-  color: var(--win-green);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
+.feedback-card.success {
+  border-color: rgba(18, 185, 129, 0.28);
+  box-shadow: var(--shadow-md), var(--glow-green);
 }
 
-.feedback-success .correct-number {
-  font-size: 80px;
+.feedback-card.error {
+  border-color: rgba(239, 83, 80, 0.22);
 }
 
-.correct-label {
-  font-size: 14px;
+.feedback-kicker,
+.feedback-note {
   color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
 }
 
-.hint-auto {
-  font-size: 13px;
-  color: var(--win-green);
-  font-weight: 600;
+.feedback-main {
+  color: var(--text-primary);
+  font-size: 34px;
+  font-weight: 800;
 }
 
-.hint-btn {
-  padding: 12px 28px;
-  background: var(--hero-blue);
-  color: white;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-md), var(--glow-blue);
-}
-
-
-
-/* 反馈过渡 - 流畅自然的动画 */
-.feedback-enter-active .feedback-container {
-  transition: opacity var(--duration-normal) var(--ease-standard);
-}
-
-.feedback-leave-active .feedback-container {
-  transition: opacity var(--duration-fast) var(--ease-standard);
-}
-
-.feedback-enter-from .feedback-container,
-.feedback-leave-to .feedback-container {
-  opacity: 0;
-}
-
-/* 反馈弹窗动画 - 使用 transform 和 opacity 实现硬件加速 */
-.feedback-enter-active .feedback-overlay {
-  animation: feedbackShow var(--duration-macro) var(--ease-spring) forwards;
-}
-
-.feedback-leave-active .feedback-overlay {
-  animation: feedbackHide var(--duration-fast) var(--ease-standard) forwards;
-}
-
-@keyframes feedbackShow {
-  0% {
-    opacity: 0;
-    transform: scale(0.5) translateY(30px);
-  }
-  60% {
-    transform: scale(1.05) translateY(-5px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes feedbackHide {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.9) translateY(10px);
-  }
-}
-
-/* 加载状态 */
 .loading-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  z-index: 40;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  gap: 16px;
+  padding: 20px;
+  background: rgba(243, 247, 251, 0.78);
+  backdrop-filter: blur(8px);
 }
 
-.loading-spinner {
-  position: relative;
-  width: 60px;
-  height: 60px;
+.loading-panel {
+  flex-direction: column;
+  gap: 14px;
+  width: 180px;
+  height: 160px;
+  border-radius: 28px;
 }
 
-.spinner-ring {
-  position: absolute;
-  inset: 0;
-  border: 4px solid transparent;
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid rgba(49, 120, 246, 0.16);
   border-top-color: var(--hero-blue);
   border-radius: 50%;
-  /* 加载动画可以无限循环，因为它是功能性的 */
-  animation: spin 1s linear infinite;
-}
-
-/* 减少动画偏好 - 静态显示 */
-@media (prefers-reduced-motion: reduce) {
-  .spinner-ring {
-    animation: none;
-    border: 4px solid var(--hero-blue);
-    opacity: 0.6;
-  }
-}
-
-.spinner-ring:nth-child(1) {
-  animation-duration: 1s;
-}
-
-.spinner-ring:nth-child(2) {
-  animation-duration: 1.2s;
-  animation-direction: reverse;
-  border-top-color: var(--win-green);
-  inset: 8px;
-}
-
-.spinner-ring:nth-child(3) {
-  animation-duration: 0.8s;
-  border-top-color: var(--energy-yellow);
-  inset: 16px;
+  animation: spin 0.8s linear infinite;
 }
 
 .loading-text {
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.question-enter-active,
+.question-leave-active,
+.feedback-enter-active,
+.feedback-leave-active {
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.question-enter-from,
+.question-leave-to,
+.feedback-enter-from,
+.feedback-leave-to {
+  opacity: 0;
+  transform: translateY(16px);
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
   to {
     transform: rotate(360deg);
   }
 }
 
-/* 淡入淡出过渡 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+@media (min-width: 960px) {
+  .page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .main-layout {
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 360px);
+    align-items: start;
+  }
+
+  .question-section {
+    min-height: 560px;
+  }
+
+  .control-section {
+    position: sticky;
+    top: 20px;
+  }
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+@media (max-width: 420px) {
+  .page {
+    padding: 10px;
+  }
+
+  .header-panel {
+    grid-template-columns: 44px 1fr 44px;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 24px;
+  }
+
+  .nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .title {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    line-height: 1.45;
+  }
+
+  .main-layout {
+    gap: 10px;
+  }
+
+  .question-section,
+  .control-section {
+    gap: 10px;
+  }
+
+  .question-section {
+    min-height: 260px;
+  }
+
+  .feedback-card {
+    padding: 16px 14px;
+    border-radius: 20px;
+  }
+
+  .feedback-main {
+    font-size: 28px;
+  }
 }
 </style>

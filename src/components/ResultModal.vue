@@ -1,9 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { CheckCircle, Clock, Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
 import { useSound } from '../composables/useSound'
-import { getStarCount, getRatingText, getCelebrationEmoji } from '../utils/stars'
 import { formatTime } from '../utils/format'
-import { RotateCcw, Home, Target, CheckCircle, Clock, Star, Sparkles, ChevronDown } from 'lucide-vue-next'
+import { getRatingText, getStarCount } from '../utils/stars'
 
 const props = defineProps({
   show: {
@@ -23,25 +23,8 @@ const props = defineProps({
 const emit = defineEmits(['retry', 'home'])
 const { playSound } = useSound()
 
-// 错题查看展开状态
-const showIncorrectReview = ref(false)
+const stars = computed(() => getStarCount(props.result.accuracy))
 
-// 是否有错题
-const hasIncorrectQuestions = computed(() => {
-  return props.result.incorrectQuestions && props.result.incorrectQuestions.length > 0
-})
-
-// 错题数量
-const incorrectCount = computed(() => {
-  return props.result.incorrectQuestions ? props.result.incorrectQuestions.length : 0
-})
-
-function toggleIncorrectReview() {
-  playSound('click')
-  showIncorrectReview.value = !showIncorrectReview.value
-}
-
-// 使用共享的星星评级函数
 function handleRetry() {
   playSound('click')
   emit('retry')
@@ -58,83 +41,81 @@ function handleHome() {
     <Transition name="modal">
       <div v-if="show" class="result-overlay">
         <div class="result-card">
-          <!-- mascot 庆祝 -->
-          <div class="celebration-mascot">
-            <span class="mascot-emoji">{{ getCelebrationEmoji(result.accuracy) }}</span>
-            <div v-if="isNewBest" class="new-badge">
-              <Sparkles :size="16" />
+          <div class="topline">
+            <span class="result-chip">
+              <Target :size="16" />
+              <span>已完成</span>
+            </span>
+            <span v-if="isNewBest" class="record-chip">
+              <Sparkles :size="14" />
               <span>新纪录</span>
-            </div>
+            </span>
           </div>
-          
-          <!-- 标题 -->
+
           <h2 class="result-title">{{ getRatingText(result.accuracy) }}</h2>
-          <p class="result-subtitle">挑战完成啦！</p>
-          
-          <!-- 星星评级 -->
+          <p class="result-subtitle">这次表现不错，继续保持。</p>
+
           <div class="star-rating">
-            <Star 
-              v-for="n in 3" 
+            <Star
+              v-for="n in 3"
               :key="n"
-              :size="44"
-              :class="['star-icon', n <= getStarCount(result.accuracy) ? 'star-active' : 'star-inactive']"
+              :size="28"
+              :class="['star-icon', n <= stars ? 'star-active' : 'star-inactive']"
               fill="currentColor"
             />
           </div>
 
-          <!-- 数据卡片 -->
-          <div class="stats-box">
-            <div class="stat-row">
-              <div class="stat-item">
-                <div class="stat-icon coral">
-                  <Target :size="24" />
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">得分</span>
-                  <span class="stat-value">{{ result.score }}</span>
-                </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon score">
+                <Target :size="18" />
               </div>
-              <div class="stat-item">
-                <div class="stat-icon green">
-                  <CheckCircle :size="24" />
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">正确</span>
-                  <span class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</span>
-                </div>
+              <div>
+                <p class="stat-label">得分</p>
+                <p class="stat-value">{{ result.score }}</p>
               </div>
             </div>
-            <div class="stat-row">
-              <div class="stat-item">
-                <div class="stat-icon yellow">
-                  <Star :size="24" />
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">正确率</span>
-                  <span class="stat-value">{{ result.accuracy }}%</span>
-                </div>
+
+            <div class="stat-card">
+              <div class="stat-icon correct">
+                <CheckCircle :size="18" />
               </div>
-              <div class="stat-item">
-                <div class="stat-icon purple">
-                  <Clock :size="24" />
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">用时</span>
-                  <span class="stat-value">{{ formatTime(result.duration) }}</span>
-                </div>
+              <div>
+                <p class="stat-label">正确</p>
+                <p class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon accuracy">
+                <Star :size="18" />
+              </div>
+              <div>
+                <p class="stat-label">正确率</p>
+                <p class="stat-value">{{ result.accuracy }}%</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon time">
+                <Clock :size="18" />
+              </div>
+              <div>
+                <p class="stat-label">用时</p>
+                <p class="stat-value">{{ formatTime(result.duration) }}</p>
               </div>
             </div>
           </div>
 
-          <!-- 按钮 -->
-          <div class="action-btns">
-            <button @click="handleRetry" class="btn-retry">
-              <RotateCcw :size="24" />
-              <span>再玩一次</span>
+          <div class="actions">
+            <button class="btn-primary" @click="handleRetry">
+              <RotateCcw :size="18" />
+              <span>再来一次</span>
             </button>
-            <button @click="handleHome" class="btn-home">
-              <Home :size="22" />
-              <span>返回</span>
+
+            <button class="btn-secondary" @click="handleHome">
+              <Home :size="18" />
+              <span>返回关卡页</span>
             </button>
           </div>
         </div>
@@ -147,351 +128,244 @@ function handleHome() {
 .result-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
   padding: 20px;
+  background: rgba(18, 30, 49, 0.34);
+  backdrop-filter: blur(10px);
 }
 
 .result-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--white);
+  width: min(100%, 420px);
+  padding: 22px;
   border-radius: var(--radius-xl);
-  padding: 40px 28px;
-  text-align: center;
+  background: var(--bg-panel-strong);
+  border: 1px solid rgba(255, 255, 255, 0.78);
   box-shadow: var(--shadow-lg);
-  animation: cardPop 0.5s var(--ease-bounce);
 }
 
-@keyframes cardPop {
-  0% {
-    transform: scale(0.5) translateY(50px);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.05) translateY(-10px);
-  }
-  100% {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-}
-
-/* mascot 庆祝区 */
-.celebration-mascot {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.mascot-emoji {
-  font-size: 80px;
-  line-height: 1;
-  display: inline-block;
-  animation: mascotBounce 1s ease infinite;
-}
-
-@keyframes mascotBounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-15px) scale(1.1); }
-}
-
-.new-badge {
-  position: absolute;
-  top: -8px;
-  right: 50%;
-  transform: translateX(70px);
-  display: inline-flex;
+.topline,
+.result-chip,
+.record-chip,
+.actions,
+.btn-primary,
+.btn-secondary {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: linear-gradient(145deg, var(--energy-yellow) 0%, var(--warning-orange) 100%);
-  color: white;
-  font-size: var(--font-md);
-  font-weight: 800;
+}
+
+.topline {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.result-chip,
+.record-chip {
+  gap: 8px;
+  padding: 8px 12px;
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-sm);
-  animation: badgePop 0.5s ease 0.3s both;
+  font-size: var(--font-sm);
+  font-weight: 800;
 }
 
-@keyframes badgePop {
-  0% {
-    transform: translateX(70px) scale(0);
-    opacity: 0;
-  }
-  60% {
-    transform: translateX(70px) scale(1.2);
-  }
-  100% {
-    transform: translateX(70px) scale(1);
-    opacity: 1;
-  }
+.result-chip {
+  color: var(--hero-blue-dark);
+  background: var(--hero-blue-soft);
 }
 
-/* 标题 */
+.record-chip {
+  color: var(--energy-yellow-dark);
+  background: var(--energy-yellow-soft);
+}
+
 .result-title {
+  margin-bottom: 8px;
+  color: var(--text-primary);
   font-size: var(--font-h1);
   font-weight: 800;
-  color: var(--text-dark);
-  margin-bottom: 8px;
 }
 
 .result-subtitle {
-  font-size: var(--font-lg);
-  color: var(--text-gray);
-  margin-bottom: 24px;
+  color: var(--text-secondary);
+  font-size: var(--font-base);
+  line-height: 1.7;
 }
 
-/* 星星评级 */
 .star-rating {
   display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.star-icon {
-  transition: all 0.3s ease;
+  gap: 10px;
+  margin: 18px 0 20px;
 }
 
 .star-active {
-  color: var(--warning);
-  filter: drop-shadow(0 0 10px rgba(255, 199, 0, 0.4));
-  animation: starAppear 0.4s ease both;
+  color: var(--energy-yellow);
 }
 
 .star-inactive {
-  color: var(--border-light);
+  color: #d7dfeb;
 }
 
-@keyframes starAppear {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.2) rotate(10deg);
-  }
-  100% {
-    transform: scale(1) rotate(0);
-    opacity: 1;
-  }
-}
-
-/* 数据统计 */
-.stats-box {
-  background: var(--bg-light);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 28px;
-}
-
-.stat-row {
+.stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.stat-row:not(:last-child) {
-  margin-bottom: 20px;
-}
-
-.stat-item {
+.stat-card {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--border-light);
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  flex-shrink: 0;
+  border-radius: 12px;
 }
 
-.stat-icon.coral { background: var(--coral); }
-.stat-icon.green { background: var(--success); }
-.stat-icon.yellow { background: var(--warning); }
-.stat-icon.purple { background: var(--hero-blue-light); }
+.stat-icon.score {
+  color: var(--hero-blue-dark);
+  background: var(--hero-blue-soft);
+}
 
-.stat-info {
-  text-align: left;
+.stat-icon.correct {
+  color: var(--win-green-dark);
+  background: var(--win-green-soft);
+}
+
+.stat-icon.accuracy {
+  color: var(--energy-yellow-dark);
+  background: var(--energy-yellow-soft);
+}
+
+.stat-icon.time {
+  color: var(--warning-orange-dark);
+  background: rgba(255, 122, 69, 0.12);
 }
 
 .stat-label {
-  display: block;
-  font-size: var(--font-md);
-  color: var(--text-gray);
-  margin-bottom: 4px;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 600;
 }
 
 .stat-value {
-  display: block;
-  font-size: var(--font-h3);
-  font-weight: 700;
-  color: var(--text-dark);
-  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  font-weight: 800;
 }
 
-/* 错题回顾 */
-.incorrect-review {
-  margin-bottom: 24px;
+.actions {
+  gap: 10px;
 }
 
-.review-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
+.btn-primary,
+.btn-secondary {
   justify-content: center;
   gap: 8px;
-  padding: 14px;
-  background: rgba(255, 107, 53, 0.08);
-  border: 2px solid rgba(255, 107, 53, 0.2);
-  border-radius: var(--radius-md);
-  color: var(--warning-orange);
-  font-size: var(--font-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  flex: 1;
+  height: 52px;
+  border: none;
+  border-radius: 18px;
+  font-size: var(--font-base);
+  font-weight: 800;
 }
 
-.review-toggle:active {
+.btn-primary {
+  color: white;
+  background: linear-gradient(135deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
+}
+
+.btn-secondary {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.btn-primary:active,
+.btn-secondary:active {
   transform: scale(0.98);
 }
 
-.toggle-icon {
-  transition: transform 0.3s ease;
+@media (hover: hover) {
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md), var(--glow-blue);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
+  }
 }
 
-.toggle-icon.is-expanded {
-  transform: rotate(180deg);
-}
-
-.review-content {
-  margin-top: 12px;
-  max-height: 200px;
-  overflow-y: auto;
-  text-align: left;
-}
-
-.review-item {
-  padding: 12px;
-  background: var(--bg-light);
-  border-radius: var(--radius-md);
-  margin-bottom: 8px;
-}
-
-.review-item:last-child {
-  margin-bottom: 0;
-}
-
-.review-question {
-  font-size: var(--font-md);
-  font-weight: 600;
-  color: var(--text-dark);
-  margin-bottom: 8px;
-}
-
-.review-answers {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.answer {
-  font-size: var(--font-sm);
-}
-
-.answer.wrong {
-  color: var(--warning-orange);
-}
-
-.answer.correct {
-  color: var(--success);
-}
-
-/* 展开动画 */
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.expand-enter-from,
-.expand-leave-to {
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-}
-
-.expand-enter-to,
-.expand-leave-from {
-  max-height: 200px;
-  opacity: 1;
-  margin-top: 12px;
-}
-
-/* 按钮 */
-.action-btns {
-  display: flex;
-  gap: 16px;
-}
-
-.btn-retry, .btn-home {
-  flex: 1;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: var(--font-lg);
-  font-weight: 700;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* Active state for tactile feedback */
-.btn-retry:active {
-  transform: scale(0.95);
-  box-shadow: none;
-}
-
-.btn-home:active {
-  transform: scale(0.95);
-  background: var(--bg-light);
-}
-
-
-.btn-retry {
-  background: var(--coral);
-  color: white;
-  border: none;
-  box-shadow: var(--shadow-sm);
-}
-
-
-.btn-home {
-  background: var(--white);
-  color: var(--text-gray);
-  border: 3px solid var(--border-light);
-}
-
-
-/* 过渡动画 */
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+
+.modal-enter-from .result-card,
+.modal-leave-to .result-card {
+  transform: translateY(16px) scale(0.98);
+}
+
+@media (max-width: 420px) {
+  .result-overlay {
+    align-items: flex-end;
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .result-card {
+    width: 100%;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .topline {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 14px;
+  }
+
+  .result-title {
+    font-size: 28px;
+  }
+
+  .result-subtitle {
+    line-height: 1.55;
+  }
+
+  .star-rating {
+    margin: 14px 0 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
 }
 </style>

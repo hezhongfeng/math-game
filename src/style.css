@@ -4,43 +4,48 @@
 
 @layer base {
   :root {
-    /* 简约科技风格配色 */
-    --hero-blue: #4A90E2;
-    --hero-blue-light: #6BA3E8;
-    --hero-blue-dark: #3A7BC8;
-    --hero-blue-glow: rgba(74, 144, 226, 0.3);
+    /* Mission deck palette */
+    --hero-blue: #3178f6;
+    --hero-blue-light: #5d97ff;
+    --hero-blue-dark: #1f5fcb;
+    --hero-blue-soft: #eaf2ff;
+    --hero-blue-glow: rgba(49, 120, 246, 0.18);
 
-    --win-green: #00D084;
-    --win-green-light: #33D99D;
-    --win-green-dark: #00A86B;
-    --win-green-glow: rgba(0, 208, 132, 0.3);
+    --win-green: #12b981;
+    --win-green-light: #3dd6a0;
+    --win-green-dark: #0a8c61;
+    --win-green-soft: #ebfbf5;
+    --win-green-glow: rgba(18, 185, 129, 0.18);
 
-    --energy-yellow: #FFC700;
-    --energy-yellow-light: #FFD633;
-    --energy-yellow-dark: #E6B300;
-    --energy-yellow-glow: rgba(255, 199, 0, 0.3);
+    --energy-yellow: #f4b400;
+    --energy-yellow-light: #ffd155;
+    --energy-yellow-dark: #c98d00;
+    --energy-yellow-soft: #fff7dd;
+    --energy-yellow-glow: rgba(244, 180, 0, 0.16);
 
-    --warning-orange: #FF6B35;
-    --warning-orange-light: #FF8A5D;
-    --warning-orange-dark: #E65A24;
-    --warning-orange-glow: rgba(255, 107, 53, 0.3);
+    --warning-orange: #ff7a45;
+    --warning-orange-light: #ff9b73;
+    --warning-orange-dark: #d95d28;
+    --warning-orange-glow: rgba(255, 122, 69, 0.18);
 
-    --error-red: #FF4757;
-    --error-red-light: #FF6B79;
-    --error-red-dark: #E63344;
-    --error-red-glow: rgba(255, 71, 87, 0.3);
+    --error-red: #ef5350;
+    --error-red-light: #f77674;
+    --error-red-dark: #c53e3c;
+    --error-red-glow: rgba(239, 83, 80, 0.16);
 
-    /* 中性色 */
-    --bg-light: #F5F7FA;
-    --bg-white: #FFFFFF;
-    --bg-dark: #E8ECF1;
+    --bg-light: #f3f7fb;
+    --bg-white: #ffffff;
+    --bg-dark: #e4edf7;
+    --bg-panel: rgba(255, 255, 255, 0.86);
+    --bg-panel-strong: rgba(255, 255, 255, 0.94);
 
-    --text-primary: #1A1A1A;
-    --text-secondary: #666666;
-    --text-muted: #999999;
+    --text-primary: #162033;
+    --text-secondary: #5f6f88;
+    --text-muted: #8a98ad;
 
-    --border-light: #E5E5E5;
-    --border-default: #CCCCCC;
+    --border-light: #dde6f0;
+    --border-default: #c8d4e3;
+    --border-strong: #b6c5d8;
 
     /* 游戏映射 - 兼容现有代码 */
     --game-primary: var(--hero-blue);
@@ -63,9 +68,10 @@
     --game-bg-light: var(--bg-white);
     --game-bg-dark: var(--bg-dark);
 
-    --game-card: var(--bg-white);
+    --game-card: var(--bg-panel-strong);
     --game-text: var(--text-primary);
     --game-text-secondary: var(--text-secondary);
+    --game-border: var(--border-light);
 
     --coral: var(--hero-blue);  /* 兼容旧代码 */
     --coral-dark: var(--hero-blue-dark);
@@ -84,23 +90,21 @@
     --white: #FFFFFF;
     --cream: #F5F7FA;
 
-    /* 圆角 - 简约 */
     --radius-sm: 12px;
-    --radius-md: 16px;
-    --radius-lg: 20px;
-    --radius-xl: 24px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
     --radius-full: 9999px;
 
-    /* 阴影 - 简约 */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    --shadow-sm: 0 10px 24px rgba(22, 32, 51, 0.06);
+    --shadow-md: 0 20px 44px rgba(22, 32, 51, 0.08);
+    --shadow-lg: 0 32px 72px rgba(22, 32, 51, 0.12);
+    --shadow-panel: 0 24px 64px rgba(38, 63, 104, 0.08);
 
-    /* 发光效果 - 科技感 */
-    --glow-blue: 0 0 20px rgba(74, 144, 226, 0.3);
-    --glow-green: 0 0 20px rgba(0, 208, 132, 0.3);
-    --glow-yellow: 0 0 20px rgba(255, 199, 0, 0.3);
-    --glow-orange: 0 0 20px rgba(255, 107, 53, 0.3);
+    --glow-blue: 0 0 0 6px rgba(49, 120, 246, 0.08);
+    --glow-green: 0 0 0 6px rgba(18, 185, 129, 0.08);
+    --glow-yellow: 0 0 0 6px rgba(244, 180, 0, 0.08);
+    --glow-orange: 0 0 0 6px rgba(255, 122, 69, 0.08);
 
     /* 字体大小系统 - 移动优先 */
     --font-hero: 48px;
@@ -132,8 +136,11 @@
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    background: var(--bg-light);
+    font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(93, 151, 255, 0.18), transparent 32%),
+      radial-gradient(circle at top right, rgba(61, 214, 160, 0.12), transparent 26%),
+      linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
@@ -146,6 +153,17 @@
   #app {
     min-height: 100vh;
     overflow-x: hidden;
+  }
+
+  button,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 3px solid rgba(49, 120, 246, 0.28);
+    outline-offset: 2px;
   }
 }
 

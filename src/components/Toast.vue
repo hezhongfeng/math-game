@@ -1,5 +1,5 @@
 <script setup>
-import { Check, X, AlertTriangle, Info } from 'lucide-vue-next'
+import { AlertTriangle, Check, Info, X } from 'lucide-vue-next'
 
 defineProps({
   toast: {
@@ -17,62 +17,126 @@ const icons = {
   info: Info
 }
 
-const colors = {
+const styles = {
   success: {
-    bg: 'bg-gradient-to-r from-game-success to-game-success-dark',
-    text: 'text-white',
-    shadow: 'shadow-game-success'
+    card: 'toast-success',
+    icon: 'icon-success'
   },
   error: {
-    bg: 'bg-gradient-to-r from-game-error to-game-error-dark',
-    text: 'text-white',
-    shadow: 'shadow-game-error'
+    card: 'toast-error',
+    icon: 'icon-error'
   },
   warning: {
-    bg: 'bg-gradient-to-r from-game-warning to-game-warning-dark',
-    text: 'text-gray-800',
-    shadow: 'shadow-game-warning'
+    card: 'toast-warning',
+    icon: 'icon-warning'
   },
   info: {
-    bg: 'bg-gradient-to-r from-game-primary to-game-primary-dark',
-    text: 'text-white',
-    shadow: 'shadow-game-primary'
+    card: 'toast-info',
+    icon: 'icon-info'
   }
 }
 
-// 获取安全的颜色配置
-const getColor = (type) => colors[type] || colors.info
-const getIcon = (type) => icons[type] || icons.info
+function getStyle(type) {
+  return styles[type] || styles.info
+}
+
+function getIcon(type) {
+  return icons[type] || icons.info
+}
 </script>
 
 <template>
-  <div
-    class="toast-item flex items-center gap-4 px-6 py-5 rounded-cute-xl shadow-cute-lg min-w-[340px] max-w-md cursor-pointer hover:shadow-cute-lg hover:scale-102 transition-all duration-300"
-    :class="[getColor(toast.type).bg, getColor(toast.type).text]"
-    @click="$emit('remove', toast.id)"
-  >
-    <div class="icon-wrapper bg-white/20 rounded-full p-2 flex-shrink-0">
-      <component :is="getIcon(toast.type)" :size="26" class="drop-shadow-md" />
+  <div class="toast-item" :class="getStyle(toast.type).card" @click="emit('remove', toast.id)">
+    <div class="icon-wrapper" :class="getStyle(toast.type).icon">
+      <component :is="getIcon(toast.type)" :size="18" />
     </div>
-    <span class="flex-1 font-medium font-rounded text-child-lg">{{ toast.message }}</span>
-    <div class="close-btn opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-200 p-1">
-      <X :size="22" />
-    </div>
+    <span class="message">{{ toast.message }}</span>
+    <button class="close-btn" type="button" aria-label="关闭提示">
+      <X :size="16" />
+    </button>
   </div>
 </template>
 
 <style scoped>
 .toast-item {
+  width: min(100%, 360px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 20px;
+  background: var(--bg-panel-strong);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(18px);
   pointer-events: auto;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
 }
 
+.icon-wrapper,
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .icon-wrapper {
-  backdrop-filter: blur(4px);
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
-.drop-shadow-md {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+.message {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.close-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.toast-success {
+  border-color: rgba(18, 185, 129, 0.24);
+}
+
+.toast-error {
+  border-color: rgba(239, 83, 80, 0.22);
+}
+
+.toast-warning {
+  border-color: rgba(255, 122, 69, 0.24);
+}
+
+.toast-info {
+  border-color: rgba(49, 120, 246, 0.22);
+}
+
+.icon-success {
+  color: var(--win-green-dark);
+  background: var(--win-green-soft);
+}
+
+.icon-error {
+  color: var(--error-red-dark);
+  background: rgba(239, 83, 80, 0.12);
+}
+
+.icon-warning {
+  color: var(--warning-orange-dark);
+  background: rgba(255, 122, 69, 0.12);
+}
+
+.icon-info {
+  color: var(--hero-blue-dark);
+  background: var(--hero-blue-soft);
 }
 </style>

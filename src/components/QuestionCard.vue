@@ -33,23 +33,23 @@ const props = defineProps({
 const shouldShowFeedback = computed(() => props.showAnswer && props.question?.userAnswer !== null)
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
-
 const formattedTime = computed(() => formatTimePad(props.questionTimer))
 
 const answerDisplay = computed(() => {
   if (shouldShowFeedback.value) {
     return isCorrect.value ? props.question.answer : props.userAnswer
   }
+
   return props.userAnswer || '?'
 })
 </script>
 
 <template>
   <div class="question-card">
-    <div class="card-header">
-      <span class="counter">{{ currentIndex + 1 }} / {{ totalQuestions }}</span>
-      <div class="timer">
-        <Clock :size="20" />
+    <div class="card-top">
+      <div class="counter-badge">{{ currentIndex + 1 }} / {{ totalQuestions }}</div>
+      <div class="timer-badge">
+        <Clock :size="18" />
         <span>{{ formattedTime }}</span>
       </div>
     </div>
@@ -59,11 +59,14 @@ const answerDisplay = computed(() => {
       <span class="operator">{{ question.operator }}</span>
       <span class="number">{{ question.operand2 }}</span>
       <span class="equals">=</span>
-      <span class="answer" :class="{ 
-        'is-placeholder': !userAnswer && !showAnswer,
-        'is-correct': isCorrect,
-        'is-wrong': isIncorrect 
-      }">
+      <span
+        class="answer"
+        :class="{
+          'is-placeholder': !userAnswer && !showAnswer,
+          'is-correct': isCorrect,
+          'is-wrong': isIncorrect
+        }"
+      >
         {{ answerDisplay }}
       </span>
     </div>
@@ -72,135 +75,135 @@ const answerDisplay = computed(() => {
 
 <style scoped>
 .question-card {
-  background: var(--white);
+  width: min(100%, 640px);
+  padding: 18px;
   border-radius: var(--radius-xl);
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 480px;
+  background: var(--bg-panel-strong);
+  border: 1px solid rgba(255, 255, 255, 0.72);
   box-shadow: var(--shadow-lg);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.counter {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  color: var(--text-gray);
-}
-
-.timer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: var(--bg-light);
-  border-radius: var(--radius-full);
-  font-size: var(--font-md);
-  font-weight: 700;
-  color: var(--text-gray);
-}
-
+.card-top,
+.timer-badge,
 .math-display {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 4px 0;
 }
 
-.number {
-  font-size: var(--font-hero);
+.card-top {
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.counter-badge,
+.timer-badge {
+  padding: 10px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
   font-weight: 800;
-  color: var(--text-dark);
+}
+
+.timer-badge {
+  gap: 8px;
+}
+
+.math-display {
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+}
+
+.number,
+.answer {
+  color: var(--text-primary);
+  font-size: clamp(48px, 12vw, 76px);
+  font-weight: 800;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
+}
+
+.operator,
+.equals {
+  font-size: clamp(34px, 8vw, 50px);
+  font-weight: 800;
 }
 
 .operator {
-  font-size: var(--font-h1);
-  font-weight: 700;
-  color: var(--coral);
+  color: var(--hero-blue);
 }
 
 .equals {
-  font-size: var(--font-h1);
-  font-weight: 700;
-  color: var(--text-gray);
+  color: var(--text-muted);
 }
 
 .answer {
-  font-size: var(--font-hero);
-  font-weight: 800;
-  min-width: 72px;
+  min-width: 88px;
+  padding: 16px 18px;
+  border-radius: 24px;
+  background: #f7fbff;
+  border: 2px solid #dce7f3;
   text-align: center;
-  padding: 8px 12px;
-  background: var(--bg-light);
-  border-radius: var(--radius-md);
-  border: 3px solid var(--border-light);
-  font-variant-numeric: tabular-nums;
-  transition: all 0.2s ease;
+  transition: border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
 }
 
 .answer.is-placeholder {
-  color: var(--border-default);
+  color: var(--text-muted);
 }
 
 .answer.is-correct {
-  color: var(--success);
-  border-color: var(--success);
+  color: var(--win-green-dark);
+  border-color: rgba(18, 185, 129, 0.4);
+  box-shadow: var(--glow-green);
 }
 
 .answer.is-wrong {
-  color: var(--coral);
-  border-color: var(--coral);
+  color: var(--error-red-dark);
+  border-color: rgba(239, 83, 80, 0.4);
 }
 
-@media (min-width: 768px) {
+@media (max-width: 420px) {
   .question-card {
-    padding: 20px 28px;
-    max-width: 560px;
-  }
-
-  .number, .answer {
-    font-size: 64px;
-  }
-
-  .operator, .equals {
-    font-size: 48px;
-  }
-
-  .answer {
-    min-width: 100px;
-    padding: 12px 16px;
-  }
-}
-
-@media (max-width: 375px) {
-  .question-card {
-    padding: 12px 16px;
+    padding: 16px;
   }
 
   .math-display {
     gap: 8px;
-  }
-
-  .number, .answer {
-    font-size: 40px;
-  }
-
-  .operator, .equals {
-    font-size: 32px;
+    min-height: 140px;
   }
 
   .answer {
-    min-width: 64px;
-    padding: 6px 10px;
+    min-width: 72px;
+    padding: 14px 12px;
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .card-top {
+    margin-bottom: 18px;
+  }
+
+  .counter-badge,
+  .timer-badge {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .math-display {
+    gap: 6px;
+  }
+
+  .number,
+  .answer {
+    font-size: 42px;
+  }
+
+  .operator,
+  .equals {
+    font-size: 28px;
   }
 }
 </style>
