@@ -47,7 +47,7 @@ function handleSubmit() {
       </button>
 
       <button class="num-btn btn-delete" :disabled="disabled" @click="handleDelete">
-        <X :size="28" stroke-width="2.5" />
+        <X :size="34" stroke-width="2.5" />
       </button>
 
       <button class="num-btn" :disabled="disabled" @click="handleInput(0)">
@@ -55,7 +55,7 @@ function handleSubmit() {
       </button>
 
       <button class="num-btn btn-submit" :disabled="disabled" @click="handleSubmit">
-        <Check :size="30" stroke-width="3" />
+        <Check :size="36" stroke-width="3" />
       </button>
     </div>
   </div>
@@ -93,7 +93,7 @@ function handleSubmit() {
   background: rgba(255, 255, 255, 0.92);
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
-  font-size: 34px;
+  font-size: 42px;
   font-weight: 800;
   cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
@@ -143,7 +143,7 @@ function handleSubmit() {
 
   .num-btn {
     min-height: 78px;
-    font-size: 38px;
+    font-size: 46px;
   }
 }
 </style>

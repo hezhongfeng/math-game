@@ -469,7 +469,7 @@ onUnmounted(() => {
 .question-section {
   position: relative;
   justify-content: flex-start;
-  min-height: 272px;
+  min-height: 200px;
 }
 
 .score-wrap {
@@ -640,7 +640,7 @@ onUnmounted(() => {
   }
 
   .question-section {
-    min-height: 220px;
+    min-height: 168px;
   }
 
   .feedback-card {

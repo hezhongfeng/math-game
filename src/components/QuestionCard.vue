@@ -76,7 +76,7 @@ const answerDisplay = computed(() => {
 <style scoped>
 .question-card {
   width: min(100%, 640px);
-  padding: 18px;
+  padding: 10px 16px;
   border-radius: var(--radius-xl);
   background: var(--bg-panel-strong);
   border: 1px solid rgba(255, 255, 255, 0.72);
@@ -92,12 +92,12 @@ const answerDisplay = computed(() => {
 
 .card-top {
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 
 .counter-badge,
 .timer-badge {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid var(--border-light);
@@ -112,8 +112,8 @@ const answerDisplay = computed(() => {
 
 .math-display {
   justify-content: center;
-  gap: 10px;
-  min-height: 180px;
+  gap: 8px;
+  min-height: 112px;
 }
 
 .number,
@@ -140,8 +140,8 @@ const answerDisplay = computed(() => {
 }
 
 .answer {
-  min-width: 88px;
-  padding: 16px 18px;
+  min-width: 80px;
+  padding: 12px 14px;
   border-radius: 24px;
   background: #f7fbff;
   border: 2px solid #dce7f3;
@@ -166,24 +166,23 @@ const answerDisplay = computed(() => {
 
 @media (max-width: 420px) {
   .question-card {
-    padding: 16px;
+    padding: 10px 14px;
   }
 
   .math-display {
-    gap: 8px;
-    min-height: 140px;
+    min-height: 96px;
   }
 
   .answer {
-    min-width: 72px;
-    padding: 14px 12px;
+    min-width: 66px;
+    padding: 10px 10px;
     border-radius: 20px;
   }
 }
 
 @media (max-width: 360px) {
   .card-top {
-    margin-bottom: 18px;
+    margin-bottom: 8px;
   }
 
   .counter-badge,
@@ -193,7 +192,7 @@ const answerDisplay = computed(() => {
   }
 
   .math-display {
-    gap: 6px;
+    min-height: 92px;
   }
 
   .number,
