@@ -376,8 +376,8 @@ onUnmounted(() => {
 
 <style scoped>
 .page {
-  min-height: 100vh;
-  padding: 14px;
+  min-height: 100dvh;
+  padding: 12px;
 }
 
 .header-panel,
@@ -393,8 +393,8 @@ onUnmounted(() => {
   grid-template-columns: 48px 1fr 48px;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
-  padding: 14px;
+  margin-bottom: 12px;
+  padding: 12px;
   border-radius: var(--radius-xl);
 }
 
@@ -450,26 +450,27 @@ onUnmounted(() => {
 }
 
 .subtitle {
-  margin-top: 4px;
+  margin-top: 2px;
   color: var(--text-secondary);
+  line-height: 1.35;
 }
 
 .main-layout {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .question-section,
 .control-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .question-section {
   position: relative;
   justify-content: flex-start;
-  min-height: 200px;
+  min-height: 180px;
 }
 
 .score-wrap {
@@ -604,15 +605,15 @@ onUnmounted(() => {
 
 @media (max-width: 420px) {
   .page {
-    padding: 10px;
+    padding: 8px;
   }
 
   .header-panel {
     grid-template-columns: 44px 1fr 44px;
-    gap: 10px;
-    margin-bottom: 12px;
-    padding: 12px;
-    border-radius: 24px;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px;
   }
 
   .nav-btn {
@@ -622,25 +623,32 @@ onUnmounted(() => {
   }
 
   .title {
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.2;
   }
 
+  .eyebrow {
+    margin-bottom: 2px;
+    font-size: 11px;
+  }
+
   .subtitle {
+    margin-top: 2px;
+    font-size: 12px;
     line-height: 1.45;
   }
 
   .main-layout {
-    gap: 10px;
+    gap: 8px;
   }
 
   .question-section,
   .control-section {
-    gap: 10px;
+    gap: 8px;
   }
 
   .question-section {
-    min-height: 168px;
+    min-height: 152px;
   }
 
   .feedback-card {
@@ -650,6 +658,41 @@ onUnmounted(() => {
 
   .feedback-main {
     font-size: 28px;
+  }
+}
+
+@media (max-width: 959px) and (max-height: 860px) {
+  .header-panel {
+    grid-template-columns: 42px 1fr 42px;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+  }
+
+  .nav-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .eyebrow,
+  .subtitle {
+    display: none;
+  }
+
+  .title {
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .main-layout,
+  .question-section,
+  .control-section {
+    gap: 8px;
+  }
+
+  .question-section {
+    min-height: 136px;
   }
 }
 

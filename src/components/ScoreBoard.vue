@@ -96,7 +96,7 @@ const formattedTime = computed(() => formatTime(props.duration))
 
 <style scoped>
 .score-board {
-  padding: 16px;
+  padding: 14px;
   border-radius: var(--radius-xl);
   background: var(--bg-panel);
   border: 1px solid rgba(255, 255, 255, 0.72);
@@ -123,8 +123,8 @@ const formattedTime = computed(() => formatTime(props.duration))
 }
 
 .progress-track {
-  height: 10px;
-  margin-bottom: 14px;
+  height: 8px;
+  margin-bottom: 12px;
   overflow: hidden;
   border-radius: var(--radius-full);
   background: #dde7f2;
@@ -139,20 +139,20 @@ const formattedTime = computed(() => formatTime(props.duration))
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .stat-item {
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 18px;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid var(--border-light);
 }
 
 .stat-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -181,7 +181,7 @@ const formattedTime = computed(() => formatTime(props.duration))
 
 .stat-value {
   color: var(--text-primary);
-  font-size: var(--font-lg);
+  font-size: 17px;
   font-weight: 800;
   line-height: 1.2;
 }
@@ -194,7 +194,7 @@ const formattedTime = computed(() => formatTime(props.duration))
 
 @media (max-width: 360px) {
   .score-board {
-    padding: 14px;
+    padding: 12px;
   }
 
   .progress-track {
@@ -206,7 +206,47 @@ const formattedTime = computed(() => formatTime(props.duration))
   }
 
   .stat-item {
-    padding: 10px 12px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 959px) and (max-height: 860px) {
+  .score-board {
+    padding: 10px;
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .progress-header {
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .progress-track {
+    margin-bottom: 8px;
+  }
+
+  .stat-item {
+    padding: 8px 10px;
+  }
+
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+  }
+
+  .stat-value {
+    font-size: 15px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .stats-grid .stat-item:nth-child(3),
+  .stats-grid .stat-item:nth-child(4) {
+    display: none;
   }
 }
 </style>
