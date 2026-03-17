@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { RefreshCw, X } from 'lucide-vue-next'
+import { BellRing, RefreshCw, X } from 'lucide-vue-next'
 
 const needRefresh = ref(false)
 const updateSW = ref(null)
@@ -34,8 +34,19 @@ function handleDismiss() {
 
 <template>
   <Transition name="slide-up">
-    <div v-if="needRefresh" class="update-wrap">
-      <div class="update-prompt">
+    <div
+      v-if="needRefresh"
+      class="update-wrap"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      <div class="update-prompt" aria-label="应用有新版本可更新">
+        <div class="update-badge">
+          <BellRing :size="14" />
+          <span>新版本可用</span>
+        </div>
+
         <div class="update-main">
           <div class="update-icon">
             <RefreshCw :size="20" />
@@ -60,25 +71,40 @@ function handleDismiss() {
 <style scoped>
 .update-wrap {
   position: fixed;
-  right: 16px;
-  bottom: max(16px, env(safe-area-inset-bottom));
-  left: 16px;
+  top: max(12px, calc(env(safe-area-inset-top) + 8px));
+  right: 12px;
+  left: 12px;
   z-index: 9999;
 }
 
 .update-prompt {
-  width: min(100%, 560px);
-  margin-left: auto;
+  width: min(100%, 620px);
+  margin: 0 auto;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px;
+  gap: 12px;
+  padding: 14px 14px 12px;
   border-radius: 24px;
-  background: var(--bg-panel-strong);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(49, 120, 246, 0.36);
+  border-top: 4px solid var(--hero-blue);
+  box-shadow: var(--shadow-md), var(--glow-blue);
+  animation: notice-pop var(--duration-normal) var(--ease-out);
+}
+
+.update-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--hero-blue-soft);
+  color: var(--hero-blue-dark);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .update-main,
@@ -93,6 +119,8 @@ function handleDismiss() {
 .update-main {
   gap: 12px;
   min-width: 0;
+  flex: 1;
+  width: 100%;
 }
 
 .update-icon {
@@ -103,7 +131,7 @@ function handleDismiss() {
   background: var(--hero-blue-soft);
   color: var(--hero-blue-dark);
   flex-shrink: 0;
-  animation: spin 1.4s linear infinite;
+  animation: spin 1.6s linear infinite;
 }
 
 .update-copy {
@@ -114,8 +142,9 @@ function handleDismiss() {
 
 .update-title {
   color: var(--text-primary);
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: 800;
+  line-height: 1.35;
 }
 
 .update-desc {
@@ -125,7 +154,9 @@ function handleDismiss() {
 }
 
 .update-actions {
-  gap: 10px;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -136,20 +167,21 @@ function handleDismiss() {
 }
 
 .btn-update {
-  height: 44px;
+  min-height: 48px;
+  min-width: 120px;
   padding: 0 18px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
+  background: var(--hero-blue);
   color: white;
   font-size: var(--font-base);
   font-weight: 800;
 }
 
 .btn-dismiss {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(93, 111, 136, 0.12);
   color: var(--text-secondary);
 }
 
@@ -166,7 +198,7 @@ function handleDismiss() {
 .slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(-10px);
 }
 
 @keyframes spin {
@@ -175,14 +207,25 @@ function handleDismiss() {
   }
 }
 
+@keyframes notice-pop {
+  0% {
+    transform: translateY(-8px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @media (max-width: 640px) {
   .update-prompt {
-    flex-direction: column;
-    align-items: stretch;
+    border-radius: 20px;
   }
 
   .update-actions {
     width: 100%;
+    justify-content: stretch;
   }
 
   .btn-update {
@@ -193,11 +236,12 @@ function handleDismiss() {
 @media (hover: hover) {
   .btn-update:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md), var(--glow-blue);
+    background: var(--hero-blue-dark);
+    box-shadow: var(--shadow-sm), var(--glow-blue);
   }
 
   .btn-dismiss:hover {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(93, 111, 136, 0.2);
     color: var(--text-primary);
   }
 }
@@ -210,6 +254,10 @@ function handleDismiss() {
   .slide-up-enter-active,
   .slide-up-leave-active {
     transition: none;
+  }
+
+  .update-prompt {
+    animation: none;
   }
 }
 </style>
