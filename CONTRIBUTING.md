@@ -215,8 +215,28 @@ perf: optimize particle animation rendering
 
 1. **Ensure all checks pass**:
    - Code builds without errors: `npm run build`
+   - E2E smoke passes: `pnpm run test:e2e`
    - No console errors in browser
    - Mobile testing completed
+
+## 🧪 Testing Expectations
+
+Before opening a PR, please run:
+
+```bash
+pnpm build
+pnpm run test:e2e
+```
+
+For local debugging:
+
+```bash
+pnpm run test:e2e:headed
+# or
+pnpm run test:e2e:ui
+```
+
+If your change impacts gameplay flow, add or update at least one smoke test in `tests/e2e/`.
 
 2. **Update documentation**:
    - Add changes to CHANGELOG.md

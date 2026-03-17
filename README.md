@@ -8,6 +8,17 @@
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwind-css)
 
+## 📚 文档导航（建议先读）
+
+| 文档 | 适用场景 |
+|------|----------|
+| [DESIGN.md](./DESIGN.md) | 设计规范、移动端约束、视觉原则 |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | 一页看懂路由、数据流、音频与 PWA 架构 |
+| [COMPONENTS.md](./COMPONENTS.md) | 组件职责、输入输出、复用方式 |
+| [PWA.md](./PWA.md) | 安装、离线、更新策略 |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | 提交流程、测试要求、PR 规范 |
+| [CHANGELOG.md](./CHANGELOG.md) | 版本变更与维护规则 |
+
 ## 🎯 特性亮点
 
 - 🎨 **简约科技**：酷炫科技感配色（柔和蓝+能量绿），简约而不简单的设计风格
@@ -42,6 +53,16 @@
 | **进度锁定** | 需通过前一关才能解锁更高难度 |
 | **PWA 离线支持** | 支持离线运行、添加到主屏幕、自动更新 |
 | **快捷入口** | 长按应用图标可快速开始游戏或查看成就（Android）|
+
+### 当前能力状态
+
+| 能力 | 状态 | 说明 |
+|------|------|------|
+| 关卡训练（15关） | ✅ 已实现 | 加减与混合运算，逐级解锁 |
+| 音效与触觉反馈 | ✅ 已实现 | Web Audio + Vibration，移动端优先 |
+| PWA 离线/更新提示 | ✅ 已实现 | 离线可用，应用内更新提示 |
+| E2E 冒烟测试 | ✅ 已实现 | Playwright（移动端 Chromium） |
+| 语音播报 | 🚧 规划中 | 当前版本未开放入口 |
 
 ## 🚀 快速开始
 
@@ -79,6 +100,36 @@ pnpm build
 ```bash
 pnpm preview
 ```
+
+## ✅ 测试与质量
+
+### E2E 冒烟测试（Playwright）
+
+```bash
+# 首次安装浏览器
+pnpm run test:e2e:install
+
+# 无头模式（CI 同款）
+pnpm run test:e2e
+
+# 可见浏览器模式
+pnpm run test:e2e:headed
+
+# Playwright 可视化 UI
+pnpm run test:e2e:ui
+```
+
+当前冒烟覆盖：
+
+- 首页 -> 选关 -> 进入游戏页
+- 作答后进度推进
+- 完成一局 -> 结果弹窗 -> 返回关卡页
+
+### 合并前最低检查
+
+- `pnpm build` 通过
+- `pnpm run test:e2e` 通过
+- 关键交互在手机浏览器实测通过（iOS Safari / Android Chrome）
 
 ## 📱 移动端使用
 
@@ -410,12 +461,19 @@ touch-action: manipulation;
 - 添加家长控制面板
 - 支持云同步和跨设备进度
 
+## 🧾 变更记录维护
+
+- 所有面向用户或开发流程的改动，都应更新 [CHANGELOG.md](./CHANGELOG.md) 的 `Unreleased`
+- 推荐按 `Added / Changed / Fixed / Removed / Documentation` 分类记录
+- 合并后再统一发布版本号与发布日期
+
 ## 📚 项目文档
 
 | 文档 | 描述 |
 |------|------|
 | [README.md](./README.md) | 项目介绍和使用指南 (本文档) |
 | [DESIGN.md](./DESIGN.md) | 设计规范 - 移动端适配、响应式设计、组件布局 |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | 架构速览 - 路由、状态、音频、PWA 与测试流 |
 | [AGENTS.md](./AGENTS.md) | 开发规范 - 代码风格、项目结构、最佳实践 |
 | [CLAUDE.md](./CLAUDE.md) | 架构概述 - 技术栈、数据流、重要文件 |
 | [COMPONENTS.md](./COMPONENTS.md) | 组件文档 - 所有 Vue 组件的详细说明 |
