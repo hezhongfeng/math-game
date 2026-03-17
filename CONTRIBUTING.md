@@ -267,7 +267,7 @@ If your change impacts gameplay flow, add or update at least one smoke test in `
   description: '1-1000 以内加法',
   color: 'bg-purple-400',
   textColor: 'text-purple-600',
-  stars: 6
+  stars: 5
 }
 ```
 
@@ -383,6 +383,19 @@ Before submitting a PR, verify:
 - [ ] Color contrast is sufficient
 - [ ] Interactive elements are focusable
 - [ ] Touch feedback is visible
+
+## 🚀 Release PR Checklist
+
+For PRs that will be merged into `master`, verify:
+
+- [ ] `pnpm build` passes
+- [ ] `pnpm run test:e2e` passes
+- [ ] Core flow is smoke-tested on mobile browser (iOS Safari / Android Chrome)
+- [ ] No new console errors during normal gameplay
+- [ ] LocalStorage schema changes (if any) are backward compatible
+- [ ] PWA update prompt still works after the change
+- [ ] Related docs are updated (`README`, `DESIGN`, `ARCHITECTURE`, etc.)
+- [ ] `CHANGELOG.md` has an `Unreleased` entry
 
 ## 💡 Questions?
 

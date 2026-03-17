@@ -153,7 +153,7 @@ pnpm run test:e2e:ui
 
 ### 浏览器兼容性
 
-- **iOS Safari 26.2+**：完整支持，修复音频Context恢复问题
+- **iOS Safari（主流在维护版本）**：完整支持，已针对 AudioContext 恢复策略做兼容
 - **微信浏览器**：内置WebView特殊处理，自动解锁音频
 - **现代浏览器**：Chrome、Firefox、Edge等主流浏览器
 
@@ -339,9 +339,10 @@ touch-action: manipulation;
 本游戏针对 iOS Safari 浏览器进行了专门的音频兼容性优化：
 
 - **AudioContext 恢复**：在用户交互的同步代码路径中恢复 AudioContext
-- **事件监听优化**：touchstart 使用 `once: true` 避免重复监听
+- **事件监听优化**：使用 `touchstart / click / keydown` 的捕获监听触发恢复
 - **触摸处理**：所有交互元素添加 `-webkit-tap-highlight-color: transparent`
-- **延时音效修复**：在 `setTimeout` 中重新检查 AudioContext 状态
+- **前后台联动**：页面切后台时降低主输出，回前台平滑恢复
+- **首音预热**：静默 warm-up，降低首次交互丢音概率
 - **被动事件**：所有事件监听器使用 `passive: true` 优化性能
 
 这些优化确保 iPhone 和 iPad 上的 Safari 浏览器可以正常播放所有音效。
@@ -370,7 +371,6 @@ touch-action: manipulation;
 |------|------------|----------------|
 | 触摸事件 | ✅ | ✅ |
 | 触觉反馈 (Vibration) | ⚠️ 需交互后 | ✅ |
-| 语音合成 | ✅ | ✅ |
 | LocalStorage | ✅ | ✅ |
 | 安全区域 | ✅ iOS 11+ | ✅ Android 5+ |
 | 添加到主屏幕 | ✅ | ✅ |
@@ -378,7 +378,6 @@ touch-action: manipulation;
 | 快捷方式 | ❌ | ✅ |
 
 **注意**：
-- 语音功能需要浏览器支持 Speech Synthesis API
 - 触觉反馈（振动）需要用户先与页面交互才能触发
 - PWA 功能需要 HTTPS 环境和现代浏览器支持
 
@@ -391,6 +390,15 @@ touch-action: manipulation;
 - **性能优化**：粒子效果在低端设备上可能影响性能，建议在中高端设备上使用
 
 ## 📝 开发说明
+
+### 单一事实来源（避免文档漂移）
+
+- 难度与关卡数据：`src/config/difficulty.js`
+- 星级规则与评级文案：`src/utils/stars.js`
+- E2E 用例与命令：`tests/e2e/` + `package.json`
+- PWA 行为：`vite.config.js` 与 `src/components/PWAUpdatePrompt.vue`
+
+建议：当上述文件行为变化时，同步更新 README 与 CHANGELOG。
 
 ### 添加新难度
 
