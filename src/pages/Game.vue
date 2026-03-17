@@ -9,6 +9,7 @@ import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { useToast } from '../composables/useToast'
 import { useSettingsStore } from '../stores/settings'
+import { getStarCount } from '../utils/stars'
 import NumberPad from '../components/NumberPad.vue'
 import QuestionCard from '../components/QuestionCard.vue'
 import ResultModal from '../components/ResultModal.vue'
@@ -69,8 +70,23 @@ const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
 const isIncorrect = computed(() => currentQuestion.value?.isCorrect === false)
 const shouldShowFeedback = computed(() => showAnswer.value && currentQuestion.value?.userAnswer !== null)
 
-function triggerHapticFeedback() {
+function triggerHapticFeedback(level = 'medium') {
   if (navigator.vibrate) {
+    if (level === 'light') {
+      navigator.vibrate(20)
+      return
+    }
+
+    if (level === 'strong') {
+      navigator.vibrate([28, 20, 32])
+      return
+    }
+
+    if (level === 'error') {
+      navigator.vibrate([24, 24, 24])
+      return
+    }
+
     navigator.vibrate(50)
   }
 }
@@ -143,14 +159,14 @@ function submitAnswer() {
   if (correct) {
     streakCount.value += 1
     triggerStreakReward()
-    playSound('correct')
+    playSound('correct', { intensity: 'strong' })
+    triggerHapticFeedback('strong')
   } else {
     streakCount.value = 0
     showStreakReward.value = false
-    playSound('wrong')
+    playSound('wrong', { intensity: 'medium' })
+    triggerHapticFeedback('error')
   }
-
-  triggerHapticFeedback()
 
   if (correct) {
     currentFeedbackState.value = 'correct-auto'
@@ -195,10 +211,8 @@ function handleInput(num) {
     return
   }
 
-  playSound('wrong')
-  if (navigator.vibrate) {
-    navigator.vibrate(30)
-  }
+  playSound('wrong', { intensity: 'light' })
+  triggerHapticFeedback('light')
 }
 
 function handleDelete() {
@@ -240,8 +254,13 @@ function handleGameComplete() {
   game.completeGame()
   const result = game.getResult()
   const best = updateBestScore(parseInt(props.id), result)
+  const stars = getStarCount(result.accuracy)
 
-  playSound('win')
+  playSound('win', {
+    stars,
+    intensity: stars >= 2 ? 'strong' : 'medium'
+  })
+  triggerHapticFeedback(stars >= 2 ? 'strong' : 'medium')
 
   resultData.value = result
   isNewBest.value = best

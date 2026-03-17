@@ -16,19 +16,19 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 function handleInput(num) {
   if (props.disabled) return
-  playSound('click')
+  playSound('click', { keyKind: 'digit', digit: num })
   emit('input', num)
 }
 
 function handleDelete() {
   if (props.disabled) return
-  playSound('click')
+  playSound('click', { keyKind: 'delete' })
   emit('delete')
 }
 
 function handleSubmit() {
   if (props.disabled) return
-  playSound('click')
+  playSound('click', { keyKind: 'submit' })
   emit('submit')
 }
 </script>

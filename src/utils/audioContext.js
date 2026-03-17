@@ -11,6 +11,11 @@
 let audioContext = null
 let isAudioContextInitialized = false
 let hasUserInteracted = false
+let compressorNode = null
+let masterGainNode = null
+let hasWarmUpPlayed = false
+const FOREGROUND_MASTER_GAIN = 0.85
+const BACKGROUND_MASTER_GAIN = 0.4
 
 /**
  * 获取或初始化 AudioContext
@@ -25,6 +30,7 @@ export function getAudioContext() {
         return null
       }
       audioContext = new AudioContextClass()
+      setupAudioGraph(audioContext)
       setupAudioContextListeners()
     } catch (error) {
       console.error('AudioContext 创建失败:', error)
@@ -32,6 +38,49 @@ export function getAudioContext() {
     }
   }
   return audioContext
+}
+
+/**
+ * 构建统一音频输出链路
+ * Oscillator -> Compressor -> Master Gain -> Destination
+ * 作用：避免多音同时播放时出现突兀失真和削波
+ * @param {AudioContext} ctx
+ */
+function setupAudioGraph(ctx) {
+  if (compressorNode && masterGainNode) {
+    return
+  }
+
+  compressorNode = ctx.createDynamicsCompressor()
+  masterGainNode = ctx.createGain()
+
+  compressorNode.threshold.setValueAtTime(-18, ctx.currentTime)
+  compressorNode.knee.setValueAtTime(18, ctx.currentTime)
+  compressorNode.ratio.setValueAtTime(3, ctx.currentTime)
+  compressorNode.attack.setValueAtTime(0.003, ctx.currentTime)
+  compressorNode.release.setValueAtTime(0.15, ctx.currentTime)
+  masterGainNode.gain.setValueAtTime(FOREGROUND_MASTER_GAIN, ctx.currentTime)
+
+  compressorNode.connect(masterGainNode)
+  masterGainNode.connect(ctx.destination)
+}
+
+/**
+ * 获取统一输出节点，供音效模块连接
+ * @param {AudioContext|null} ctx
+ * @returns {AudioNode|null}
+ */
+export function getAudioOutputNode(ctx = null) {
+  const audioCtx = ctx || getAudioContext()
+  if (!audioCtx) {
+    return null
+  }
+
+  if (!compressorNode || !masterGainNode) {
+    setupAudioGraph(audioCtx)
+  }
+
+  return compressorNode || audioCtx.destination
 }
 
 /**
@@ -60,6 +109,7 @@ function setupAudioContextListeners() {
               .then(() => {
                 // 微信需要立即播放一个声音才能解锁音频
                 playWeChatUnlockSound()
+                warmupAudioContext()
               })
               .catch((error) => {
                 console.warn('微信浏览器 AudioContext 恢复失败:', error)
@@ -69,6 +119,7 @@ function setupAudioContextListeners() {
             audioContext.resume().catch((error) => {
               console.warn('AudioContext 恢复失败:', error)
             })
+            warmupAudioContext()
           }
         }
       }
@@ -93,6 +144,36 @@ function setupAudioContextListeners() {
       passive: true
     })
   })
+
+  document.addEventListener('visibilitychange', handleVisibilityChange, { passive: true })
+}
+
+/**
+ * 页面可见性联动：
+ * - 后台时降低主输出，避免切换应用后突然大音量
+ * - 回到前台时恢复默认输出并尝试恢复 AudioContext
+ */
+function handleVisibilityChange() {
+  if (!audioContext || !masterGainNode) {
+    return
+  }
+
+  const now = audioContext.currentTime
+
+  if (document.hidden) {
+    masterGainNode.gain.cancelScheduledValues(now)
+    masterGainNode.gain.setTargetAtTime(BACKGROUND_MASTER_GAIN, now, 0.06)
+    return
+  }
+
+  masterGainNode.gain.cancelScheduledValues(now)
+  masterGainNode.gain.setTargetAtTime(FOREGROUND_MASTER_GAIN, now, 0.08)
+
+  if (hasUserInteracted && audioContext.state === 'suspended') {
+    audioContext.resume().catch(() => {
+      // 交由后续用户交互再次恢复
+    })
+  }
 }
 
 /**
@@ -117,6 +198,7 @@ export async function ensureAudioContextRunning() {
       // 等待状态实际变为 running
       // 某些版本的 Safari 中，resume() 返回后状态可能不会立即变更
       await waitForAudioContextRunning(ctx, 500)
+      warmupAudioContext()
       
       return ctx.state === 'running'
     } catch (error) {
@@ -182,6 +264,42 @@ export async function forceInitializeAudioContext() {
     if (ctx.state === 'suspended') {
       await ctx.resume()
     }
+    warmupAudioContext()
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
+/**
+ * 静默预热音频链路，降低首次真实音效丢失概率
+ */
+export function warmupAudioContext() {
+  if (!audioContext || audioContext.state !== 'running' || hasWarmUpPlayed) {
+    return false
+  }
+
+  try {
+    const outputNode = getAudioOutputNode(audioContext)
+    if (!outputNode) {
+      return false
+    }
+
+    const now = audioContext.currentTime + 0.001
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(outputNode)
+
+    oscillator.type = 'sine'
+    oscillator.frequency.setValueAtTime(660, now)
+    gainNode.gain.setValueAtTime(0.0001, now)
+    gainNode.gain.exponentialRampToValueAtTime(0.0002, now + 0.008)
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.02)
+    oscillator.start(now)
+    oscillator.stop(now + 0.02)
+    hasWarmUpPlayed = true
     return true
   } catch (error) {
     return false
@@ -194,13 +312,15 @@ export async function forceInitializeAudioContext() {
 function playWeChatUnlockSound() {
   try {
     if (!audioContext || audioContext.state !== 'running') return
+    const outputNode = getAudioOutputNode(audioContext)
+    if (!outputNode) return
     
     // 创建一个极短的声音来解锁微信音频
     const oscillator = audioContext.createOscillator()
     const gainNode = audioContext.createGain()
     
     oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
+    gainNode.connect(outputNode)
     
     // 设置频率（不可听范围或极短）
     oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
@@ -227,5 +347,8 @@ export function closeAudioContext() {
     audioContext = null
     isAudioContextInitialized = false
     hasUserInteracted = false
+    compressorNode = null
+    masterGainNode = null
+    hasWarmUpPlayed = false
   }
 }

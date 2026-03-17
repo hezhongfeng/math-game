@@ -26,7 +26,6 @@ function goBack() {
 }
 
 function selectDifficulty(difficulty) {
-  playSound('click')
   router.push(`/game/${difficulty.id}`)
 }
 
