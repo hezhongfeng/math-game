@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
+import { ArrowLeft, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -43,6 +43,9 @@ const isNewBest = ref(false)
 const questionKey = ref(0)
 const isLoading = ref(true)
 const currentFeedbackState = ref('idle')
+const streakCount = ref(0)
+const showStreakReward = ref(false)
+const streakRewardText = ref('')
 
 const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
@@ -58,6 +61,7 @@ let gameStartTime = null
 let gameTimeInterval = null
 
 let feedbackTimeout = null
+let streakRewardTimeout = null
 
 const isComplete = computed(() => game.isComplete.value)
 const currentQuestion = computed(() => game.currentQuestion.value)
@@ -137,8 +141,12 @@ function submitAnswer() {
   isWaiting.value = true
 
   if (correct) {
+    streakCount.value += 1
+    triggerStreakReward()
     playSound('correct')
   } else {
+    streakCount.value = 0
+    showStreakReward.value = false
     playSound('wrong')
   }
 
@@ -153,6 +161,26 @@ function submitAnswer() {
   }
 
   currentFeedbackState.value = 'incorrect-wait'
+}
+
+function triggerStreakReward() {
+  const isFirstReward = streakCount.value === 3
+  const isMilestoneReward = streakCount.value > 0 && streakCount.value % 5 === 0
+
+  if (!isFirstReward && !isMilestoneReward) {
+    return
+  }
+
+  streakRewardText.value = `连对 ${streakCount.value} 题`
+  showStreakReward.value = true
+
+  if (streakRewardTimeout) {
+    clearTimeout(streakRewardTimeout)
+  }
+
+  streakRewardTimeout = setTimeout(() => {
+    showStreakReward.value = false
+  }, 760)
 }
 
 function handleInput(num) {
@@ -232,6 +260,8 @@ function handleRetry() {
   showAnswer.value = false
   isWaiting.value = false
   currentFeedbackState.value = 'idle'
+  streakCount.value = 0
+  showStreakReward.value = false
   questionKey.value = 0
   stopQuestionTimer()
   stopGameTimeUpdater()
@@ -239,6 +269,11 @@ function handleRetry() {
   if (feedbackTimeout) {
     clearTimeout(feedbackTimeout)
     feedbackTimeout = null
+  }
+
+  if (streakRewardTimeout) {
+    clearTimeout(streakRewardTimeout)
+    streakRewardTimeout = null
   }
 
   initGame()
@@ -276,6 +311,11 @@ onUnmounted(() => {
     feedbackTimeout = null
   }
 
+  if (streakRewardTimeout) {
+    clearTimeout(streakRewardTimeout)
+    streakRewardTimeout = null
+  }
+
   settingsStore.saveSettings()
 })
 </script>
@@ -309,6 +349,13 @@ onUnmounted(() => {
 
     <main class="main-layout">
       <section class="question-section">
+        <Transition name="streak-reward">
+          <div v-if="showStreakReward" class="streak-reward">
+            <Star :size="16" fill="currentColor" />
+            <span>{{ streakRewardText }}</span>
+          </div>
+        </Transition>
+
         <Transition name="question" mode="out-in">
           <QuestionCard
             v-if="game.currentQuestion.value"
@@ -349,6 +396,7 @@ onUnmounted(() => {
             :correct-count="game.correctCount.value"
             :duration="gameTime"
             :accuracy="game.accuracy.value"
+            :streak="streakCount"
           />
         </div>
 
@@ -490,6 +538,35 @@ onUnmounted(() => {
   padding: 12px;
 }
 
+.streak-reward {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: var(--radius-full);
+  background: var(--energy-yellow-soft);
+  color: var(--energy-yellow-dark);
+  border: 1px solid rgba(244, 180, 0, 0.24);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+.streak-reward-enter-active,
+.streak-reward-leave-active {
+  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.streak-reward-enter-from,
+.streak-reward-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+}
+
 .feedback-card {
   width: min(100%, 280px);
   display: flex;
@@ -563,7 +640,7 @@ onUnmounted(() => {
 .question-leave-active,
 .feedback-enter-active,
 .feedback-leave-active {
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 .question-enter-from,
@@ -654,6 +731,13 @@ onUnmounted(() => {
   .feedback-card {
     padding: 16px 14px;
     border-radius: 20px;
+  }
+
+  .streak-reward {
+    top: 4px;
+    right: 4px;
+    padding: 6px 9px;
+    font-size: 11px;
   }
 
   .feedback-main {

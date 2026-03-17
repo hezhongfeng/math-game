@@ -144,6 +144,7 @@ function handleHome() {
   background: var(--bg-panel-strong);
   border: 1px solid rgba(255, 255, 255, 0.78);
   box-shadow: var(--shadow-lg);
+  animation: resultCardIn var(--duration-normal) var(--ease-out);
 }
 
 .topline,
@@ -202,6 +203,15 @@ function handleHome() {
 
 .star-active {
   color: var(--energy-yellow);
+  animation: starCelebrate var(--duration-fast) var(--ease-out) both;
+}
+
+.star-icon:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.star-icon:nth-child(3) {
+  animation-delay: 80ms;
 }
 
 .star-inactive {
@@ -317,6 +327,35 @@ function handleHome() {
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+
+@keyframes resultCardIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes starCelebrate {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-card,
+  .star-active {
+    animation: none;
+  }
 }
 
 .modal-enter-from .result-card,

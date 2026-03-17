@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowRight, Play, Sparkles, Target, Trophy } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
@@ -9,6 +9,7 @@ import { TOTAL_LEVELS } from '../config/difficulty'
 const router = useRouter()
 const { bestScores } = useStorage()
 const { playSound, forceInitializeAudioContext } = useSound()
+const isReady = ref(false)
 
 const completedCount = computed(() => Object.keys(bestScores.value).length)
 const progress = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
@@ -24,6 +25,10 @@ function viewProgress() {
 }
 
 onMounted(() => {
+  requestAnimationFrame(() => {
+    isReady.value = true
+  })
+
   forceInitializeAudioContext().catch((error) => {
     console.error('Failed to initialize audio context:', error)
   })
@@ -32,7 +37,7 @@ onMounted(() => {
 
 <template>
   <div class="home-page">
-    <div class="home-shell">
+    <div class="home-shell" :class="{ 'is-ready': isReady }">
       <section class="hero-panel">
         <div class="hero-topline">
           <span class="mission-chip">
@@ -119,6 +124,23 @@ onMounted(() => {
   background: var(--bg-panel);
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow-panel);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+}
+
+.home-shell .hero-panel {
+  transition-delay: 40ms;
+}
+
+.home-shell .action-panel {
+  transition-delay: 90ms;
+}
+
+.home-shell.is-ready .hero-panel,
+.home-shell.is-ready .action-panel {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hero-panel {
@@ -320,6 +342,19 @@ onMounted(() => {
   .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.92);
     color: var(--text-primary);
+  }
+}
+
+@media (max-width: 959px), (max-height: 860px) {
+  .hero-panel,
+  .action-panel {
+    transition-duration: var(--duration-fast);
+    transition-delay: 0ms;
+  }
+
+  .btn-main:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
   }
 }
 

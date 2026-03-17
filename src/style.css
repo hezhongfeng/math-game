@@ -118,14 +118,12 @@
     --font-sm: 14px;
 
     /* 动画时长 - 简约 */
-    --duration-fast: 150ms;
-    --duration-normal: 300ms;
-    --duration-macro: 400ms;
-    --duration-emphasis: 500ms;
+    --duration-fast: 120ms;
+    --duration-normal: 180ms;
+    --duration-slow: 240ms;
 
     /* 动画缓动函数 - 简约 */
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
   }
 
@@ -232,7 +230,7 @@
 }
 
 .animate-pop {
-  animation: pop var(--duration-normal) var(--ease-spring);
+  animation: pop var(--duration-normal) var(--ease-out);
 }
 
 .animate-scale-press {
@@ -240,15 +238,15 @@
 }
 
 .animate-error-shake {
-  animation: error-shake var(--duration-macro) var(--ease-standard);
+  animation: error-shake var(--duration-slow) var(--ease-standard);
 }
 
 .animate-glow {
-  animation: glow 2s ease-in-out infinite;
+  animation: glow var(--duration-slow) var(--ease-out);
 }
 
 .animate-success-glow {
-  animation: successGlow var(--duration-emphasis) var(--ease-standard);
+  animation: successGlow var(--duration-slow) var(--ease-standard);
 }
 
 /* Vue Transition 组件标准过渡 */
@@ -263,11 +261,11 @@
 }
 
 .slide-up-enter-active {
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 .slide-up-leave-active {
-  transition: all var(--duration-normal) var(--ease-standard);
+  transition: opacity var(--duration-normal) var(--ease-standard), transform var(--duration-normal) var(--ease-standard);
 }
 
 .slide-up-enter-from,
@@ -345,7 +343,7 @@
     font-weight: 600;
     border: none;
     box-shadow: var(--shadow-md);
-    transition: all var(--duration-fast) var(--ease-out);
+    transition: background var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
   }
 
   .btn-primary:hover {
@@ -369,7 +367,7 @@
     font-size: 18px;
     font-weight: 600;
     border: 2px solid var(--hero-blue);
-    transition: all var(--duration-fast) var(--ease-out);
+    transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
     cursor: pointer;
   }
 
@@ -397,7 +395,7 @@
     font-weight: 600;
     border: none;
     box-shadow: var(--shadow-md);
-    transition: all var(--duration-fast) var(--ease-out);
+    transition: background var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
   }
 
   .btn-success:hover {
@@ -425,7 +423,7 @@
     font-weight: 600;
     border: 2px solid var(--border-light);
     box-shadow: var(--shadow-sm);
-    transition: all var(--duration-fast) ease;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
     cursor: pointer;
   }
 
@@ -448,7 +446,7 @@
     background: var(--white);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    transition: all var(--duration-fast) ease;
+    transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
   }
 
   .card-hover:hover {
@@ -474,6 +472,19 @@
     opacity: 0.6;
     background: rgba(255, 255, 255, 0.5);
     cursor: not-allowed;
+  }
+}
+
+/* 小屏/短屏只保留功能性反馈，减少装饰性持续动画 */
+@media (max-width: 959px), (max-height: 860px) {
+  .animate-glow,
+  .animate-success-glow {
+    animation: none !important;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 }
 

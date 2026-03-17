@@ -12,16 +12,12 @@ const { getBestScore, getCompletedDifficulties } = useStorage()
 const { playSound } = useSound()
 
 const completedDifficulties = ref(getCompletedDifficulties())
-const isReady = ref(false)
 
 const completedCount = computed(() => completedDifficulties.value.length)
 const progressPercent = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
 onMounted(() => {
   window.scrollTo(0, 0)
-  requestAnimationFrame(() => {
-    isReady.value = true
-  })
 })
 
 function goBack() {
@@ -96,11 +92,9 @@ function isDifficultyLocked(difficulty) {
 
     <main class="main-content">
       <section
-        v-for="(group, groupIndex) in DIFFICULTY_GROUPS"
+        v-for="group in DIFFICULTY_GROUPS"
         :key="group.name"
         class="section"
-        :class="{ 'section-visible': isReady }"
-        :style="{ transitionDelay: `${groupIndex * 90}ms` }"
       >
         <div class="section-header">
           <div class="section-copy">
@@ -252,14 +246,8 @@ function isDifficultyLocked(difficulty) {
 }
 
 .section {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
-}
-
-.section-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 .section-header {

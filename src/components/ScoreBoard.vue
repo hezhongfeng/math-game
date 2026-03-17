@@ -27,6 +27,10 @@ const props = defineProps({
   accuracy: {
     type: Number,
     default: 0
+  },
+  streak: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -43,7 +47,17 @@ const formattedTime = computed(() => formatTime(props.duration))
     <div class="progress-section">
       <div class="progress-header">
         <span>进度 {{ currentIndex }}/{{ totalQuestions }}</span>
-        <strong>{{ progress }}%</strong>
+        <div class="progress-meta">
+          <span
+            v-if="streak >= 3"
+            :key="streak"
+            class="streak-chip"
+            :class="{ 'is-highlight': streak >= 3 }"
+          >
+            连对 {{ streak }}
+          </span>
+          <strong>{{ progress }}%</strong>
+        </div>
       </div>
       <div class="progress-track">
         <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
@@ -122,6 +136,29 @@ const formattedTime = computed(() => formatTime(props.duration))
   color: var(--text-primary);
 }
 
+.progress-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.streak-chip {
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  color: var(--hero-blue-dark);
+  background: var(--hero-blue-soft);
+  border: 1px solid rgba(49, 120, 246, 0.2);
+  font-size: 12px;
+  font-weight: 800;
+  animation: streakChipIn var(--duration-fast) var(--ease-out);
+}
+
+.streak-chip.is-highlight {
+  color: var(--energy-yellow-dark);
+  background: var(--energy-yellow-soft);
+  border-color: rgba(244, 180, 0, 0.25);
+}
+
 .progress-track {
   height: 8px;
   margin-bottom: 12px;
@@ -134,6 +171,18 @@ const formattedTime = computed(() => formatTime(props.duration))
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--hero-blue), var(--win-green));
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+@keyframes streakChipIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .stats-grid {
@@ -220,6 +269,11 @@ const formattedTime = computed(() => formatTime(props.duration))
   .progress-header {
     margin-bottom: 6px;
     font-size: 12px;
+  }
+
+  .streak-chip {
+    padding: 3px 7px;
+    font-size: 11px;
   }
 
   .progress-track {

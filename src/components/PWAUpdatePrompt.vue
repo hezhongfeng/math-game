@@ -160,7 +160,7 @@ function handleDismiss() {
 
 .slide-up-enter-active,
 .slide-up-leave-active {
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 .slide-up-enter-from,
