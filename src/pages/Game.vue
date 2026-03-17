@@ -8,7 +8,6 @@ import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { useToast } from '../composables/useToast'
-import { useSettingsStore } from '../stores/settings'
 import { getStarCount } from '../utils/stars'
 import NumberPad from '../components/NumberPad.vue'
 import QuestionCard from '../components/QuestionCard.vue'
@@ -29,7 +28,6 @@ if (!difficulty) {
   router.replace('/difficulty')
 }
 
-const settingsStore = useSettingsStore()
 const { updateBestScore } = useStorage()
 const { playSound } = useSound()
 const { error: showError } = useToast()
@@ -315,7 +313,6 @@ function handleKeyPress(event) {
 }
 
 onMounted(() => {
-  settingsStore.loadSettings()
   initGame()
   window.addEventListener('keydown', handleKeyPress)
 })
@@ -334,8 +331,6 @@ onUnmounted(() => {
     clearTimeout(streakRewardTimeout)
     streakRewardTimeout = null
   }
-
-  settingsStore.saveSettings()
 })
 </script>
 

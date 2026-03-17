@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { STORAGE_KEYS } from '../config/constants'
 
 export const useSettingsStore = defineStore('settings', () => {
   // 音效开关
   const soundEnabled = ref(true)
+  const isLoaded = ref(false)
 
   // 切换音效开关
   function toggleSound() {
@@ -13,6 +14,10 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // 从 localStorage 加载设置
   function loadSettings() {
+    if (isLoaded.value) {
+      return
+    }
+
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS)
       if (saved) {
@@ -21,6 +26,8 @@ export const useSettingsStore = defineStore('settings', () => {
       }
     } catch (error) {
       console.warn('加载设置失败:', error)
+    } finally {
+      isLoaded.value = true
     }
   }
 
@@ -35,8 +42,15 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  watch(soundEnabled, () => {
+    if (isLoaded.value) {
+      saveSettings()
+    }
+  })
+
   return {
     soundEnabled,
+    isLoaded,
     toggleSound,
     loadSettings,
     saveSettings
