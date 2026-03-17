@@ -40,7 +40,7 @@ function handleHome() {
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="show" class="result-overlay">
-        <div class="result-card">
+        <div class="result-card" data-testid="result-modal">
           <div class="topline">
             <span class="result-chip">
               <Target :size="16" />
@@ -108,12 +108,12 @@ function handleHome() {
           </div>
 
           <div class="actions">
-            <button class="btn-primary" @click="handleRetry">
+            <button class="btn-primary" data-testid="result-retry-btn" @click="handleRetry">
               <RotateCcw :size="18" />
               <span>再来一次</span>
             </button>
 
-            <button class="btn-secondary" @click="handleHome">
+            <button class="btn-secondary" data-testid="result-home-btn" @click="handleHome">
               <Home :size="18" />
               <span>返回关卡页</span>
             </button>

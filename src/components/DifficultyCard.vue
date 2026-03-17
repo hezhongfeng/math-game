@@ -48,6 +48,7 @@ function handleSelect() {
 
 <template>
   <article
+    :data-testid="`difficulty-card-${difficulty.id}`"
     class="difficulty-card"
     :class="{
       'is-locked': isLocked,

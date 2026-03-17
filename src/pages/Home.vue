@@ -87,7 +87,7 @@ onMounted(() => {
       </section>
 
       <section class="action-panel">
-        <button class="btn-main" @click="startGame">
+        <button class="btn-main" data-testid="start-challenge-btn" @click="startGame">
           <Play :size="22" />
           <span>开始挑战</span>
           <ArrowRight :size="20" />
