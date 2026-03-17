@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, RotateCcw, Star } from 'lucide-vue-next'
+import { AlertCircle, ArrowLeft, CheckCircle2, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -384,17 +384,31 @@ onUnmounted(() => {
         </Transition>
 
         <Transition name="feedback">
-          <div v-if="shouldShowFeedback" class="feedback-wrap" @click="handleFeedbackClick">
-            <div class="feedback-card" :class="{ success: isCorrect, error: isIncorrect }">
+          <div
+            v-if="shouldShowFeedback"
+            class="feedback-wrap"
+            :class="{ 'is-success': isCorrect, 'is-error': isIncorrect }"
+            @click="handleFeedbackClick"
+          >
+            <div class="feedback-card" :class="{ success: isCorrect, error: isIncorrect }" @click.stop>
               <template v-if="isCorrect">
-                <span class="feedback-kicker">回答正确</span>
-                <strong class="feedback-main">继续</strong>
+                <div class="feedback-icon success">
+                  <CheckCircle2 :size="22" />
+                </div>
+                <div class="feedback-text">
+                  <span class="feedback-kicker">回答正确</span>
+                  <strong class="feedback-main">自动进入下一题</strong>
+                </div>
               </template>
 
               <template v-else>
+                <div class="feedback-icon error">
+                  <AlertCircle :size="22" />
+                </div>
                 <span class="feedback-kicker">正确答案</span>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
                 <span class="feedback-note">点按继续</span>
+                <button class="feedback-continue-btn" @click="handleFeedbackClick">我知道了，继续</button>
               </template>
             </div>
           </div>
@@ -550,6 +564,18 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 12px;
+  pointer-events: none;
+  border-radius: 22px;
+}
+
+.feedback-wrap.is-success {
+  align-items: flex-start;
+  padding-top: 12px;
+}
+
+.feedback-wrap.is-error {
+  pointer-events: auto;
+  background: rgba(22, 32, 51, 0.14);
 }
 
 .streak-reward {
@@ -582,38 +608,99 @@ onUnmounted(() => {
 }
 
 .feedback-card {
-  width: min(100%, 280px);
+  width: min(100%, 300px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 20px 18px;
+  gap: 8px;
+  padding: 20px 18px 18px;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-md);
+  background: #ffffff;
+  border: 2px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
 }
 
 .feedback-card.success {
-  border-color: rgba(18, 185, 129, 0.28);
+  width: min(100%, 340px);
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--win-green-soft);
+  border-color: rgba(18, 185, 129, 0.48);
   box-shadow: var(--shadow-md), var(--glow-green);
+  pointer-events: none;
 }
 
 .feedback-card.error {
-  border-color: rgba(239, 83, 80, 0.22);
+  background: #fff4f2;
+  border-color: rgba(239, 83, 80, 0.42);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+}
+
+.feedback-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-icon.success {
+  color: var(--win-green-dark);
+  background: rgba(18, 185, 129, 0.18);
+}
+
+.feedback-icon.error {
+  color: var(--error-red-dark);
+  background: rgba(239, 83, 80, 0.12);
+}
+
+.feedback-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 
 .feedback-kicker,
 .feedback-note {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: var(--font-sm);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .feedback-main {
-  color: var(--text-primary);
-  font-size: 34px;
+  color: #101828;
+  font-size: 32px;
   font-weight: 800;
+  line-height: 1.1;
+}
+
+.feedback-card.success .feedback-main {
+  font-size: 20px;
+  color: var(--win-green-dark);
+}
+
+.feedback-card.error .feedback-main {
+  color: var(--error-red-dark);
+}
+
+.feedback-continue-btn {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: var(--error-red);
+  color: white;
+  font-size: var(--font-base);
+  font-weight: 800;
+}
+
+.feedback-continue-btn:active {
+  transform: scale(0.98);
 }
 
 .loading-overlay {
@@ -747,6 +834,11 @@ onUnmounted(() => {
     border-radius: 20px;
   }
 
+  .feedback-card.success {
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+
   .streak-reward {
     top: 4px;
     right: 4px;
@@ -756,6 +848,10 @@ onUnmounted(() => {
 
   .feedback-main {
     font-size: 28px;
+  }
+
+  .feedback-card.success .feedback-main {
+    font-size: 17px;
   }
 }
 
