@@ -57,9 +57,9 @@ function handleHome() {
 
           <div class="star-rating">
             <Star
-              v-for="n in 3"
+              v-for="n in 5"
               :key="n"
-              :size="28"
+              :size="24"
               :class="['star-icon', n <= stars ? 'star-active' : 'star-inactive']"
               fill="currentColor"
             />
@@ -212,6 +212,14 @@ function handleHome() {
 
 .star-icon:nth-child(3) {
   animation-delay: 80ms;
+}
+
+.star-icon:nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.star-icon:nth-child(5) {
+  animation-delay: 160ms;
 }
 
 .star-inactive {

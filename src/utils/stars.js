@@ -6,13 +6,15 @@
 /**
  * 根据正确率计算星星数量
  * @param {number} accuracy - 正确率 (0-100)
- * @returns {number} 星星数量 (0-3)
+ * @returns {number} 星星数量 (0-5)
  */
 export function getStarCount(accuracy) {
-  if (accuracy === 100) return 3  // 完美通关
-  if (accuracy >= 80) return 2    // 优秀
-  if (accuracy >= 60) return 1    // 及格
-  return 0                        // 不及格
+  if (accuracy >= 98) return 5
+  if (accuracy >= 90) return 4
+  if (accuracy >= 80) return 3
+  if (accuracy >= 70) return 2
+  if (accuracy >= 60) return 1
+  return 0
 }
 
 /**
@@ -21,9 +23,11 @@ export function getStarCount(accuracy) {
  * @returns {string} 评级文案
  */
 export function getRatingText(accuracy) {
-  if (accuracy === 100) return '🏆 完美！'
+  if (accuracy >= 98) return '🏆 太棒了！'
+  if (accuracy >= 90) return '🌟 非常优秀！'
   if (accuracy >= 80) return '⭐ 优秀！'
-  if (accuracy >= 60) return '👍 不错！'
+  if (accuracy >= 70) return '👍 很不错！'
+  if (accuracy >= 60) return '🙂 继续加油！'
   return '💪 继续加油！'
 }
 
@@ -33,8 +37,10 @@ export function getRatingText(accuracy) {
  * @returns {string} 表情符号
  */
 export function getCelebrationEmoji(accuracy) {
-  if (accuracy === 100) return '🎉'
+  if (accuracy >= 98) return '🎉'
+  if (accuracy >= 90) return '✨'
   if (accuracy >= 80) return '👏'
-  if (accuracy >= 60) return '💪'
+  if (accuracy >= 70) return '👍'
+  if (accuracy >= 60) return '🙂'
   return '📚'
 }

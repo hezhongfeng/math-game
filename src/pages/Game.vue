@@ -256,9 +256,9 @@ function handleGameComplete() {
 
   playSound('win', {
     stars,
-    intensity: stars >= 2 ? 'strong' : 'medium'
+    intensity: stars >= 4 ? 'strong' : 'medium'
   })
-  triggerHapticFeedback(stars >= 2 ? 'strong' : 'medium')
+  triggerHapticFeedback(stars >= 4 ? 'strong' : 'medium')
 
   resultData.value = result
   isNewBest.value = best

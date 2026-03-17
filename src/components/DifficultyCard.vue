@@ -73,9 +73,9 @@ function handleSelect() {
     <div class="trailing">
       <div v-if="!isLocked" class="stars">
         <Star
-          v-for="n in 3"
+          v-for="n in 5"
           :key="n"
-          :size="16"
+          :size="14"
           :class="['star', n <= stars ? 'active' : '']"
           fill="currentColor"
         />
