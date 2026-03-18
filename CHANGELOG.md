@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed settings lifecycle to single-load initialization with auto-persist on update
 - Changed audio system with layered synthesis, stronger iOS compatibility handling, and five-tier celebration feedback
 - Changed star system from 3-tier display/logic to a unified 5-star model across gameplay and UI
+- Changed game audio to a lighter kid-friendly profile with simpler key tones and clearer correct/wrong cues
+- Changed wrong-answer feedback to fullscreen modal overlay while keeping correct feedback lightweight and auto-advance
 
 ### Removed
 
@@ -37,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README with documentation navigation, capability matrix, and testing commands
 - Updated contribution guide with E2E and release checklists
 - Updated changelog rules to keep `Unreleased` concise and categorized
+- Updated README and architecture docs to match current feedback behavior, audio strategy, and composables list
 
 ## [1.1.0] - 2026-01-30
 
