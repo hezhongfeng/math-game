@@ -28,21 +28,21 @@ export const AUDIO_FREQUENCIES = {
   },
   // 错误音效频率
   wrong: {
-    start: 200,
-    end: 100
+    start: 280,
+    end: 180
   },
   // 点击音效频率
   click: {
     // 导航/通用点击
-    default: 720,
-    // 数字键（0-9）轻微分组，避免单调
-    digits: [620, 640, 660, 680, 700, 720, 740, 760, 780, 800],
-    // 删除键：更低、更短促
-    deleteStart: 420,
-    deleteEnd: 300,
-    // 提交键：更积极的双音
-    submit1: 840,
-    submit2: 1080
+    default: 700,
+    // 数字键（0-9）中频分布，听感更柔和
+    digits: [650, 660, 670, 680, 700, 710, 720, 730, 740, 760],
+    // 删除键：低频短下滑
+    deleteStart: 460,
+    deleteEnd: 360,
+    // 提交键：简洁双音上扬
+    submit1: 780,
+    submit2: 980
   }
 }
 
@@ -50,33 +50,33 @@ export const AUDIO_FREQUENCIES = {
 export const AUDIO_PARAMS = {
   // 正确音效参数
   correct: {
-    gain: 0.2,
-    noteDuration: 0.1,
-    interval: 0.11
+    gain: 0.175,
+    noteDuration: 0.085,
+    interval: 0.09
   },
   // 错误音效参数
   wrong: {
-    gain: 0.14,
-    duration: 0.15,
-    tailDuration: 0.06
+    gain: 0.125,
+    duration: 0.13,
+    tailDuration: 0.05
   },
   // 点击音效参数
   click: {
-    gain: 0.07,
+    gain: 0.062,
     duration: 0.045,
-    transientGain: 0.015,
-    transientDuration: 0.008
+    transientGain: 0.008,
+    transientDuration: 0.006
   },
   // 删除键参数
   clickDelete: {
-    gain: 0.075,
+    gain: 0.068,
     duration: 0.06
   },
   // 提交键参数
   clickSubmit: {
-    gain: 0.095,
-    noteDuration: 0.045,
-    interval: 0.03
+    gain: 0.082,
+    noteDuration: 0.042,
+    interval: 0.038
   },
   // 胜利音效参数
   win: {

@@ -10,9 +10,9 @@ import {
 import { AUDIO_FREQUENCIES, AUDIO_PARAMS } from '../config/constants'
 
 const SOUND_COOLDOWN_MS = {
-  click: 28,
-  clickSubmit: 42,
-  clickDelete: 34,
+  click: 30,
+  clickSubmit: 45,
+  clickDelete: 38,
   correct: 90,
   wrong: 120,
   win: 450
@@ -180,26 +180,6 @@ export function useSound() {
   }
 
   /**
-   * 调度主音 + 轻微和声层，提升音乐感但保持简约
-   */
-  function scheduleLayeredNote(ctx, startTime, frequency, duration, gain, options = {}) {
-    scheduleNote(ctx, startTime, frequency, duration, gain, {
-      wave: options.wave || 'sine',
-      attack: options.attack,
-      release: options.release
-    })
-
-    if (options.harmonyGain && options.harmonyGain > 0) {
-      const harmonyRatio = options.harmonyRatio || 1.5
-      scheduleNote(ctx, startTime + (options.harmonyDelay || 0), frequency * harmonyRatio, duration * 0.9, gain * options.harmonyGain, {
-        wave: options.harmonyWave || 'triangle',
-        attack: 0.008,
-        release: duration * 0.72
-      })
-    }
-  }
-
-  /**
    * 正确音效 - 重构后的简化版本
    */
   async function playCorrectSound(options = {}) {
@@ -215,15 +195,15 @@ export function useSound() {
     const duration = params.noteDuration
     const gain = params.gain * intensity
 
-    // 正确反馈改为简短双音上扬，减少“花哨感”
+    // 正确反馈：更短的双音上扬，清晰但不打扰
     scheduleNote(ctx, startTime, freq.note2, duration, gain, {
       wave: 'triangle',
-      attack: 0.008,
-      release: duration * 0.75
+      attack: 0.007,
+      release: duration * 0.78
     })
-    scheduleNote(ctx, startTime + params.interval, freq.note4, duration * 1.02, gain * 0.95, {
+    scheduleNote(ctx, startTime + params.interval, freq.note5, duration * 1.05, gain * 0.92, {
       wave: 'sine',
-      attack: 0.008,
+      attack: 0.007,
       release: duration * 0.8
     })
   }
@@ -242,103 +222,44 @@ export function useSound() {
     const stars = Math.max(0, Math.min(5, options.stars ?? 3))
     const intensity = getIntensityMultiplier(options.intensity || (stars >= 4 ? 'strong' : 'medium'))
     const startTime = ctx.currentTime + 0.01
-    const noteDuration = stars === 0 ? params.noteDuration * 0.88 : params.noteDuration
+    const noteDuration = stars === 0 ? params.noteDuration * 0.86 : params.noteDuration
     const step = params.interval
     const gain = params.gain * intensity
-
-    if (stars === 0) {
-      scheduleNote(ctx, startTime, freq.note2, noteDuration, gain * 0.74, {
-        wave: 'triangle',
-        attack: 0.008,
-        release: noteDuration * 0.78
-      })
-      return
+    const winPatterns = {
+      0: [freq.note2],
+      1: [freq.note1, freq.note3],
+      2: [freq.note1, freq.note2, freq.note3],
+      3: [freq.note1, freq.note2, freq.note3, freq.note5],
+      4: [freq.note1, freq.note2, freq.note3, freq.note4, freq.note5],
+      5: [freq.note1, freq.note2, freq.note3, freq.note4, freq.note5]
     }
 
-    if (stars === 1) {
-      scheduleNote(ctx, startTime, freq.note1, noteDuration, gain * 0.84, {
-        wave: 'triangle',
+    const notes = winPatterns[stars] || winPatterns[3]
+    notes.forEach((noteFreq, index) => {
+      scheduleNote(ctx, startTime + index * step, noteFreq, noteDuration, gain * (0.84 + index * 0.025), {
+        wave: index < notes.length - 1 ? 'triangle' : 'sine',
         attack: 0.008,
-        release: noteDuration * 0.8
+        release: noteDuration * 0.82
       })
-      scheduleNote(ctx, startTime + step, freq.note3, noteDuration, gain * 0.96, {
-        wave: 'sine',
-        attack: 0.008,
-        release: noteDuration * 0.84
-      })
-      return
-    }
+    })
 
-    if (stars === 2) {
-      const notes = [freq.note1, freq.note2, freq.note3]
-      notes.forEach((noteFreq, index) => {
-        scheduleNote(ctx, startTime + index * step, noteFreq, noteDuration, gain * (0.88 + index * 0.04), {
-          wave: index < 2 ? 'triangle' : 'sine',
-          attack: 0.008,
-          release: noteDuration * 0.82
-        })
-      })
-      return
-    }
-
-    if (stars === 3) {
-      const notes = [freq.note1, freq.note2, freq.note3, freq.note5]
-      notes.forEach((noteFreq, index) => {
-        scheduleNote(ctx, startTime + index * step, noteFreq, noteDuration, gain * (0.9 + index * 0.03), {
-          wave: index < 3 ? 'triangle' : 'sine',
-          attack: 0.008,
-          release: noteDuration * 0.84
-        })
-      })
-      scheduleNote(ctx, startTime + notes.length * step, freq.note3, params.tailDuration, gain * 0.42, {
+    if (stars >= 3) {
+      const tailBase = stars >= 5 ? freq.note5 * 0.56 : freq.note3
+      scheduleNote(ctx, startTime + notes.length * step, tailBase, params.tailDuration, gain * (stars >= 5 ? 0.44 : 0.38), {
         wave: 'triangle',
         attack: 0.01,
-        release: params.tailDuration * 0.85
+        release: params.tailDuration * 0.84
       })
-      return
     }
 
-    if (stars === 4) {
-      const notes = [freq.note1, freq.note2, freq.note3, freq.note4, freq.note5]
-      notes.forEach((noteFreq, index) => {
-        scheduleNote(ctx, startTime + index * step, noteFreq, noteDuration, gain * (0.92 + index * 0.02), {
-          wave: index < 4 ? 'triangle' : 'sine',
-          attack: 0.008,
-          release: noteDuration * 0.84
-        })
+    if (stars === 5) {
+      const accentStart = startTime + (notes.length - 1) * step + 0.01
+      scheduleNote(ctx, accentStart, freq.note5 * 2, noteDuration * 0.32, gain * 0.1, {
+        wave: 'sine',
+        attack: 0.005,
+        release: noteDuration * 0.3
       })
-      scheduleNote(ctx, startTime + notes.length * step, freq.note5 * 0.55, params.tailDuration, gain * 0.5, {
-        wave: 'triangle',
-        attack: 0.012,
-        release: params.tailDuration * 0.88
-      })
-      return
     }
-
-    // 5 星：清晰上行 + 轻微高音点缀 + 短收尾
-    const notes = [freq.note1, freq.note2, freq.note3, freq.note4, freq.note5]
-    notes.forEach((noteFreq, index) => {
-      const noteStart = startTime + index * step
-      scheduleNote(ctx, noteStart, noteFreq, noteDuration, gain * (0.92 + index * 0.02), {
-        wave: index < 4 ? 'triangle' : 'sine',
-        attack: 0.008,
-        release: noteDuration * 0.84
-      })
-
-      if (index >= notes.length - 2) {
-        scheduleNote(ctx, noteStart + 0.01, noteFreq * 2, noteDuration * 0.42, gain * 0.16, {
-          wave: 'sine',
-          attack: 0.005,
-          release: noteDuration * 0.38
-        })
-      }
-    })
-
-    scheduleNote(ctx, startTime + notes.length * step, freq.note5 * 0.52, params.tailDuration, gain * 0.46, {
-      wave: 'triangle',
-      attack: 0.012,
-      release: params.tailDuration * 0.86
-    })
   }
 
   /**
@@ -355,6 +276,7 @@ export function useSound() {
     const intensity = getIntensityMultiplier(options.intensity)
     const startTime = ctx.currentTime + 0.01
 
+    // 错误反馈：短下行 + 轻尾音，避免刺耳报警感
     scheduleFrequencyRampNote(
       ctx,
       startTime,
@@ -365,10 +287,10 @@ export function useSound() {
       'triangle'
     )
 
-    scheduleNote(ctx, startTime + params.duration * 0.66, freq.end * 0.92, params.tailDuration, params.gain * 0.46 * intensity, {
-      wave: 'sine',
+    scheduleNote(ctx, startTime + params.duration * 0.6, freq.end * 0.92, params.tailDuration, params.gain * 0.4 * intensity, {
+      wave: 'triangle',
       attack: 0.008,
-      release: params.tailDuration * 0.86
+      release: params.tailDuration * 0.8
     })
   }
 
@@ -388,33 +310,23 @@ export function useSound() {
     const intensity = getIntensityMultiplier(options.intensity || (keyKind === 'submit' ? 'strong' : 'medium'))
     const subtleDetune = getSubtleDetune()
 
-    // 极短瞬态，保留触感但避免高频刺耳
-    if (keyKind !== 'submit') {
-      scheduleNote(
-        ctx,
-        startTime,
-        keyKind === 'delete' ? 980 : 920,
-        params.transientDuration,
-        params.transientGain * intensity,
-        { wave: 'sine', attack: 0.004, release: 0.006 }
-      )
-    }
-
     if (keyKind === 'digit') {
       const digit = Number.isInteger(options.digit) ? options.digit : 0
       const safeDigit = Math.max(0, Math.min(9, digit))
       const digitFreq = freq.digits[safeDigit] || freq.default
+      // 数字键：短、干净、单层 triangle，不叠和声
       scheduleNote(ctx, startTime, digitFreq, params.duration, params.gain * intensity, {
         wave: 'triangle',
         detune: subtleDetune,
         attack: 0.006,
-        release: params.duration * 0.8
+        release: params.duration * 0.82
       })
       return
     }
 
     if (keyKind === 'delete') {
       const deleteParams = AUDIO_PARAMS.clickDelete
+      // 删除键：短下滑，语义清晰
       scheduleFrequencyRampNote(
         ctx,
         startTime,
@@ -429,10 +341,11 @@ export function useSound() {
 
     if (keyKind === 'submit') {
       const submitParams = AUDIO_PARAMS.clickSubmit
+      // 提交键：双音上扬，总时长约 90ms
       scheduleNote(ctx, startTime, freq.submit1, submitParams.noteDuration, submitParams.gain * intensity, {
-        wave: 'triangle',
+        wave: 'sine',
         attack: 0.007,
-        release: submitParams.noteDuration * 0.82
+        release: submitParams.noteDuration * 0.78
       })
       scheduleNote(
         ctx,
@@ -441,14 +354,23 @@ export function useSound() {
         submitParams.noteDuration,
         submitParams.gain * 0.95 * intensity,
         {
-          wave: 'sine',
+          wave: 'triangle',
           attack: 0.007,
-          release: submitParams.noteDuration * 0.86
+          release: submitParams.noteDuration * 0.8
         }
       )
       return
     }
 
+    // 通用点击：极轻瞬态 + 主体音
+    scheduleNote(
+      ctx,
+      startTime,
+      900,
+      params.transientDuration,
+      params.transientGain * intensity,
+      { wave: 'sine', attack: 0.004, release: params.transientDuration * 0.8 }
+    )
     scheduleNote(ctx, startTime, freq.default, params.duration, params.gain * intensity, {
       wave: 'triangle',
       detune: subtleDetune,
@@ -473,12 +395,12 @@ export function useSound() {
 
     const safeGain = Math.max(gain, 0.0001)
 
-    const attack = Math.max(0.006, duration * 0.2)
+    const attack = Math.max(0.006, duration * 0.24)
     const endTime = startTime + duration
 
     osc.type = type
     osc.frequency.setValueAtTime(startFreq, startTime)
-    osc.frequency.exponentialRampToValueAtTime(Math.max(endFreq, 40), endTime)
+    osc.frequency.exponentialRampToValueAtTime(Math.max(endFreq, 80), endTime)
     gainNode.gain.setValueAtTime(0.0001, startTime)
     gainNode.gain.exponentialRampToValueAtTime(safeGain, startTime + attack)
     gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime)
@@ -491,7 +413,7 @@ export function useSound() {
    * @returns {number}
    */
   function getSubtleDetune() {
-    return (Math.random() * 12) - 6
+    return (Math.random() * 8) - 4
   }
 
   /**
