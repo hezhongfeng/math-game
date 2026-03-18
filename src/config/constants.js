@@ -16,49 +16,38 @@ export const GAME_CONFIG = {
   MAX_ANSWER_LENGTH: 4
 }
 
-// 音频频率配置 - 简单好听版
+// 音频频率配置 - 极简交互版
 export const AUDIO_FREQUENCIES = {
-  // 数字键音效频率 (0-9) - 简单音阶，干净清晰
-  digits: [
-    523.25,  // C5 - 0
-    587.33,  // D5 - 1
-    659.25,  // E5 - 2
-    698.46,  // F5 - 3
-    783.99,  // G5 - 4
-    880.00,  // A5 - 5
-    987.77,  // B5 - 6
-    1046.50, // C6 - 7
-    1174.66, // D6 - 8
-    1318.51  // E6 - 9
-  ],
+  // 数字键音效频率 - 统一单音，避免“弹琴感”
+  digit: 720.00, // F#5
   
   // 正确音效频率 - 简单上扬双音
   correct: {
     note1: 659.25,  // E5
-    note2: 880.00   // A5
+    note2: 987.77   // B5
   },
   
   // 错误音效频率 - 简单下降音
   wrong: {
-    start: 587.33,  // D5
-    end: 440.00     // A4
+    start: 246.94,  // B3
+    end: 196.00     // G3
   },
   
   // 点击音效频率
   click: {
-    // 通用点击：干净的单音
-    default: 880.00, // A5
+    // 通用点击：轻柔单音
+    default: 760.00, // G5
     
-    // 删除键：短促下滑
+    // 删除键：轻下滑
     delete: {
-      start: 523.25,  // C5
-      end: 392.00     // G4
+      start: 440.00,  // A4
+      end: 349.23     // F4
     },
     
-    // 提交键：简单上扬
+    // 提交键：轻上扬
     submit: {
       note1: 659.25,  // E5
-      note2: 783.99   // G5
+      note2: 830.61   // G#5
     }
   },
   
@@ -71,49 +60,49 @@ export const AUDIO_FREQUENCIES = {
 
 // 音频参数配置 - 简单纯净版
 export const AUDIO_PARAMS = {
-  // 数字键音效参数 - 简单三角波
+  // 数字键音效参数 - 柔和单击
   digit: {
-    gain: 0.08,
-    duration: 0.04,
-    wave: 'triangle',
-    attack: 0.005,
-    release: 0.02
+    gain: 0.05,
+    duration: 0.026,
+    wave: 'sine',
+    attack: 0.004,
+    release: 0.012
   },
   
   // 正确音效参数 - 简单双音
   correct: {
-    gain: 0.15,
-    duration: 0.1,
-    interval: 0.05,
-    wave: 'sine'
+    gain: 0.115,
+    duration: 0.07,
+    interval: 0.045,
+    wave: 'triangle'
   },
   
   // 错误音效参数 - 简单下滑音
   wrong: {
-    gain: 0.1,
-    duration: 0.08,
+    gain: 0.085,
+    duration: 0.07,
     wave: 'triangle'
   },
   
   // 通用点击音效参数
   click: {
-    gain: 0.06,
-    duration: 0.03,
-    wave: 'triangle'
+    gain: 0.045,
+    duration: 0.024,
+    wave: 'sine'
   },
   
   // 删除键参数
   delete: {
-    gain: 0.07,
-    duration: 0.05,
+    gain: 0.05,
+    duration: 0.04,
     wave: 'sine'
   },
   
   // 提交键参数
   submit: {
-    gain: 0.08,
-    duration: 0.06,
-    interval: 0.03,
+    gain: 0.06,
+    duration: 0.04,
+    interval: 0.028,
     wave: 'sine'
   },
   

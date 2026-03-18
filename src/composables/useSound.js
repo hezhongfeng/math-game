@@ -11,10 +11,10 @@ import { AUDIO_FREQUENCIES, AUDIO_PARAMS } from '../config/constants'
 
 // 音效冷却时间配置（毫秒）- 简单版
 const SOUND_COOLDOWN_MS = {
-  digit: 30,      // 数字键点击
-  click: 40,      // 通用点击
-  delete: 50,     // 删除键
-  submit: 60,     // 提交键
+  digit: 24,      // 数字键点击
+  click: 30,      // 通用点击
+  delete: 42,     // 删除键
+  submit: 54,     // 提交键
   correct: 100,   // 正确反馈
   wrong: 120,     // 错误反馈
   win: 300        // 胜利音效
@@ -134,8 +134,8 @@ export function useSound() {
       return
     }
 
-    const attack = Math.max(0.005, duration * 0.2)
-    const release = Math.max(0.01, duration * 0.3)
+    const attack = Math.max(0.003, duration * 0.18)
+    const release = Math.max(0.008, duration * 0.32)
     const endTime = startTime + duration
     const releaseStart = Math.max(startTime + attack, endTime - release)
 
@@ -199,9 +199,9 @@ export function useSound() {
     const params = AUDIO_PARAMS.correct
     const startTime = ctx.currentTime + 0.01
 
-    // 简单双音上扬
+    // 更明亮一点的双音上扬，保留简洁但增加“答对了”的开心感
     playSimpleNote(ctx, startTime, freq.note1, params.duration, params.gain, params.wave)
-    playSimpleNote(ctx, startTime + params.interval, freq.note2, params.duration, params.gain * 0.9, params.wave)
+    playSimpleNote(ctx, startTime + params.interval, freq.note2, params.duration, params.gain * 0.92, 'sine')
   }
 
   async function playWrongSound() {
@@ -214,8 +214,9 @@ export function useSound() {
     const params = AUDIO_PARAMS.wrong
     const startTime = ctx.currentTime + 0.01
 
-    // 简单下滑音
+    // 更钝的低频下滑，避免刺耳和“报警器”感
     playSlideNote(ctx, startTime, freq.start, freq.end, params.duration, params.gain, params.wave)
+    playSimpleNote(ctx, startTime + params.duration * 0.55, freq.end, params.duration * 0.45, params.gain * 0.38, 'sine')
   }
 
   async function playClickSound(options = {}) {
@@ -228,12 +229,16 @@ export function useSound() {
     const startTime = ctx.currentTime + 0.005
 
     if (keyKind === 'digit') {
-      const digit = Number.isInteger(options.digit) ? options.digit : 0
-      const safeDigit = Math.max(0, Math.min(9, digit))
-      const digitFreq = AUDIO_FREQUENCIES.digits[safeDigit]
       const params = AUDIO_PARAMS.digit
-      
-      playSimpleNote(ctx, startTime, digitFreq, params.duration, params.gain, params.wave)
+
+      playSimpleNote(
+        ctx,
+        startTime,
+        AUDIO_FREQUENCIES.digit,
+        params.duration,
+        params.gain,
+        params.wave
+      )
       return
     }
 
@@ -255,10 +260,16 @@ export function useSound() {
     }
 
     // 通用点击
-    const freq = AUDIO_FREQUENCIES.click.default
     const params = AUDIO_PARAMS.click
-    
-    playSimpleNote(ctx, startTime, freq, params.duration, params.gain, params.wave)
+
+    playSimpleNote(
+      ctx,
+      startTime,
+      AUDIO_FREQUENCIES.click.default,
+      params.duration,
+      params.gain,
+      params.wave
+    )
   }
 
   async function playWinSound(options = {}) {
