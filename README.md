@@ -13,7 +13,7 @@
 | 文档 | 适用场景 |
 |------|----------|
 | [DESIGN.md](./DESIGN.md) | 设计规范、移动端约束、视觉原则 |
-| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | 一页看懂路由、数据流、音频与 PWA 架构 |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | 一页看懂路由、数据流与 PWA 架构 |
 | [COMPONENTS.md](./COMPONENTS.md) | 组件职责、输入输出、复用方式 |
 | [PWA.md](./PWA.md) | 安装、离线、更新策略 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | 提交流程、测试要求、PR 规范 |
@@ -23,7 +23,7 @@
 
 - 🎨 **简约科技**：酷炫科技感配色（柔和蓝+能量绿），简约而不简单的设计风格
 - 🎮 **渐进式学习**：15 个难度等级循序渐进，从 0-3 到 0-100
-- 🎉 **即时反馈**：发光动效、粒子效果、音效、触觉反馈多维度激励
+- 🎉 **即时反馈**：发光动效、粒子效果多维度激励
 - 📱 **移动优先**：专为触摸屏优化，支持手机和平板
 - 💾 **进度保存**：自动保存学习进度和最佳成绩
 - 🔒 **关卡解锁**：通过前一关才能挑战更高难度
@@ -45,10 +45,8 @@
 |------|------|
 | **15个难度等级** | 涵盖5个数值范围（0-3、0-5、0-10、0-20、0-100），每个范围包含加法、减法、加减混合三个阶段 |
 | **趣味反馈** | 答对时显示绿色对勾 + 粒子爆炸效果，答错时显示正确答案 + 橙色粒子动画 |
-| **触觉反馈** | 支持手机振动提示（答对/答错时触发） |
 | **成绩记录** | 本地保存最佳成绩，支持进度追踪 |
 | **语音播报（规划中）** | 预留能力，当前版本暂未开放语音播报开关 |
-| **音效系统** | 按键音效、答题反馈音效、胜利庆祝音效（无背景音乐） |
 | **手机优化** | 专为移动端设计的大按钮、触摸优化、响应式布局 |
 | **进度锁定** | 需通过前一关才能解锁更高难度 |
 | **PWA 离线支持** | 支持离线运行、添加到主屏幕、自动更新 |
@@ -59,7 +57,6 @@
 | 能力 | 状态 | 说明 |
 |------|------|------|
 | 关卡训练（15关） | ✅ 已实现 | 加减与混合运算，逐级解锁 |
-| 音效与触觉反馈 | ✅ 已实现 | Web Audio + Vibration，移动端优先 |
 | PWA 离线/更新提示 | ✅ 已实现 | 离线可用，应用内更新提示 |
 | E2E 冒烟测试 | ✅ 已实现 | Playwright（移动端 Chromium） |
 | 语音播报 | 🚧 规划中 | 当前版本未开放入口 |
@@ -153,16 +150,14 @@ pnpm run test:e2e:ui
 
 ### 浏览器兼容性
 
-- **iOS Safari（主流在维护版本）**：完整支持，已针对 AudioContext 恢复策略做兼容
-- **微信浏览器**：内置WebView特殊处理，自动解锁音频
+- **iOS Safari（主流在维护版本）**：完整支持
+- **微信浏览器**：内置WebView处理
 - **现代浏览器**：Chrome、Firefox、Edge等主流浏览器
 
 ### 触觉与交互
 
-- **振动反馈**：使用 Vibration API 答对/答错时触发
 - **流畅动画**：粒子效果、缩放弹跳等视觉反馈
 - **iOS 优化**：-webkit-tap-highlight-color: transparent 去除默认高亮
-- **音频优化**：Web Audio API动态生成音效
 
 ## 🎮 操作说明
 
@@ -198,11 +193,10 @@ math-game/
 │   │   └── ToastContainer.vue    # 吐司容器
 │   ├── composables/         # Vue Composables
 │   │   ├── useGame.js       # 游戏核心逻辑
-│   │   ├── useSound.js      # 音效管理
 │   │   ├── useStorage.js    # 本地存储
 │   │   └── useToast.js      # 吐司提示
 │   ├── config/              # 配置文件
-│   │   ├── constants.js     # 游戏常量（音频频率、音效参数）
+│   │   ├── constants.js     # 游戏常量
 │   │   └── difficulty.js    # 难度配置
 │   ├── stores/              # Vue Stores
 │   │   └── settings.js      # 设置状态管理
@@ -211,7 +205,6 @@ math-game/
 │   │   ├── Game.vue              # 游戏页（含反馈动画）
 │   │   └── Home.vue              # 主页
 │   ├── utils/               # 工具函数
-│   │   ├── audioContext.js       # AudioContext管理（iOS Safari兼容）
 │   │   └── generator.js          # 题目生成器
 │   ├── router.js            # Vue Router 配置
 │   ├── main.js              # 应用入口
@@ -285,8 +278,6 @@ localStorage.removeItem('math-game-data')
 | **Pinia** | 状态管理 |
 | **Lucide Vue Next** | 图标库 |
 | **LocalStorage** | 数据持久化 |
-| **Web Audio API** | 动态音效合成与播放 |
-| **Vibration API** | 触觉反馈 |
 
 ## 📱 移动端技术细节
 
@@ -334,25 +325,12 @@ touch-action: manipulation;
 -webkit-overflow-scrolling: touch;
 ```
 
-### iOS Safari 音频兼容性
-
-本游戏针对 iOS Safari 浏览器进行了专门的音频兼容性优化：
-
-- **AudioContext 恢复**：在用户交互的同步代码路径中恢复 AudioContext
-- **事件监听优化**：使用 `touchstart / click / keydown` 的捕获监听触发恢复
-- **触摸处理**：所有交互元素添加 `-webkit-tap-highlight-color: transparent`
-- **前后台联动**：页面切后台时降低主输出，回前台平滑恢复
-- **首音预热**：静默 warm-up，降低首次交互丢音概率
-- **被动事件**：所有事件监听器使用 `passive: true` 优化性能
-
-这些优化确保 iPhone 和 iPad 上的 Safari 浏览器可以正常播放所有音效。
-
 ## 🌐 浏览器兼容性
 
 | 浏览器 | 状态 | 备注 |
 |--------|------|------|
-| Chrome (Android) | ✅ 完全支持 | 推荐使用，触觉反馈完整支持 |
-| Safari (iOS) | ✅ 完全支持 | 触觉反馈需用户交互后触发 |
+| Chrome (Android) | ✅ 完全支持 | 推荐使用 |
+| Safari (iOS) | ✅ 完全支持 | |
 | Safari (macOS) | ✅ 完全支持 | 触控板支持 |
 | Firefox (Android) | ✅ 完全支持 | |
 | Edge (iOS/Android) | ✅ 完全支持 | |
@@ -370,7 +348,6 @@ touch-action: manipulation;
 | 功能 | iOS Safari | Android Chrome |
 |------|------------|----------------|
 | 触摸事件 | ✅ | ✅ |
-| 触觉反馈 (Vibration) | ⚠️ 需交互后 | ✅ |
 | LocalStorage | ✅ | ✅ |
 | 安全区域 | ✅ iOS 11+ | ✅ Android 5+ |
 | 添加到主屏幕 | ✅ | ✅ |
@@ -378,14 +355,11 @@ touch-action: manipulation;
 | 快捷方式 | ❌ | ✅ |
 
 **注意**：
-- 触觉反馈（振动）需要用户先与页面交互才能触发
 - PWA 功能需要 HTTPS 环境和现代浏览器支持
 
 ## ⚠️ 注意事项
 
 - **数据存储**：游戏数据保存在浏览器 LocalStorage 中，清除浏览器数据会导致进度丢失
-- **音效系统**：使用 Web Audio API 动态生成音效，部分旧版浏览器可能不支持
-- **触觉反馈**：iOS 设备需要在用户交互后才能触发振动，且部分设备可能不支持
 - **语音播报**：当前版本未启用，后续若接入将依赖浏览器语音合成能力
 - **性能优化**：粒子效果在低端设备上可能影响性能，建议在中高端设备上使用
 
@@ -404,10 +378,6 @@ touch-action: manipulation;
 
 1. 在 `src/config/difficulty.js` 中添加难度配置
 2. 确保题目数量和数值范围符合设计规范
-
-### 自定义音效
-
-音效功能使用 Web Audio API 动态生成，无需外部音频文件。如需自定义音效，可在 `src/composables/useSound.js` 中修改音频参数。
 
 ### 修改配色
 

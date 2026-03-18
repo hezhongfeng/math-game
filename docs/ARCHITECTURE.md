@@ -1,6 +1,6 @@
 # Architecture Overview
 
-这是一份面向协作者的“一页架构图”，用于快速理解项目关键路径。
+这是一份面向协作者的"一页架构图"，用于快速理解项目关键路径。
 
 ## 1. 运行时结构
 
@@ -27,7 +27,7 @@
 
 `settings` store（`src/stores/settings.js`）：
 
-- 负责音效开关等设置
+- 负责应用设置管理
 - 应用启动时加载一次
 - 设置变更自动持久化到 LocalStorage
 
@@ -40,22 +40,7 @@
 - 进度、正确率、耗时计算
 - 输出结算结果（供结果弹窗和存储使用）
 
-## 4. 音频与触觉反馈
-
-`useSound`（`src/composables/useSound.js`）：
-
-- 基于 Web Audio API 合成点击音、正确/错误反馈音、庆祝音
-- 采用时间轴调度，减少延迟抖动
-- 支持按键类型与星级分层反馈
-
-`audioContext`（`src/utils/audioContext.js`）：
-
-- 统一 AudioContext 生命周期
-- iOS Safari 兼容恢复逻辑
-- 前后台可见性联动
-- 静默 warm-up 降低首音丢失概率
-
-## 5. PWA 更新链路
+## 4. PWA 更新链路
 
 - 插件：`vite-plugin-pwa`（`vite.config.js`）
 - 更新提示组件：`src/components/PWAUpdatePrompt.vue`
@@ -63,7 +48,7 @@
 
 说明：PWA 注册与更新逻辑已统一到插件路径，避免重复注册冲突。
 
-## 6. E2E 冒烟测试
+## 5. E2E 冒烟测试
 
 Playwright 配置：
 
