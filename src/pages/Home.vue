@@ -3,20 +3,24 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowRight, Play, Sparkles, Target, Trophy } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
+import { useSound } from '../composables/useSound'
 import { TOTAL_LEVELS } from '../config/difficulty'
 
 const router = useRouter()
 const { bestScores } = useStorage()
+const { playClick } = useSound()
 const isReady = ref(false)
 
 const completedCount = computed(() => Object.keys(bestScores.value).length)
 const progress = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
 function startGame() {
+  playClick()
   router.push('/difficulty')
 }
 
 function viewProgress() {
+  playClick()
   router.push('/difficulty')
 }
 

@@ -7,6 +7,7 @@ import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
 import { useToast } from '../composables/useToast'
+import { useSound } from '../composables/useSound'
 import { getStarCount } from '../utils/stars'
 import NumberPad from '../components/NumberPad.vue'
 import QuestionCard from '../components/QuestionCard.vue'
@@ -29,6 +30,7 @@ if (!difficulty) {
 
 const { updateBestScore } = useStorage()
 const { error: showError } = useToast()
+const { playClick, playCorrect, playWrong, playQuestion, playVictory, playUnlock, playBack, playKeyPress } = useSound()
 
 const game = useGame(difficulty)
 const showAnswer = ref(false)
@@ -134,6 +136,7 @@ async function initGame() {
   startQuestionTimer()
   startGameTimeUpdater()
   isLoading.value = false
+  playQuestion()
 }
 
 function submitAnswer() {
@@ -151,15 +154,18 @@ function submitAnswer() {
 
   showAnswer.value = true
   isWaiting.value = true
+  playClick()
 
   if (correct) {
     streakCount.value += 1
     triggerStreakReward()
     triggerHapticFeedback('strong')
+    playCorrect()
   } else {
     streakCount.value = 0
     showStreakReward.value = false
     triggerHapticFeedback('error')
+    playWrong()
   }
 
   if (correct) {
@@ -202,6 +208,7 @@ function handleInput(num) {
 
   if (userAnswer.value.length < GAME_CONFIG.MAX_ANSWER_LENGTH) {
     userAnswer.value += num
+    playKeyPress()
     return
   }
 
@@ -215,6 +222,7 @@ function handleDelete() {
   if (now - lastInputTime.value < INPUT_DEBOUNCE) return
   lastInputTime.value = now
   userAnswer.value = userAnswer.value.slice(0, -1)
+  playKeyPress()
 }
 
 function handleNextQuestion() {
@@ -254,9 +262,17 @@ function handleGameComplete() {
   resultData.value = result
   isNewBest.value = best
   showModal.value = true
+
+  if (stars >= 4) {
+    playVictory()
+    if (best) {
+      setTimeout(() => playUnlock(), 300)
+    }
+  }
 }
 
 function goBack() {
+  playBack()
   router.push('/difficulty')
 }
 
