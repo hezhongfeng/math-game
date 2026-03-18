@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { CheckCircle2, ChevronRight, Lock, Star } from 'lucide-vue-next'
-import { useSound } from '../composables/useSound'
 import { getStarCount } from '../utils/stars'
 
 const props = defineProps({
@@ -24,7 +23,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['select'])
-const { playSound } = useSound()
 
 const stars = computed(() => {
   if (!props.bestScore) return 0
@@ -41,7 +39,6 @@ const statusText = computed(() => {
 
 function handleSelect() {
   if (props.isLocked) return
-  playSound('click')
   emit('select', props.difficulty)
 }
 </script>

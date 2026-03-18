@@ -4,12 +4,10 @@ import { useRouter } from 'vue-router'
 import { ArrowLeft, Trophy } from 'lucide-vue-next'
 import { DIFFICULTY_GROUPS, getDifficultyById, TOTAL_LEVELS } from '../config/difficulty'
 import { useStorage } from '../composables/useStorage'
-import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
 
 const router = useRouter()
 const { getBestScore, getCompletedDifficulties } = useStorage()
-const { playSound } = useSound()
 
 const completedDifficulties = ref(getCompletedDifficulties())
 
@@ -21,7 +19,6 @@ onMounted(() => {
 })
 
 function goBack() {
-  playSound('click')
   router.push('/')
 }
 

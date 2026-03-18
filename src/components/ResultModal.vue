@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { CheckCircle, Clock, Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
-import { useSound } from '../composables/useSound'
 import { formatTime } from '../utils/format'
 import { getRatingText, getStarCount } from '../utils/stars'
 
@@ -21,17 +20,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['retry', 'home'])
-const { playSound } = useSound()
 
 const stars = computed(() => getStarCount(props.result.accuracy))
 
 function handleRetry() {
-  playSound('click')
   emit('retry')
 }
 
 function handleHome() {
-  playSound('click')
   emit('home')
 }
 </script>

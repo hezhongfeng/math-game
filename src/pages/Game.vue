@@ -6,7 +6,6 @@ import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG } from '../config/constants'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
-import { useSound } from '../composables/useSound'
 import { useToast } from '../composables/useToast'
 import { getStarCount } from '../utils/stars'
 import NumberPad from '../components/NumberPad.vue'
@@ -29,7 +28,6 @@ if (!difficulty) {
 }
 
 const { updateBestScore } = useStorage()
-const { playSound } = useSound()
 const { error: showError } = useToast()
 
 const game = useGame(difficulty)
@@ -157,12 +155,10 @@ function submitAnswer() {
   if (correct) {
     streakCount.value += 1
     triggerStreakReward()
-    playSound('correct', { intensity: 'strong' })
     triggerHapticFeedback('strong')
   } else {
     streakCount.value = 0
     showStreakReward.value = false
-    playSound('wrong', { intensity: 'medium' })
     triggerHapticFeedback('error')
   }
 
@@ -209,7 +205,6 @@ function handleInput(num) {
     return
   }
 
-  playSound('wrong', { intensity: 'light' })
   triggerHapticFeedback('light')
 }
 
@@ -254,10 +249,6 @@ function handleGameComplete() {
   const best = updateBestScore(parseInt(props.id), result)
   const stars = getStarCount(result.accuracy)
 
-  playSound('win', {
-    stars,
-    intensity: stars >= 4 ? 'strong' : 'medium'
-  })
   triggerHapticFeedback(stars >= 4 ? 'strong' : 'medium')
 
   resultData.value = result
@@ -266,12 +257,10 @@ function handleGameComplete() {
 }
 
 function goBack() {
-  playSound('click')
   router.push('/difficulty')
 }
 
 function handleRetry() {
-  playSound('click')
   showModal.value = false
   userAnswer.value = ''
   showAnswer.value = false
@@ -297,7 +286,6 @@ function handleRetry() {
 }
 
 function handleHome() {
-  playSound('click')
   showModal.value = false
   router.push('/difficulty')
 }
