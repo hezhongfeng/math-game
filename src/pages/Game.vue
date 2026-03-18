@@ -407,20 +407,15 @@ onUnmounted(() => {
                 <div class="feedback-icon success">
                   <CheckCircle2 :size="22" />
                 </div>
-                <div class="feedback-text">
-                  <span class="feedback-kicker">回答正确</span>
-                  <strong class="feedback-main">自动进入下一题</strong>
-                </div>
+                <strong class="feedback-main">正确</strong>
               </template>
 
               <template v-else>
                 <div class="feedback-icon error">
                   <AlertCircle :size="22" />
                 </div>
-                <span class="feedback-kicker">正确答案</span>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <span class="feedback-note">点按继续</span>
-                <button class="feedback-continue-btn" @click="handleFeedbackClick">我知道了，继续</button>
+                <button class="feedback-continue-btn" @click="handleFeedbackClick">继续</button>
               </template>
             </div>
           </div>
