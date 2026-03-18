@@ -11,10 +11,11 @@
 let audioContext = null
 let isAudioContextInitialized = false
 let hasUserInteracted = false
+let toneFilterNode = null
 let compressorNode = null
 let masterGainNode = null
 let hasWarmUpPlayed = false
-const FOREGROUND_MASTER_GAIN = 0.85
+const FOREGROUND_MASTER_GAIN = 0.76
 const BACKGROUND_MASTER_GAIN = 0.4
 
 /**
@@ -42,25 +43,31 @@ export function getAudioContext() {
 
 /**
  * 构建统一音频输出链路
- * Oscillator -> Compressor -> Master Gain -> Destination
- * 作用：避免多音同时播放时出现突兀失真和削波
+ * Oscillator -> LowPass Filter -> Compressor -> Master Gain -> Destination
+ * 作用：削减高频刺耳感，并避免多音同时播放时失真
  * @param {AudioContext} ctx
  */
 function setupAudioGraph(ctx) {
-  if (compressorNode && masterGainNode) {
+  if (toneFilterNode && compressorNode && masterGainNode) {
     return
   }
 
+  toneFilterNode = ctx.createBiquadFilter()
   compressorNode = ctx.createDynamicsCompressor()
   masterGainNode = ctx.createGain()
 
-  compressorNode.threshold.setValueAtTime(-18, ctx.currentTime)
-  compressorNode.knee.setValueAtTime(18, ctx.currentTime)
-  compressorNode.ratio.setValueAtTime(3, ctx.currentTime)
-  compressorNode.attack.setValueAtTime(0.003, ctx.currentTime)
-  compressorNode.release.setValueAtTime(0.15, ctx.currentTime)
+  toneFilterNode.type = 'lowpass'
+  toneFilterNode.frequency.setValueAtTime(4200, ctx.currentTime)
+  toneFilterNode.Q.setValueAtTime(0.6, ctx.currentTime)
+
+  compressorNode.threshold.setValueAtTime(-20, ctx.currentTime)
+  compressorNode.knee.setValueAtTime(20, ctx.currentTime)
+  compressorNode.ratio.setValueAtTime(2.2, ctx.currentTime)
+  compressorNode.attack.setValueAtTime(0.005, ctx.currentTime)
+  compressorNode.release.setValueAtTime(0.18, ctx.currentTime)
   masterGainNode.gain.setValueAtTime(FOREGROUND_MASTER_GAIN, ctx.currentTime)
 
+  toneFilterNode.connect(compressorNode)
   compressorNode.connect(masterGainNode)
   masterGainNode.connect(ctx.destination)
 }
@@ -80,7 +87,7 @@ export function getAudioOutputNode(ctx = null) {
     setupAudioGraph(audioCtx)
   }
 
-  return compressorNode || audioCtx.destination
+  return toneFilterNode || audioCtx.destination
 }
 
 /**
@@ -347,6 +354,7 @@ export function closeAudioContext() {
     audioContext = null
     isAudioContextInitialized = false
     hasUserInteracted = false
+    toneFilterNode = null
     compressorNode = null
     masterGainNode = null
     hasWarmUpPlayed = false

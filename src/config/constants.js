@@ -50,43 +50,39 @@ export const AUDIO_FREQUENCIES = {
 export const AUDIO_PARAMS = {
   // 正确音效参数
   correct: {
-    gain: 0.24,
-    noteDuration: 0.11,
-    harmonyGain: 0.08,
-    swing: 0.012
+    gain: 0.2,
+    noteDuration: 0.1,
+    interval: 0.11
   },
   // 错误音效参数
   wrong: {
-    gain: 0.16,
-    duration: 0.24,
-    tailDuration: 0.1
+    gain: 0.14,
+    duration: 0.15,
+    tailDuration: 0.06
   },
   // 点击音效参数
   click: {
-    gain: 0.09,
-    duration: 0.055,
-    bodyDuration: 0.045,
-    transientGain: 0.05,
-    transientDuration: 0.02
+    gain: 0.07,
+    duration: 0.045,
+    transientGain: 0.015,
+    transientDuration: 0.008
   },
   // 删除键参数
   clickDelete: {
-    gain: 0.08,
-    duration: 0.08
+    gain: 0.075,
+    duration: 0.06
   },
   // 提交键参数
   clickSubmit: {
-    gain: 0.11,
-    harmonyGain: 0.06,
-    noteDuration: 0.055,
-    interval: 0.04
+    gain: 0.095,
+    noteDuration: 0.045,
+    interval: 0.03
   },
   // 胜利音效参数
   win: {
-    gain: 0.22,
-    harmonyGain: 0.09,
-    noteDuration: 0.13,
-    tailDuration: 0.18,
-    swing: 0.01
+    gain: 0.2,
+    noteDuration: 0.11,
+    interval: 0.1,
+    tailDuration: 0.14
   }
 }
