@@ -49,3 +49,7 @@ test-results/
 # Temporary folders
 tmp/
 temp/
+
+# Worktrees
+.worktrees/
+worktrees/
