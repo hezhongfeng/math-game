@@ -30,7 +30,16 @@ if (!difficulty) {
 
 const { updateBestScore } = useStorage()
 const { error: showError } = useToast()
-const { playClick, playCorrect, playWrong, playQuestion, playVictory, playUnlock, playBack, playKeyPress } = useSound()
+const {
+  playCorrect,
+  playWrong,
+  playVictory,
+  playUnlock,
+  playBack,
+  playKeyPress,
+  playDelete,
+  playSubmit
+} = useSound()
 
 const game = useGame(difficulty)
 const showAnswer = ref(false)
@@ -136,7 +145,6 @@ async function initGame() {
   startQuestionTimer()
   startGameTimeUpdater()
   isLoading.value = false
-  playQuestion()
 }
 
 function submitAnswer() {
@@ -154,7 +162,7 @@ function submitAnswer() {
 
   showAnswer.value = true
   isWaiting.value = true
-  playClick()
+  playSubmit()
 
   if (correct) {
     streakCount.value += 1
@@ -222,7 +230,7 @@ function handleDelete() {
   if (now - lastInputTime.value < INPUT_DEBOUNCE) return
   lastInputTime.value = now
   userAnswer.value = userAnswer.value.slice(0, -1)
-  playKeyPress()
+  playDelete()
 }
 
 function handleNextQuestion() {
@@ -578,8 +586,15 @@ onUnmounted(() => {
 }
 
 .feedback-wrap.is-error {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  padding: 20px;
+  border-radius: 0;
+  align-items: center;
   pointer-events: auto;
-  background: rgba(22, 32, 51, 0.14);
+  background: rgba(18, 28, 46, 0.32);
+  backdrop-filter: blur(6px);
 }
 
 .streak-reward {
@@ -637,9 +652,10 @@ onUnmounted(() => {
 }
 
 .feedback-card.error {
+  width: min(100%, 360px);
   background: #fff4f2;
   border-color: rgba(239, 83, 80, 0.42);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl);
   pointer-events: auto;
 }
 

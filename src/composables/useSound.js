@@ -1,135 +1,367 @@
-// 音效管理器 - 使用Web Audio API合成音效
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import {
+  AUDIO_COOLDOWNS,
+  AUDIO_ENGINE,
+  AUDIO_FREQUENCIES,
+  AUDIO_PARAMS
+} from '../config/constants'
 
-// 单例模式
 const audioContext = ref(null)
+const masterGainNode = ref(null)
+const lowpassNode = ref(null)
 const isInitialized = ref(false)
+const soundLastPlayedAt = new Map()
 
-/**
- * 初始化AudioContext (处理iOS兼容)
- */
-export function initAudio() {
-  if (isInitialized.value) return
-  
-  try {
-    audioContext.value = new (window.AudioContext || window.webkitAudioContext)()
-    // iOS需要用户交互后才能resume
-    if (audioContext.value.state === 'suspended') {
-      document.addEventListener('touchstart', () => {
-        audioContext.value?.resume()
-      }, { once: true })
-    }
-    isInitialized.value = true
-  } catch (e) {
-    console.warn('Web Audio API not supported:', e)
+function createAudioGraph(ctx) {
+  const masterGain = ctx.createGain()
+  const lowpass = ctx.createBiquadFilter()
+
+  lowpass.type = 'lowpass'
+  lowpass.frequency.value = AUDIO_ENGINE.FILTER_FREQUENCY
+  lowpass.Q.value = 0.0001
+
+  masterGain.gain.value = AUDIO_ENGINE.MASTER_GAIN
+
+  masterGain.connect(lowpass)
+  lowpass.connect(ctx.destination)
+
+  masterGainNode.value = masterGain
+  lowpassNode.value = lowpass
+}
+
+function warmupAudioContext(ctx) {
+  if (!masterGainNode.value) {
+    return
+  }
+
+  const oscillator = ctx.createOscillator()
+  const gainNode = ctx.createGain()
+  const now = ctx.currentTime
+
+  oscillator.type = 'sine'
+  oscillator.frequency.setValueAtTime(440, now)
+  gainNode.gain.setValueAtTime(AUDIO_ENGINE.WARMUP_GAIN, now)
+
+  oscillator.connect(gainNode)
+  gainNode.connect(masterGainNode.value)
+
+  oscillator.start(now)
+  oscillator.stop(now + 0.01)
+}
+
+function resumeAudioContext() {
+  const ctx = audioContext.value
+  if (!ctx) {
+    return
+  }
+
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {
+      // 忽略恢复失败，避免打断主流程
+    })
   }
 }
 
 /**
- * 播放合成音效
- * @param {number} frequency - 频率(Hz)
- * @param {number} duration - 时长(ms)
- * @param {string} type - 波形类型 'sine'|'triangle'|'square'
- * @param {number} volume - 音量 0-1
+ * 初始化 AudioContext，并建立统一输出总线
  */
-export function playTone(frequency, duration, type = 'sine', volume = 0.3) {
-  if (!audioContext.value) return
-  
+export function initAudio() {
+  if (isInitialized.value) {
+    resumeAudioContext()
+    return
+  }
+
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    audioContext.value = ctx
+    createAudioGraph(ctx)
+    warmupAudioContext(ctx)
+
+    if (ctx.state === 'suspended') {
+      document.addEventListener('touchstart', () => {
+        ctx.resume().catch(() => {})
+      }, { once: true, passive: true })
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!masterGainNode.value) {
+        return
+      }
+
+      const targetGain = document.hidden ? AUDIO_ENGINE.MASTER_GAIN * 0.55 : AUDIO_ENGINE.MASTER_GAIN
+      masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
+    })
+
+    isInitialized.value = true
+  } catch (error) {
+    console.warn('Web Audio API not supported:', error)
+  }
+}
+
+function getReadyAudioContext() {
+  initAudio()
   const ctx = audioContext.value
+  if (!ctx || !masterGainNode.value) {
+    return null
+  }
+
+  resumeAudioContext()
+  return ctx
+}
+
+function shouldThrottle(key) {
+  const now = Date.now()
+  const lastTime = soundLastPlayedAt.get(key) || 0
+  const cooldown = AUDIO_COOLDOWNS[key] || 0
+
+  if (now - lastTime < cooldown) {
+    return true
+  }
+
+  soundLastPlayedAt.set(key, now)
+  return false
+}
+
+function scheduleTone(ctx, options) {
+  if (!masterGainNode.value) {
+    return
+  }
+
+  const {
+    frequency,
+    startTime = ctx.currentTime,
+    duration = 0.05,
+    gain = 0.05,
+    type = 'sine',
+    attack = 0.003,
+    release = 0.02,
+    endFrequency = null
+  } = options
+
   const oscillator = ctx.createOscillator()
   const gainNode = ctx.createGain()
-  
-  oscillator.connect(gainNode)
-  gainNode.connect(ctx.destination)
-  
+  const endTime = startTime + duration
+  const safeGain = Math.max(gain, 0.0001)
+  const safeAttack = Math.max(attack, 0.002)
+  const safeRelease = Math.max(release, 0.01)
+  const releaseStart = Math.max(startTime + safeAttack, endTime - safeRelease)
+
   oscillator.type = type
-  oscillator.frequency.value = frequency
-  
-  const now = ctx.currentTime
-  const durationSec = duration / 1000
-  
-  gainNode.gain.setValueAtTime(volume, now)
-  gainNode.gain.exponentialRampToValueAtTime(0.01, now + durationSec)
-  
-  oscillator.start(now)
-  oscillator.stop(now + durationSec)
+  oscillator.frequency.setValueAtTime(frequency, startTime)
+
+  if (typeof endFrequency === 'number') {
+    oscillator.frequency.exponentialRampToValueAtTime(Math.max(endFrequency, 80), endTime)
+  }
+
+  gainNode.gain.setValueAtTime(0.0001, startTime)
+  gainNode.gain.exponentialRampToValueAtTime(safeGain, startTime + safeAttack)
+  gainNode.gain.setValueAtTime(safeGain, releaseStart)
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime)
+
+  oscillator.connect(gainNode)
+  gainNode.connect(masterGainNode.value)
+
+  oscillator.start(startTime)
+  oscillator.stop(endTime)
 }
 
-/**
- * 播放按钮点击音效
- */
+function scheduleSequence(ctx, notes, params, startTime = ctx.currentTime + 0.006) {
+  notes.forEach((frequency, index) => {
+    const stepRatio = params.stepGainRatio || 1
+    scheduleTone(ctx, {
+      frequency,
+      startTime: startTime + (params.interval || 0.05) * index,
+      duration: params.duration,
+      gain: params.gain * Math.pow(stepRatio, index),
+      type: params.type,
+      attack: params.attack,
+      release: params.release
+    })
+  })
+}
+
+function withTinyVariation(frequency) {
+  const ratio = 1 + ((Math.random() * 2 - 1) * 0.006)
+  return frequency * ratio
+}
+
 export function playClick() {
-  playTone(800, 80, 'sine', 0.25)
+  if (shouldThrottle('click')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleTone(ctx, {
+    frequency: withTinyVariation(AUDIO_FREQUENCIES.click),
+    startTime: ctx.currentTime + 0.004,
+    ...AUDIO_PARAMS.click
+  })
 }
 
-/**
- * 播放数字键盘音效
- */
 export function playKeyPress() {
-  playTone(600, 60, 'sine', 0.2)
+  if (shouldThrottle('key')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleTone(ctx, {
+    frequency: withTinyVariation(AUDIO_FREQUENCIES.key),
+    startTime: ctx.currentTime + 0.004,
+    ...AUDIO_PARAMS.key
+  })
 }
 
-/**
- * 播放正确答案音效
- */
+export function playDelete() {
+  if (shouldThrottle('delete')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleTone(ctx, {
+    frequency: AUDIO_FREQUENCIES.delete.start,
+    endFrequency: AUDIO_FREQUENCIES.delete.end,
+    startTime: ctx.currentTime + 0.004,
+    ...AUDIO_PARAMS.delete
+  })
+}
+
+export function playSubmit() {
+  if (shouldThrottle('submit')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleSequence(ctx, AUDIO_FREQUENCIES.submit, AUDIO_PARAMS.submit)
+}
+
 export function playCorrect() {
-  if (!audioContext.value) return
-  // 双音升调
-  playTone(880, 100, 'sine', 0.3)
-  setTimeout(() => playTone(1320, 150, 'sine', 0.3), 80)
+  if (shouldThrottle('correct')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  const startTime = ctx.currentTime + 0.006
+  scheduleSequence(ctx, AUDIO_FREQUENCIES.correct, AUDIO_PARAMS.correct, startTime)
+
+  const finalIndex = AUDIO_FREQUENCIES.correct.length - 1
+  const finalStart = startTime + AUDIO_PARAMS.correct.interval * finalIndex
+  const finalNote = AUDIO_FREQUENCIES.correct[finalIndex]
+
+  scheduleTone(ctx, {
+    frequency: finalNote,
+    startTime: finalStart + 0.012,
+    duration: AUDIO_PARAMS.correct.sparkleDuration,
+    gain: AUDIO_PARAMS.correct.sparkleGain,
+    type: AUDIO_PARAMS.correct.sparkleType,
+    attack: 0.003,
+    release: 0.04
+  })
 }
 
-/**
- * 播放错误答案音效
- */
 export function playWrong() {
-  playTone(200, 300, 'triangle', 0.3)
+  if (shouldThrottle('wrong')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleSequence(ctx, AUDIO_FREQUENCIES.wrong, AUDIO_PARAMS.wrong)
 }
 
-/**
- * 播放题目出现音效
- */
 export function playQuestion() {
-  playTone(440, 100, 'sine', 0.15)
+  if (shouldThrottle('question')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleTone(ctx, {
+    frequency: AUDIO_FREQUENCIES.question,
+    startTime: ctx.currentTime + 0.004,
+    ...AUDIO_PARAMS.question
+  })
 }
 
-/**
- * 播放返回音效
- */
 export function playBack() {
-  playTone(500, 100, 'sine', 0.2)
+  if (shouldThrottle('back')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleTone(ctx, {
+    frequency: AUDIO_FREQUENCIES.back.start,
+    endFrequency: AUDIO_FREQUENCIES.back.end,
+    startTime: ctx.currentTime + 0.004,
+    ...AUDIO_PARAMS.back
+  })
 }
 
-/**
- * 播放胜利音效 - 上升和弦
- */
 export function playVictory() {
-  if (!audioContext.value) return
-  // C5 -> E5 -> G5 -> C6 上升
-  playTone(523, 120, 'sine', 0.25)
-  setTimeout(() => playTone(659, 120, 'sine', 0.25), 100)
-  setTimeout(() => playTone(784, 150, 'sine', 0.25), 200)
-  setTimeout(() => playTone(1047, 250, 'sine', 0.3), 300)
+  if (shouldThrottle('victory')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleSequence(ctx, AUDIO_FREQUENCIES.victory, AUDIO_PARAMS.victory, ctx.currentTime + 0.008)
 }
 
-/**
- * 播放解锁音效 - 叮咚声
- */
 export function playUnlock() {
-  if (!audioContext.value) return
-  // 两个高音叮咚
-  playTone(1200, 80, 'sine', 0.3)
-  setTimeout(() => playTone(1600, 200, 'sine', 0.3), 120)
+  if (shouldThrottle('unlock')) {
+    return
+  }
+
+  const ctx = getReadyAudioContext()
+  if (!ctx) {
+    return
+  }
+
+  scheduleSequence(ctx, AUDIO_FREQUENCIES.unlock, AUDIO_PARAMS.unlock, ctx.currentTime + 0.008)
 }
 
 export function useSound() {
   onMounted(() => {
     initAudio()
   })
-  
+
   return {
     playClick,
     playKeyPress,
+    playDelete,
+    playSubmit,
     playCorrect,
     playWrong,
     playQuestion,
