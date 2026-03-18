@@ -100,40 +100,31 @@ export function playBack() {
   playTone(500, 100, 'sine', 0.2)
 }
 
-// 外部音频播放器
-const victoryAudio = ref(null)
-const unlockAudio = ref(null)
-
 /**
- * 加载外部音效
- */
-export function loadExternalSounds() {
-  victoryAudio.value = new Audio('/sounds/victory.mp3')
-  unlockAudio.value = new Audio('/sounds/unlock.mp3')
-  
-  // 预加载
-  victoryAudio.value.preload = 'auto'
-  unlockAudio.value.preload = 'auto'
-}
-
-/**
- * 播放胜利音效
+ * 播放胜利音效 - 上升和弦
  */
 export function playVictory() {
-  victoryAudio.value?.play().catch(e => console.warn('victory sound failed:', e))
+  if (!audioContext.value) return
+  // C5 -> E5 -> G5 -> C6 上升
+  playTone(523, 120, 'sine', 0.25)
+  setTimeout(() => playTone(659, 120, 'sine', 0.25), 100)
+  setTimeout(() => playTone(784, 150, 'sine', 0.25), 200)
+  setTimeout(() => playTone(1047, 250, 'sine', 0.3), 300)
 }
 
 /**
- * 播放解锁音效
+ * 播放解锁音效 - 叮咚声
  */
 export function playUnlock() {
-  unlockAudio.value?.play().catch(e => console.warn('unlock sound failed:', e))
+  if (!audioContext.value) return
+  // 两个高音叮咚
+  playTone(1200, 80, 'sine', 0.3)
+  setTimeout(() => playTone(1600, 200, 'sine', 0.3), 120)
 }
 
 export function useSound() {
   onMounted(() => {
     initAudio()
-    loadExternalSounds()
   })
   
   return {
