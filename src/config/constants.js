@@ -16,73 +16,112 @@ export const GAME_CONFIG = {
   MAX_ANSWER_LENGTH: 4
 }
 
-// 音频频率配置（乐音）
+// 音频频率配置 - 简单好听版
 export const AUDIO_FREQUENCIES = {
-  // 正确音效频率 (C5, E5, G5, B5, C6)
+  // 数字键音效频率 (0-9) - 简单音阶，干净清晰
+  digits: [
+    523.25,  // C5 - 0
+    587.33,  // D5 - 1
+    659.25,  // E5 - 2
+    698.46,  // F5 - 3
+    783.99,  // G5 - 4
+    880.00,  // A5 - 5
+    987.77,  // B5 - 6
+    1046.50, // C6 - 7
+    1174.66, // D6 - 8
+    1318.51  // E6 - 9
+  ],
+  
+  // 正确音效频率 - 简单上扬双音
   correct: {
-    note1: 523.25,
-    note2: 659.25,
-    note3: 783.99,
-    note4: 987.77,
-    note5: 1046.50
+    note1: 659.25,  // E5
+    note2: 880.00   // A5
   },
-  // 错误音效频率
+  
+  // 错误音效频率 - 简单下降音
   wrong: {
-    start: 280,
-    end: 180
+    start: 587.33,  // D5
+    end: 440.00     // A4
   },
+  
   // 点击音效频率
   click: {
-    // 导航/通用点击
-    default: 700,
-    // 数字键（0-9）中频分布，听感更柔和
-    digits: [650, 660, 670, 680, 700, 710, 720, 730, 740, 760],
-    // 删除键：低频短下滑
-    deleteStart: 460,
-    deleteEnd: 360,
-    // 提交键：简洁双音上扬
-    submit1: 780,
-    submit2: 980
+    // 通用点击：干净的单音
+    default: 880.00, // A5
+    
+    // 删除键：短促下滑
+    delete: {
+      start: 523.25,  // C5
+      end: 392.00     // G4
+    },
+    
+    // 提交键：简单上扬
+    submit: {
+      note1: 659.25,  // E5
+      note2: 783.99   // G5
+    }
+  },
+  
+  // 胜利音效频率 - 简单音阶
+  win: {
+    // 简单音阶：C5, D5, E5, F5, G5
+    scale: [523.25, 587.33, 659.25, 698.46, 783.99]
   }
 }
 
-// 音频参数配置
+// 音频参数配置 - 简单纯净版
 export const AUDIO_PARAMS = {
-  // 正确音效参数
+  // 数字键音效参数 - 简单三角波
+  digit: {
+    gain: 0.08,
+    duration: 0.04,
+    wave: 'triangle',
+    attack: 0.005,
+    release: 0.02
+  },
+  
+  // 正确音效参数 - 简单双音
   correct: {
-    gain: 0.175,
-    noteDuration: 0.085,
-    interval: 0.09
+    gain: 0.15,
+    duration: 0.1,
+    interval: 0.05,
+    wave: 'sine'
   },
-  // 错误音效参数
+  
+  // 错误音效参数 - 简单下滑音
   wrong: {
-    gain: 0.125,
-    duration: 0.13,
-    tailDuration: 0.05
+    gain: 0.1,
+    duration: 0.08,
+    wave: 'triangle'
   },
-  // 点击音效参数
+  
+  // 通用点击音效参数
   click: {
-    gain: 0.062,
-    duration: 0.045,
-    transientGain: 0.008,
-    transientDuration: 0.006
+    gain: 0.06,
+    duration: 0.03,
+    wave: 'triangle'
   },
+  
   // 删除键参数
-  clickDelete: {
-    gain: 0.068,
-    duration: 0.06
+  delete: {
+    gain: 0.07,
+    duration: 0.05,
+    wave: 'sine'
   },
+  
   // 提交键参数
-  clickSubmit: {
-    gain: 0.082,
-    noteDuration: 0.042,
-    interval: 0.038
+  submit: {
+    gain: 0.08,
+    duration: 0.06,
+    interval: 0.03,
+    wave: 'sine'
   },
+  
   // 胜利音效参数
   win: {
-    gain: 0.2,
-    noteDuration: 0.11,
-    interval: 0.1,
-    tailDuration: 0.14
+    gain: 0.18,
+    noteDuration: 0.09,
+    interval: 0.07,
+    wave: 'triangle'
   }
 }

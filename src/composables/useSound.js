@@ -9,25 +9,21 @@ import {
 } from '../utils/audioContext'
 import { AUDIO_FREQUENCIES, AUDIO_PARAMS } from '../config/constants'
 
+// 音效冷却时间配置（毫秒）- 简单版
 const SOUND_COOLDOWN_MS = {
-  click: 30,
-  clickSubmit: 45,
-  clickDelete: 38,
-  correct: 90,
-  wrong: 120,
-  win: 450
+  digit: 30,      // 数字键点击
+  click: 40,      // 通用点击
+  delete: 50,     // 删除键
+  submit: 60,     // 提交键
+  correct: 100,   // 正确反馈
+  wrong: 120,     // 错误反馈
+  win: 300        // 胜利音效
 }
 
 const soundLastPlayedAt = new Map()
 
 /**
- * 音效播放 Composable
- * 使用 Web Audio API 生成音效
- *
- * iOS Safari 兼容性说明：
- * - 在 iOS 上，AudioContext 需要在用户交互后才能播放声音
- * - 使用 ensureAudioContextRunning() 确保播放前恢复
- * - 必须在同步代码路径中调用 resume()，不能使用 await
+ * 简单音效播放器 - 回归纯净好听的音效设计
  */
 export function useSound() {
   const settingsStore = useSettingsStore()
@@ -35,7 +31,6 @@ export function useSound() {
 
   /**
    * 同步恢复 AudioContext
-   * iOS Safari 要求必须在同步代码中调用 resume()
    */
   function ensureAudioContextSync() {
     const ctx = getAudioContext()
@@ -44,8 +39,6 @@ export function useSound() {
     }
 
     if (ctx.state === 'suspended') {
-      // 同步调用 resume，不等待结果
-      // iOS Safari 要求 resume() 在用户交互的同步调用栈中
       ctx.resume().catch(() => {
         // 忽略恢复失败
       })
@@ -57,7 +50,6 @@ export function useSound() {
 
   /**
    * 播放音效
-   * @param {string} type - 音效类型: 'correct', 'wrong', 'win', 'click'
    */
   function playSound(type, options = {}) {
     if (!isEnabled.value) {
@@ -69,7 +61,7 @@ export function useSound() {
       return
     }
 
-    // iOS Safari 关键修复：必须在同步代码中恢复 AudioContext
+    // 恢复 AudioContext
     ensureAudioContextSync()
     warmupAudioContext()
 
@@ -100,18 +92,16 @@ export function useSound() {
   }
 
   /**
-   * 音效触发限速，避免连点导致“糊音”和性能抖动
+   * 音效触发限速
    */
   function isThrottled(type, options = {}) {
     const keyKind = options.keyKind || 'default'
     const limiterKey = type === 'click' ? `click:${keyKind}` : type
     const now = Date.now()
 
-    let cooldown = SOUND_COOLDOWN_MS[type] || 20
-    if (type === 'click' && keyKind === 'submit') {
-      cooldown = SOUND_COOLDOWN_MS.clickSubmit
-    } else if (type === 'click' && keyKind === 'delete') {
-      cooldown = SOUND_COOLDOWN_MS.clickDelete
+    let cooldown = SOUND_COOLDOWN_MS[type] || 30
+    if (type === 'click') {
+      cooldown = SOUND_COOLDOWN_MS[keyKind] || SOUND_COOLDOWN_MS.click
     }
 
     const lastTime = soundLastPlayedAt.get(limiterKey) || 0
@@ -125,7 +115,6 @@ export function useSound() {
 
   /**
    * 准备可用的 AudioContext
-   * @returns {Promise<AudioContext|null>}
    */
   async function getReadyAudioContext() {
     const isReady = await ensureAudioContextRunning()
@@ -137,26 +126,18 @@ export function useSound() {
   }
 
   /**
-   * 在时间轴上调度音符，避免 setTimeout 带来的节奏抖动
-   * @param {AudioContext} ctx - 音频上下文
-   * @param {number} startTime - 开始时间（秒）
-   * @param {number} frequency - 频率（Hz）
-   * @param {number} duration - 持续时间（秒）
-   * @param {number} gain - 最大音量
-   * @param {Object} options - 额外音色参数
+   * 播放简单音符
    */
-  function scheduleNote(ctx, startTime, frequency, duration, gain, options = {}) {
+  function playSimpleNote(ctx, startTime, frequency, duration, gain, wave = 'sine') {
     const outputNode = getAudioOutputNode(ctx)
     if (!outputNode) {
       return
     }
 
-    const wave = options.wave || 'sine'
-    const detune = options.detune || 0
-    const attack = Math.max(0.004, Math.min(duration * 0.32, options.attack ?? 0.01))
-    const release = Math.max(0.018, Math.min(duration * 0.9, options.release ?? duration * 0.66))
+    const attack = Math.max(0.005, duration * 0.2)
+    const release = Math.max(0.01, duration * 0.3)
     const endTime = startTime + duration
-    const releaseStart = Math.max(startTime + attack + 0.006, endTime - release)
+    const releaseStart = Math.max(startTime + attack, endTime - release)
 
     const osc = ctx.createOscillator()
     const gainNode = ctx.createGain()
@@ -166,9 +147,6 @@ export function useSound() {
     const safeGain = Math.max(gain, 0.0001)
 
     osc.type = wave
-    if (detune !== 0) {
-      osc.detune.setValueAtTime(detune, startTime)
-    }
     osc.frequency.setValueAtTime(frequency, startTime)
     gainNode.gain.setValueAtTime(0.0001, startTime)
     gainNode.gain.exponentialRampToValueAtTime(safeGain, startTime + attack)
@@ -180,213 +158,16 @@ export function useSound() {
   }
 
   /**
-   * 正确音效 - 重构后的简化版本
+   * 播放下滑音符
    */
-  async function playCorrectSound(options = {}) {
-    const ctx = await getReadyAudioContext()
-    if (!ctx) {
-      return
-    }
-
-    const freq = AUDIO_FREQUENCIES.correct
-    const params = AUDIO_PARAMS.correct
-    const intensity = getIntensityMultiplier(options.intensity)
-    const startTime = ctx.currentTime + 0.01
-    const duration = params.noteDuration
-    const gain = params.gain * intensity
-
-    // 正确反馈：更短的双音上扬，清晰但不打扰
-    scheduleNote(ctx, startTime, freq.note2, duration, gain, {
-      wave: 'triangle',
-      attack: 0.007,
-      release: duration * 0.78
-    })
-    scheduleNote(ctx, startTime + params.interval, freq.note5, duration * 1.05, gain * 0.92, {
-      wave: 'sine',
-      attack: 0.007,
-      release: duration * 0.8
-    })
-  }
-
-  /**
-   * 胜利音效 - 重构后的简化版本
-   */
-  async function playWinSound(options = {}) {
-    const ctx = await getReadyAudioContext()
-    if (!ctx) {
-      return
-    }
-
-    const freq = AUDIO_FREQUENCIES.correct
-    const params = AUDIO_PARAMS.win
-    const stars = Math.max(0, Math.min(5, options.stars ?? 3))
-    const intensity = getIntensityMultiplier(options.intensity || (stars >= 4 ? 'strong' : 'medium'))
-    const startTime = ctx.currentTime + 0.01
-    const noteDuration = stars === 0 ? params.noteDuration * 0.86 : params.noteDuration
-    const step = params.interval
-    const gain = params.gain * intensity
-    const winPatterns = {
-      0: [freq.note2],
-      1: [freq.note1, freq.note3],
-      2: [freq.note1, freq.note2, freq.note3],
-      3: [freq.note1, freq.note2, freq.note3, freq.note5],
-      4: [freq.note1, freq.note2, freq.note3, freq.note4, freq.note5],
-      5: [freq.note1, freq.note2, freq.note3, freq.note4, freq.note5]
-    }
-
-    const notes = winPatterns[stars] || winPatterns[3]
-    notes.forEach((noteFreq, index) => {
-      scheduleNote(ctx, startTime + index * step, noteFreq, noteDuration, gain * (0.84 + index * 0.025), {
-        wave: index < notes.length - 1 ? 'triangle' : 'sine',
-        attack: 0.008,
-        release: noteDuration * 0.82
-      })
-    })
-
-    if (stars >= 3) {
-      const tailBase = stars >= 5 ? freq.note5 * 0.56 : freq.note3
-      scheduleNote(ctx, startTime + notes.length * step, tailBase, params.tailDuration, gain * (stars >= 5 ? 0.44 : 0.38), {
-        wave: 'triangle',
-        attack: 0.01,
-        release: params.tailDuration * 0.84
-      })
-    }
-
-    if (stars === 5) {
-      const accentStart = startTime + (notes.length - 1) * step + 0.01
-      scheduleNote(ctx, accentStart, freq.note5 * 2, noteDuration * 0.32, gain * 0.1, {
-        wave: 'sine',
-        attack: 0.005,
-        release: noteDuration * 0.3
-      })
-    }
-  }
-
-  /**
-   * 错误音效 - 重构后的简化版本
-   */
-  async function playWrongSound(options = {}) {
-    const ctx = await getReadyAudioContext()
-    if (!ctx) {
-      return
-    }
-
-    const freq = AUDIO_FREQUENCIES.wrong
-    const params = AUDIO_PARAMS.wrong
-    const intensity = getIntensityMultiplier(options.intensity)
-    const startTime = ctx.currentTime + 0.01
-
-    // 错误反馈：短下行 + 轻尾音，避免刺耳报警感
-    scheduleFrequencyRampNote(
-      ctx,
-      startTime,
-      freq.start,
-      freq.end,
-      params.duration,
-      params.gain * intensity,
-      'triangle'
-    )
-
-    scheduleNote(ctx, startTime + params.duration * 0.6, freq.end * 0.92, params.tailDuration, params.gain * 0.4 * intensity, {
-      wave: 'triangle',
-      attack: 0.008,
-      release: params.tailDuration * 0.8
-    })
-  }
-
-  /**
-   * 点击音效 - 重构后的简化版本
-   */
-  async function playClickSound(options = {}) {
-    const ctx = await getReadyAudioContext()
-    if (!ctx) {
-      return
-    }
-
-    const freq = AUDIO_FREQUENCIES.click
-    const params = AUDIO_PARAMS.click
-    const keyKind = options.keyKind || 'default'
-    const startTime = ctx.currentTime + 0.005
-    const intensity = getIntensityMultiplier(options.intensity || (keyKind === 'submit' ? 'strong' : 'medium'))
-    const subtleDetune = getSubtleDetune()
-
-    if (keyKind === 'digit') {
-      const digit = Number.isInteger(options.digit) ? options.digit : 0
-      const safeDigit = Math.max(0, Math.min(9, digit))
-      const digitFreq = freq.digits[safeDigit] || freq.default
-      // 数字键：短、干净、单层 triangle，不叠和声
-      scheduleNote(ctx, startTime, digitFreq, params.duration, params.gain * intensity, {
-        wave: 'triangle',
-        detune: subtleDetune,
-        attack: 0.006,
-        release: params.duration * 0.82
-      })
-      return
-    }
-
-    if (keyKind === 'delete') {
-      const deleteParams = AUDIO_PARAMS.clickDelete
-      // 删除键：短下滑，语义清晰
-      scheduleFrequencyRampNote(
-        ctx,
-        startTime,
-        freq.deleteStart,
-        freq.deleteEnd,
-        deleteParams.duration,
-        deleteParams.gain * intensity,
-        'sine'
-      )
-      return
-    }
-
-    if (keyKind === 'submit') {
-      const submitParams = AUDIO_PARAMS.clickSubmit
-      // 提交键：双音上扬，总时长约 90ms
-      scheduleNote(ctx, startTime, freq.submit1, submitParams.noteDuration, submitParams.gain * intensity, {
-        wave: 'sine',
-        attack: 0.007,
-        release: submitParams.noteDuration * 0.78
-      })
-      scheduleNote(
-        ctx,
-        startTime + submitParams.interval,
-        freq.submit2,
-        submitParams.noteDuration,
-        submitParams.gain * 0.95 * intensity,
-        {
-          wave: 'triangle',
-          attack: 0.007,
-          release: submitParams.noteDuration * 0.8
-        }
-      )
-      return
-    }
-
-    // 通用点击：极轻瞬态 + 主体音
-    scheduleNote(
-      ctx,
-      startTime,
-      900,
-      params.transientDuration,
-      params.transientGain * intensity,
-      { wave: 'sine', attack: 0.004, release: params.transientDuration * 0.8 }
-    )
-    scheduleNote(ctx, startTime, freq.default, params.duration, params.gain * intensity, {
-      wave: 'triangle',
-      detune: subtleDetune,
-      attack: 0.006,
-      release: params.duration * 0.8
-    })
-  }
-
-  /**
-   * 播放带频率变化的音符（用于错误提示）
-   */
-  function scheduleFrequencyRampNote(ctx, startTime, startFreq, endFreq, duration, gain, type = 'sine') {
+  function playSlideNote(ctx, startTime, startFreq, endFreq, duration, gain, wave = 'sine') {
     const outputNode = getAudioOutputNode(ctx)
     if (!outputNode) {
       return
     }
+
+    const attack = Math.max(0.005, duration * 0.15)
+    const endTime = startTime + duration
 
     const osc = ctx.createOscillator()
     const gainNode = ctx.createGain()
@@ -395,36 +176,112 @@ export function useSound() {
 
     const safeGain = Math.max(gain, 0.0001)
 
-    const attack = Math.max(0.006, duration * 0.24)
-    const endTime = startTime + duration
-
-    osc.type = type
+    osc.type = wave
     osc.frequency.setValueAtTime(startFreq, startTime)
-    osc.frequency.exponentialRampToValueAtTime(Math.max(endFreq, 80), endTime)
+    osc.frequency.exponentialRampToValueAtTime(Math.max(endFreq, 100), endTime)
     gainNode.gain.setValueAtTime(0.0001, startTime)
     gainNode.gain.exponentialRampToValueAtTime(safeGain, startTime + attack)
     gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime)
+
     osc.start(startTime)
     osc.stop(endTime)
   }
 
-  /**
-   * 为重复点击注入非常轻微的音高随机性，降低“机械感”
-   * @returns {number}
-   */
-  function getSubtleDetune() {
-    return (Math.random() * 8) - 4
+  // ========== 音效播放函数 ==========
+
+  async function playCorrectSound() {
+    const ctx = await getReadyAudioContext()
+    if (!ctx) {
+      return
+    }
+
+    const freq = AUDIO_FREQUENCIES.correct
+    const params = AUDIO_PARAMS.correct
+    const startTime = ctx.currentTime + 0.01
+
+    // 简单双音上扬
+    playSimpleNote(ctx, startTime, freq.note1, params.duration, params.gain, params.wave)
+    playSimpleNote(ctx, startTime + params.interval, freq.note2, params.duration, params.gain * 0.9, params.wave)
   }
 
-  /**
-   * 音效强度：用于和触觉反馈强度保持一致
-   * @param {'light'|'medium'|'strong'|undefined} intensity
-   * @returns {number}
-   */
-  function getIntensityMultiplier(intensity) {
-    if (intensity === 'light') return 0.84
-    if (intensity === 'strong') return 1.14
-    return 1
+  async function playWrongSound() {
+    const ctx = await getReadyAudioContext()
+    if (!ctx) {
+      return
+    }
+
+    const freq = AUDIO_FREQUENCIES.wrong
+    const params = AUDIO_PARAMS.wrong
+    const startTime = ctx.currentTime + 0.01
+
+    // 简单下滑音
+    playSlideNote(ctx, startTime, freq.start, freq.end, params.duration, params.gain, params.wave)
+  }
+
+  async function playClickSound(options = {}) {
+    const ctx = await getReadyAudioContext()
+    if (!ctx) {
+      return
+    }
+
+    const keyKind = options.keyKind || 'default'
+    const startTime = ctx.currentTime + 0.005
+
+    if (keyKind === 'digit') {
+      const digit = Number.isInteger(options.digit) ? options.digit : 0
+      const safeDigit = Math.max(0, Math.min(9, digit))
+      const digitFreq = AUDIO_FREQUENCIES.digits[safeDigit]
+      const params = AUDIO_PARAMS.digit
+      
+      playSimpleNote(ctx, startTime, digitFreq, params.duration, params.gain, params.wave)
+      return
+    }
+
+    if (keyKind === 'delete') {
+      const freq = AUDIO_FREQUENCIES.click.delete
+      const params = AUDIO_PARAMS.delete
+      
+      playSlideNote(ctx, startTime, freq.start, freq.end, params.duration, params.gain, params.wave)
+      return
+    }
+
+    if (keyKind === 'submit') {
+      const freq = AUDIO_FREQUENCIES.click.submit
+      const params = AUDIO_PARAMS.submit
+      
+      playSimpleNote(ctx, startTime, freq.note1, params.duration, params.gain, params.wave)
+      playSimpleNote(ctx, startTime + params.interval, freq.note2, params.duration, params.gain * 0.9, params.wave)
+      return
+    }
+
+    // 通用点击
+    const freq = AUDIO_FREQUENCIES.click.default
+    const params = AUDIO_PARAMS.click
+    
+    playSimpleNote(ctx, startTime, freq, params.duration, params.gain, params.wave)
+  }
+
+  async function playWinSound(options = {}) {
+    const ctx = await getReadyAudioContext()
+    if (!ctx) {
+      return
+    }
+
+    const stars = Math.max(0, Math.min(5, options.stars ?? 3))
+    const freq = AUDIO_FREQUENCIES.win
+    const params = AUDIO_PARAMS.win
+    const startTime = ctx.currentTime + 0.01
+
+    // 根据星星数量播放不同长度的音阶
+    const noteCount = Math.min(stars + 1, 5) // 1-5个音符
+    
+    for (let i = 0; i < noteCount; i++) {
+      const noteFreq = freq.scale[i] || freq.scale[0]
+      const noteStartTime = startTime + i * params.interval
+      const noteGain = params.gain * (0.9 + i * 0.05)
+      
+      playSimpleNote(ctx, noteStartTime, noteFreq, params.noteDuration, noteGain, params.wave)
+    }
   }
 
   return {
