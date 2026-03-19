@@ -141,7 +141,7 @@ function handleSelect() {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   color: white;
   font-size: var(--font-h3);
   font-weight: 800;

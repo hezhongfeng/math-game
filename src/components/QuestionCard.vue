@@ -142,7 +142,7 @@ const answerDisplay = computed(() => {
 .answer {
   min-width: 80px;
   padding: 12px 14px;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   background: #f7fbff;
   border: 2px solid #dce7f3;
   text-align: center;
@@ -176,7 +176,7 @@ const answerDisplay = computed(() => {
   .answer {
     min-width: 66px;
     padding: 10px 10px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
   }
 }
 

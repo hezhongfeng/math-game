@@ -274,7 +274,7 @@ function handleRetryMistakes() {
 .mistakes-section {
   margin-bottom: 18px;
   padding: 14px;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid var(--border-light);
 }
@@ -313,7 +313,7 @@ function handleRetryMistakes() {
 
 .mistake-card {
   padding: 12px 14px;
-  border-radius: 16px;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(239, 83, 80, 0.12);
 }
@@ -345,7 +345,7 @@ function handleRetryMistakes() {
   align-items: center;
   gap: 10px;
   padding: 14px;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid var(--border-light);
 }
@@ -356,7 +356,7 @@ function handleRetryMistakes() {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: var(--radius-xs);
 }
 
 .stat-icon.score {
@@ -403,7 +403,7 @@ function handleRetryMistakes() {
   flex: 1;
   height: 52px;
   border: none;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   font-size: var(--font-base);
   font-weight: 800;
 }
@@ -489,7 +489,7 @@ function handleRetryMistakes() {
   .result-card {
     width: 100%;
     padding: 18px;
-    border-radius: 24px;
+    border-radius: var(--radius-lg);
   }
 
   .topline {

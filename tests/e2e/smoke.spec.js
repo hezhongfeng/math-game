@@ -68,7 +68,7 @@ test.describe('E2E Smoke', () => {
 
       const errorFeedbackCard = page.locator('.feedback-card.error')
       await expect(errorFeedbackCard).toBeVisible({ timeout: 3_000 })
-      await page.locator('.feedback-wrap').click({ force: true })
+      await page.locator('.feedback-continue-btn').click()
     }
 
     await expect(page.getByTestId('result-modal')).toBeVisible()

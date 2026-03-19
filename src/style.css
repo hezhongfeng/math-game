@@ -33,6 +33,11 @@
     --error-red-dark: #c53e3c;
     --error-red-glow: rgba(239, 83, 80, 0.16);
 
+    --master-purple: #7c4dff;
+    --master-purple-light: #b388ff;
+    --master-purple-dark: #651fff;
+    --master-purple-soft: #f3e8ff;
+
     --bg-light: #f3f7fb;
     --bg-white: #ffffff;
     --bg-dark: #e4edf7;
@@ -90,7 +95,8 @@
     --white: #FFFFFF;
     --cream: #F5F7FA;
 
-    --radius-sm: 12px;
+    --radius-xs: 10px;
+    --radius-sm: 14px;
     --radius-md: 18px;
     --radius-lg: 24px;
     --radius-xl: 32px;
@@ -136,8 +142,7 @@
   body {
     font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     background:
-      radial-gradient(circle at top left, rgba(93, 151, 255, 0.18), transparent 32%),
-      radial-gradient(circle at top right, rgba(61, 214, 160, 0.12), transparent 26%),
+      radial-gradient(circle at top left, rgba(93, 151, 255, 0.12), transparent 40%),
       linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -208,22 +213,6 @@
   75% { transform: translateX(-4px); }
 }
 
-/* 发光动画 - 科技感 */
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 10px currentColor;
-  }
-  50% {
-    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
-  }
-}
-
-@keyframes successGlow {
-  0% { box-shadow: 0 0 0 rgba(0, 208, 132, 0); }
-  50% { box-shadow: 0 0 20px rgba(0, 208, 132, 0.6); }
-  100% { box-shadow: 0 0 0 rgba(0, 208, 132, 0); }
-}
-
 /* 应用类 */
 .animate-fade-in-up {
   animation: fadeInUp var(--duration-normal) var(--ease-out) forwards;
@@ -239,14 +228,6 @@
 
 .animate-error-shake {
   animation: error-shake var(--duration-slow) var(--ease-standard);
-}
-
-.animate-glow {
-  animation: glow var(--duration-slow) var(--ease-out);
-}
-
-.animate-success-glow {
-  animation: successGlow var(--duration-slow) var(--ease-standard);
 }
 
 /* Vue Transition 组件标准过渡 */
@@ -477,11 +458,6 @@
 
 /* 小屏/短屏只保留功能性反馈，减少装饰性持续动画 */
 @media (max-width: 959px), (max-height: 860px) {
-  .animate-glow,
-  .animate-success-glow {
-    animation: none !important;
-  }
-
   .card-hover:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
@@ -498,9 +474,7 @@
   .animate-fade-in-up,
   .animate-pop,
   .animate-scale-press,
-  .animate-error-shake,
-  .animate-glow,
-  .animate-success-glow {
+  .animate-error-shake {
     animation: none !important;
   }
 

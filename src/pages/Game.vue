@@ -513,7 +513,7 @@ onUnmounted(() => {
   width: 48px;
   height: 48px;
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.76);
   color: var(--text-secondary);
 }
@@ -593,7 +593,7 @@ onUnmounted(() => {
   justify-content: center;
   padding: 12px;
   pointer-events: none;
-  border-radius: 22px;
+  border-radius: var(--radius-lg);
 }
 
 .feedback-wrap.is-success {
@@ -649,7 +649,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   padding: 20px 18px 18px;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   background: #ffffff;
   border: 2px solid var(--border-default);
   box-shadow: var(--shadow-lg);
@@ -678,7 +678,7 @@ onUnmounted(() => {
 .feedback-icon {
   width: 36px;
   height: 36px;
-  border-radius: 12px;
+  border-radius: var(--radius-xs);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -728,7 +728,7 @@ onUnmounted(() => {
   width: 100%;
   min-height: 48px;
   border: none;
-  border-radius: 14px;
+  border-radius: var(--radius-sm);
   background: var(--error-red);
   color: white;
   font-size: var(--font-base);
@@ -756,7 +756,7 @@ onUnmounted(() => {
   gap: 14px;
   width: 180px;
   height: 160px;
-  border-radius: 28px;
+  border-radius: var(--radius-xl);
 }
 
 .spinner {
@@ -827,13 +827,13 @@ onUnmounted(() => {
     gap: 8px;
     margin-bottom: 10px;
     padding: 10px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
   }
 
   .nav-btn {
     width: 44px;
     height: 44px;
-    border-radius: 14px;
+    border-radius: var(--radius-sm);
   }
 
   .title {
@@ -867,12 +867,12 @@ onUnmounted(() => {
 
   .feedback-card {
     padding: 16px 14px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
   }
 
   .feedback-card.success {
     padding: 12px 14px;
-    border-radius: 16px;
+    border-radius: var(--radius-sm);
   }
 
   .streak-reward {
@@ -902,7 +902,7 @@ onUnmounted(() => {
   .nav-btn {
     width: 42px;
     height: 42px;
-    border-radius: 12px;
+    border-radius: var(--radius-xs);
   }
 
   .eyebrow,

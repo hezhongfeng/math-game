@@ -85,7 +85,7 @@ function handleSubmit() {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-light);
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.92);
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
@@ -151,7 +151,7 @@ function handleSubmit() {
 @media (max-width: 420px) {
   .number-pad {
     padding: 10px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
   }
 
   .pad-grid {
@@ -160,7 +160,7 @@ function handleSubmit() {
 
   .num-btn {
     font-size: 34px;
-    border-radius: 16px;
+    border-radius: var(--radius-sm);
   }
 
   .num-btn svg {
@@ -172,7 +172,7 @@ function handleSubmit() {
 @media (max-width: 959px) and (max-height: 860px) {
   .number-pad {
     padding: 8px;
-    border-radius: 18px;
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     backdrop-filter: blur(12px);
   }
@@ -183,7 +183,7 @@ function handleSubmit() {
 
   .num-btn {
     font-size: 32px;
-    border-radius: 14px;
+    border-radius: var(--radius-xs);
     box-shadow: none;
   }
 

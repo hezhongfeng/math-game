@@ -258,7 +258,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
+  border-radius: var(--radius-sm);
 }
 
 .stat-icon.primary {
@@ -303,7 +303,7 @@ onMounted(() => {
   gap: 12px;
   height: 64px;
   margin-bottom: 12px;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   background: linear-gradient(135deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
   color: white;
   box-shadow: var(--shadow-md), var(--glow-blue);
@@ -313,7 +313,7 @@ onMounted(() => {
 
 .btn-secondary {
   height: 52px;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.78);
   color: var(--text-secondary);
   font-size: var(--font-base);

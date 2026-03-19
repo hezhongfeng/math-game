@@ -149,7 +149,7 @@ const DIFFICULTY_LEVELS = [
     textColor: 'var(--warning-orange-dark)',
     stars: 5
   },
-  // 0-100 数值范围 - 错误红
+  // 0-100 数值范围 - 大师紫
   {
     id: 13,
     name: '高级1',
@@ -158,8 +158,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 32,
     description: '0-100 以内加法',
-    color: 'var(--error-red-light)',
-    textColor: 'var(--error-red-dark)',
+    color: 'var(--master-purple-light)',
+    textColor: 'var(--master-purple-dark)',
     stars: 5
   },
   {
@@ -170,8 +170,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 32,
     description: '0-100 以内减法',
-    color: 'var(--error-red)',
-    textColor: 'var(--error-red-dark)',
+    color: 'var(--master-purple)',
+    textColor: 'var(--master-purple-dark)',
     stars: 5
   },
   {
@@ -182,8 +182,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 32,
     description: '0-100 加减混合',
-    color: 'var(--error-red-dark)',
-    textColor: 'var(--error-red-dark)',
+    color: 'var(--master-purple-dark)',
+    textColor: 'var(--master-purple-dark)',
     stars: 5
   }
 ]
@@ -194,7 +194,7 @@ export const DIFFICULTY_GROUPS = [
   { name: '初级', levels: [4, 5, 6], color: 'blue' },
   { name: '中级', levels: [7, 8, 9], color: 'yellow' },
   { name: '进级', levels: [10, 11, 12], color: 'orange' },
-  { name: '高级', levels: [13, 14, 15], color: 'red' }
+  { name: '高级', levels: [13, 14, 15], color: 'purple' }
 ]
 
 // 总关卡数

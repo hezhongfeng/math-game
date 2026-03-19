@@ -309,9 +309,9 @@ function isDifficultyLocked(difficulty) {
   color: var(--warning-orange-dark);
 }
 
-.badge-red {
-  background: rgba(239, 83, 80, 0.12);
-  color: var(--error-red-dark);
+.badge-purple {
+  background: var(--master-purple-soft);
+  color: var(--master-purple-dark);
 }
 
 .card-list {
