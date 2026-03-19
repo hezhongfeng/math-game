@@ -211,13 +211,13 @@ function handleRetryMistakes() {
 }
 
 .result-chip {
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 
 .record-chip {
-  color: var(--energy-yellow-dark);
-  background: var(--energy-yellow-soft);
+  color: var(--candy-yellow-dark);
+  background: var(--candy-yellow-soft);
 }
 
 .result-title {
@@ -240,7 +240,7 @@ function handleRetryMistakes() {
 }
 
 .star-active {
-  color: var(--energy-yellow);
+  color: var(--candy-yellow);
   animation: starCelebrate var(--duration-fast) var(--ease-out) both;
 }
 
@@ -261,7 +261,7 @@ function handleRetryMistakes() {
 }
 
 .star-inactive {
-  color: #d7dfeb;
+  color: #FFE8E0;
 }
 
 .stats-grid {
@@ -315,7 +315,7 @@ function handleRetryMistakes() {
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(239, 83, 80, 0.12);
+  border: 1px solid rgba(255, 107, 107, 0.12);
 }
 
 .mistake-expression {
@@ -326,7 +326,7 @@ function handleRetryMistakes() {
 }
 
 .mistake-expression strong {
-  color: var(--win-green-dark);
+  color: var(--candy-mint-dark);
 }
 
 .mistake-answer {
@@ -337,7 +337,7 @@ function handleRetryMistakes() {
 }
 
 .mistake-answer span {
-  color: var(--error-red-dark);
+  color: var(--candy-red-dark);
 }
 
 .stat-card {
@@ -360,23 +360,23 @@ function handleRetryMistakes() {
 }
 
 .stat-icon.score {
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 
 .stat-icon.correct {
-  color: var(--win-green-dark);
-  background: var(--win-green-soft);
+  color: var(--candy-mint-dark);
+  background: var(--candy-mint-soft);
 }
 
 .stat-icon.accuracy {
-  color: var(--energy-yellow-dark);
-  background: var(--energy-yellow-soft);
+  color: var(--candy-yellow-dark);
+  background: var(--candy-yellow-soft);
 }
 
 .stat-icon.time {
-  color: var(--warning-orange-dark);
-  background: rgba(255, 122, 69, 0.12);
+  color: var(--candy-peach-dark);
+  background: var(--candy-peach-soft);
 }
 
 .stat-label {
@@ -410,7 +410,7 @@ function handleRetryMistakes() {
 
 .btn-primary {
   color: white;
-  background: linear-gradient(135deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
 }
 
 .btn-secondary {
@@ -426,7 +426,7 @@ function handleRetryMistakes() {
 @media (hover: hover) {
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md), var(--glow-blue);
+    box-shadow: var(--shadow-md), var(--glow-pink);
   }
 
   .btn-secondary:hover {

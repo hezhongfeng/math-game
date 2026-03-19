@@ -156,18 +156,18 @@ const formattedTime = computed(() => formatTime(props.duration))
 .streak-chip {
   padding: 4px 8px;
   border-radius: var(--radius-full);
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
-  border: 1px solid rgba(49, 120, 246, 0.2);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
+  border: 1px solid rgba(255, 107, 107, 0.2);
   font-size: 12px;
   font-weight: 800;
   animation: streakChipIn var(--duration-fast) var(--ease-out);
 }
 
 .streak-chip.is-highlight {
-  color: var(--energy-yellow-dark);
-  background: var(--energy-yellow-soft);
-  border-color: rgba(244, 180, 0, 0.25);
+  color: var(--candy-yellow-dark);
+  background: var(--candy-yellow-soft);
+  border-color: rgba(255, 230, 109, 0.25);
 }
 
 .progress-track {
@@ -175,24 +175,24 @@ const formattedTime = computed(() => formatTime(props.duration))
   margin-bottom: 12px;
   overflow: hidden;
   border-radius: var(--radius-full);
-  background: #dde7f2;
+  background: #FFE8E0;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--hero-blue), var(--win-green));
+  background: linear-gradient(90deg, var(--candy-pink), var(--candy-mint));
   transition: width var(--duration-slow) var(--ease-out);
 }
 
 .progress-fill.is-complete {
-  box-shadow: var(--glow-green);
+  box-shadow: var(--glow-mint);
   animation: progressGlow 1.5s ease-in-out infinite;
 }
 
 @keyframes progressGlow {
-  0%, 100% { box-shadow: var(--glow-green); }
-  50% { box-shadow: 0 0 12px rgba(18, 185, 129, 0.5); }
+  0%, 100% { box-shadow: var(--glow-mint); }
+  50% { box-shadow: 0 0 12px rgba(78, 205, 196, 0.5); }
 }
 
 @keyframes streakChipIn {
@@ -230,23 +230,23 @@ const formattedTime = computed(() => formatTime(props.duration))
 }
 
 .score-icon {
-  color: var(--energy-yellow-dark);
-  background: var(--energy-yellow-soft);
+  color: var(--candy-yellow-dark);
+  background: var(--candy-yellow-soft);
 }
 
 .correct-icon {
-  color: var(--win-green-dark);
-  background: var(--win-green-soft);
+  color: var(--candy-mint-dark);
+  background: var(--candy-mint-soft);
 }
 
 .time-icon {
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 
 .accuracy-icon {
-  color: var(--warning-orange-dark);
-  background: rgba(255, 122, 69, 0.12);
+  color: var(--candy-peach-dark);
+  background: var(--candy-peach-soft);
 }
 
 .stat-value {

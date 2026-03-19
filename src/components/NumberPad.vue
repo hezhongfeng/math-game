@@ -102,35 +102,35 @@ function handleSubmit() {
 
 .num-btn:active:not(:disabled) {
   transform: scale(0.96);
-  background: #eef4fb;
+  background: #FFF0F0;
 }
 
 @media (hover: hover) {
   .num-btn:hover:not(:disabled) {
     border-color: var(--border-strong);
-    background: #f8fbff;
+    background: #FFF5F5;
   }
 
   .btn-delete:hover:not(:disabled) {
-    background: #fff1e8;
+    background: #FFF4E6;
   }
 
   .btn-submit:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-lg), var(--glow-green);
+    box-shadow: var(--shadow-lg), var(--glow-mint);
   }
 }
 
 .btn-delete {
-  color: var(--warning-orange-dark);
-  background: #fff6f1;
+  color: var(--candy-peach-dark);
+  background: #FFF8F0;
 }
 
 .btn-submit {
   color: white;
-  background: linear-gradient(135deg, var(--win-green) 0%, var(--win-green-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-mint) 0%, var(--candy-mint-dark) 100%);
   border-color: transparent;
-  box-shadow: var(--shadow-md), var(--glow-green);
+  box-shadow: var(--shadow-md), var(--glow-mint);
 }
 
 @media (min-width: 768px) {

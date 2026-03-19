@@ -4,53 +4,52 @@
 
 @layer base {
   :root {
-    /* Mission deck palette */
-    --hero-blue: #3178f6;
-    --hero-blue-light: #5d97ff;
-    --hero-blue-dark: #1f5fcb;
-    --hero-blue-soft: #eaf2ff;
-    --hero-blue-glow: rgba(49, 120, 246, 0.18);
+    --candy-pink: #FF6B6B;
+    --candy-pink-light: #FF8E8E;
+    --candy-pink-dark: #E55A5A;
+    --candy-pink-soft: #FFF0F0;
+    --candy-pink-glow: rgba(255, 107, 107, 0.2);
 
-    --win-green: #12b981;
-    --win-green-light: #3dd6a0;
-    --win-green-dark: #0a8c61;
-    --win-green-soft: #ebfbf5;
-    --win-green-glow: rgba(18, 185, 129, 0.18);
+    --candy-yellow: #FFE66D;
+    --candy-yellow-light: #FFF09A;
+    --candy-yellow-dark: #E6CC5C;
+    --candy-yellow-soft: #FFFCE6;
+    --candy-yellow-glow: rgba(255, 230, 109, 0.18);
 
-    --energy-yellow: #f4b400;
-    --energy-yellow-light: #ffd155;
-    --energy-yellow-dark: #c98d00;
-    --energy-yellow-soft: #fff7dd;
-    --energy-yellow-glow: rgba(244, 180, 0, 0.16);
+    --candy-mint: #4ECDC4;
+    --candy-mint-light: #7EDDD6;
+    --candy-mint-dark: #3DB8B0;
+    --candy-mint-soft: #E6FAF8;
+    --candy-mint-glow: rgba(78, 205, 196, 0.2);
 
-    --warning-orange: #ff7a45;
-    --warning-orange-light: #ff9b73;
-    --warning-orange-dark: #d95d28;
-    --warning-orange-glow: rgba(255, 122, 69, 0.18);
+    --candy-lavender: #A78BFA;
+    --candy-lavender-light: #C4B5FD;
+    --candy-lavender-dark: #8B5CF6;
+    --candy-lavender-soft: #F3F0FF;
 
-    --error-red: #ef5350;
-    --error-red-light: #f77674;
-    --error-red-dark: #c53e3c;
-    --error-red-glow: rgba(239, 83, 80, 0.16);
+    --candy-peach: #FF9F43;
+    --candy-peach-light: #FFB976;
+    --candy-peach-dark: #E68A3A;
+    --candy-peach-soft: #FFF4E6;
 
-    --master-purple: #7c4dff;
-    --master-purple-light: #b388ff;
-    --master-purple-dark: #651fff;
-    --master-purple-soft: #f3e8ff;
+    --candy-red: #FF6B6B;
+    --candy-red-light: #FF8E8E;
+    --candy-red-dark: #E55A5A;
+    --candy-red-soft: #FFF0F0;
 
-    --bg-light: #f3f7fb;
-    --bg-white: #ffffff;
-    --bg-dark: #e4edf7;
-    --bg-panel: rgba(255, 255, 255, 0.86);
-    --bg-panel-strong: rgba(255, 255, 255, 0.94);
+    --bg-light: #FFF9F5;
+    --bg-white: #FFFFFF;
+    --bg-dark: #FFF0E8;
+    --bg-panel: rgba(255, 255, 255, 0.88);
+    --bg-panel-strong: rgba(255, 255, 255, 0.95);
 
-    --text-primary: #162033;
-    --text-secondary: #5f6f88;
-    --text-muted: #8a98ad;
+    --text-primary: #2D2D2D;
+    --text-secondary: #7A7A7A;
+    --text-muted: #AAAAAA;
 
-    --border-light: #dde6f0;
-    --border-default: #c8d4e3;
-    --border-strong: #b6c5d8;
+    --border-light: #FFE8E0;
+    --border-default: #FFD6C8;
+    --border-strong: #FFC4B0;
 
     --white: #FFFFFF;
 
@@ -61,15 +60,15 @@
     --radius-xl: 32px;
     --radius-full: 9999px;
 
-    --shadow-sm: 0 10px 24px rgba(22, 32, 51, 0.06);
-    --shadow-md: 0 20px 44px rgba(22, 32, 51, 0.08);
-    --shadow-lg: 0 32px 72px rgba(22, 32, 51, 0.12);
-    --shadow-panel: 0 24px 64px rgba(38, 63, 104, 0.08);
+    --shadow-sm: 0 10px 24px rgba(255, 107, 107, 0.06);
+    --shadow-md: 0 20px 44px rgba(255, 107, 107, 0.08);
+    --shadow-lg: 0 32px 72px rgba(255, 107, 107, 0.12);
+    --shadow-panel: 0 24px 64px rgba(255, 159, 67, 0.08);
 
-    --glow-blue: 0 0 0 6px rgba(49, 120, 246, 0.08);
-    --glow-green: 0 0 0 6px rgba(18, 185, 129, 0.08);
-    --glow-yellow: 0 0 0 6px rgba(244, 180, 0, 0.08);
-    --glow-orange: 0 0 0 6px rgba(255, 122, 69, 0.08);
+    --glow-pink: 0 0 0 6px rgba(255, 107, 107, 0.1);
+    --glow-mint: 0 0 0 6px rgba(78, 205, 196, 0.1);
+    --glow-yellow: 0 0 0 6px rgba(255, 230, 109, 0.1);
+    --glow-peach: 0 0 0 6px rgba(255, 159, 67, 0.1);
 
     /* 字体大小系统 - 移动优先 */
     --font-hero: 48px;
@@ -101,8 +100,9 @@
   body {
     font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     background:
-      radial-gradient(circle at top left, rgba(93, 151, 255, 0.12), transparent 40%),
-      linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+      radial-gradient(circle at top left, rgba(255, 107, 107, 0.08), transparent 40%),
+      radial-gradient(circle at bottom right, rgba(78, 205, 196, 0.06), transparent 35%),
+      linear-gradient(180deg, #FFF9F5 0%, #FFF0E8 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
@@ -124,7 +124,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid rgba(49, 120, 246, 0.28);
+    outline: 3px solid rgba(255, 107, 107, 0.3);
     outline-offset: 2px;
   }
 }
@@ -254,7 +254,7 @@
 
   @keyframes scorePop {
     0% { transform: scale(1); }
-    50% { transform: scale(1.3); color: var(--win-green); }
+    50% { transform: scale(1.3); color: var(--candy-mint); }
     100% { transform: scale(1); }
   }
 
@@ -275,13 +275,12 @@
      简约按钮系统 - Minimalist Buttons
      ============================================ */
 
-  /* 主按钮 - 电光蓝 */
   .btn-primary {
     @apply relative font-bold cursor-pointer touch-manipulation;
     @apply flex items-center justify-center;
     height: 56px;
     padding: 0 32px;
-    background: var(--hero-blue);
+    background: var(--candy-pink);
     border-radius: var(--radius-md);
     color: white;
     font-size: 18px;
@@ -292,8 +291,8 @@
   }
 
   .btn-primary:hover {
-    background: var(--hero-blue-dark);
-    box-shadow: var(--glow-blue), var(--shadow-lg);
+    background: var(--candy-pink-dark);
+    box-shadow: var(--glow-pink), var(--shadow-lg);
     transform: translateY(-2px);
   }
 
@@ -308,18 +307,18 @@
     padding: 0 32px;
     background: var(--white);
     border-radius: var(--radius-md);
-    color: var(--hero-blue);
+    color: var(--candy-pink);
     font-size: 18px;
     font-weight: 600;
-    border: 2px solid var(--hero-blue);
+    border: 2px solid var(--candy-pink);
     transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
     cursor: pointer;
   }
 
   .btn-secondary:hover {
-    background: var(--hero-blue);
+    background: var(--candy-pink);
     color: white;
-    box-shadow: var(--glow-blue);
+    box-shadow: var(--glow-pink);
     transform: translateY(-2px);
   }
 
@@ -327,13 +326,12 @@
     transform: scale(0.98);
   }
 
-  /* 成功按钮 - 能量绿 */
   .btn-success {
     @apply relative font-bold cursor-pointer touch-manipulation;
     @apply flex items-center justify-center;
     height: 56px;
     padding: 0 32px;
-    background: var(--win-green);
+    background: var(--candy-mint);
     border-radius: var(--radius-md);
     color: white;
     font-size: 18px;
@@ -344,8 +342,8 @@
   }
 
   .btn-success:hover {
-    background: var(--win-green-dark);
-    box-shadow: var(--glow-green), var(--shadow-lg);
+    background: var(--candy-mint-dark);
+    box-shadow: var(--glow-mint), var(--shadow-lg);
     transform: translateY(-2px);
   }
 
@@ -373,17 +371,17 @@
   }
 
   .btn-circular:hover {
-    border-color: var(--hero-blue);
-    color: var(--hero-blue);
-    box-shadow: var(--glow-blue);
+    border-color: var(--candy-pink);
+    color: var(--candy-pink);
+    box-shadow: var(--glow-pink);
     transform: translateY(-2px);
   }
 
   .btn-circular:active {
     transform: scale(0.95);
-    background: var(--hero-blue);
+    background: var(--candy-pink);
     color: white;
-    border-color: var(--hero-blue);
+    border-color: var(--candy-pink);
   }
 
   /* 卡片系统 */
@@ -408,8 +406,8 @@
 
   /* 完成状态卡片 */
   .card-completed {
-    background: rgba(0, 208, 132, 0.1);
-    border-left: 4px solid var(--win-green);
+    background: rgba(78, 205, 196, 0.1);
+    border-left: 4px solid var(--candy-mint);
   }
 
   /* 锁定状态卡片 */
@@ -541,7 +539,7 @@
 /* 焦点指示器 */
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid var(--hero-blue);
+  outline: 3px solid var(--candy-pink);
   outline-offset: 4px;
   border-radius: var(--radius-sm);
 }

@@ -180,8 +180,8 @@ function isDifficultyLocked(difficulty) {
 
 .header-badge {
   padding: 10px 12px;
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 
 .headline-row {
@@ -190,7 +190,7 @@ function isDifficultyLocked(difficulty) {
 
 .eyebrow {
   margin-bottom: 8px;
-  color: var(--hero-blue);
+  color: var(--candy-pink);
   font-size: var(--font-sm);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -230,13 +230,13 @@ function isDifficultyLocked(difficulty) {
   height: 10px;
   overflow: hidden;
   border-radius: var(--radius-full);
-  background: #dfe8f4;
+  background: #FFE8E0;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--hero-blue), var(--win-green));
+  background: linear-gradient(90deg, var(--candy-pink), var(--candy-mint));
 }
 
 .main-content {
@@ -289,29 +289,29 @@ function isDifficultyLocked(difficulty) {
   color: var(--text-secondary);
 }
 
-.badge-green {
-  background: var(--win-green-soft);
-  color: var(--win-green-dark);
+.badge-mint {
+  background: var(--candy-mint-soft);
+  color: var(--candy-mint-dark);
 }
 
-.badge-blue {
-  background: var(--hero-blue-soft);
-  color: var(--hero-blue-dark);
+.badge-pink {
+  background: var(--candy-pink-soft);
+  color: var(--candy-pink-dark);
 }
 
 .badge-yellow {
-  background: var(--energy-yellow-soft);
-  color: var(--energy-yellow-dark);
+  background: var(--candy-yellow-soft);
+  color: var(--candy-yellow-dark);
 }
 
-.badge-orange {
-  background: rgba(255, 122, 69, 0.12);
-  color: var(--warning-orange-dark);
+.badge-peach {
+  background: var(--candy-peach-soft);
+  color: var(--candy-peach-dark);
 }
 
-.badge-purple {
-  background: var(--master-purple-soft);
-  color: var(--master-purple-dark);
+.badge-lavender {
+  background: var(--candy-lavender-soft);
+  color: var(--candy-lavender-dark);
 }
 
 .card-list {

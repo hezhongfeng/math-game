@@ -530,8 +530,8 @@ onUnmounted(() => {
 }
 
 .nav-btn-accent {
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 
 .title-group {
@@ -541,7 +541,7 @@ onUnmounted(() => {
 
 .eyebrow {
   margin-bottom: 4px;
-  color: var(--hero-blue);
+  color: var(--candy-pink);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -623,9 +623,9 @@ onUnmounted(() => {
   gap: 6px;
   padding: 7px 10px;
   border-radius: var(--radius-full);
-  background: var(--energy-yellow-soft);
-  color: var(--energy-yellow-dark);
-  border: 1px solid rgba(244, 180, 0, 0.24);
+  background: var(--candy-yellow-soft);
+  color: var(--candy-yellow-dark);
+  border: 1px solid rgba(255, 230, 109, 0.24);
   font-size: 12px;
   font-weight: 800;
   box-shadow: var(--shadow-sm);
@@ -661,17 +661,17 @@ onUnmounted(() => {
   justify-content: center;
   gap: 10px;
   padding: 14px 16px;
-  background: var(--win-green-soft);
-  border-color: rgba(18, 185, 129, 0.48);
-  box-shadow: var(--shadow-md), var(--glow-green);
+  background: var(--candy-mint-soft);
+  border-color: rgba(78, 205, 196, 0.48);
+  box-shadow: var(--shadow-md), var(--glow-mint);
   pointer-events: none;
 }
 
 .feedback-card.error {
   width: min(100%, 360px);
-  background: #fff4f2;
-  border-color: rgba(239, 83, 80, 0.42);
-  box-shadow: var(--shadow-xl);
+  background: #FFF0F0;
+  border-color: rgba(255, 107, 107, 0.42);
+  box-shadow: var(--shadow-lg);
   pointer-events: auto;
 }
 
@@ -685,13 +685,13 @@ onUnmounted(() => {
 }
 
 .feedback-icon.success {
-  color: var(--win-green-dark);
-  background: rgba(18, 185, 129, 0.18);
+  color: var(--candy-mint-dark);
+  background: rgba(78, 205, 196, 0.18);
 }
 
 .feedback-icon.error {
-  color: var(--error-red-dark);
-  background: rgba(239, 83, 80, 0.12);
+  color: var(--candy-red-dark);
+  background: rgba(255, 107, 107, 0.12);
 }
 
 .feedback-text {
@@ -709,7 +709,7 @@ onUnmounted(() => {
 }
 
 .feedback-main {
-  color: #101828;
+  color: #2D2D2D;
   font-size: 32px;
   font-weight: 800;
   line-height: 1.1;
@@ -717,11 +717,11 @@ onUnmounted(() => {
 
 .feedback-card.success .feedback-main {
   font-size: 20px;
-  color: var(--win-green-dark);
+  color: var(--candy-mint-dark);
 }
 
 .feedback-card.error .feedback-main {
-  color: var(--error-red-dark);
+  color: var(--candy-red-dark);
 }
 
 .feedback-continue-btn {
@@ -729,7 +729,7 @@ onUnmounted(() => {
   min-height: 48px;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--error-red);
+  background: var(--candy-red);
   color: white;
   font-size: var(--font-base);
   font-weight: 800;
@@ -747,7 +747,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(243, 247, 251, 0.78);
+  background: rgba(255, 249, 245, 0.78);
   backdrop-filter: blur(8px);
 }
 
@@ -762,8 +762,8 @@ onUnmounted(() => {
 .spinner {
   width: 42px;
   height: 42px;
-  border: 4px solid rgba(49, 120, 246, 0.16);
-  border-top-color: var(--hero-blue);
+  border: 4px solid rgba(255, 107, 107, 0.16);
+  border-top-color: var(--candy-pink);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

@@ -121,22 +121,22 @@ function getIcon(type) {
 }
 
 .icon-success {
-  color: var(--win-green-dark);
-  background: var(--win-green-soft);
+  color: var(--candy-mint-dark);
+  background: var(--candy-mint-soft);
 }
 
 .icon-error {
-  color: var(--error-red-dark);
-  background: rgba(239, 83, 80, 0.12);
+  color: var(--candy-red-dark);
+  background: rgba(255, 107, 107, 0.12);
 }
 
 .icon-warning {
-  color: var(--warning-orange-dark);
-  background: rgba(255, 122, 69, 0.12);
+  color: var(--candy-peach-dark);
+  background: var(--candy-peach-soft);
 }
 
 .icon-info {
-  color: var(--hero-blue-dark);
-  background: var(--hero-blue-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 </style>

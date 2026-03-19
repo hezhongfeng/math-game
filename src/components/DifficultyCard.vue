@@ -29,7 +29,7 @@ const stars = computed(() => {
   return getStarCount(props.bestScore.accuracy)
 })
 
-const levelColor = computed(() => props.difficulty.color || 'var(--hero-blue)')
+const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
 
 const statusText = computed(() => {
   if (props.isLocked) return '完成上一关后解锁'
@@ -166,8 +166,8 @@ function handleSelect() {
 .new-tag {
   padding: 4px 10px;
   border-radius: var(--radius-full);
-  background: var(--hero-blue-soft);
-  color: var(--hero-blue-dark);
+  background: var(--candy-pink-soft);
+  color: var(--candy-pink-dark);
   font-size: 12px;
   font-weight: 800;
 }
@@ -197,11 +197,11 @@ function handleSelect() {
 }
 
 .star {
-  color: #d7dfeb;
+  color: #FFE8E0;
 }
 
 .star.active {
-  color: var(--energy-yellow);
+  color: var(--candy-yellow);
 }
 
 .state-icon {
@@ -210,7 +210,7 @@ function handleSelect() {
 }
 
 .state-icon.completed {
-  color: var(--win-green);
+  color: var(--candy-mint);
 }
 
 .state-icon.locked,

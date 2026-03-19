@@ -1,7 +1,4 @@
-// 难度配置：定义15个循序渐进的难度等级
-
 const DIFFICULTY_LEVELS = [
-  // 0-3 数值范围 - 成功绿
   {
     id: 1,
     name: '入门1',
@@ -10,8 +7,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 20,
     description: '0-3 以内加法',
-    color: 'var(--win-green-light)',
-    textColor: 'var(--win-green-dark)',
+    color: 'var(--candy-mint-light)',
+    textColor: 'var(--candy-mint-dark)',
     stars: 1
   },
   {
@@ -22,8 +19,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 20,
     description: '0-3 以内减法',
-    color: 'var(--win-green)',
-    textColor: 'var(--win-green-dark)',
+    color: 'var(--candy-mint)',
+    textColor: 'var(--candy-mint-dark)',
     stars: 1
   },
   {
@@ -34,11 +31,10 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 20,
     description: '0-3 加减混合',
-    color: 'var(--win-green-dark)',
-    textColor: 'var(--win-green-dark)',
+    color: 'var(--candy-mint-dark)',
+    textColor: 'var(--candy-mint-dark)',
     stars: 2
   },
-  // 0-5 数值范围 - 主色蓝
   {
     id: 4,
     name: '初级1',
@@ -47,8 +43,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 20,
     description: '0-5 以内加法',
-    color: 'var(--hero-blue-light)',
-    textColor: 'var(--hero-blue-dark)',
+    color: 'var(--candy-pink-light)',
+    textColor: 'var(--candy-pink-dark)',
     stars: 2
   },
   {
@@ -59,8 +55,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 20,
     description: '0-5 以内减法',
-    color: 'var(--hero-blue)',
-    textColor: 'var(--hero-blue-dark)',
+    color: 'var(--candy-pink)',
+    textColor: 'var(--candy-pink-dark)',
     stars: 2
   },
   {
@@ -71,11 +67,10 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 20,
     description: '0-5 加减混合',
-    color: 'var(--hero-blue-dark)',
-    textColor: 'var(--hero-blue-dark)',
+    color: 'var(--candy-pink-dark)',
+    textColor: 'var(--candy-pink-dark)',
     stars: 3
   },
-  // 0-10 数值范围 - 强调黄
   {
     id: 7,
     name: '中级1',
@@ -84,8 +79,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 24,
     description: '0-10 以内加法',
-    color: 'var(--energy-yellow-light)',
-    textColor: 'var(--energy-yellow-dark)',
+    color: 'var(--candy-yellow-light)',
+    textColor: 'var(--candy-yellow-dark)',
     stars: 3
   },
   {
@@ -96,8 +91,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 24,
     description: '0-10 以内减法',
-    color: 'var(--energy-yellow)',
-    textColor: 'var(--energy-yellow-dark)',
+    color: 'var(--candy-yellow)',
+    textColor: 'var(--candy-yellow-dark)',
     stars: 3
   },
   {
@@ -108,11 +103,10 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 24,
     description: '0-10 加减混合',
-    color: 'var(--energy-yellow-dark)',
-    textColor: 'var(--energy-yellow-dark)',
+    color: 'var(--candy-yellow-dark)',
+    textColor: 'var(--candy-yellow-dark)',
     stars: 4
   },
-  // 0-20 数值范围 - 警告橙
   {
     id: 10,
     name: '进级1',
@@ -121,8 +115,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 28,
     description: '0-20 以内加法',
-    color: 'var(--warning-orange-light)',
-    textColor: 'var(--warning-orange-dark)',
+    color: 'var(--candy-peach-light)',
+    textColor: 'var(--candy-peach-dark)',
     stars: 4
   },
   {
@@ -133,8 +127,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 28,
     description: '0-20 以内减法',
-    color: 'var(--warning-orange)',
-    textColor: 'var(--warning-orange-dark)',
+    color: 'var(--candy-peach)',
+    textColor: 'var(--candy-peach-dark)',
     stars: 4
   },
   {
@@ -145,11 +139,10 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 28,
     description: '0-20 加减混合',
-    color: 'var(--warning-orange-dark)',
-    textColor: 'var(--warning-orange-dark)',
+    color: 'var(--candy-peach-dark)',
+    textColor: 'var(--candy-peach-dark)',
     stars: 5
   },
-  // 0-100 数值范围 - 大师紫
   {
     id: 13,
     name: '高级1',
@@ -158,8 +151,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     questionCount: 32,
     description: '0-100 以内加法',
-    color: 'var(--master-purple-light)',
-    textColor: 'var(--master-purple-dark)',
+    color: 'var(--candy-lavender-light)',
+    textColor: 'var(--candy-lavender-dark)',
     stars: 5
   },
   {
@@ -170,8 +163,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     questionCount: 32,
     description: '0-100 以内减法',
-    color: 'var(--master-purple)',
-    textColor: 'var(--master-purple-dark)',
+    color: 'var(--candy-lavender)',
+    textColor: 'var(--candy-lavender-dark)',
     stars: 5
   },
   {
@@ -182,25 +175,22 @@ const DIFFICULTY_LEVELS = [
     operation: 'mixed',
     questionCount: 32,
     description: '0-100 加减混合',
-    color: 'var(--master-purple-dark)',
-    textColor: 'var(--master-purple-dark)',
+    color: 'var(--candy-lavender-dark)',
+    textColor: 'var(--candy-lavender-dark)',
     stars: 5
   }
 ]
 
-// 按等级分组
 export const DIFFICULTY_GROUPS = [
-  { name: '入门', levels: [1, 2, 3], color: 'green' },
-  { name: '初级', levels: [4, 5, 6], color: 'blue' },
+  { name: '入门', levels: [1, 2, 3], color: 'mint' },
+  { name: '初级', levels: [4, 5, 6], color: 'pink' },
   { name: '中级', levels: [7, 8, 9], color: 'yellow' },
-  { name: '进级', levels: [10, 11, 12], color: 'orange' },
-  { name: '高级', levels: [13, 14, 15], color: 'purple' }
+  { name: '进级', levels: [10, 11, 12], color: 'peach' },
+  { name: '高级', levels: [13, 14, 15], color: 'lavender' }
 ]
 
-// 总关卡数
 export const TOTAL_LEVELS = DIFFICULTY_LEVELS.length
 
-// 根据 ID 获取难度配置
 export function getDifficultyById(id) {
   return DIFFICULTY_LEVELS.find(d => d.id === parseInt(id))
 }

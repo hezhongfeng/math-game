@@ -132,7 +132,7 @@ const answerDisplay = computed(() => {
 }
 
 .operator {
-  color: var(--hero-blue);
+  color: var(--candy-pink);
 }
 
 .equals {
@@ -143,8 +143,8 @@ const answerDisplay = computed(() => {
   min-width: 80px;
   padding: 12px 14px;
   border-radius: var(--radius-lg);
-  background: #f7fbff;
-  border: 2px solid #dce7f3;
+  background: #FFF9F5;
+  border: 2px solid #FFE8E0;
   text-align: center;
   transition: border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
 }
@@ -154,14 +154,14 @@ const answerDisplay = computed(() => {
 }
 
 .answer.is-correct {
-  color: var(--win-green-dark);
-  border-color: rgba(18, 185, 129, 0.4);
-  box-shadow: var(--glow-green);
+  color: var(--candy-mint-dark);
+  border-color: rgba(78, 205, 196, 0.4);
+  box-shadow: var(--glow-mint);
 }
 
 .answer.is-wrong {
-  color: var(--error-red-dark);
-  border-color: rgba(239, 83, 80, 0.4);
+  color: var(--candy-red-dark);
+  border-color: rgba(255, 107, 107, 0.4);
 }
 
 @media (max-width: 420px) {

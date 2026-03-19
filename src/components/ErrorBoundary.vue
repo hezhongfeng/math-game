@@ -115,8 +115,8 @@ function retry() {
   gap: 8px;
   padding: 8px 12px;
   border-radius: var(--radius-full);
-  background: rgba(239, 83, 80, 0.12);
-  color: var(--error-red-dark);
+  background: rgba(255, 107, 107, 0.12);
+  color: var(--candy-red-dark);
   font-size: var(--font-sm);
   font-weight: 800;
 }
@@ -127,8 +127,8 @@ function retry() {
   justify-content: center;
   margin-bottom: 18px;
   border-radius: 24px;
-  background: rgba(239, 83, 80, 0.1);
-  color: var(--error-red-dark);
+  background: rgba(255, 107, 107, 0.1);
+  color: var(--candy-red-dark);
 }
 
 .error-title {
@@ -159,7 +159,7 @@ function retry() {
 
 .error-detail-text {
   margin-bottom: 8px;
-  color: var(--error-red-dark);
+  color: var(--candy-red-dark);
   font-size: 13px;
 }
 
@@ -187,7 +187,7 @@ function retry() {
 
 .btn-retry {
   color: white;
-  background: linear-gradient(135deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
 }
 
 .btn-home {
@@ -204,7 +204,7 @@ function retry() {
 @media (hover: hover) {
   .btn-retry:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md), var(--glow-blue);
+    box-shadow: var(--shadow-md), var(--glow-pink);
   }
 
   .btn-home:hover {

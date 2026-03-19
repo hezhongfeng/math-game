@@ -88,9 +88,9 @@ function handleDismiss() {
   padding: 14px 14px 12px;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(49, 120, 246, 0.36);
-  border-top: 4px solid var(--hero-blue);
-  box-shadow: var(--shadow-md), var(--glow-blue);
+  border: 1px solid rgba(255, 107, 107, 0.36);
+  border-top: 4px solid var(--candy-pink);
+  box-shadow: var(--shadow-md), var(--glow-pink);
   animation: notice-pop var(--duration-normal) var(--ease-out);
 }
 
@@ -100,8 +100,8 @@ function handleDismiss() {
   gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: var(--hero-blue-soft);
-  color: var(--hero-blue-dark);
+  background: var(--candy-pink-soft);
+  color: var(--candy-pink-dark);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -128,8 +128,8 @@ function handleDismiss() {
   height: 40px;
   justify-content: center;
   border-radius: 14px;
-  background: var(--hero-blue-soft);
-  color: var(--hero-blue-dark);
+  background: var(--candy-pink-soft);
+  color: var(--candy-pink-dark);
   flex-shrink: 0;
   animation: spin 1.6s linear infinite;
 }
@@ -171,7 +171,7 @@ function handleDismiss() {
   min-width: 120px;
   padding: 0 18px;
   border-radius: 16px;
-  background: var(--hero-blue);
+  background: var(--candy-pink);
   color: white;
   font-size: var(--font-base);
   font-weight: 800;
@@ -236,8 +236,8 @@ function handleDismiss() {
 @media (hover: hover) {
   .btn-update:hover {
     transform: translateY(-1px);
-    background: var(--hero-blue-dark);
-    box-shadow: var(--shadow-sm), var(--glow-blue);
+    background: var(--candy-pink-dark);
+    box-shadow: var(--shadow-sm), var(--glow-pink);
   }
 
   .btn-dismiss:hover {

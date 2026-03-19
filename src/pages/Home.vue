@@ -167,8 +167,8 @@ onMounted(() => {
   gap: 8px;
   padding: 8px 12px;
   border-radius: var(--radius-full);
-  background: var(--hero-blue-soft);
-  color: var(--hero-blue-dark);
+  background: var(--candy-pink-soft);
+  color: var(--candy-pink-dark);
   font-size: var(--font-sm);
   font-weight: 700;
 }
@@ -185,7 +185,7 @@ onMounted(() => {
 
 .eyebrow {
   margin-bottom: 10px;
-  color: var(--hero-blue);
+  color: var(--candy-pink);
   font-size: var(--font-sm);
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -228,14 +228,14 @@ onMounted(() => {
 .progress-track {
   height: 10px;
   border-radius: var(--radius-full);
-  background: #dfe8f4;
+  background: #FFE8E0;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--hero-blue), var(--win-green));
+  background: linear-gradient(90deg, var(--candy-pink), var(--candy-mint));
 }
 
 .stats-grid {
@@ -262,13 +262,13 @@ onMounted(() => {
 }
 
 .stat-icon.primary {
-  background: var(--hero-blue-soft);
-  color: var(--hero-blue-dark);
+  background: var(--candy-pink-soft);
+  color: var(--candy-pink-dark);
 }
 
 .stat-icon.success {
-  background: var(--win-green-soft);
-  color: var(--win-green-dark);
+  background: var(--candy-mint-soft);
+  color: var(--candy-mint-dark);
 }
 
 .stat-value {
@@ -304,9 +304,9 @@ onMounted(() => {
   height: 64px;
   margin-bottom: 12px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--hero-blue) 0%, var(--hero-blue-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
   color: white;
-  box-shadow: var(--shadow-md), var(--glow-blue);
+  box-shadow: var(--shadow-md), var(--glow-pink);
   font-size: var(--font-lg);
   font-weight: 800;
 }
@@ -332,7 +332,7 @@ onMounted(() => {
 
   .btn-main:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-lg), var(--glow-blue);
+    box-shadow: var(--shadow-lg), var(--glow-pink);
   }
 
   .btn-secondary:hover {
