@@ -3,22 +3,37 @@ import { onMounted, ref } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
 
 const needRefresh = ref(false)
+const isUpdating = ref(false)
+const applyUpdate = ref(null)
 
 onMounted(async () => {
   if ('serviceWorker' in navigator) {
     const { registerSW } = await import('virtual:pwa-register')
 
-    registerSW({
+    applyUpdate.value = registerSW({
       immediate: true,
       onNeedRefresh() {
         needRefresh.value = true
+        isUpdating.value = false
       },
       onOfflineReady() {}
     })
   }
 })
 
-function handleUpdate() {
+async function handleUpdate() {
+  if (isUpdating.value) {
+    return
+  }
+
+  isUpdating.value = true
+  needRefresh.value = false
+
+  if (applyUpdate.value) {
+    await applyUpdate.value(true)
+    return
+  }
+
   window.location.reload()
 }
 </script>
@@ -32,7 +47,9 @@ function handleUpdate() {
         </div>
         <h2 class="title">有新内容啦！</h2>
         <p class="desc">点击更新，体验最新功能</p>
-        <button class="btn-update" @click="handleUpdate">立即更新</button>
+        <button class="btn-update" :disabled="isUpdating" @click="handleUpdate">
+          {{ isUpdating ? '更新中...' : '立即更新' }}
+        </button>
       </div>
     </div>
   </Transition>
@@ -97,6 +114,11 @@ function handleUpdate() {
   font-weight: 800;
   cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.btn-update:disabled {
+  opacity: 0.72;
+  cursor: wait;
 }
 
 .btn-update:active {
