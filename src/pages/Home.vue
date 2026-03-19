@@ -308,9 +308,11 @@ onMounted(() => {
 }
 
 .btn-main.is-leaving {
-  opacity: 0.7;
-  transform: scale(0.96);
-  transition: all 80ms ease-out;
+  opacity: 0.6;
+  transform: scale(0.94);
+  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, var(--candy-pink-dark) 0%, #d14b4b 100%);
+  transition: all 100ms ease-out;
 }
 
 @media (hover: hover) {
