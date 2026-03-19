@@ -124,7 +124,7 @@ function isDifficultyLocked(difficulty) {
             :is-locked="isDifficultyLocked(getDifficultyById(id))"
             :is-completed="completedDifficulties.includes(id)"
             :best-score="getDifficultyBestScore(id)"
-            @select="selectDifficulty($event, difficulty)"
+            @select="selectDifficulty"
           />
         </div>
       </section>
