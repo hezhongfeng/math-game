@@ -52,28 +52,28 @@ export const AUDIO_FREQUENCIES = {
 export const AUDIO_PARAMS = {
   click: {
     type: 'triangle',
-    gain: 0.04,
+    gain: 0.22,
     duration: 0.035,
     attack: 0.005,
     release: 0.025
   },
   key: {
     type: 'triangle',
-    gain: 0.045,
+    gain: 0.30,
     duration: 0.04,
     attack: 0.005,
     release: 0.03
   },
   delete: {
     type: 'triangle',
-    gain: 0.04,
+    gain: 0.22,
     duration: 0.05,
     attack: 0.005,
     release: 0.035
   },
   submit: {
     type: 'triangle',
-    gain: 0.05,
+    gain: 0.35,
     duration: 0.05,
     interval: 0.045,
     attack: 0.005,
@@ -82,8 +82,8 @@ export const AUDIO_PARAMS = {
   correct: {
     type: 'triangle',
     sparkleType: 'sine',
-    gain: 0.08,
-    sparkleGain: 0.05,
+    gain: 0.55,
+    sparkleGain: 0.36,
     duration: 0.08,
     sparkleDuration: 0.15,
     interval: 0.05,
@@ -93,7 +93,7 @@ export const AUDIO_PARAMS = {
   },
   wrong: {
     type: 'triangle',
-    gain: 0.045,
+    gain: 0.42,
     duration: 0.08,
     interval: 0.06,
     stepGainRatio: 0.88,
@@ -102,21 +102,21 @@ export const AUDIO_PARAMS = {
   },
   question: {
     type: 'triangle',
-    gain: 0.025,
+    gain: 0.15,
     duration: 0.06,
     attack: 0.005,
     release: 0.04
   },
   back: {
     type: 'triangle',
-    gain: 0.035,
+    gain: 0.22,
     duration: 0.05,
     attack: 0.005,
     release: 0.035
   },
   victory: {
     type: 'triangle',
-    gain: 0.07,
+    gain: 0.60,
     duration: 0.1,
     interval: 0.07,
     stepGainRatio: 0.88,
@@ -125,7 +125,7 @@ export const AUDIO_PARAMS = {
   },
   unlock: {
     type: 'sine',
-    gain: 0.06,
+    gain: 0.45,
     duration: 0.12,
     interval: 0.1,
     attack: 0.005,
