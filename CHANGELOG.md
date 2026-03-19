@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Playwright E2E smoke suite for core mobile flow (`tests/e2e/smoke.spec.js`)
 - Added CI workflow to run E2E smoke tests on pull requests (`.github/workflows/e2e-smoke.yml`)
 - Added architecture quick-reference document (`docs/ARCHITECTURE.md`)
+- Added round-end mistake summary with in-modal review and one-tap retry for incorrect questions
 
 ### Changed
 
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated contribution guide with E2E and release checklists
 - Updated changelog rules to keep `Unreleased` concise and categorized
 - Updated README and architecture docs to match current feedback behavior, audio strategy, and composables list
+- Updated docs to reflect round-end mistake review and retry flow
 
 ## [1.1.0] - 2026-01-30
 

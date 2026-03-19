@@ -39,11 +39,23 @@ export function useGame(difficulty) {
     return isNaN(result) ? 0 : result
   })
 
+  function cloneQuestion(question, index) {
+    return {
+      ...question,
+      id: index + 1,
+      userAnswer: null,
+      isCorrect: null
+    }
+  }
+
   /**
    * 开始游戏
    */
-  function startGame() {
-    questions.value = generateQuestions(difficultyValue.value)
+  function startGame(options = {}) {
+    const customQuestions = Array.isArray(options.questions) ? options.questions : null
+    questions.value = customQuestions
+      ? customQuestions.map((question, index) => cloneQuestion(question, index))
+      : generateQuestions(difficultyValue.value)
     currentIndex.value = 0
     score.value = 0
     isComplete.value = false
@@ -71,11 +83,13 @@ export function useGame(difficulty) {
     } else {
       // 记录错题
       incorrectQuestions.value.push({
-        question: question.question,
-        questionText: question.questionText,
+        id: question.id,
+        operand1: question.operand1,
+        operand2: question.operand2,
+        operator: question.operator,
         userAnswer: answer,
         correctAnswer: question.answer,
-        operation: question.operation
+        answer: question.answer
       })
     }
 

@@ -70,6 +70,7 @@ let gameTimeInterval = null
 
 let feedbackTimeout = null
 let streakRewardTimeout = null
+let retryQuestions = null
 
 const isComplete = computed(() => game.isComplete.value)
 const currentQuestion = computed(() => game.currentQuestion.value)
@@ -141,7 +142,8 @@ function stopQuestionTimer() {
 async function initGame() {
   isLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 240))
-  game.startGame()
+  game.startGame(retryQuestions ? { questions: retryQuestions } : undefined)
+  retryQuestions = null
   startQuestionTimer()
   startGameTimeUpdater()
   isLoading.value = false
@@ -285,6 +287,7 @@ function goBack() {
 }
 
 function handleRetry() {
+  retryQuestions = null
   showModal.value = false
   userAnswer.value = ''
   showAnswer.value = false
@@ -307,6 +310,23 @@ function handleRetry() {
   }
 
   initGame()
+}
+
+function handleRetryMistakes() {
+  const incorrectQuestions = resultData.value?.incorrectQuestions || []
+  if (!incorrectQuestions.length) {
+    handleRetry()
+    return
+  }
+
+  retryQuestions = incorrectQuestions.map((item) => ({
+    operand1: item.operand1,
+    operand2: item.operand2,
+    operator: item.operator,
+    answer: item.correctAnswer
+  }))
+
+  handleRetry()
 }
 
 function handleHome() {
@@ -452,6 +472,7 @@ onUnmounted(() => {
       :result="resultData"
       :is-new-best="isNewBest"
       @retry="handleRetry"
+      @retry-mistakes="handleRetryMistakes"
       @home="handleHome"
     />
   </div>

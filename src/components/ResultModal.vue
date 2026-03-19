@@ -19,9 +19,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['retry', 'home'])
+const emit = defineEmits(['retry', 'retry-mistakes', 'home'])
 
 const stars = computed(() => getStarCount(props.result.accuracy))
+const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
+const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
 
 function handleRetry() {
   emit('retry')
@@ -29,6 +31,10 @@ function handleRetry() {
 
 function handleHome() {
   emit('home')
+}
+
+function handleRetryMistakes() {
+  emit('retry-mistakes')
 }
 </script>
 
@@ -103,7 +109,43 @@ function handleHome() {
             </div>
           </div>
 
+          <section v-if="hasIncorrectQuestions" class="mistakes-section">
+            <div class="mistakes-head">
+              <h3 class="mistakes-title">这几题再看看</h3>
+              <span class="mistakes-count">{{ incorrectQuestions.length }} 题</span>
+            </div>
+
+            <div class="mistakes-list">
+              <article
+                v-for="item in incorrectQuestions"
+                :key="`${item.operand1}-${item.operator}-${item.operand2}-${item.userAnswer}`"
+                class="mistake-card"
+              >
+                <div class="mistake-expression">
+                  <span>{{ item.operand1 }}</span>
+                  <span>{{ item.operator }}</span>
+                  <span>{{ item.operand2 }}</span>
+                  <span>=</span>
+                  <strong>{{ item.correctAnswer }}</strong>
+                </div>
+                <p class="mistake-answer">
+                  你的答案：<span>{{ item.userAnswer }}</span>
+                </p>
+              </article>
+            </div>
+          </section>
+
           <div class="actions">
+            <button
+              v-if="hasIncorrectQuestions"
+              class="btn-primary"
+              data-testid="result-retry-mistakes-btn"
+              @click="handleRetryMistakes"
+            >
+              <RotateCcw :size="18" />
+              <span>再练错题</span>
+            </button>
+
             <button class="btn-primary" data-testid="result-retry-btn" @click="handleRetry">
               <RotateCcw :size="18" />
               <span>再来一次</span>
@@ -229,6 +271,75 @@ function handleHome() {
   margin-bottom: 18px;
 }
 
+.mistakes-section {
+  margin-bottom: 18px;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid var(--border-light);
+}
+
+.mistakes-head,
+.mistake-expression {
+  display: flex;
+  align-items: center;
+}
+
+.mistakes-head {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.mistakes-title {
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  font-weight: 800;
+}
+
+.mistakes-count {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.mistakes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.mistake-card {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(239, 83, 80, 0.12);
+}
+
+.mistake-expression {
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  font-weight: 800;
+}
+
+.mistake-expression strong {
+  color: var(--win-green-dark);
+}
+
+.mistake-answer {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.mistake-answer span {
+  color: var(--error-red-dark);
+}
+
 .stat-card {
   display: flex;
   align-items: center;
@@ -281,6 +392,7 @@ function handleHome() {
 }
 
 .actions {
+  flex-wrap: wrap;
   gap: 10px;
 }
 

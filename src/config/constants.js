@@ -12,7 +12,7 @@ export const GAME_CONFIG = {
 }
 
 export const AUDIO_ENGINE = {
-  MASTER_GAIN: 0.5,
+  MASTER_GAIN: 1,
   FILTER_FREQUENCY: 4000,
   WARMUP_GAIN: 0.0001
 }
