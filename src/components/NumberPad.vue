@@ -35,7 +35,7 @@ function handleSubmit() {
         v-for="num in numbers"
         :key="num"
         :data-testid="`num-btn-${num}`"
-        class="num-btn"
+        class="num-btn font-number"
         :disabled="disabled"
         @click="handleInput(num)"
       >
@@ -46,7 +46,7 @@ function handleSubmit() {
         <X :size="34" stroke-width="2.5" />
       </button>
 
-      <button data-testid="num-btn-0" class="num-btn" :disabled="disabled" @click="handleInput(0)">
+      <button data-testid="num-btn-0" class="num-btn font-number" :disabled="disabled" @click="handleInput(0)">
         0
       </button>
 

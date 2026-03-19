@@ -54,7 +54,7 @@ const answerDisplay = computed(() => {
       </div>
     </div>
 
-    <div class="math-display" data-testid="question-expression">
+    <div class="math-display font-number" data-testid="question-expression">
       <span class="number">{{ question.operand1 }}</span>
       <span class="operator">{{ question.operator }}</span>
       <span class="number">{{ question.operand2 }}</span>

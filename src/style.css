@@ -52,48 +52,7 @@
     --border-default: #c8d4e3;
     --border-strong: #b6c5d8;
 
-    /* 游戏映射 - 兼容现有代码 */
-    --game-primary: var(--hero-blue);
-    --game-primary-light: var(--hero-blue-light);
-    --game-primary-dark: var(--hero-blue-dark);
-
-    --game-secondary: var(--win-green);
-    --game-secondary-light: var(--win-green-light);
-    --game-secondary-dark: var(--win-green-dark);
-
-    --game-accent: var(--energy-yellow);
-    --game-accent-light: var(--energy-yellow-light);
-    --game-accent-dark: var(--energy-yellow-dark);
-
-    --game-success: var(--win-green);
-    --game-warning: var(--warning-orange);
-    --game-error: var(--error-red);
-
-    --game-bg: var(--bg-light);
-    --game-bg-light: var(--bg-white);
-    --game-bg-dark: var(--bg-dark);
-
-    --game-card: var(--bg-panel-strong);
-    --game-text: var(--text-primary);
-    --game-text-secondary: var(--text-secondary);
-    --game-border: var(--border-light);
-
-    --coral: var(--hero-blue);  /* 兼容旧代码 */
-    --coral-dark: var(--hero-blue-dark);
-    --coral-light: var(--hero-blue-light);
-
-    --mint: var(--win-green);  /* 兼容旧代码 */
-    --mint-dark: var(--win-green-dark);
-    --mint-light: var(--win-green-light);
-
-    --text-dark: var(--text-primary);
-    --text-gray: var(--text-secondary);
-
-    --success: var(--win-green);
-    --warning: var(--warning-orange);
-
     --white: #FFFFFF;
-    --cream: #F5F7FA;
 
     --radius-xs: 10px;
     --radius-sm: 14px;
@@ -262,6 +221,11 @@
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
+
+  .font-number {
+    font-family: "Nunito", "Noto Sans SC", system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
 
   /* 圆角继承 */
   .rounded-inherit {

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { CheckCircle, Clock, Star, TrendingUp } from 'lucide-vue-next'
 import { formatTime } from '../utils/format'
 
@@ -34,6 +34,17 @@ const props = defineProps({
   }
 })
 
+const isScoreAnimating = ref(false)
+
+watch(() => props.score, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    isScoreAnimating.value = true
+    setTimeout(() => {
+      isScoreAnimating.value = false
+    }, 400)
+  }
+})
+
 const progress = computed(() => {
   if (props.totalQuestions === 0) return 0
   return Math.round((props.currentIndex / props.totalQuestions) * 100)
@@ -60,7 +71,7 @@ const formattedTime = computed(() => formatTime(props.duration))
         </div>
       </div>
       <div class="progress-track">
-        <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
+        <div class="progress-fill" :class="{ 'is-complete': progress >= 100 }" :style="{ width: `${progress}%` }"></div>
       </div>
     </div>
 
@@ -70,7 +81,7 @@ const formattedTime = computed(() => formatTime(props.duration))
           <Star :size="18" />
         </div>
         <div>
-          <p class="stat-value">{{ score }}</p>
+          <p class="stat-value font-number" :class="{ 'score-pop': isScoreAnimating }">{{ score }}</p>
           <p class="stat-label">得分</p>
         </div>
       </div>
@@ -80,7 +91,7 @@ const formattedTime = computed(() => formatTime(props.duration))
           <CheckCircle :size="18" />
         </div>
         <div>
-          <p class="stat-value">{{ correctCount }}</p>
+          <p class="stat-value font-number">{{ correctCount }}</p>
           <p class="stat-label">答对</p>
         </div>
       </div>
@@ -90,7 +101,7 @@ const formattedTime = computed(() => formatTime(props.duration))
           <Clock :size="18" />
         </div>
         <div>
-          <p class="stat-value">{{ formattedTime }}</p>
+          <p class="stat-value font-number">{{ formattedTime }}</p>
           <p class="stat-label">用时</p>
         </div>
       </div>
@@ -100,7 +111,7 @@ const formattedTime = computed(() => formatTime(props.duration))
           <TrendingUp :size="18" />
         </div>
         <div>
-          <p class="stat-value">{{ accuracy || 0 }}%</p>
+          <p class="stat-value font-number">{{ accuracy || 0 }}%</p>
           <p class="stat-label">正确率</p>
         </div>
       </div>
@@ -172,6 +183,16 @@ const formattedTime = computed(() => formatTime(props.duration))
   border-radius: inherit;
   background: linear-gradient(90deg, var(--hero-blue), var(--win-green));
   transition: width var(--duration-slow) var(--ease-out);
+}
+
+.progress-fill.is-complete {
+  box-shadow: var(--glow-green);
+  animation: progressGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+  0%, 100% { box-shadow: var(--glow-green); }
+  50% { box-shadow: 0 0 12px rgba(18, 185, 129, 0.5); }
 }
 
 @keyframes streakChipIn {
