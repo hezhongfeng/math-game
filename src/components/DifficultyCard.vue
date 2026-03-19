@@ -51,7 +51,7 @@ function handleSelect(event) {
       'is-locked': isLocked,
       'is-completed': isCompleted && !isLocked
     }"
-    @click="handleSelect"
+    @click="handleSelect($event)"
   >
     <div class="leading">
       <div class="level-badge" :style="{ background: levelColor }">
