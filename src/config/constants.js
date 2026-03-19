@@ -7,7 +7,7 @@ export const STORAGE_KEYS = {
 }
 
 export const GAME_CONFIG = {
-  FEEDBACK_DELAY: 1500,
+  FEEDBACK_DELAY: 800,
   MAX_ANSWER_LENGTH: 4
 }
 

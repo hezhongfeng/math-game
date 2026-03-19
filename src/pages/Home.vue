@@ -19,11 +19,6 @@ function startGame() {
   router.push('/difficulty')
 }
 
-function viewProgress() {
-  playClick()
-  router.push('/difficulty')
-}
-
 onMounted(() => {
   requestAnimationFrame(() => {
     isReady.value = true
@@ -87,10 +82,6 @@ onMounted(() => {
           <Play :size="22" />
           <span>开始挑战</span>
           <ArrowRight :size="20" />
-        </button>
-
-        <button class="btn-secondary" @click="viewProgress">
-          查看进度
         </button>
       </section>
     </div>
@@ -290,19 +281,14 @@ onMounted(() => {
   padding: 16px;
 }
 
-.btn-main,
-.btn-secondary {
+.btn-main {
   width: 100%;
   border: none;
   cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
-}
-
-.btn-main {
   justify-content: center;
   gap: 12px;
   height: 64px;
-  margin-bottom: 12px;
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
   color: white;
@@ -311,17 +297,7 @@ onMounted(() => {
   font-weight: 800;
 }
 
-.btn-secondary {
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.78);
-  color: var(--text-secondary);
-  font-size: var(--font-base);
-  font-weight: 700;
-}
-
-.btn-main:active,
-.btn-secondary:active {
+.btn-main:active {
   transform: scale(0.98);
 }
 
@@ -333,11 +309,6 @@ onMounted(() => {
   .btn-main:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-lg), var(--glow-pink);
-  }
-
-  .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.92);
-    color: var(--text-primary);
   }
 }
 
@@ -427,10 +398,6 @@ onMounted(() => {
   .btn-main {
     height: 58px;
     font-size: var(--font-base);
-  }
-
-  .btn-secondary {
-    height: 48px;
   }
 }
 </style>
