@@ -14,9 +14,15 @@ const isReady = ref(false)
 const completedCount = computed(() => Object.keys(bestScores.value).length)
 const progress = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
-function startGame() {
+function startGame(event) {
   playClick()
-  router.push('/difficulty')
+  const btn = event?.currentTarget
+  if (btn) {
+    btn.classList.add('is-leaving')
+  }
+  setTimeout(() => {
+    router.push('/difficulty')
+  }, 150)
 }
 
 onMounted(() => {
@@ -78,7 +84,7 @@ onMounted(() => {
       </section>
 
       <section class="action-panel">
-        <button class="btn-main" data-testid="start-challenge-btn" @click="startGame">
+        <button class="btn-main" data-testid="start-challenge-btn" @click="startGame($event)">
           <Play :size="22" />
           <span>开始挑战</span>
           <ArrowRight :size="20" />
@@ -299,6 +305,12 @@ onMounted(() => {
 
 .btn-main:active {
   transform: scale(0.98);
+}
+
+.btn-main.is-leaving {
+  opacity: 0.7;
+  transform: scale(0.96);
+  transition: all 80ms ease-out;
 }
 
 @media (hover: hover) {

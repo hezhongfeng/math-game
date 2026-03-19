@@ -20,14 +20,26 @@ onMounted(() => {
   window.scrollTo(0, 0)
 })
 
-function goBack() {
+function goBack(event) {
   playBack()
-  router.push('/')
+  const btn = event?.currentTarget
+  if (btn) {
+    btn.classList.add('is-leaving')
+  }
+  setTimeout(() => {
+    router.push('/')
+  }, 150)
 }
 
-function selectDifficulty(difficulty) {
+function selectDifficulty(event, difficulty) {
   playClick()
-  router.push(`/game/${difficulty.id}`)
+  const btn = event?.currentTarget
+  if (btn) {
+    btn.classList.add('is-leaving')
+  }
+  setTimeout(() => {
+    router.push(`/game/${difficulty.id}`)
+  }, 150)
 }
 
 function getDifficultyBestScore(difficultyId) {
@@ -61,7 +73,7 @@ function isDifficultyLocked(difficulty) {
   <div class="page">
     <header class="header-panel">
       <div class="nav-row">
-        <button class="back-btn text-child-sm" @click="goBack">
+        <button class="back-btn text-child-sm" @click="goBack($event)">
           <ArrowLeft :size="18" />
           <span>返回</span>
         </button>
@@ -112,7 +124,7 @@ function isDifficultyLocked(difficulty) {
             :is-locked="isDifficultyLocked(getDifficultyById(id))"
             :is-completed="completedDifficulties.includes(id)"
             :best-score="getDifficultyBestScore(id)"
-            @select="selectDifficulty"
+            @select="selectDifficulty($event, difficulty)"
           />
         </div>
       </section>
@@ -169,6 +181,12 @@ function isDifficultyLocked(difficulty) {
 
 .back-btn:active {
   transform: scale(0.98);
+}
+
+.back-btn.is-leaving {
+  opacity: 0.7;
+  transform: scale(0.96);
+  transition: all 80ms ease-out;
 }
 
 @media (hover: hover) {

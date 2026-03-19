@@ -331,7 +331,9 @@ function handleRetryMistakes() {
 
 function handleHome() {
   showModal.value = false
-  router.push('/difficulty')
+  setTimeout(() => {
+    router.push('/difficulty')
+  }, 150)
 }
 
 function handleKeyPress(event) {

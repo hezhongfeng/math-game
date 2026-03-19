@@ -37,9 +37,9 @@ const statusText = computed(() => {
   return '首次尝试'
 })
 
-function handleSelect() {
+function handleSelect(event) {
   if (props.isLocked) return
-  emit('select', props.difficulty)
+  emit('select', event, props.difficulty)
 }
 </script>
 
@@ -103,6 +103,12 @@ function handleSelect() {
 
 .difficulty-card:active:not(.is-locked) {
   transform: scale(0.985);
+}
+
+.difficulty-card.is-leaving {
+  opacity: 0.7;
+  transform: scale(0.96);
+  transition: all 80ms ease-out;
 }
 
 @media (hover: hover) {
