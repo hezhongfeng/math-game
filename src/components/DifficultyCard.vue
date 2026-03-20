@@ -108,7 +108,7 @@ function handleSelect(event) {
 .difficulty-card.is-leaving {
   opacity: 0.7;
   transform: scale(0.96);
-  transition: all 80ms ease-out;
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 @media (hover: hover) {

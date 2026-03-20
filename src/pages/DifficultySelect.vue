@@ -12,6 +12,8 @@ const { getBestScore, getCompletedDifficulties } = useStorage()
 const { playClick, playBack } = useSound()
 
 const completedDifficulties = ref(getCompletedDifficulties())
+const isLeaving = ref(false)
+const NAVIGATION_DELAY = 180
 
 const completedCount = computed(() => completedDifficulties.value.length)
 const progressPercent = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
@@ -21,6 +23,11 @@ onMounted(() => {
 })
 
 function goBack(event) {
+  if (isLeaving.value) {
+    return
+  }
+
+  isLeaving.value = true
   playBack()
   const btn = event?.currentTarget
   if (btn) {
@@ -28,10 +35,15 @@ function goBack(event) {
   }
   setTimeout(() => {
     router.push('/')
-  }, 150)
+  }, NAVIGATION_DELAY)
 }
 
 function selectDifficulty(event, difficulty) {
+  if (isLeaving.value) {
+    return
+  }
+
+  isLeaving.value = true
   playClick()
   const btn = event?.currentTarget
   if (btn) {
@@ -39,7 +51,7 @@ function selectDifficulty(event, difficulty) {
   }
   setTimeout(() => {
     router.push(`/game/${difficulty.id}`)
-  }, 150)
+  }, NAVIGATION_DELAY)
 }
 
 function getDifficultyBestScore(difficultyId) {
@@ -186,7 +198,7 @@ function isDifficultyLocked(difficulty) {
 .back-btn.is-leaving {
   opacity: 0.7;
   transform: scale(0.96);
-  transition: all 80ms ease-out;
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 @media (hover: hover) {

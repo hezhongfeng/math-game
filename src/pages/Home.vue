@@ -10,11 +10,18 @@ const router = useRouter()
 const { bestScores } = useStorage()
 const { playClick } = useSound()
 const isReady = ref(false)
+const isLeaving = ref(false)
+const NAVIGATION_DELAY = 180
 
 const completedCount = computed(() => Object.keys(bestScores.value).length)
 const progress = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
 function startGame(event) {
+  if (isLeaving.value) {
+    return
+  }
+
+  isLeaving.value = true
   playClick()
   const btn = event?.currentTarget
   if (btn) {
@@ -22,7 +29,7 @@ function startGame(event) {
   }
   setTimeout(() => {
     router.push('/difficulty')
-  }, 150)
+  }, NAVIGATION_DELAY)
 }
 
 onMounted(() => {
@@ -312,7 +319,7 @@ onMounted(() => {
   transform: scale(0.94);
   box-shadow: var(--shadow-sm);
   background: linear-gradient(135deg, var(--candy-pink-dark) 0%, #d14b4b 100%);
-  transition: all 100ms ease-out;
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 @media (hover: hover) {
