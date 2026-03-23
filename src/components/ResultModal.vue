@@ -177,6 +177,8 @@ function handleRetryMistakes() {
 
 .result-card {
   width: min(100%, 420px);
+  max-height: min(92vh, 760px);
+  overflow: auto;
   padding: 22px;
   border-radius: var(--radius-xl);
   background: var(--bg-panel-strong);
@@ -287,6 +289,7 @@ function handleRetryMistakes() {
 
 .mistakes-head {
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 10px;
 }
@@ -320,9 +323,11 @@ function handleRetryMistakes() {
 
 .mistake-expression {
   gap: 8px;
+  flex-wrap: wrap;
   color: var(--text-primary);
   font-size: var(--font-lg);
   font-weight: 800;
+  line-height: 1.4;
 }
 
 .mistake-expression strong {
@@ -392,7 +397,8 @@ function handleRetryMistakes() {
 }
 
 .actions {
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -400,7 +406,7 @@ function handleRetryMistakes() {
 .btn-secondary {
   justify-content: center;
   gap: 8px;
-  flex: 1;
+  width: 100%;
   height: 52px;
   border: none;
   border-radius: var(--radius-md);
@@ -414,6 +420,7 @@ function handleRetryMistakes() {
 }
 
 .btn-secondary {
+  grid-column: 1 / -1;
   color: var(--text-secondary);
   background: rgba(255, 255, 255, 0.76);
 }
@@ -488,6 +495,7 @@ function handleRetryMistakes() {
 
   .result-card {
     width: 100%;
+    max-height: min(88vh, 820px);
     padding: 18px;
     border-radius: var(--radius-lg);
   }
@@ -515,12 +523,16 @@ function handleRetryMistakes() {
   }
 
   .actions {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .btn-primary,
   .btn-secondary {
     width: 100%;
+  }
+
+  .btn-secondary {
+    grid-column: auto;
   }
 }
 </style>
