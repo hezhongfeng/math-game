@@ -85,9 +85,8 @@ function isDifficultyLocked(difficulty) {
   <div class="page">
     <header class="header-panel">
       <div class="nav-row">
-        <button class="back-btn text-child-sm" @click="goBack($event)">
+        <button class="back-btn" aria-label="返回首页" @click="goBack($event)">
           <ArrowLeft :size="18" />
-          <span>返回</span>
         </button>
         <div class="header-badge">
           <Trophy :size="16" />
@@ -179,16 +178,21 @@ function isDifficultyLocked(difficulty) {
 .header-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   border-radius: 14px;
   font-weight: 700;
 }
 
 .back-btn {
-  padding: 10px 14px;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
   color: var(--text-secondary);
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid var(--border-light);
+}
+
+.header-badge {
+  gap: 8px;
 }
 
 .back-btn:active {
