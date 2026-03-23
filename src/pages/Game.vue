@@ -347,6 +347,7 @@ function handleKeyPress(event) {
 }
 
 onMounted(() => {
+  window.scrollTo(0, 0)
   initGame()
   window.addEventListener('keydown', handleKeyPress)
 })
