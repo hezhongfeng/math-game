@@ -5,7 +5,6 @@
 ## 1. 运行时结构
 
 - 前端框架：Vue 3（`<script setup>`）
-- 状态管理：Pinia（`src/stores/settings.js`）
 - 路由：Vue Router（`src/router.js`）
 - 构建：Vite + vite-plugin-pwa
 
@@ -18,18 +17,11 @@
 ## 2. 数据流与持久化
 
 - 游戏记录存储键：`math-game-data`
-- 设置存储键：`math-game-settings`
 
 `useStorage`（`src/composables/useStorage.js`）：
 
 - 负责最佳成绩读取与更新
 - 使用全局响应式缓存 + `storage` 事件同步跨标签页状态
-
-`settings` store（`src/stores/settings.js`）：
-
-- 负责应用设置管理
-- 应用启动时加载一次
-- 当前仅保留最小占位实现（无用户可见设置项）
 
 ## 3.1 音频反馈架构
 
@@ -61,10 +53,12 @@
 ## 5. PWA 更新链路
 
 - 插件：`vite-plugin-pwa`（`vite.config.js`）
+- 清单：`public/manifest.json`
 - 更新提示组件：`src/components/PWAUpdatePrompt.vue`
 - 策略：`prompt` 模式，发现新版本时在应用内提示刷新
+- 注册方式：组件内通过 `virtual:pwa-register` 调用插件返回的更新函数
 
-说明：PWA 注册与更新逻辑已统一到插件路径，避免重复注册冲突。
+说明：项目不再保留手写 Service Worker 或独立的 PWA 更新状态层，避免两套实现并存造成理解和维护成本。
 
 ## 6. E2E 冒烟测试
 

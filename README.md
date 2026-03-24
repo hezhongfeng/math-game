@@ -200,15 +200,12 @@ math-game/
 │   │   └── ToastContainer.vue    # 吐司容器
 │   ├── composables/         # Vue Composables
 │   │   ├── useGame.js       # 游戏核心逻辑
-│   │   ├── usePWA.js        # PWA 状态与安装能力
 │   │   ├── useSound.js      # 音效引擎与反馈音播放
 │   │   ├── useStorage.js    # 本地存储
 │   │   └── useToast.js      # 吐司提示
 │   ├── config/              # 配置文件
 │   │   ├── constants.js     # 游戏常量
 │   │   └── difficulty.js    # 难度配置
-│   ├── stores/              # Vue Stores
-│   │   └── settings.js      # 设置状态管理
 │   ├── pages/               # 页面组件
 │   │   ├── DifficultySelect.vue  # 难度选择页
 │   │   ├── Game.vue              # 游戏页（含反馈动画）
@@ -284,9 +281,19 @@ localStorage.removeItem('math-game-data')
 | **Vite** | 构建工具 |
 | **Tailwind CSS** | 原子化 CSS 样式（响应式前缀：sm:, md:, lg:） |
 | **Vue Router** | 路由管理 |
-| **Pinia** | 状态管理 |
+| **vite-plugin-pwa** | PWA 生成与更新提示 |
 | **Lucide Vue Next** | 图标库 |
 | **LocalStorage** | 数据持久化 |
+
+## 🔄 PWA 逻辑
+
+当前 PWA 只保留一条处理链路：
+
+1. `vite.config.js` 通过 `vite-plugin-pwa` 生成 Service Worker
+2. `public/manifest.json` 提供应用清单
+3. `src/components/PWAUpdatePrompt.vue` 使用 `virtual:pwa-register` 监听更新并提示用户刷新
+
+项目中不再维护第二套手写 Service Worker 或旧的 PWA composable，更新行为以插件配置为唯一事实来源。
 
 ## 📱 移动端技术细节
 

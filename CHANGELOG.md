@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed PWA update flow to a single path via `vite-plugin-pwa` prompt handling
+- Changed PWA implementation cleanup to remove the legacy handwritten Service Worker and unused `usePWA` composable
 - Changed storage handling to reactive cache model with cross-tab synchronization
 - Changed settings lifecycle to single-load initialization with auto-persist on update
 - Changed audio system with layered synthesis, stronger iOS compatibility handling, and five-tier celebration feedback
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated changelog rules to keep `Unreleased` concise and categorized
 - Updated README and architecture docs to match current feedback behavior, audio strategy, and composables list
 - Updated docs to reflect round-end mistake review and retry flow
+- Updated PWA documentation to reflect the current plugin-generated Service Worker flow
 
 ## [1.1.0] - 2026-01-30
 

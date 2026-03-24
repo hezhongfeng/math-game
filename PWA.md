@@ -17,7 +17,6 @@
 ```
 public/
 ├── manifest.json           # PWA 配置清单
-├── sw.js                   # Service Worker 脚本
 ├── icons/
 │   ├── icon.svg            # 主图标 (矢量)
 │   ├── icon-72x72.png      # 小尺寸图标
@@ -112,41 +111,27 @@ node scripts/generate-icons.js
 
 ### Service Worker
 
-缓存策略: **Cache First, Network Fallback with Background Update**
+当前 Service Worker 由 `vite-plugin-pwa` 在构建时自动生成，不再维护单独的 `public/sw.js`。
 
-- **优先从缓存读取**: 确保快速响应，离线可用
-- **后台更新缓存**: 有网络时自动更新资源
-- **离线时返回缓存内容**: 保证核心功能可用
-- **版本管理**: 通过 `CACHE_VERSION` 控制缓存版本
+缓存策略: **Workbox 预缓存 + 运行时缓存**
+
+- **构建时预缓存**: 核心静态资源会被插件自动加入预缓存
+- **运行时缓存**: 额外对 Google Fonts 做缓存，减少重复请求
+- **离线可用**: 已缓存资源在断网时仍可继续访问
+- **更新提示**: 新版本安装完成后，由应用内弹窗提示刷新
 
 **缓存的资源：**
-- HTML 入口文件
-- 所有图标（SVG + PNG 全尺寸）
-- Manifest 文件
+- Vite 构建产物（JS / CSS / HTML）
+- 图标与 manifest
+- 配置中的额外静态资源
 
 ### 更新机制
 
 当检测到新版本时:
-1. Service Worker 在后台安装新版本
-2. 提示用户有新版本可用
-3. 用户确认后调用 `skipWaiting()`
-4. 页面自动刷新加载新版本
-
-**手动触发更新代码：**
-```javascript
-// main.js 中的更新检测逻辑
-registration.addEventListener('updatefound', () => {
-  const newWorker = registration.installing
-  newWorker.addEventListener('statechange', () => {
-    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-      if (confirm('发现新版本！是否立即更新？')) {
-        newWorker.postMessage({ type: 'SKIP_WAITING' })
-        window.location.reload()
-      }
-    }
-  })
-})
-```
+1. `vite-plugin-pwa` 在后台安装新版本 Service Worker
+2. `src/components/PWAUpdatePrompt.vue` 通过 `virtual:pwa-register` 收到 `onNeedRefresh`
+3. 页面弹出“立即更新”提示
+4. 用户确认后调用插件返回的更新函数并刷新页面
 
 ## 性能优化
 
@@ -250,8 +235,8 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 location.reload()
 ```
 
-**方法 2 - 更新缓存版本：**
-修改 `public/sw.js` 中的 `CACHE_VERSION` 值（如 `v2.1` → `v2.2`）
+**方法 2 - 重新构建并部署：**
+重新执行 `npm run build` 并发布新的静态资源，`vite-plugin-pwa` 会基于新产物更新缓存清单。
 
 ### Q: iOS 添加到主屏幕后打开是白屏？
 
@@ -268,60 +253,13 @@ location.reload()
 
 ## 代码中使用 PWA
 
-### 检测 PWA 状态
+当前项目中的 PWA 入口很简单：
 
-```javascript
-import { usePWA } from '../composables/usePWA'
+- `vite.config.js`：配置 `vite-plugin-pwa`
+- `public/manifest.json`：维护应用清单
+- `src/components/PWAUpdatePrompt.vue`：展示更新提示并执行刷新
 
-const { 
-  isInstallable,    // 是否可以安装
-  isOnline,         // 网络状态
-  isStandalone,     // 是否以独立应用运行
-  updateAvailable   // 是否有新版本
-} = usePWA()
-```
-
-### 触发安装
-
-```javascript
-import { usePWA } from '../composables/usePWA'
-
-const { install } = usePWA()
-
-// 在按钮点击事件中
-async function handleInstall() {
-  const result = await install()
-  if (result.success) {
-    console.log('用户已接受安装')
-  }
-}
-```
-
-### 分享功能
-
-```javascript
-import { share } from '../composables/usePWA'
-
-async function shareGame() {
-  await share({
-    title: '数学运算游戏',
-    text: '来挑战数学运算游戏，训练你的思维能力！',
-    url: window.location.href
-  })
-}
-```
-
-### 震动反馈
-
-```javascript
-import { vibrate } from '../composables/usePWA'
-
-// 答题正确时
-vibrate(50)  // 震动 50ms
-
-// 答题错误时
-vibrate([50, 100, 50])  // 震动模式：短-停-短
-```
+如果后续需要新增安装提示、分享等能力，建议单独按场景新增 composable，不要再把安装、更新、分享、振动混成一个通用 `usePWA` 文件。
 
 ## 相关链接
 
