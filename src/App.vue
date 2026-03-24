@@ -6,7 +6,7 @@ import PWAUpdatePrompt from './components/PWAUpdatePrompt.vue'
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-game-neutral-bg via-game-neutral-bg-light to-game-neutral-bg-dark">
+  <div class="app-shell">
     <ErrorBoundary>
       <RouterView />
     </ErrorBoundary>
@@ -14,3 +14,13 @@ import PWAUpdatePrompt from './components/PWAUpdatePrompt.vue'
     <PWAUpdatePrompt />
   </div>
 </template>
+
+<style scoped>
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(49, 120, 246, 0.12), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(46, 196, 182, 0.12), transparent 32%),
+    linear-gradient(180deg, #f4f8ff 0%, #edf4ff 48%, #e8f2ff 100%);
+}
+</style>
