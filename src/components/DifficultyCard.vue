@@ -40,7 +40,7 @@ const statusText = computed(() => {
   if (props.bestScore) {
     return `当前 ${props.bestScore.accuracy}% · 达到 ${GAME_CONFIG.PASS_ACCURACY}% 可解锁下一关`
   }
-  return '首次尝试'
+  return '首次挑战'
 })
 
 function handleSelect(event) {
@@ -67,7 +67,7 @@ function handleSelect(event) {
       <div class="level-content">
         <div class="title-row">
           <h3 class="level-name">{{ difficulty.name }}</h3>
-          <span v-if="!isLocked && !bestScore" class="new-tag">NEW</span>
+          <span v-if="!isLocked && !bestScore" class="new-tag">新关</span>
         </div>
         <p class="level-desc">{{ difficulty.description }}</p>
         <p class="level-status">{{ statusText }}</p>

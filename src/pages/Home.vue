@@ -52,9 +52,9 @@ onMounted(() => {
         </div>
 
         <div class="hero-copy">
-          <p class="eyebrow">Math Mission</p>
+          <p class="eyebrow">数学任务</p>
           <h1 class="title">数学大冒险</h1>
-          <p class="subtitle">达到 {{ GAME_CONFIG.PASS_ACCURACY }}% 正确率即可解锁下一关。</p>
+          <p class="subtitle">正确率达到 {{ GAME_CONFIG.PASS_ACCURACY }}% ，就能解锁下一关。</p>
         </div>
 
         <div class="mission-progress">

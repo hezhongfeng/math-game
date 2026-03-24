@@ -24,12 +24,23 @@ const emit = defineEmits(['retry', 'retry-mistakes', 'home'])
 const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
-const summaryText = computed(() => {
+const subtitleText = computed(() => {
   if (!hasIncorrectQuestions.value) {
-    return '这一轮全部答对了，状态很稳。'
+    return '这一轮全对啦，继续保持这个节奏。'
   }
 
-  return `本轮有 ${incorrectQuestions.value.length} 题需要再看看，先把容易错的地方复盘一下。`
+  if (props.isNewBest) {
+    return '刷新了这关的最好成绩，再把错题巩固一下会更稳。'
+  }
+
+  return '这一轮已经顺利完成，把错题再看一遍会更扎实。'
+})
+const summaryText = computed(() => {
+  if (!hasIncorrectQuestions.value) {
+    return '这一轮全部答对，节奏很稳。'
+  }
+
+  return `本轮有 ${incorrectQuestions.value.length} 题需要回顾，趁热再练一遍会更稳。`
 })
 
 function handleRetry() {
@@ -53,7 +64,7 @@ function handleRetryMistakes() {
           <div class="topline">
             <span class="result-chip">
               <Target :size="16" />
-              <span>已完成</span>
+              <span>本轮完成</span>
             </span>
             <span v-if="isNewBest" class="record-chip">
               <Sparkles :size="14" />
@@ -62,7 +73,7 @@ function handleRetryMistakes() {
           </div>
 
           <h2 class="result-title">{{ getRatingText(result.accuracy) }}</h2>
-          <p class="result-subtitle">这次表现不错，继续保持。</p>
+          <p class="result-subtitle">{{ subtitleText }}</p>
 
           <div class="star-rating">
             <Star
@@ -76,7 +87,7 @@ function handleRetryMistakes() {
 
           <section class="summary-section">
             <div class="section-head">
-              <h3 class="section-title">成绩总结</h3>
+              <h3 class="section-title">本轮表现</h3>
               <p class="section-note">{{ summaryText }}</p>
             </div>
 
@@ -125,8 +136,8 @@ function handleRetryMistakes() {
 
           <section v-if="hasIncorrectQuestions" class="mistakes-section">
             <div class="mistakes-head">
-              <h3 class="mistakes-title">这几题再看看</h3>
-              <span class="mistakes-count">{{ incorrectQuestions.length }} 题待复盘</span>
+              <h3 class="mistakes-title">这几题再巩固</h3>
+              <span class="mistakes-count">{{ incorrectQuestions.length }} 题待巩固</span>
             </div>
 
             <div class="mistakes-list">
@@ -143,7 +154,7 @@ function handleRetryMistakes() {
                   <strong>{{ item.correctAnswer }}</strong>
                 </div>
                 <p class="mistake-answer">
-                  你的答案：<span>{{ item.userAnswer }}</span>
+                  我的答案：<span>{{ item.userAnswer }}</span>
                 </p>
               </article>
             </div>
@@ -162,12 +173,12 @@ function handleRetryMistakes() {
 
             <button class="btn-primary" data-testid="result-retry-btn" @click="handleRetry">
               <RotateCcw :size="18" />
-              <span>再来一次</span>
+              <span>重练本轮</span>
             </button>
 
             <button class="btn-secondary" data-testid="result-home-btn" @click="handleHome">
               <Home :size="18" />
-              <span>返回关卡页</span>
+              <span>返回选关</span>
             </button>
           </div>
         </div>

@@ -23,12 +23,12 @@ export function getStarCount(accuracy) {
  * @returns {string} 评级文案
  */
 export function getRatingText(accuracy) {
-  if (accuracy >= 98) return '🏆 太棒了！'
-  if (accuracy >= 90) return '🌟 非常优秀！'
-  if (accuracy >= 80) return '⭐ 优秀！'
-  if (accuracy >= 70) return '👍 很不错！'
-  if (accuracy >= 60) return '🙂 继续加油！'
-  return '💪 继续加油！'
+  if (accuracy >= 98) return '太棒了！'
+  if (accuracy >= 90) return '非常优秀！'
+  if (accuracy >= 80) return '表现很棒！'
+  if (accuracy >= 70) return '进步明显！'
+  if (accuracy >= 60) return '继续加油！'
+  return '再接再厉！'
 }
 
 /**

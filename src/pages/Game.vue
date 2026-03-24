@@ -374,9 +374,9 @@ onUnmounted(() => {
   <div v-if="difficulty" class="page">
     <Transition name="fade">
       <div v-if="isLoading" class="loading-overlay">
-        <div class="loading-panel">
+      <div class="loading-panel">
           <div class="spinner"></div>
-          <p class="loading-text text-child-base">加载中...</p>
+          <p class="loading-text text-child-base">正在准备题目...</p>
         </div>
       </div>
     </Transition>
@@ -387,7 +387,7 @@ onUnmounted(() => {
       </button>
 
       <div class="title-group">
-        <p class="eyebrow">Mission Running</p>
+        <p class="eyebrow">正在挑战</p>
         <h1 class="title text-child-lg">{{ difficulty.name }}</h1>
         <p class="subtitle text-child-sm">{{ difficulty.description }}</p>
       </div>
@@ -431,7 +431,7 @@ onUnmounted(() => {
                 <div class="feedback-icon success">
                   <CheckCircle2 :size="22" />
                 </div>
-                <strong class="feedback-main">正确</strong>
+                <strong class="feedback-main">答对啦</strong>
               </template>
 
               <template v-else>
@@ -439,7 +439,7 @@ onUnmounted(() => {
                   <AlertCircle :size="22" />
                 </div>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <button class="feedback-continue-btn" @click="handleFeedbackClick">继续</button>
+                <button class="feedback-continue-btn" @click="handleFeedbackClick">继续答题</button>
               </template>
             </div>
           </div>

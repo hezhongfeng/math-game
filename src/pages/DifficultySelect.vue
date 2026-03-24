@@ -96,9 +96,9 @@ function isDifficultyLocked(difficulty) {
 
       <div class="headline-row">
         <div>
-          <p class="eyebrow">Mission Levels</p>
+          <p class="eyebrow">关卡挑战</p>
           <h1 class="title text-child-2xl">选择关卡</h1>
-          <p class="subtitle text-child-sm">按顺序通关，逐步解锁更高难度。</p>
+          <p class="subtitle text-child-sm">按顺序挑战，达到通过线后再解锁下一关。</p>
         </div>
       </div>
 
@@ -122,7 +122,7 @@ function isDifficultyLocked(difficulty) {
         <div class="section-header">
           <div class="section-copy">
             <span class="section-badge" :class="`badge-${group.color}`">{{ group.name }}</span>
-            <p class="section-note">完成本组后解锁下一阶段</p>
+            <p class="section-note">通过本组后继续挑战下一阶段</p>
           </div>
           <span class="section-count text-child-sm">{{ group.levels.length }} 关</span>
         </div>
