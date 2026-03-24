@@ -156,10 +156,9 @@ function isDifficultyLocked(difficulty) {
   margin-bottom: 18px;
   padding: 18px;
   border-radius: var(--radius-xl);
-  background: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-row,
@@ -187,7 +186,7 @@ function isDifficultyLocked(difficulty) {
   width: 48px;
   height: 48px;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--border-light);
 }
 
@@ -215,7 +214,7 @@ function isDifficultyLocked(difficulty) {
 .header-badge {
   padding: 10px 12px;
   color: var(--candy-pink-dark);
-  background: rgba(49, 120, 246, 0.12);
+  background: rgba(49, 120, 246, 0.08);
 }
 
 .headline-row {
@@ -245,7 +244,7 @@ function isDifficultyLocked(difficulty) {
 .progress-panel {
   padding: 16px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-light);
 }
 
@@ -318,7 +317,7 @@ function isDifficultyLocked(difficulty) {
 
 .section-count {
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-light);
   color: var(--text-secondary);
 }

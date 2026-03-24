@@ -59,16 +59,6 @@ const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
 const INPUT_DEBOUNCE = 100
 const SUBMIT_DEBOUNCE = 300
-const TIMER_UPDATE_INTERVAL = 1000
-const INCORRECT_FEEDBACK_DELAY = 1100
-
-const questionTimer = ref(0)
-let questionStartTime = null
-let timerInterval = null
-
-const gameTime = ref(0)
-let gameStartTime = null
-let gameTimeInterval = null
 
 let feedbackTimeout = null
 let streakRewardTimeout = null
@@ -102,53 +92,11 @@ function triggerHapticFeedback(level = 'medium') {
   }
 }
 
-function startGameTimeUpdater() {
-  gameStartTime = Date.now()
-  gameTime.value = 0
-
-  if (gameTimeInterval) {
-    clearInterval(gameTimeInterval)
-  }
-
-  gameTimeInterval = setInterval(() => {
-    gameTime.value = Math.floor((Date.now() - gameStartTime) / 1000)
-  }, TIMER_UPDATE_INTERVAL)
-}
-
-function stopGameTimeUpdater() {
-  if (gameTimeInterval) {
-    clearInterval(gameTimeInterval)
-    gameTimeInterval = null
-  }
-}
-
-function startQuestionTimer() {
-  questionStartTime = Date.now()
-  questionTimer.value = 0
-
-  if (timerInterval) {
-    clearInterval(timerInterval)
-  }
-
-  timerInterval = setInterval(() => {
-    questionTimer.value = Math.floor((Date.now() - questionStartTime) / 1000)
-  }, TIMER_UPDATE_INTERVAL)
-}
-
-function stopQuestionTimer() {
-  if (timerInterval) {
-    clearInterval(timerInterval)
-    timerInterval = null
-  }
-}
-
 async function initGame() {
   isLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 240))
   game.startGame(retryQuestions ? { questions: retryQuestions } : undefined)
   retryQuestions = null
-  startQuestionTimer()
-  startGameTimeUpdater()
   isLoading.value = false
 }
 
@@ -189,10 +137,7 @@ function submitAnswer() {
     return
   }
 
-  currentFeedbackState.value = 'incorrect-auto'
-  feedbackTimeout = setTimeout(() => {
-    handleNextQuestion()
-  }, INCORRECT_FEEDBACK_DELAY)
+  currentFeedbackState.value = 'incorrect-manual'
 }
 
 function triggerStreakReward() {
@@ -255,24 +200,16 @@ function handleNextQuestion() {
   isWaiting.value = false
   currentFeedbackState.value = 'idle'
   game.nextQuestion()
-  startQuestionTimer()
 }
 
 function handleFeedbackClick() {
-  if (!isCorrect.value && currentFeedbackState.value.startsWith('incorrect')) {
-    if (feedbackTimeout) {
-      clearTimeout(feedbackTimeout)
-      feedbackTimeout = null
-    }
-
+  if (!isCorrect.value && currentFeedbackState.value === 'incorrect-manual') {
     currentFeedbackState.value = 'idle'
     handleNextQuestion()
   }
 }
 
 function handleGameComplete() {
-  stopQuestionTimer()
-  stopGameTimeUpdater()
   game.completeGame()
   const result = {
     ...game.getResult(),
@@ -314,8 +251,6 @@ function resetRound({ preserveRetryQuestions = false, reviewRound = false } = {}
   streakCount.value = 0
   showStreakReward.value = false
   questionKey.value = 0
-  stopQuestionTimer()
-  stopGameTimeUpdater()
 
   if (feedbackTimeout) {
     clearTimeout(feedbackTimeout)
@@ -379,8 +314,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyPress)
-  stopQuestionTimer()
-  stopGameTimeUpdater()
 
   if (feedbackTimeout) {
     clearTimeout(feedbackTimeout)
@@ -439,7 +372,6 @@ onUnmounted(() => {
             :user-answer="userAnswer"
             :current-index="game.currentIndex.value"
             :total-questions="game.questions.value.length"
-            :question-timer="questionTimer"
           />
         </Transition>
 
@@ -464,8 +396,8 @@ onUnmounted(() => {
                 </div>
                 <p class="feedback-kicker">正确答案</p>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <p class="feedback-note">看一眼答案，系统会自动继续</p>
-                <button class="feedback-continue-btn" @click="handleFeedbackClick">继续答题</button>
+                <p class="feedback-note">看清楚答案后，再继续下一题</p>
+                <button class="feedback-continue-btn" @click="handleFeedbackClick">我知道了，继续</button>
               </template>
             </div>
           </div>
@@ -475,12 +407,9 @@ onUnmounted(() => {
       <section class="control-section">
         <div class="score-wrap">
           <ScoreBoard
-            :score="game.score.value"
             :current-index="game.currentIndex.value"
             :total-questions="game.questions.value.length"
             :correct-count="game.correctCount.value"
-            :duration="gameTime"
-            :accuracy="game.accuracy.value"
             :streak="streakCount"
           />
         </div>
@@ -516,10 +445,9 @@ onUnmounted(() => {
 
 .header-panel,
 .loading-panel {
-  background: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .header-panel {
@@ -544,7 +472,7 @@ onUnmounted(() => {
   height: 48px;
   border: none;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--text-secondary);
 }
 
@@ -561,7 +489,7 @@ onUnmounted(() => {
 
 .nav-btn-accent {
   color: var(--candy-pink-dark);
-  background: rgba(49, 120, 246, 0.12);
+  background: rgba(49, 120, 246, 0.08);
 }
 
 .title-group {
@@ -676,9 +604,9 @@ onUnmounted(() => {
   gap: 8px;
   padding: 20px 18px 18px;
   border-radius: var(--radius-lg);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.96);
   border: 2px solid var(--border-default);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .feedback-card.success {
@@ -687,9 +615,9 @@ onUnmounted(() => {
   justify-content: center;
   gap: 10px;
   padding: 14px 16px;
-  background: rgba(46, 196, 182, 0.12);
-  border-color: rgba(78, 205, 196, 0.48);
-  box-shadow: var(--shadow-md), var(--glow-mint);
+  background: rgba(46, 196, 182, 0.1);
+  border-color: rgba(78, 205, 196, 0.28);
+  box-shadow: var(--shadow-sm);
   pointer-events: none;
 }
 
@@ -697,9 +625,9 @@ onUnmounted(() => {
   width: min(100%, 360px);
   gap: 6px;
   padding: 16px 16px 14px;
-  background: linear-gradient(180deg, #fff7f3 0%, #fff1ea 100%);
-  border-color: rgba(230, 106, 106, 0.34);
-  box-shadow: var(--shadow-md);
+  background: #fff7f3;
+  border-color: rgba(230, 106, 106, 0.24);
+  box-shadow: var(--shadow-sm);
   pointer-events: auto;
 }
 
@@ -782,8 +710,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(238, 244, 255, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(238, 244, 255, 0.84);
 }
 
 .loading-panel {

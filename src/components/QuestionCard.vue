@@ -1,7 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import { Clock } from 'lucide-vue-next'
-import { formatTimePad } from '../utils/format'
 
 const props = defineProps({
   question: {
@@ -23,17 +21,12 @@ const props = defineProps({
   totalQuestions: {
     type: Number,
     default: 10
-  },
-  questionTimer: {
-    type: Number,
-    default: 0
   }
 })
 
 const shouldShowFeedback = computed(() => props.showAnswer && props.question?.userAnswer !== null)
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
-const formattedTime = computed(() => formatTimePad(props.questionTimer))
 
 const answerDisplay = computed(() => {
   if (shouldShowFeedback.value) {
@@ -47,10 +40,9 @@ const answerDisplay = computed(() => {
 <template>
   <div class="question-card">
     <div class="card-top">
-      <div class="counter-badge">{{ currentIndex + 1 }} / {{ totalQuestions }}</div>
-      <div class="timer-badge">
-        <Clock :size="18" />
-        <span>{{ formattedTime }}</span>
+      <div class="counter-badge">第 {{ currentIndex + 1 }} 题 / 共 {{ totalQuestions }} 题</div>
+      <div v-if="showAnswer" class="result-badge" :class="{ 'is-correct': isCorrect, 'is-wrong': isIncorrect }">
+        {{ isCorrect ? '回答正确' : '看一眼答案' }}
       </div>
     </div>
 
@@ -84,7 +76,6 @@ const answerDisplay = computed(() => {
 }
 
 .card-top,
-.timer-badge,
 .math-display {
   display: flex;
   align-items: center;
@@ -96,18 +87,26 @@ const answerDisplay = computed(() => {
 }
 
 .counter-badge,
-.timer-badge {
+.result-badge {
   padding: 8px 12px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--border-light);
   color: var(--text-secondary);
   font-size: var(--font-sm);
   font-weight: 800;
 }
 
-.timer-badge {
-  gap: 8px;
+.result-badge.is-correct {
+  color: var(--candy-mint-dark);
+  border-color: rgba(46, 196, 182, 0.2);
+  background: var(--candy-mint-soft);
+}
+
+.result-badge.is-wrong {
+  color: var(--candy-peach-dark);
+  border-color: rgba(242, 140, 82, 0.2);
+  background: var(--candy-peach-soft);
 }
 
 .math-display {
@@ -186,7 +185,7 @@ const answerDisplay = computed(() => {
   }
 
   .counter-badge,
-  .timer-badge {
+  .result-badge {
     padding: 8px 10px;
     font-size: 12px;
   }

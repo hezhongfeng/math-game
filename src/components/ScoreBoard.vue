@@ -1,13 +1,8 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { CheckCircle, Clock, Star, TrendingUp } from 'lucide-vue-next'
-import { formatTime } from '../utils/format'
+import { computed } from 'vue'
+import { CheckCircle } from 'lucide-vue-next'
 
 const props = defineProps({
-  score: {
-    type: Number,
-    default: 0
-  },
   currentIndex: {
     type: Number,
     default: 0
@@ -20,99 +15,70 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  duration: {
-    type: Number,
-    default: 0
-  },
-  accuracy: {
-    type: Number,
-    default: 0
-  },
   streak: {
     type: Number,
     default: 0
   }
 })
 
-const isScoreAnimating = ref(false)
-
-watch(() => props.score, (newVal, oldVal) => {
-  if (newVal > oldVal) {
-    isScoreAnimating.value = true
-    setTimeout(() => {
-      isScoreAnimating.value = false
-    }, 400)
-  }
-})
-
 const progress = computed(() => {
   if (props.totalQuestions === 0) return 0
-  return Math.round((props.currentIndex / props.totalQuestions) * 100)
+  return Math.round(((props.currentIndex + 1) / props.totalQuestions) * 100)
 })
 
-const formattedTime = computed(() => formatTime(props.duration))
+const remainingCount = computed(() => Math.max(props.totalQuestions - props.currentIndex - 1, 0))
+
+const statusText = computed(() => {
+  if (props.streak >= 5) {
+    return `节奏很好，已经连对 ${props.streak} 题`
+  }
+
+  if (props.streak >= 3) {
+    return '状态不错，继续保持'
+  }
+
+  if (remainingCount.value === 0) {
+    return '最后一题，稳稳收尾'
+  }
+
+  return `还剩 ${remainingCount.value} 题`
+})
 </script>
 
 <template>
   <div class="score-board">
-    <div class="progress-section">
-      <div class="progress-header">
-        <span>进度 {{ currentIndex }}/{{ totalQuestions }}</span>
-        <div class="progress-meta">
-          <span
-            v-if="streak >= 3"
-            :key="streak"
-            class="streak-chip"
-            :class="{ 'is-highlight': streak >= 3 }"
-          >
-            连对 {{ streak }}
-          </span>
-          <strong>{{ progress }}%</strong>
-        </div>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" :class="{ 'is-complete': progress >= 100 }" :style="{ width: `${progress}%` }"></div>
+    <div class="progress-header">
+      <span>当前进度</span>
+      <div class="progress-meta">
+        <span
+          v-if="streak >= 3"
+          :key="streak"
+          class="streak-chip"
+          :class="{ 'is-highlight': streak >= 5 }"
+        >
+          连对 {{ streak }}
+        </span>
+        <strong>{{ progress }}%</strong>
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-icon score-icon">
-          <Star :size="18" />
-        </div>
-        <div>
-          <p class="stat-value font-number" :class="{ 'score-pop': isScoreAnimating }">{{ score }}</p>
-          <p class="stat-label">得分</p>
-        </div>
+    <div class="progress-track">
+      <div class="progress-fill" :class="{ 'is-complete': progress >= 100 }" :style="{ width: `${progress}%` }"></div>
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-copy">
+        <p class="summary-label">当前状态</p>
+        <p class="summary-value">{{ statusText }}</p>
       </div>
 
-      <div class="stat-item">
+      <div class="summary-pill">
         <div class="stat-icon correct-icon">
           <CheckCircle :size="18" />
         </div>
         <div>
-          <p class="stat-value font-number">{{ correctCount }}</p>
-          <p class="stat-label">答对</p>
-        </div>
-      </div>
-
-      <div class="stat-item">
-        <div class="stat-icon time-icon">
-          <Clock :size="18" />
-        </div>
-        <div>
-          <p class="stat-value font-number">{{ formattedTime }}</p>
-          <p class="stat-label">用时</p>
-        </div>
-      </div>
-
-      <div class="stat-item">
-        <div class="stat-icon accuracy-icon">
-          <TrendingUp :size="18" />
-        </div>
-        <div>
-          <p class="stat-value font-number">{{ accuracy || 0 }}%</p>
-          <p class="stat-label">正确率</p>
+          <p class="stat-value font-number">{{ correctCount }}/{{ totalQuestions }}</p>
+          <p class="stat-label">已答对</p>
         </div>
       </div>
     </div>
@@ -122,15 +88,15 @@ const formattedTime = computed(() => formatTime(props.duration))
 <style scoped>
 .score-board {
   padding: 14px;
-  border-radius: var(--radius-xl);
-  background: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .progress-header,
-.stat-item {
+.summary-row,
+.summary-pill {
   display: flex;
   align-items: center;
 }
@@ -157,22 +123,20 @@ const formattedTime = computed(() => formatTime(props.duration))
   padding: 4px 8px;
   border-radius: var(--radius-full);
   color: var(--candy-pink-dark);
-  background: rgba(49, 120, 246, 0.12);
-  border: 1px solid rgba(49, 120, 246, 0.2);
+  background: rgba(49, 120, 246, 0.08);
+  border: 1px solid rgba(49, 120, 246, 0.14);
   font-size: 12px;
   font-weight: 800;
-  animation: streakChipIn var(--duration-fast) var(--ease-out);
 }
 
 .streak-chip.is-highlight {
   color: var(--candy-yellow-dark);
   background: var(--candy-yellow-soft);
-  border-color: rgba(255, 230, 109, 0.25);
+  border-color: rgba(245, 201, 74, 0.2);
 }
 
 .progress-track {
   height: 8px;
-  margin-bottom: 12px;
   overflow: hidden;
   border-radius: var(--radius-full);
   background: rgba(49, 120, 246, 0.12);
@@ -187,36 +151,38 @@ const formattedTime = computed(() => formatTime(props.duration))
 
 .progress-fill.is-complete {
   box-shadow: var(--glow-mint);
-  animation: progressGlow 1.5s ease-in-out infinite;
 }
 
-@keyframes progressGlow {
-  0%, 100% { box-shadow: var(--glow-mint); }
-  50% { box-shadow: 0 0 12px rgba(78, 205, 196, 0.5); }
+.summary-row {
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
 }
 
-@keyframes streakChipIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.summary-copy {
+  min-width: 0;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.summary-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.summary-value {
+  margin-top: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.summary-pill {
   gap: 8px;
-}
-
-.stat-item {
-  gap: 8px;
+  flex-shrink: 0;
   padding: 10px 12px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.82);
   border: 1px solid var(--border-light);
 }
 
@@ -229,22 +195,7 @@ const formattedTime = computed(() => formatTime(props.duration))
   border-radius: 12px;
 }
 
-.score-icon {
-  color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
-}
-
 .correct-icon {
-  color: var(--candy-mint-dark);
-  background: var(--candy-mint-soft);
-}
-
-.time-icon {
-  color: var(--candy-yellow-dark);
-  background: var(--candy-yellow-soft);
-}
-
-.accuracy-icon {
   color: var(--candy-mint-dark);
   background: var(--candy-mint-soft);
 }
@@ -267,24 +218,19 @@ const formattedTime = computed(() => formatTime(props.duration))
     padding: 12px;
   }
 
-  .progress-track {
-    margin-bottom: 12px;
+  .summary-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stat-item {
-    padding: 8px 10px;
+  .summary-pill {
+    width: 100%;
   }
 }
 
 @media (max-width: 959px) and (max-height: 860px) {
   .score-board {
     padding: 10px;
-    border-radius: 18px;
-    box-shadow: var(--shadow-sm);
   }
 
   .progress-header {
@@ -297,11 +243,11 @@ const formattedTime = computed(() => formatTime(props.duration))
     font-size: 11px;
   }
 
-  .progress-track {
-    margin-bottom: 8px;
+  .summary-row {
+    margin-top: 8px;
   }
 
-  .stat-item {
+  .summary-pill {
     padding: 8px 10px;
   }
 
@@ -317,11 +263,6 @@ const formattedTime = computed(() => formatTime(props.duration))
 
   .stat-label {
     font-size: 12px;
-  }
-
-  .stats-grid .stat-item:nth-child(3),
-  .stats-grid .stat-item:nth-child(4) {
-    display: none;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { CheckCircle, Clock, Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
 import { formatTime } from '../utils/format'
 import { getRatingText, getStarCount } from '../utils/stars'
@@ -24,23 +24,32 @@ const emit = defineEmits(['retry', 'retry-mistakes', 'home'])
 const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
+const showMistakesPanel = ref(false)
+
 const subtitleText = computed(() => {
   if (!hasIncorrectQuestions.value) {
     return '这一轮全对啦，继续保持这个节奏。'
   }
 
   if (props.isNewBest) {
-    return '刷新了这关的最好成绩，再把错题巩固一下会更稳。'
+    return '刷新了这关的最好成绩，先看错题再巩固一轮会更稳。'
   }
 
-  return '这一轮已经顺利完成，把错题再看一遍会更扎实。'
+  return '这一轮已经顺利完成，先看错在哪里，再巩固一轮会更扎实。'
 })
+
 const summaryText = computed(() => {
   if (!hasIncorrectQuestions.value) {
     return '这一轮全部答对，节奏很稳。'
   }
 
-  return `本轮有 ${incorrectQuestions.value.length} 题需要回顾，趁热再练一遍会更稳。`
+  return `本轮有 ${incorrectQuestions.value.length} 题需要回顾。`
+})
+
+watch(() => props.show, (visible) => {
+  if (visible) {
+    showMistakesPanel.value = false
+  }
 })
 
 function handleRetry() {
@@ -54,6 +63,14 @@ function handleHome() {
 function handleRetryMistakes() {
   emit('retry-mistakes')
 }
+
+function openMistakesPanel() {
+  showMistakesPanel.value = true
+}
+
+function closeMistakesPanel() {
+  showMistakesPanel.value = false
+}
 </script>
 
 <template>
@@ -61,126 +78,162 @@ function handleRetryMistakes() {
     <Transition name="modal">
       <div v-if="show" class="result-overlay">
         <div class="result-card" data-testid="result-modal">
-          <div class="topline">
-            <span class="result-chip">
-              <Target :size="16" />
-              <span>本轮完成</span>
-            </span>
-            <span v-if="isNewBest" class="record-chip">
-              <Sparkles :size="14" />
-              <span>新纪录</span>
-            </span>
-          </div>
-
-          <h2 class="result-title">{{ getRatingText(result.accuracy) }}</h2>
-          <p class="result-subtitle">{{ subtitleText }}</p>
-
-          <div class="star-rating">
-            <Star
-              v-for="n in 5"
-              :key="n"
-              :size="24"
-              :class="['star-icon', n <= stars ? 'star-active' : 'star-inactive']"
-              fill="currentColor"
-            />
-          </div>
-
-          <section class="summary-section">
-            <div class="section-head">
-              <h3 class="section-title">本轮表现</h3>
-              <p class="section-note">{{ summaryText }}</p>
+          <template v-if="!showMistakesPanel">
+            <div class="topline">
+              <span class="result-chip">
+                <Target :size="16" />
+                <span>本轮完成</span>
+              </span>
+              <span v-if="isNewBest" class="record-chip">
+                <Sparkles :size="14" />
+                <span>新纪录</span>
+              </span>
             </div>
 
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-icon score">
-                  <Target :size="18" />
-                </div>
-                <div>
-                  <p class="stat-label">得分</p>
-                  <p class="stat-value">{{ result.score }}</p>
-                </div>
-              </div>
+            <h2 class="result-title">{{ getRatingText(result.accuracy) }}</h2>
+            <p class="result-subtitle">{{ subtitleText }}</p>
 
-              <div class="stat-card">
-                <div class="stat-icon correct">
-                  <CheckCircle :size="18" />
-                </div>
-                <div>
-                  <p class="stat-label">正确</p>
-                  <p class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</p>
-                </div>
-              </div>
-
-              <div class="stat-card">
-                <div class="stat-icon accuracy">
-                  <Star :size="18" />
-                </div>
-                <div>
-                  <p class="stat-label">正确率</p>
-                  <p class="stat-value">{{ result.accuracy }}%</p>
-                </div>
-              </div>
-
-              <div class="stat-card">
-                <div class="stat-icon time">
-                  <Clock :size="18" />
-                </div>
-                <div>
-                  <p class="stat-label">用时</p>
-                  <p class="stat-value">{{ formatTime(result.duration) }}</p>
-                </div>
-              </div>
+            <div class="star-rating">
+              <Star
+                v-for="n in 5"
+                :key="n"
+                :size="24"
+                :class="['star-icon', n <= stars ? 'star-active' : 'star-inactive']"
+                fill="currentColor"
+              />
             </div>
-          </section>
 
-          <section v-if="hasIncorrectQuestions" class="mistakes-section">
-            <div class="mistakes-head">
-              <h3 class="mistakes-title">这几题再巩固</h3>
+            <section class="summary-section">
+              <div class="section-head">
+                <h3 class="section-title">本轮表现</h3>
+                <p class="section-note">{{ summaryText }}</p>
+              </div>
+
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-icon score">
+                    <Target :size="18" />
+                  </div>
+                  <div>
+                    <p class="stat-label">得分</p>
+                    <p class="stat-value">{{ result.score }}</p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon correct">
+                    <CheckCircle :size="18" />
+                  </div>
+                  <div>
+                    <p class="stat-label">正确</p>
+                    <p class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon accuracy">
+                    <Star :size="18" />
+                  </div>
+                  <div>
+                    <p class="stat-label">正确率</p>
+                    <p class="stat-value">{{ result.accuracy }}%</p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon time">
+                    <Clock :size="18" />
+                  </div>
+                  <div>
+                    <p class="stat-label">用时</p>
+                    <p class="stat-value">{{ formatTime(result.duration) }}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="actions">
+              <button
+                v-if="hasIncorrectQuestions"
+                class="btn-secondary"
+                type="button"
+                @click="openMistakesPanel"
+              >
+                <span>查看错题</span>
+              </button>
+
+              <button
+                v-if="hasIncorrectQuestions"
+                class="btn-primary"
+                data-testid="result-retry-mistakes-btn"
+                @click="handleRetryMistakes"
+              >
+                <RotateCcw :size="18" />
+                <span>再练错题</span>
+              </button>
+
+              <button
+                v-else
+                class="btn-primary"
+                data-testid="result-retry-btn"
+                @click="handleRetry"
+              >
+                <RotateCcw :size="18" />
+                <span>重练本轮</span>
+              </button>
+
+              <button class="btn-secondary ghost" data-testid="result-home-btn" @click="handleHome">
+                <Home :size="18" />
+                <span>返回选关</span>
+              </button>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="mistakes-headline">
+              <div>
+                <p class="mistakes-kicker">错题回看</p>
+                <h2 class="result-title">先看错在哪里</h2>
+              </div>
               <span class="mistakes-count">{{ incorrectQuestions.length }} 题待巩固</span>
             </div>
 
-            <div class="mistakes-list">
-              <article
-                v-for="item in incorrectQuestions"
-                :key="`${item.operand1}-${item.operator}-${item.operand2}-${item.userAnswer}`"
-                class="mistake-card"
+            <section class="mistakes-section">
+              <div class="mistakes-list">
+                <article
+                  v-for="item in incorrectQuestions"
+                  :key="`${item.operand1}-${item.operator}-${item.operand2}-${item.userAnswer}`"
+                  class="mistake-card"
+                >
+                  <div class="mistake-expression">
+                    <span>{{ item.operand1 }}</span>
+                    <span>{{ item.operator }}</span>
+                    <span>{{ item.operand2 }}</span>
+                    <span>=</span>
+                    <strong>{{ item.correctAnswer }}</strong>
+                  </div>
+                  <p class="mistake-answer">
+                    我的答案：<span>{{ item.userAnswer }}</span>
+                  </p>
+                </article>
+              </div>
+            </section>
+
+            <div class="actions">
+              <button
+                class="btn-primary"
+                data-testid="result-retry-mistakes-btn"
+                @click="handleRetryMistakes"
               >
-                <div class="mistake-expression">
-                  <span>{{ item.operand1 }}</span>
-                  <span>{{ item.operator }}</span>
-                  <span>{{ item.operand2 }}</span>
-                  <span>=</span>
-                  <strong>{{ item.correctAnswer }}</strong>
-                </div>
-                <p class="mistake-answer">
-                  我的答案：<span>{{ item.userAnswer }}</span>
-                </p>
-              </article>
+                <RotateCcw :size="18" />
+                <span>开始错题练习</span>
+              </button>
+
+              <button class="btn-secondary" type="button" @click="closeMistakesPanel">
+                <span>返回总结</span>
+              </button>
             </div>
-          </section>
-
-          <div class="actions">
-            <button
-              v-if="hasIncorrectQuestions"
-              class="btn-primary"
-              data-testid="result-retry-mistakes-btn"
-              @click="handleRetryMistakes"
-            >
-              <RotateCcw :size="18" />
-              <span>再练错题</span>
-            </button>
-
-            <button class="btn-primary" data-testid="result-retry-btn" @click="handleRetry">
-              <RotateCcw :size="18" />
-              <span>重练本轮</span>
-            </button>
-
-            <button class="btn-secondary" data-testid="result-home-btn" @click="handleHome">
-              <Home :size="18" />
-              <span>返回选关</span>
-            </button>
-          </div>
+          </template>
         </div>
       </div>
     </Transition>
@@ -196,19 +249,18 @@ function handleRetryMistakes() {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(18, 30, 49, 0.34);
-  backdrop-filter: blur(10px);
+  background: rgba(18, 30, 49, 0.28);
 }
 
 .result-card {
   width: min(100%, 420px);
-  max-height: min(92vh, 760px);
+  max-height: min(88vh, 720px);
   overflow: auto;
   padding: 22px;
   border-radius: var(--radius-xl);
-  background: var(--bg-panel-strong);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow: var(--shadow-lg);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
   animation: resultCardIn var(--duration-normal) var(--ease-out);
 }
 
@@ -217,7 +269,9 @@ function handleRetryMistakes() {
 .record-chip,
 .actions,
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.mistakes-headline,
+.mistake-expression {
   display: flex;
   align-items: center;
 }
@@ -239,7 +293,7 @@ function handleRetryMistakes() {
 
 .result-chip {
   color: var(--candy-pink-dark);
-  background: rgba(49, 120, 246, 0.12);
+  background: rgba(49, 120, 246, 0.08);
 }
 
 .record-chip {
@@ -288,21 +342,15 @@ function handleRetryMistakes() {
 }
 
 .star-inactive {
-  color: #FFE8E0;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  color: #ffe8e0;
 }
 
 .summary-section,
 .mistakes-section {
   margin-bottom: 18px;
   padding: 14px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.68);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.82);
   border: 1px solid var(--border-light);
 }
 
@@ -310,8 +358,7 @@ function handleRetryMistakes() {
   margin-bottom: 10px;
 }
 
-.section-title,
-.mistakes-title {
+.section-title {
   color: var(--text-primary);
   font-size: var(--font-base);
   font-weight: 800;
@@ -324,62 +371,10 @@ function handleRetryMistakes() {
   line-height: 1.5;
 }
 
-.mistakes-head,
-.mistake-expression {
-  display: flex;
-  align-items: center;
-}
-
-.mistakes-head {
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.mistakes-count {
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  font-weight: 700;
-}
-
-.mistakes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 180px;
-  overflow: auto;
-}
-
-.mistake-card {
-  padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(255, 107, 107, 0.12);
-}
-
-.mistake-expression {
-  gap: 8px;
-  flex-wrap: wrap;
-  color: var(--text-primary);
-  font-size: var(--font-lg);
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.mistake-expression strong {
-  color: var(--candy-mint-dark);
-}
-
-.mistake-answer {
-  margin-top: 6px;
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  font-weight: 700;
-}
-
-.mistake-answer span {
-  color: var(--candy-red-dark);
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .stat-card {
@@ -388,7 +383,7 @@ function handleRetryMistakes() {
   gap: 10px;
   padding: 14px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--border-light);
 }
 
@@ -433,9 +428,66 @@ function handleRetryMistakes() {
   font-weight: 800;
 }
 
+.mistakes-headline {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mistakes-kicker {
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.mistakes-count {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.mistakes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.mistake-card {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(242, 140, 82, 0.14);
+}
+
+.mistake-expression {
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--text-primary);
+  font-size: var(--font-lg);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.mistake-expression strong {
+  color: var(--candy-mint-dark);
+}
+
+.mistake-answer {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.mistake-answer span {
+  color: var(--candy-red-dark);
+}
+
 .actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -445,21 +497,25 @@ function handleRetryMistakes() {
   gap: 8px;
   width: 100%;
   height: 52px;
-  border: none;
   border-radius: var(--radius-md);
   font-size: var(--font-base);
   font-weight: 800;
 }
 
 .btn-primary {
+  border: none;
   color: white;
-  background: linear-gradient(135deg, var(--candy-pink-light) 0%, var(--candy-pink-dark) 100%);
+  background: var(--candy-pink-dark);
 }
 
 .btn-secondary {
-  grid-column: 1 / -1;
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.btn-secondary.ghost {
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.76);
 }
 
 .btn-primary:active,
@@ -469,13 +525,11 @@ function handleRetryMistakes() {
 
 @media (hover: hover) {
   .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md), var(--glow-pink);
+    background: #295fcb;
   }
 
   .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.92);
-    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.98);
   }
 }
 
@@ -518,58 +572,14 @@ function handleRetryMistakes() {
   }
 }
 
-.modal-enter-from .result-card,
-.modal-leave-to .result-card {
-  transform: translateY(16px) scale(0.98);
-}
-
 @media (max-width: 420px) {
-  .result-overlay {
-    align-items: flex-end;
-    padding: 12px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
-  }
-
   .result-card {
-    width: 100%;
-    max-height: min(88vh, 820px);
     padding: 18px;
     border-radius: var(--radius-lg);
   }
 
-  .topline {
-    align-items: flex-start;
-    flex-direction: column;
-    margin-bottom: 14px;
-  }
-
-  .result-title {
-    font-size: 28px;
-  }
-
-  .result-subtitle {
-    line-height: 1.55;
-  }
-
-  .star-rating {
-    margin: 14px 0 16px;
-  }
-
   .stats-grid {
     grid-template-columns: 1fr;
-  }
-
-  .actions {
-    grid-template-columns: 1fr;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-  }
-
-  .btn-secondary {
-    grid-column: auto;
   }
 }
 </style>

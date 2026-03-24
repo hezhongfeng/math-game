@@ -120,10 +120,9 @@ onMounted(() => {
 
 .hero-panel,
 .action-panel {
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  background: var(--bg-panel);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shadow-panel);
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-sm);
   opacity: 0;
   transform: translateY(12px);
   transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
@@ -171,7 +170,7 @@ onMounted(() => {
   gap: 8px;
   padding: 8px 12px;
   border-radius: var(--radius-full);
-  background: rgba(49, 120, 246, 0.12);
+  background: rgba(49, 120, 246, 0.08);
   color: var(--candy-pink-dark);
   font-size: var(--font-sm);
   font-weight: 700;
@@ -214,7 +213,7 @@ onMounted(() => {
   margin-bottom: 22px;
   padding: 16px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-light);
 }
 
@@ -252,7 +251,7 @@ onMounted(() => {
   gap: 12px;
   padding: 16px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--border-light);
 }
 
@@ -303,9 +302,9 @@ onMounted(() => {
   gap: 12px;
   height: 64px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--candy-pink-light) 0%, var(--candy-pink-dark) 100%);
+  background: var(--candy-pink-dark);
   color: white;
-  box-shadow: var(--shadow-md), var(--glow-pink);
+  box-shadow: var(--shadow-sm);
   font-size: var(--font-lg);
   font-weight: 800;
 }
@@ -318,7 +317,7 @@ onMounted(() => {
   opacity: 0.6;
   transform: scale(0.94);
   box-shadow: var(--shadow-sm);
-  background: linear-gradient(135deg, var(--candy-pink-dark) 0%, #1b4fb2 100%);
+  background: #295fcb;
   transition: all var(--duration-normal) var(--ease-out);
 }
 
@@ -329,7 +328,7 @@ onMounted(() => {
 
   .btn-main:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-lg), var(--glow-pink);
+    box-shadow: var(--shadow-md);
   }
 }
 

@@ -19,8 +19,7 @@ import PWAUpdatePrompt from './components/PWAUpdatePrompt.vue'
 .app-shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(49, 120, 246, 0.12), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(46, 196, 182, 0.12), transparent 32%),
-    linear-gradient(180deg, #f4f8ff 0%, #edf4ff 48%, #e8f2ff 100%);
+    radial-gradient(circle at top left, rgba(49, 120, 246, 0.08), transparent 28%),
+    linear-gradient(180deg, #f6f9ff 0%, #eef4ff 100%);
 }
 </style>

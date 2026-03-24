@@ -100,9 +100,9 @@ function handleSelect(event) {
   gap: 16px;
   padding: 18px;
   border-radius: var(--radius-lg);
-  background: var(--bg-panel-strong);
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
 }
@@ -121,13 +121,13 @@ function handleSelect(event) {
   .difficulty-card:hover:not(.is-locked) {
     transform: translateY(-1px);
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
   }
 }
 
 .difficulty-card.is-completed {
   border-color: rgba(46, 196, 182, 0.32);
-  box-shadow: var(--shadow-sm), var(--glow-mint);
+  box-shadow: inset 0 0 0 1px rgba(46, 196, 182, 0.12);
 }
 
 .difficulty-card.is-locked {

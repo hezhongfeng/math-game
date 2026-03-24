@@ -1,4 +1,4 @@
-// 题目生成器 - 生成随机算术题，确保减法结果为非负数
+// 题目生成器 - 生成更有训练价值的算术题，确保减法结果为非负数
 
 /**
  * 生成指定范围内的随机整数（包含边界）
@@ -11,69 +11,188 @@ function randomInt(min, max) {
 }
 
 /**
- * 生成加法题目
- * @param {number} min - 最小值
- * @param {number} max - 最大值
- * @returns {Object} { operand1, operand2, operator, answer }
+ * 随机打乱数组
+ * @param {Array} items - 原始数组
+ * @returns {Array} 打乱后的新数组
  */
-function generateAddition(min, max) {
-  const operand1 = randomInt(min, max)
-  const operand2 = randomInt(min, max)
-  return {
-    operand1,
-    operand2,
-    operator: '+',
-    answer: operand1 + operand2
+function shuffle(items) {
+  const list = [...items]
+
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomInt(0, index)
+    const current = list[index]
+    list[index] = list[swapIndex]
+    list[swapIndex] = current
   }
+
+  return list
 }
 
 /**
- * 生成减法题目（确保结果为非负数）
- * @param {number} min - 最小值
- * @param {number} max - 最大值
- * @returns {Object} { operand1, operand2, operator, answer }
+ * 判断是否为低范围阶段
+ * @param {number} max - 题目最大值
+ * @returns {boolean} 是否为低范围阶段
  */
-function generateSubtraction(min, max) {
-  const operand1 = randomInt(min, max)
-  const operand2 = randomInt(min, operand1) // 确保结果为非负数
-  return {
-    operand1,
-    operand2,
-    operator: '-',
-    answer: operand1 - operand2
+function isEarlyStage(max) {
+  return max <= 5
+}
+
+/**
+ * 为题目打分，分数越高越值得进入练习集合
+ * @param {Object} question - 题目对象
+ * @param {number} max - 当前关卡最大值
+ * @returns {number} 训练价值分数
+ */
+function getQuestionWeight(question, max) {
+  const { operand1, operand2, operator, answer } = question
+  let weight = 1
+
+  if (operator === '+') {
+    if (operand1 === 0 && operand2 === 0) {
+      weight -= 0.7
+    }
+
+    if ((operand1 === 0 || operand2 === 0) && !isEarlyStage(max)) {
+      weight -= 0.35
+    }
+
+    if (operand1 === operand2) {
+      weight += 0.2
+    }
+
+    if (answer === 10) {
+      weight += 0.9
+    }
+
+    if (max >= 10 && answer > 10) {
+      weight += 0.45
+    }
   }
+
+  if (operator === '-') {
+    if (answer === 0 && !isEarlyStage(max)) {
+      weight -= 0.45
+    }
+
+    if (operand2 === 0 && !isEarlyStage(max)) {
+      weight -= 0.4
+    }
+
+    if (answer === 10) {
+      weight += 0.75
+    }
+
+    if (max >= 10 && operand1 >= 10) {
+      weight += 0.35
+    }
+  }
+
+  if (Math.max(operand1, operand2) >= Math.ceil(max * 0.7)) {
+    weight += 0.3
+  }
+
+  if (answer >= Math.ceil(max * 0.6)) {
+    weight += 0.15
+  }
+
+  return Math.max(weight, 0.15)
 }
 
 /**
- * 生成混合运算题目（随机选择加法或减法）
+ * 生成加法题池
  * @param {number} min - 最小值
  * @param {number} max - 最大值
- * @returns {Object} { operand1, operand2, operator, answer }
+ * @returns {Array} 题目池
  */
-function generateMixed(min, max) {
-  return Math.random() > 0.5 
-    ? generateAddition(min, max)
-    : generateSubtraction(min, max)
+function createAdditionPool(min, max) {
+  const pool = []
+
+  for (let operand1 = min; operand1 <= max; operand1 += 1) {
+    for (let operand2 = operand1; operand2 <= max; operand2 += 1) {
+      pool.push({
+        operand1,
+        operand2,
+        operator: '+',
+        answer: operand1 + operand2
+      })
+    }
+  }
+
+  return pool
 }
 
 /**
- * 根据运算类型生成题目
+ * 生成减法题池
+ * @param {number} min - 最小值
+ * @param {number} max - 最大值
+ * @returns {Array} 题目池
+ */
+function createSubtractionPool(min, max) {
+  const pool = []
+
+  for (let operand1 = min; operand1 <= max; operand1 += 1) {
+    for (let operand2 = min; operand2 <= operand1; operand2 += 1) {
+      pool.push({
+        operand1,
+        operand2,
+        operator: '-',
+        answer: operand1 - operand2
+      })
+    }
+  }
+
+  return pool
+}
+
+/**
+ * 根据运算类型创建题池
  * @param {string} operation - 运算类型
  * @param {number} min - 最小值
  * @param {number} max - 最大值
- * @returns {Object} { operand1, operand2, operator, answer }
+ * @returns {Array} 题目池
  */
-function generateQuestionByOperation(operation, min, max) {
-  switch (operation) {
-    case 'add':
-      return generateAddition(min, max)
-    case 'subtract':
-      return generateSubtraction(min, max)
-    case 'mixed':
-      return generateMixed(min, max)
-    default:
-      return generateAddition(min, max)
+function createQuestionPool(operation, min, max) {
+  if (operation === 'add') {
+    return createAdditionPool(min, max)
   }
+
+  if (operation === 'subtract') {
+    return createSubtractionPool(min, max)
+  }
+
+  return [...createAdditionPool(min, max), ...createSubtractionPool(min, max)]
+}
+
+/**
+ * 从题池中按训练价值抽取题目
+ * @param {Array} pool - 候选题池
+ * @param {number} questionCount - 目标题数
+ * @param {number} max - 当前关卡最大值
+ * @returns {Array} 抽取后的题目列表
+ */
+function selectQuestions(pool, questionCount, max) {
+  const weightedPool = shuffle(pool).map((question) => ({
+    ...question,
+    weight: getQuestionWeight(question, max)
+  }))
+
+  weightedPool.sort((left, right) => right.weight - left.weight)
+
+  const primaryCount = Math.min(questionCount, Math.max(Math.ceil(questionCount * 0.65), 6))
+  const primaryPool = weightedPool.slice(0, Math.max(primaryCount * 2, primaryCount))
+  const secondaryPool = weightedPool.slice(Math.max(primaryCount * 2, primaryCount))
+
+  const selectedPrimary = shuffle(primaryPool).slice(0, primaryCount)
+  const selectedSecondary = shuffle(secondaryPool).slice(0, questionCount - selectedPrimary.length)
+  const selectedQuestions = [...selectedPrimary, ...selectedSecondary]
+
+  if (selectedQuestions.length < questionCount) {
+    const fallbackQuestions = shuffle(weightedPool)
+      .slice(0, questionCount - selectedQuestions.length)
+    selectedQuestions.push(...fallbackQuestions)
+  }
+
+  return shuffle(selectedQuestions).slice(0, questionCount).map(({ weight, ...question }) => question)
 }
 
 /**
@@ -82,7 +201,6 @@ function generateQuestionByOperation(operation, min, max) {
  * @returns {Array} 题目列表
  */
 export function generateQuestions(difficulty) {
-  // 防御性检查：如果 difficulty 无效，返回空数组
   if (!difficulty || !difficulty.range) {
     console.warn('[generator] 无效的难度配置:', difficulty)
     return []
@@ -90,34 +208,20 @@ export function generateQuestions(difficulty) {
 
   const { range, operation, questionCount } = difficulty
   const [min, max] = range
+  const pool = createQuestionPool(operation, min, max)
 
-  // 使用 Set 来跟踪已生成的题目，避免重复
-  const questionSet = new Set()
-  const questions = []
-  let attempts = 0
-  const maxAttempts = questionCount * 10 // 防止无限循环
-
-  while (questions.length < questionCount && attempts < maxAttempts) {
-    attempts++
-    const question = generateQuestionByOperation(operation, min, max)
-
-    // 生成唯一标识符
-    const key = `${question.operand1}${question.operator}${question.operand2}`
-
-    // 如果题目未重复，则添加
-    if (!questionSet.has(key)) {
-      questionSet.add(key)
-      questions.push({ ...question, id: questions.length + 1, userAnswer: null, isCorrect: null })
-    }
+  if (!pool.length) {
+    return []
   }
 
-  // 如果去重后题目不够，允许重复（对于极小范围的情况）
-  while (questions.length < questionCount) {
-    const question = generateQuestionByOperation(operation, min, max)
-    questions.push({ ...question, id: questions.length + 1, userAnswer: null, isCorrect: null })
-  }
+  const questions = selectQuestions(pool, questionCount, max)
 
-  return questions
+  return questions.map((question, index) => ({
+    ...question,
+    id: index + 1,
+    userAnswer: null,
+    isCorrect: null
+  }))
 }
 
 /**

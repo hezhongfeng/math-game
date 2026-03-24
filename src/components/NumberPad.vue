@@ -60,11 +60,10 @@ function handleSubmit() {
 <style scoped>
 .number-pad {
   padding: 14px;
-  border-radius: var(--radius-xl);
-  background: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .number-pad.is-disabled {
@@ -88,7 +87,7 @@ function handleSubmit() {
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.92);
   color: var(--text-primary);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   font-size: 38px;
   font-weight: 800;
   cursor: pointer;
@@ -117,7 +116,7 @@ function handleSubmit() {
 
   .btn-submit:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-lg), var(--glow-mint);
+    box-shadow: var(--shadow-sm);
   }
 }
 
@@ -128,9 +127,9 @@ function handleSubmit() {
 
 .btn-submit {
   color: white;
-  background: linear-gradient(135deg, var(--candy-pink-light) 0%, var(--candy-pink-dark) 100%);
-  border-color: transparent;
-  box-shadow: var(--shadow-md), var(--glow-pink);
+  background: var(--candy-pink-dark);
+  border-color: var(--candy-pink-dark);
+  box-shadow: none;
 }
 
 @media (min-width: 768px) {
@@ -174,7 +173,6 @@ function handleSubmit() {
     padding: 8px;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(12px);
   }
 
   .pad-grid {
@@ -188,7 +186,7 @@ function handleSubmit() {
   }
 
   .btn-submit {
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
   }
 
   .num-btn svg {
