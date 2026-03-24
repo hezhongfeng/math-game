@@ -2,13 +2,13 @@
 
 // LocalStorage 存储键名 - 集中管理避免冲突
 export const STORAGE_KEYS = {
-  GAME_DATA: 'math-game-data',
-  SETTINGS: 'math-game-settings'
+  GAME_DATA: 'math-game-data'
 }
 
 export const GAME_CONFIG = {
   FEEDBACK_DELAY: 800,
-  MAX_ANSWER_LENGTH: 4
+  MAX_ANSWER_LENGTH: 4,
+  PASS_ACCURACY: 80
 }
 
 export const AUDIO_ENGINE = {

@@ -24,6 +24,13 @@ const emit = defineEmits(['retry', 'retry-mistakes', 'home'])
 const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
+const summaryText = computed(() => {
+  if (!hasIncorrectQuestions.value) {
+    return '这一轮全部答对了，状态很稳。'
+  }
+
+  return `本轮有 ${incorrectQuestions.value.length} 题需要再看看，先把容易错的地方复盘一下。`
+})
 
 function handleRetry() {
   emit('retry')
@@ -67,52 +74,59 @@ function handleRetryMistakes() {
             />
           </div>
 
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon score">
-                <Target :size="18" />
-              </div>
-              <div>
-                <p class="stat-label">得分</p>
-                <p class="stat-value">{{ result.score }}</p>
-              </div>
+          <section class="summary-section">
+            <div class="section-head">
+              <h3 class="section-title">成绩总结</h3>
+              <p class="section-note">{{ summaryText }}</p>
             </div>
 
-            <div class="stat-card">
-              <div class="stat-icon correct">
-                <CheckCircle :size="18" />
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon score">
+                  <Target :size="18" />
+                </div>
+                <div>
+                  <p class="stat-label">得分</p>
+                  <p class="stat-value">{{ result.score }}</p>
+                </div>
               </div>
-              <div>
-                <p class="stat-label">正确</p>
-                <p class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</p>
-              </div>
-            </div>
 
-            <div class="stat-card">
-              <div class="stat-icon accuracy">
-                <Star :size="18" />
+              <div class="stat-card">
+                <div class="stat-icon correct">
+                  <CheckCircle :size="18" />
+                </div>
+                <div>
+                  <p class="stat-label">正确</p>
+                  <p class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</p>
+                </div>
               </div>
-              <div>
-                <p class="stat-label">正确率</p>
-                <p class="stat-value">{{ result.accuracy }}%</p>
-              </div>
-            </div>
 
-            <div class="stat-card">
-              <div class="stat-icon time">
-                <Clock :size="18" />
+              <div class="stat-card">
+                <div class="stat-icon accuracy">
+                  <Star :size="18" />
+                </div>
+                <div>
+                  <p class="stat-label">正确率</p>
+                  <p class="stat-value">{{ result.accuracy }}%</p>
+                </div>
               </div>
-              <div>
-                <p class="stat-label">用时</p>
-                <p class="stat-value">{{ formatTime(result.duration) }}</p>
+
+              <div class="stat-card">
+                <div class="stat-icon time">
+                  <Clock :size="18" />
+                </div>
+                <div>
+                  <p class="stat-label">用时</p>
+                  <p class="stat-value">{{ formatTime(result.duration) }}</p>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
 
           <section v-if="hasIncorrectQuestions" class="mistakes-section">
             <div class="mistakes-head">
               <h3 class="mistakes-title">这几题再看看</h3>
-              <span class="mistakes-count">{{ incorrectQuestions.length }} 题</span>
+              <span class="mistakes-count">{{ incorrectQuestions.length }} 题待复盘</span>
             </div>
 
             <div class="mistakes-list">
@@ -270,15 +284,33 @@ function handleRetryMistakes() {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-bottom: 18px;
 }
 
+.summary-section,
 .mistakes-section {
   margin-bottom: 18px;
   padding: 14px;
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid var(--border-light);
+}
+
+.section-head {
+  margin-bottom: 10px;
+}
+
+.section-title,
+.mistakes-title {
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  font-weight: 800;
+}
+
+.section-note {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  line-height: 1.5;
 }
 
 .mistakes-head,
@@ -292,12 +324,6 @@ function handleRetryMistakes() {
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 10px;
-}
-
-.mistakes-title {
-  color: var(--text-primary);
-  font-size: var(--font-base);
-  font-weight: 800;
 }
 
 .mistakes-count {

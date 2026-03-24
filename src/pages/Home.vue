@@ -4,16 +4,16 @@ import { useRouter } from 'vue-router'
 import { ArrowRight, Play, Sparkles, Target, Trophy } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
+import { GAME_CONFIG } from '../config/constants'
 import { TOTAL_LEVELS } from '../config/difficulty'
 
 const router = useRouter()
-const { bestScores } = useStorage()
+const { completedCount } = useStorage()
 const { playClick } = useSound()
 const isReady = ref(false)
 const isLeaving = ref(false)
 const NAVIGATION_DELAY = 180
 
-const completedCount = computed(() => Object.keys(bestScores.value).length)
 const progress = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
 function startGame(event) {
@@ -54,7 +54,7 @@ onMounted(() => {
         <div class="hero-copy">
           <p class="eyebrow">Math Mission</p>
           <h1 class="title">数学大冒险</h1>
-          <p class="subtitle">专注做题，快速推进，每次训练都更稳一点。</p>
+          <p class="subtitle">达到 {{ GAME_CONFIG.PASS_ACCURACY }}% 正确率即可解锁下一关。</p>
         </div>
 
         <div class="mission-progress">
@@ -74,7 +74,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="stat-value">{{ completedCount }}</p>
-              <p class="stat-label">已完成关卡</p>
+              <p class="stat-label">已通过关卡</p>
             </div>
           </article>
 

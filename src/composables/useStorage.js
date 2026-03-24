@@ -1,6 +1,6 @@
 import { computed, shallowRef } from 'vue'
 import { useToast } from './useToast'
-import { STORAGE_KEYS } from '../config/constants'
+import { GAME_CONFIG, STORAGE_KEYS } from '../config/constants'
 
 const STORAGE_KEY = STORAGE_KEYS.GAME_DATA
 
@@ -135,11 +135,14 @@ export function useStorage() {
   }
   
   /**
-   * 获取已完成的难度列表
-   * @returns {Array} 已完成的难度ID列表
+   * 获取已通过的难度列表
+   * 通过标准：最佳正确率达到最低通过线
+   * @returns {Array} 已通过的难度ID列表
    */
   function getCompletedDifficulties() {
-    return Object.keys(loadData().bestScores).map(id => parseInt(id, 10))
+    return Object.entries(loadData().bestScores)
+      .filter(([, score]) => (score?.accuracy || 0) >= GAME_CONFIG.PASS_ACCURACY)
+      .map(([id]) => parseInt(id, 10))
   }
   
   // 响应式计算属性

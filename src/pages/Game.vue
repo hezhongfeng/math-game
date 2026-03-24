@@ -59,6 +59,7 @@ const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
 const INPUT_DEBOUNCE = 100
 const SUBMIT_DEBOUNCE = 300
+const TIMER_UPDATE_INTERVAL = 1000
 
 const questionTimer = ref(0)
 let questionStartTime = null
@@ -109,7 +110,7 @@ function startGameTimeUpdater() {
 
   gameTimeInterval = setInterval(() => {
     gameTime.value = Math.floor((Date.now() - gameStartTime) / 1000)
-  }, 200)
+  }, TIMER_UPDATE_INTERVAL)
 }
 
 function stopGameTimeUpdater() {
@@ -129,7 +130,7 @@ function startQuestionTimer() {
 
   timerInterval = setInterval(() => {
     questionTimer.value = Math.floor((Date.now() - questionStartTime) / 1000)
-  }, 200)
+  }, TIMER_UPDATE_INTERVAL)
 }
 
 function stopQuestionTimer() {

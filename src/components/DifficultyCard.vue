@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { CheckCircle2, ChevronRight, Lock, Star } from 'lucide-vue-next'
+import { GAME_CONFIG } from '../config/constants'
 import { getStarCount } from '../utils/stars'
 
 const props = defineProps({
@@ -32,8 +33,13 @@ const stars = computed(() => {
 const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
 
 const statusText = computed(() => {
-  if (props.isLocked) return '完成上一关后解锁'
-  if (props.bestScore) return `最佳正确率 ${props.bestScore.accuracy}%`
+  if (props.isLocked) return `上一关需达到 ${GAME_CONFIG.PASS_ACCURACY}%`
+  if (props.isCompleted && props.bestScore) {
+    return `已通过 · 最佳正确率 ${props.bestScore.accuracy}%`
+  }
+  if (props.bestScore) {
+    return `当前 ${props.bestScore.accuracy}% · 达到 ${GAME_CONFIG.PASS_ACCURACY}% 可解锁下一关`
+  }
   return '首次尝试'
 })
 
