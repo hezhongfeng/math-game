@@ -60,6 +60,7 @@ const lastSubmitTime = ref(0)
 const INPUT_DEBOUNCE = 100
 const SUBMIT_DEBOUNCE = 300
 const TIMER_UPDATE_INTERVAL = 1000
+const INCORRECT_FEEDBACK_DELAY = 1100
 
 const questionTimer = ref(0)
 let questionStartTime = null
@@ -188,7 +189,10 @@ function submitAnswer() {
     return
   }
 
-  currentFeedbackState.value = 'incorrect-wait'
+  currentFeedbackState.value = 'incorrect-auto'
+  feedbackTimeout = setTimeout(() => {
+    handleNextQuestion()
+  }, INCORRECT_FEEDBACK_DELAY)
 }
 
 function triggerStreakReward() {
@@ -255,7 +259,12 @@ function handleNextQuestion() {
 }
 
 function handleFeedbackClick() {
-  if (!isCorrect.value && currentFeedbackState.value === 'incorrect-wait') {
+  if (!isCorrect.value && currentFeedbackState.value.startsWith('incorrect')) {
+    if (feedbackTimeout) {
+      clearTimeout(feedbackTimeout)
+      feedbackTimeout = null
+    }
+
     currentFeedbackState.value = 'idle'
     handleNextQuestion()
   }
@@ -453,7 +462,9 @@ onUnmounted(() => {
                 <div class="feedback-icon error">
                   <AlertCircle :size="22" />
                 </div>
+                <p class="feedback-kicker">正确答案</p>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
+                <p class="feedback-note">看一眼答案，系统会自动继续</p>
                 <button class="feedback-continue-btn" @click="handleFeedbackClick">继续答题</button>
               </template>
             </div>
@@ -550,7 +561,7 @@ onUnmounted(() => {
 
 .nav-btn-accent {
   color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
+  background: rgba(49, 120, 246, 0.12);
 }
 
 .title-group {
@@ -560,7 +571,7 @@ onUnmounted(() => {
 
 .eyebrow {
   margin-bottom: 4px;
-  color: var(--candy-pink);
+  color: var(--candy-pink-dark);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -621,15 +632,11 @@ onUnmounted(() => {
 }
 
 .feedback-wrap.is-error {
-  position: fixed;
-  inset: 0;
-  z-index: 35;
-  padding: 20px;
-  border-radius: 0;
-  align-items: center;
-  pointer-events: auto;
-  background: rgba(18, 28, 46, 0.32);
-  backdrop-filter: blur(6px);
+  inset: auto 0 0;
+  z-index: 6;
+  padding: 0 12px 12px;
+  align-items: flex-end;
+  pointer-events: none;
 }
 
 .streak-reward {
@@ -680,7 +687,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: 10px;
   padding: 14px 16px;
-  background: var(--candy-mint-soft);
+  background: rgba(46, 196, 182, 0.12);
   border-color: rgba(78, 205, 196, 0.48);
   box-shadow: var(--shadow-md), var(--glow-mint);
   pointer-events: none;
@@ -688,9 +695,11 @@ onUnmounted(() => {
 
 .feedback-card.error {
   width: min(100%, 360px);
-  background: #FFF0F0;
-  border-color: rgba(255, 107, 107, 0.42);
-  box-shadow: var(--shadow-lg);
+  gap: 6px;
+  padding: 16px 16px 14px;
+  background: linear-gradient(180deg, #fff7f3 0%, #fff1ea 100%);
+  border-color: rgba(230, 106, 106, 0.34);
+  box-shadow: var(--shadow-md);
   pointer-events: auto;
 }
 
@@ -727,6 +736,12 @@ onUnmounted(() => {
   font-weight: 800;
 }
 
+.feedback-note {
+  color: var(--text-secondary);
+  font-weight: 700;
+  text-align: center;
+}
+
 .feedback-main {
   color: #2D2D2D;
   font-size: 32px;
@@ -748,10 +763,11 @@ onUnmounted(() => {
   min-height: 48px;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--candy-red);
-  color: white;
+  background: rgba(230, 106, 106, 0.12);
+  color: var(--candy-red-dark);
   font-size: var(--font-base);
   font-weight: 800;
+  border: 1px solid rgba(230, 106, 106, 0.2);
 }
 
 .feedback-continue-btn:active {
@@ -766,7 +782,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(255, 249, 245, 0.78);
+  background: rgba(238, 244, 255, 0.8);
   backdrop-filter: blur(8px);
 }
 
@@ -781,7 +797,7 @@ onUnmounted(() => {
 .spinner {
   width: 42px;
   height: 42px;
-  border: 4px solid rgba(255, 107, 107, 0.16);
+  border: 4px solid rgba(49, 120, 246, 0.14);
   border-top-color: var(--candy-pink);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;

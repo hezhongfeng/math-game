@@ -31,6 +31,38 @@ async function answerQuestionWithCorrectResult(page) {
   await page.getByTestId('num-btn-submit').click()
 }
 
+async function answerQuestionWithObviouslyWrongResult(page, expectedProgressText, options = {}) {
+  const nineButton = page.getByTestId('num-btn-9')
+
+  await expect(nineButton).toBeEnabled()
+  await nineButton.click()
+  await page.waitForTimeout(120)
+  await nineButton.click()
+  await page.waitForTimeout(120)
+  await nineButton.click()
+  await page.getByTestId('num-btn-submit').click()
+
+  await expect(page.locator('.feedback-card.error')).toBeVisible({ timeout: 3_000 })
+
+  if (expectedProgressText) {
+    await expect(page.getByText(expectedProgressText)).toBeVisible({ timeout: 5_000 })
+  }
+
+  if (options.clickContinueIfVisible) {
+    const continueButton = page.locator('.feedback-continue-btn')
+
+    if (await continueButton.isVisible()) {
+      await continueButton.click()
+    }
+  }
+
+  if (await page.getByTestId('result-modal').isVisible()) {
+    return
+  }
+
+  await expect(nineButton).toBeEnabled({ timeout: 5_000 })
+}
+
 test.describe('E2E Smoke', () => {
   test('home to game navigation works', async ({ page }) => {
     await openFirstLevel(page)
@@ -44,6 +76,13 @@ test.describe('E2E Smoke', () => {
     await expect(page.getByText('进度 1/20')).toBeVisible({ timeout: 5_000 })
   })
 
+  test('wrong answers show feedback and then auto-advance', async ({ page }) => {
+    await openFirstLevel(page)
+    await expect(page.getByText('进度 0/20')).toBeVisible()
+
+    await answerQuestionWithObviouslyWrongResult(page, '进度 1/20')
+  })
+
   test('can finish one full round and see result modal', async ({ page }) => {
     test.setTimeout(120_000)
 
@@ -55,20 +94,11 @@ test.describe('E2E Smoke', () => {
         break
       }
 
-      await page.getByTestId('num-btn-9').click()
-      await page.waitForTimeout(120)
-      await page.getByTestId('num-btn-9').click()
-      await page.waitForTimeout(120)
-      await page.getByTestId('num-btn-9').click()
-      await page.getByTestId('num-btn-submit').click()
+      await answerQuestionWithObviouslyWrongResult(page, null, { clickContinueIfVisible: true })
 
       if (await page.getByTestId('result-modal').isVisible()) {
         break
       }
-
-      const errorFeedbackCard = page.locator('.feedback-card.error')
-      await expect(errorFeedbackCard).toBeVisible({ timeout: 3_000 })
-      await page.locator('.feedback-continue-btn').click()
     }
 
     await expect(page.getByTestId('result-modal')).toBeVisible()
@@ -87,18 +117,11 @@ test.describe('E2E Smoke', () => {
         break
       }
 
-      await page.getByTestId('num-btn-9').click()
-      await page.waitForTimeout(120)
-      await page.getByTestId('num-btn-9').click()
-      await page.waitForTimeout(120)
-      await page.getByTestId('num-btn-9').click()
-      await page.getByTestId('num-btn-submit').click()
+      await answerQuestionWithObviouslyWrongResult(page, null, { clickContinueIfVisible: true })
 
       if (await page.getByTestId('result-modal').isVisible()) {
         break
       }
-
-      await page.locator('.feedback-continue-btn').click()
     }
 
     await expect(page.getByTestId('result-modal')).toBeVisible()
