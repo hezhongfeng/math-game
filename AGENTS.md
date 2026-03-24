@@ -50,6 +50,11 @@ npm run preview
 
 **Playwright E2E smoke tests are configured in this project.**
 
+## Git 提交约定
+
+- 提交信息尽量使用中文
+- 可保留必要的英文代码标识、模块名和命令名
+
 ---
 
 ## Tech Stack
