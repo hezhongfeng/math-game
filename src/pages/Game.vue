@@ -72,6 +72,7 @@ let gameTimeInterval = null
 let feedbackTimeout = null
 let streakRewardTimeout = null
 let retryQuestions = null
+const isReviewRound = ref(false)
 
 const isComplete = computed(() => game.isComplete.value)
 const currentQuestion = computed(() => game.currentQuestion.value)
@@ -264,8 +265,11 @@ function handleGameComplete() {
   stopQuestionTimer()
   stopGameTimeUpdater()
   game.completeGame()
-  const result = game.getResult()
-  const best = updateBestScore(parseInt(props.id), result)
+  const result = {
+    ...game.getResult(),
+    isReviewRound: isReviewRound.value
+  }
+  const best = result.isReviewRound ? false : updateBestScore(parseInt(props.id), result)
   const stars = getStarCount(result.accuracy)
 
   triggerHapticFeedback(stars >= 4 ? 'strong' : 'medium')
@@ -287,8 +291,12 @@ function goBack() {
   router.push('/difficulty')
 }
 
-function handleRetry() {
-  retryQuestions = null
+function resetRound({ preserveRetryQuestions = false, reviewRound = false } = {}) {
+  if (!preserveRetryQuestions) {
+    retryQuestions = null
+  }
+
+  isReviewRound.value = reviewRound
   showModal.value = false
   userAnswer.value = ''
   showAnswer.value = false
@@ -313,6 +321,10 @@ function handleRetry() {
   initGame()
 }
 
+function handleRetry() {
+  resetRound()
+}
+
 function handleRetryMistakes() {
   const incorrectQuestions = resultData.value?.incorrectQuestions || []
   if (!incorrectQuestions.length) {
@@ -327,7 +339,10 @@ function handleRetryMistakes() {
     answer: item.correctAnswer
   }))
 
-  handleRetry()
+  resetRound({
+    preserveRetryQuestions: true,
+    reviewRound: true
+  })
 }
 
 function handleHome() {

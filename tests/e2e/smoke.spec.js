@@ -75,4 +75,46 @@ test.describe('E2E Smoke', () => {
     await page.getByTestId('result-home-btn').click()
     await expect(page).toHaveURL(/\/difficulty/)
   })
+
+  test('retry mistakes restarts only the incorrect subset', async ({ page }) => {
+    test.setTimeout(120_000)
+
+    await page.goto('/game/1')
+    await expect(page.getByTestId('question-expression')).toBeVisible()
+
+    for (let i = 0; i < 36; i += 1) {
+      if (await page.getByTestId('result-modal').isVisible()) {
+        break
+      }
+
+      await page.getByTestId('num-btn-9').click()
+      await page.waitForTimeout(120)
+      await page.getByTestId('num-btn-9').click()
+      await page.waitForTimeout(120)
+      await page.getByTestId('num-btn-9').click()
+      await page.getByTestId('num-btn-submit').click()
+
+      if (await page.getByTestId('result-modal').isVisible()) {
+        break
+      }
+
+      await page.locator('.feedback-continue-btn').click()
+    }
+
+    await expect(page.getByTestId('result-modal')).toBeVisible()
+
+    const mistakesText = (await page.locator('.mistakes-count').textContent()) || ''
+    const mistakesMatch = mistakesText.match(/(\d+)/)
+
+    if (!mistakesMatch) {
+      throw new Error(`无法解析错题数量: ${mistakesText}`)
+    }
+
+    const mistakeCount = Number(mistakesMatch[1])
+    expect(mistakeCount).toBeGreaterThan(0)
+
+    await page.getByTestId('result-retry-mistakes-btn').click()
+    await expect(page.getByTestId('question-expression')).toBeVisible()
+    await expect(page.getByText(`进度 0/${mistakeCount}`)).toBeVisible()
+  })
 })
