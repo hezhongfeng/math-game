@@ -239,7 +239,7 @@ function handleRetryMistakes() {
 
 .result-chip {
   color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
+  background: rgba(49, 120, 246, 0.12);
 }
 
 .record-chip {
@@ -453,7 +453,7 @@ function handleRetryMistakes() {
 
 .btn-primary {
   color: white;
-  background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-pink-light) 0%, var(--candy-pink-dark) 100%);
 }
 
 .btn-secondary {

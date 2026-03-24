@@ -117,7 +117,7 @@ function getIcon(type) {
 }
 
 .toast-info {
-  border-color: rgba(49, 120, 246, 0.22);
+  border-color: rgba(49, 120, 246, 0.28);
 }
 
 .icon-success {
@@ -137,6 +137,6 @@ function getIcon(type) {
 
 .icon-info {
   color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
+  background: rgba(49, 120, 246, 0.12);
 }
 </style>
