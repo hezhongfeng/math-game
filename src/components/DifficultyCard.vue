@@ -33,14 +33,14 @@ const stars = computed(() => {
 const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
 
 const statusText = computed(() => {
-  if (props.isLocked) return `上一关需达到 ${GAME_CONFIG.PASS_ACCURACY}%`
+  if (props.isLocked) return `上一关要到 ${GAME_CONFIG.PASS_ACCURACY}%`
   if (props.isCompleted && props.bestScore) {
-    return `已通过 · 最佳正确率 ${props.bestScore.accuracy}%`
+    return `已过关 · 最好 ${props.bestScore.accuracy}%`
   }
   if (props.bestScore) {
-    return `当前 ${props.bestScore.accuracy}% · 达到 ${GAME_CONFIG.PASS_ACCURACY}% 可解锁下一关`
+    return `现在 ${props.bestScore.accuracy}% · 到 ${GAME_CONFIG.PASS_ACCURACY}% 过关`
   }
-  return '首次挑战'
+  return '开始玩'
 })
 
 function handleSelect(event) {

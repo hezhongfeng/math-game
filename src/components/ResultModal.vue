@@ -28,22 +28,22 @@ const showMistakesPanel = ref(false)
 
 const subtitleText = computed(() => {
   if (!hasIncorrectQuestions.value) {
-    return '这一轮全对啦，继续保持这个节奏。'
+    return '这一轮全对。'
   }
 
   if (props.isNewBest) {
-    return '刷新了这关的最好成绩，先看错题再巩固一轮会更稳。'
+    return '这次最好，先看错题。'
   }
 
-  return '这一轮已经顺利完成，先看错在哪里，再巩固一轮会更扎实。'
+  return '先看错题，再练一轮。'
 })
 
 const summaryText = computed(() => {
   if (!hasIncorrectQuestions.value) {
-    return '这一轮全部答对，节奏很稳。'
+    return '都答对了。'
   }
 
-  return `本轮有 ${incorrectQuestions.value.length} 题需要回顾。`
+  return `有 ${incorrectQuestions.value.length} 题答错了。`
 })
 
 watch(() => props.show, (visible) => {
@@ -82,11 +82,11 @@ function closeMistakesPanel() {
             <div class="topline">
               <span class="result-chip">
                 <Target :size="16" />
-                <span>本轮完成</span>
+                <span>完成了</span>
               </span>
               <span v-if="isNewBest" class="record-chip">
                 <Sparkles :size="14" />
-                <span>新纪录</span>
+                <span>最好成绩</span>
               </span>
             </div>
 
@@ -159,7 +159,7 @@ function closeMistakesPanel() {
                 type="button"
                 @click="openMistakesPanel"
               >
-                <span>查看错题</span>
+                <span>看错题</span>
               </button>
 
               <button
@@ -169,7 +169,7 @@ function closeMistakesPanel() {
                 @click="handleRetryMistakes"
               >
                 <RotateCcw :size="18" />
-                <span>再练错题</span>
+                <span>练错题</span>
               </button>
 
               <button
@@ -179,12 +179,12 @@ function closeMistakesPanel() {
                 @click="handleRetry"
               >
                 <RotateCcw :size="18" />
-                <span>重练本轮</span>
+                <span>再玩一次</span>
               </button>
 
               <button class="btn-secondary ghost" data-testid="result-home-btn" @click="handleHome">
                 <Home :size="18" />
-                <span>返回选关</span>
+                <span>回到选关</span>
               </button>
             </div>
           </template>
@@ -192,10 +192,10 @@ function closeMistakesPanel() {
           <template v-else>
             <div class="mistakes-headline">
               <div>
-                <p class="mistakes-kicker">错题回看</p>
-                <h2 class="result-title">先看错在哪里</h2>
+                <p class="mistakes-kicker">错题</p>
+                <h2 class="result-title">看看哪题错了</h2>
               </div>
-              <span class="mistakes-count">{{ incorrectQuestions.length }} 题待巩固</span>
+              <span class="mistakes-count">{{ incorrectQuestions.length }} 题</span>
             </div>
 
             <section class="mistakes-section">
@@ -213,7 +213,7 @@ function closeMistakesPanel() {
                     <strong>{{ item.correctAnswer }}</strong>
                   </div>
                   <p class="mistake-answer">
-                    我的答案：<span>{{ item.userAnswer }}</span>
+                    我写的是：<span>{{ item.userAnswer }}</span>
                   </p>
                 </article>
               </div>
@@ -226,11 +226,11 @@ function closeMistakesPanel() {
                 @click="handleRetryMistakes"
               >
                 <RotateCcw :size="18" />
-                <span>开始错题练习</span>
+                <span>开始练习</span>
               </button>
 
               <button class="btn-secondary" type="button" @click="closeMistakesPanel">
-                <span>返回总结</span>
+                <span>返回</span>
               </button>
             </div>
           </template>

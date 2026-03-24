@@ -131,7 +131,7 @@ node scripts/generate-icons.js
 当检测到新版本时:
 1. `vite-plugin-pwa` 在后台安装新版本 Service Worker
 2. `src/components/PWAUpdatePrompt.vue` 通过 `virtual:pwa-register` 收到 `onNeedRefresh`
-3. 页面弹出“立即更新”提示
+3. 页面弹出“更新”提示
 4. 用户确认后调用插件返回的更新函数并刷新页面
 
 ## 性能优化

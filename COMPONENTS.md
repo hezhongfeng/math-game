@@ -44,7 +44,7 @@ A 3×4 numeric keypad with delete and confirm buttons. Optimized for mobile touc
 
 **File**: `src/components/QuestionCard.vue`
 
-Displays the current math question, current position in the round, and answer feedback state.
+Displays the current math question and current position in the round.
 
 #### Props
 
@@ -72,8 +72,8 @@ Displays the current math question, current position in the round, and answer fe
 #### Visual States
 
 - Default: shows the question and current input placeholder
-- Correct: shows success badge and correct answer styling
-- Wrong: keeps the user's answer visible and shows an error badge
+- Correct: shows the correct answer in the answer slot while the success overlay is handled by `Game.vue`
+- Wrong: keeps the user's answer visible while the error feedback card is handled by `Game.vue`
 
 ### DifficultyCard
 
@@ -166,8 +166,8 @@ Completion modal shown after a round ends. Uses a two-step flow: summary first, 
 #### Behavior
 
 - Step 1: summary, stars, stats, and primary actions
-- Step 2: dedicated mistake-review panel opened by "查看错题"
-- Supports direct "再练错题" action
+- Step 2: dedicated mistake-review panel opened by "看错题"
+- Supports direct "练错题" action
 
 ## 🔔 Toast Components
 

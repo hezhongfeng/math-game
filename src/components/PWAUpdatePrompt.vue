@@ -45,10 +45,10 @@ async function handleUpdate() {
         <div class="icon-wrap">
           <Sparkles :size="32" />
         </div>
-        <h2 class="title">有新内容啦！</h2>
-        <p class="desc">点击更新，体验最新功能</p>
+        <h2 class="title">有新版本</h2>
+        <p class="desc">点一下就更新</p>
         <button class="btn-update" :disabled="isUpdating" @click="handleUpdate">
-          {{ isUpdating ? '更新中...' : '立即更新' }}
+          {{ isUpdating ? '更新中...' : '更新' }}
         </button>
       </div>
     </div>

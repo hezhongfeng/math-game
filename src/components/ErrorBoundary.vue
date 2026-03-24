@@ -42,7 +42,7 @@ function retry() {
         <div class="topline">
           <span class="error-chip">
             <AlertCircle :size="16" />
-            <span>出现异常</span>
+            <span>出错了</span>
           </span>
         </div>
 
@@ -50,8 +50,8 @@ function retry() {
           <AlertCircle :size="34" class="error-icon" />
         </div>
 
-        <h2 class="error-title text-child-xl">界面遇到问题</h2>
-        <p class="error-message text-child-base">请刷新后重试，或返回首页重新开始。</p>
+        <h2 class="error-title text-child-xl">页面出错了</h2>
+        <p class="error-message text-child-base">刷新一下，或者回到首页。</p>
 
         <div v-if="errorInfo && isDev" class="error-details">
           <p class="error-detail-text">{{ errorInfo.message }}</p>
@@ -61,12 +61,12 @@ function retry() {
         <div class="error-actions">
           <button class="btn-retry text-child-sm" @click="retry">
             <RotateCcw :size="18" />
-            <span>刷新重试</span>
+            <span>刷新</span>
           </button>
 
           <button class="btn-home text-child-sm" @click="goHome">
             <Home :size="18" />
-            <span>返回首页</span>
+            <span>回首页</span>
           </button>
         </div>
       </div>

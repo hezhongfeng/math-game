@@ -46,15 +46,15 @@ onMounted(() => {
         <div class="hero-topline">
           <span class="mission-chip">
             <Sparkles :size="16" />
-            <span>任务舱已就绪</span>
+            <span>准备好了</span>
           </span>
-          <span class="mission-note">10 分钟心算</span>
+          <span class="mission-note">15 关</span>
         </div>
 
         <div class="hero-copy">
-          <p class="eyebrow">数学任务</p>
+          <p class="eyebrow">数学游戏</p>
           <h1 class="title">数学大冒险</h1>
-          <p class="subtitle">正确率达到 {{ GAME_CONFIG.PASS_ACCURACY }}% ，就能解锁下一关。</p>
+          <p class="subtitle">答对 {{ GAME_CONFIG.PASS_ACCURACY }}% ，解锁下一关。</p>
         </div>
 
         <div class="mission-progress">
@@ -74,7 +74,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="stat-value">{{ completedCount }}</p>
-              <p class="stat-label">已通过关卡</p>
+              <p class="stat-label">已过关</p>
             </div>
           </article>
 
@@ -84,7 +84,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="stat-value">{{ TOTAL_LEVELS }}</p>
-              <p class="stat-label">总关卡</p>
+              <p class="stat-label">全部关卡</p>
             </div>
           </article>
         </div>

@@ -396,8 +396,7 @@ onUnmounted(() => {
                 </div>
                 <p class="feedback-kicker">正确答案</p>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <p class="feedback-note">看清楚答案后，再继续下一题</p>
-                <button class="feedback-continue-btn" @click="handleFeedbackClick">我知道了，继续</button>
+                <button class="feedback-continue-btn" @click="handleFeedbackClick">继续</button>
               </template>
             </div>
           </div>
@@ -657,17 +656,10 @@ onUnmounted(() => {
   gap: 2px;
 }
 
-.feedback-kicker,
-.feedback-note {
+.feedback-kicker {
   color: var(--text-primary);
   font-size: var(--font-sm);
   font-weight: 800;
-}
-
-.feedback-note {
-  color: var(--text-secondary);
-  font-weight: 700;
-  text-align: center;
 }
 
 .feedback-main {
