@@ -126,7 +126,8 @@ function handleSelect(event) {
 }
 
 .difficulty-card.is-completed {
-  border-color: rgba(18, 185, 129, 0.28);
+  border-color: rgba(46, 196, 182, 0.32);
+  box-shadow: var(--shadow-sm), var(--glow-mint);
 }
 
 .difficulty-card.is-locked {
@@ -178,7 +179,7 @@ function handleSelect(event) {
 .new-tag {
   padding: 4px 10px;
   border-radius: var(--radius-full);
-  background: var(--candy-pink-soft);
+  background: rgba(49, 120, 246, 0.12);
   color: var(--candy-pink-dark);
   font-size: 12px;
   font-weight: 800;
@@ -209,7 +210,7 @@ function handleSelect(event) {
 }
 
 .star {
-  color: #FFE8E0;
+  color: #DCE7FA;
 }
 
 .star.active {

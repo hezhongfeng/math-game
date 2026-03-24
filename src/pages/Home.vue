@@ -171,7 +171,7 @@ onMounted(() => {
   gap: 8px;
   padding: 8px 12px;
   border-radius: var(--radius-full);
-  background: var(--candy-pink-soft);
+  background: rgba(49, 120, 246, 0.12);
   color: var(--candy-pink-dark);
   font-size: var(--font-sm);
   font-weight: 700;
@@ -189,7 +189,7 @@ onMounted(() => {
 
 .eyebrow {
   margin-bottom: 10px;
-  color: var(--candy-pink);
+  color: var(--candy-pink-dark);
   font-size: var(--font-sm);
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -232,7 +232,7 @@ onMounted(() => {
 .progress-track {
   height: 10px;
   border-radius: var(--radius-full);
-  background: #FFE8E0;
+  background: rgba(49, 120, 246, 0.12);
   overflow: hidden;
 }
 
@@ -303,7 +303,7 @@ onMounted(() => {
   gap: 12px;
   height: 64px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-pink-light) 0%, var(--candy-pink-dark) 100%);
   color: white;
   box-shadow: var(--shadow-md), var(--glow-pink);
   font-size: var(--font-lg);
@@ -318,7 +318,7 @@ onMounted(() => {
   opacity: 0.6;
   transform: scale(0.94);
   box-shadow: var(--shadow-sm);
-  background: linear-gradient(135deg, var(--candy-pink-dark) 0%, #d14b4b 100%);
+  background: linear-gradient(135deg, var(--candy-pink-dark) 0%, #1b4fb2 100%);
   transition: all var(--duration-normal) var(--ease-out);
 }
 

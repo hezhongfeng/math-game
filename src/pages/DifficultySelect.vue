@@ -215,7 +215,7 @@ function isDifficultyLocked(difficulty) {
 .header-badge {
   padding: 10px 12px;
   color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
+  background: rgba(49, 120, 246, 0.12);
 }
 
 .headline-row {
@@ -224,7 +224,7 @@ function isDifficultyLocked(difficulty) {
 
 .eyebrow {
   margin-bottom: 8px;
-  color: var(--candy-pink);
+  color: var(--candy-pink-dark);
   font-size: var(--font-sm);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -264,7 +264,7 @@ function isDifficultyLocked(difficulty) {
   height: 10px;
   overflow: hidden;
   border-radius: var(--radius-full);
-  background: #FFE8E0;
+  background: rgba(49, 120, 246, 0.12);
 }
 
 .progress-fill {
