@@ -7,7 +7,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.png', 'icons/icon.svg'],
       manifest: false, // 使用 public/manifest.json
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],

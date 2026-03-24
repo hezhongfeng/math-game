@@ -17,10 +17,11 @@
 ```
 public/
 ├── manifest.json           # PWA 配置清单
+├── favicon.png             # 浏览器标签图标
 ├── icons/
 │   ├── icon.svg            # 主图标 (矢量)
 │   ├── icon-72x72.png      # 小尺寸图标
-│   ├── icon-96x96.png      # 快捷方式图标
+│   ├── icon-96x96.png      # 通用图标
 │   ├── icon-128x128.png    # Chrome 商店
 │   ├── icon-144x144.png    # Microsoft
 │   ├── icon-152x152.png    # iPad
@@ -93,8 +94,8 @@ node scripts/generate-icons.js
   "description": "专为儿童设计的数学运算游戏，包含加减法练习，15个难度关卡",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFF9F5",
-  "theme_color": "#FF7B54",
+  "background_color": "#F5F7FA",
+  "theme_color": "#4A90E2",
   "orientation": "portrait",
   "scope": "/",
   "lang": "zh-CN"
@@ -102,8 +103,8 @@ node scripts/generate-icons.js
 ```
 
 **配置说明：**
-- `background_color`: 启动画面背景色（温暖奶油色 #FFF9F5）
-- `theme_color`: 主题色（珊瑚橙 #FF7B54）
+- `background_color`: 启动画面背景色（浅灰蓝 #F5F7FA）
+- `theme_color`: 主题色（蓝色 #4A90E2）
 - `display: standalone`: 以独立应用模式运行，无浏览器 UI
 - `orientation: portrait`: 固定竖屏显示
 - `scope`: 限定 PWA 作用域为根路径
@@ -139,9 +140,9 @@ node scripts/generate-icons.js
 
 | 优化措施 | 实现方式 | 效果 |
 |---------|---------|------|
-| DNS 预解析 | `<link rel="dns-prefetch">` | 减少 DNS 查询时间 |
-| 预连接 | `<link rel="preconnect">` | 提前建立 HTTPS 连接 |
-| 字体优化 | `display=swap` | 避免字体加载阻塞渲染 |
+| Vite 预构建 | 构建时产物优化 | 减少首屏资源体积 |
+| 预缓存 | `vite-plugin-pwa` + Workbox | 核心资源离线可用 |
+| 图标静态托管 | `public/` 目录 | 安装和启动资源稳定 |
 | 视口锁定 | `user-scalable=no` | 防止移动端缩放干扰 |
 
 ### 运行时优化
@@ -184,13 +185,10 @@ node scripts/generate-icons.js
 
 **Android Chrome:**
 - ✅ 完全支持所有 PWA 功能
-- ✅ 自动显示安装提示（满足条件时）
 - ✅ 支持快捷方式
-- ✅ 支持后台同步
 
 **微信内置浏览器:**
 - ✅ 支持基本 PWA 功能
-- ✅ 针对微信音频策略的特殊优化
 - ⚠️ 添加到主屏幕需使用系统浏览器
 
 ## 快捷方式 (Shortcuts)

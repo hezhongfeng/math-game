@@ -11,22 +11,6 @@
   "lang": "zh-CN",
   "dir": "ltr",
   "categories": ["education", "games", "kids"],
-  "screenshots": [
-    {
-      "src": "/screenshots/home.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "首页 - 查看成就和开始游戏"
-    },
-    {
-      "src": "/screenshots/game.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "游戏界面 - 数学题目和数字键盘"
-    }
-  ],
   "icons": [
     {
       "src": "/icons/icon.svg",

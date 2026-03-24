@@ -37,8 +37,7 @@
 ### 核心文件
 ```
 src/config/constants.js          # 音效频率和参数配置
-src/composables/useSound.js      # 音效播放器（简化版）
-src/utils/audioContext.js        # 音频上下文管理（纯净版）
+src/composables/useSound.js      # 音效播放器与音频上下文管理
 ```
 
 ### 音频链路
@@ -78,12 +77,7 @@ playSound('win', { stars: 3 })
 ```
 
 ### 初始化
-```javascript
-import { forceInitializeAudioContext } from './utils/audioContext'
-
-// 在用户交互后调用
-await forceInitializeAudioContext()
-```
+当前版本不再单独暴露 `audioContext` 工具文件，音频初始化已收敛在 `src/composables/useSound.js` 中，由组件在挂载和交互时自动处理。
 
 ## 音效参数调整
 

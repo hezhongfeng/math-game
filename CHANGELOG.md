@@ -44,6 +44,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README and architecture docs to match current feedback behavior, audio strategy, and composables list
 - Updated docs to reflect round-end mistake review and retry flow
 - Updated PWA documentation to reflect the current plugin-generated Service Worker flow
+- Updated component, agent, and architecture docs to match the current gameplay flow, testing setup, and active code structure
+
+### Fixed
+
+- Fixed manifest and Vite PWA config drift by removing nonexistent screenshot references and pointing included assets at real files
 
 ## [1.1.0] - 2026-01-30
 

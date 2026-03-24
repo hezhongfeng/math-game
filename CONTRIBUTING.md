@@ -125,9 +125,8 @@ const emit = defineEmits(['input', 'submit'])
 2. Vue Router imports
 3. External libraries
 4. Internal composables (`../composables/*`)
-5. Internal stores (`../stores/*`)
-6. Internal config (`../config/*`)
-7. Internal utils (`../utils/*`)
+5. Internal config (`../config/*`)
+6. Internal utils (`../utils/*`)
 
 ### Naming Conventions
 
@@ -135,7 +134,6 @@ const emit = defineEmits(['input', 'submit'])
 |------|-----------|---------|
 | Components | PascalCase | `NumberPad.vue` |
 | Composables | camelCase with `use` prefix | `useGame` |
-| Stores | camelCase with `use` + `Store` | `useSettingsStore` |
 | Utilities | camelCase | `generateQuestions` |
 | Constants | UPPER_SNAKE_CASE | `DIFFICULTY_LEVELS` |
 
@@ -285,8 +283,8 @@ AUDIO_FREQUENCIES: {
 ```
 
 2. Add parameters in `AUDIO_PARAMS`
-3. Implement in `src/composables/useSound.js`
-4. Call `playSound('newSound')` from component
+3. Implement a dedicated playback function in `src/composables/useSound.js`
+4. Call that function from the relevant component or page
 
 ### Adding a New Component
 
@@ -365,7 +363,7 @@ Before submitting a PR, verify:
 - [ ] All difficulty levels work
 - [ ] Score calculation is accurate
 - [ ] LocalStorage persistence works
-- [ ] Settings save and load correctly
+- [ ] Wrong-answer flow requires manual confirmation before continuing
 
 ### Mobile
 - [ ] Tested on Chrome DevTools mobile devices
@@ -375,7 +373,6 @@ Before submitting a PR, verify:
 
 ### Audio
 - [ ] Sound effects play on interaction
-- [ ] Audio settings persist
 - [ ] iOS Safari audio works
 - [ ] No audio errors in console
 

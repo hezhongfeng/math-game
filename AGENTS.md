@@ -48,7 +48,7 @@ npm run preview
 # or: pnpm preview, yarn preview
 ```
 
-**No tests are configured in this project.**
+**Playwright E2E smoke tests are configured in this project.**
 
 ---
 
@@ -57,7 +57,6 @@ npm run preview
 - **Framework**: Vue 3 with Composition API (`<script setup>`)
 - **Build Tool**: Vite 7.x
 - **Styling**: Tailwind CSS 3.x with custom theme
-- **State Management**: Pinia 3.x (setup function style)
 - **Routing**: Vue Router 4.x
 - **Icons**: Lucide Vue Next
 - **Data Persistence**: LocalStorage (manual)
@@ -102,9 +101,8 @@ const emit = defineEmits(['input', 'delete', 'submit'])
 2. Vue Router imports
 3. External libraries (lucide-vue-next)
 4. Internal composables (`../composables/*`)
-5. Internal stores (`../stores/*`)
-6. Internal config (`../config/*`)
-7. Internal utils (`../utils/*`)
+5. Internal config (`../config/*`)
+6. Internal utils (`../utils/*`)
 
 **Style:**
 ```javascript
@@ -112,7 +110,6 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Check, Play } from 'lucide-vue-next'
 import { useGame } from '../composables/useGame'
-import { useSettingsStore } from '../stores/settings'
 import { DIFFICULTY_LEVELS } from '../config/difficulty'
 import { generateQuestions } from '../utils/generator'
 ```
@@ -145,37 +142,15 @@ export function useGame(difficulty) {
 
 **Return:** Explicit object with all exported values
 
-### Pinia Stores
-
-**Use setup function style:**
-```javascript
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-
-export const useSettingsStore = defineStore('settings', () => {
-  const soundEnabled = ref(true)
-
-  function toggleSound() {
-    soundEnabled.value = !soundEnabled.value
-  }
-
-  return {
-    soundEnabled,
-    toggleSound
-  }
-})
-```
-
 ### Naming Conventions
 
 - **Components**: PascalCase (e.g., `NumberPad.vue`, `DifficultyCard.vue`)
 - **Composables**: camelCase with `use` prefix (e.g., `useGame`, `useSound`)
-- **Stores**: camelCase with `use` prefix + `Store` suffix (e.g., `useSettingsStore`)
 - **Utilities**: camelCase (e.g., `generateQuestions`, `checkAnswer`)
 - **Constants**: UPPER_SNAKE_CASE (e.g., `DIFFICULTY_LEVELS`, `STORAGE_KEY`)
 - **Variables**: camelCase
 - **Functions**: camelCase
-- **Files**: kebab-case for pages/components (e.g., `home-page.vue`)
+- **Vue 文件**: PascalCase for pages/components (e.g., `Home.vue`, `DifficultyCard.vue`)
 
 ### Styling
 
@@ -327,14 +302,13 @@ padding-top: max(10px, env(safe-area-inset-top));
 
 **LocalStorage keys:**
 - `math-game-data` - Game progress and best scores
-- `math-game-settings` - User settings (sound effects, speech synthesis)
 
 ---
 
 ## Important Notes
 
 1. **No TypeScript** - This is a pure JavaScript project
-2. **No tests** - No test framework configured
+2. **E2E tests only** - Playwright 冒烟测试已配置，当前没有单元测试框架
 3. **Child-friendly design** - Use rounded corners, bright colors, fun animations
 4. **Mobile-first** - Design for touch screens first, then enhance for desktop
 5. **Progressive difficulty** - 15 levels, must complete previous to unlock next
@@ -351,7 +325,6 @@ src/
 ├── composables/     # Vue Composition API functions (use*)
 ├── config/          # Configuration (difficulty.js, constants.js)
 ├── pages/           # Route components (Home, DifficultySelect, Game)
-├── stores/          # Pinia stores
 ├── utils/           # Pure utility functions
 ├── App.vue          # Root component
 ├── main.js          # App entry point
@@ -366,8 +339,7 @@ src/
 1. **New difficulty level**: Add to `src/config/difficulty.js`
 2. **New page component**: Add to `src/pages/`, register in `src/router.js`
 3. **New reusable logic**: Create composable in `src/composables/`
-4. **New global state**: Add to `src/stores/` using Pinia setup function style
-5. **New utility function**: Add to `src/utils/`
-6. **New component**: Add to `src/components/` with proper props/emits
+4. **New utility function**: Add to `src/utils/`
+5. **New component**: Add to `src/components/` with proper props/emits
 
 Always follow existing patterns and conventions when extending the codebase.
