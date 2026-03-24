@@ -173,6 +173,9 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 - 提交信息尽量使用中文
 - 若需要保留英文术语，可在中文语义下混用必要的代码标识、模块名或命令名
+- 推荐使用 Conventional Commits 风格
+- 推荐格式：`type(scope): 中文说明`
+- 示例：`feat(ui): 应用统一字体样式与动画效果`
 
 ### Format
 

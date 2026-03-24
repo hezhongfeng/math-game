@@ -54,6 +54,9 @@ npm run preview
 
 - 提交信息尽量使用中文
 - 可保留必要的英文代码标识、模块名和命令名
+- 推荐使用 Conventional Commits 风格
+- 推荐格式：`type(scope): 中文说明`
+- 示例：`feat(ui): 应用统一字体样式与动画效果`
 
 ---
 
