@@ -102,13 +102,13 @@ function handleSubmit() {
 
 .num-btn:active:not(:disabled) {
   transform: scale(0.96);
-  background: #FFF0F0;
+  background: #EEF4FF;
 }
 
 @media (hover: hover) {
   .num-btn:hover:not(:disabled) {
     border-color: var(--border-strong);
-    background: #FFF5F5;
+    background: #F3F8FF;
   }
 
   .btn-delete:hover:not(:disabled) {
@@ -123,14 +123,14 @@ function handleSubmit() {
 
 .btn-delete {
   color: var(--candy-peach-dark);
-  background: #FFF8F0;
+  background: var(--candy-peach-soft);
 }
 
 .btn-submit {
   color: white;
-  background: linear-gradient(135deg, var(--candy-mint) 0%, var(--candy-mint-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-pink-light) 0%, var(--candy-pink-dark) 100%);
   border-color: transparent;
-  box-shadow: var(--shadow-md), var(--glow-mint);
+  box-shadow: var(--shadow-md), var(--glow-pink);
 }
 
 @media (min-width: 768px) {

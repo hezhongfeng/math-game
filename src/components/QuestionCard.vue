@@ -132,7 +132,7 @@ const answerDisplay = computed(() => {
 }
 
 .operator {
-  color: var(--candy-pink);
+  color: var(--candy-pink-dark);
 }
 
 .equals {
@@ -143,8 +143,8 @@ const answerDisplay = computed(() => {
   min-width: 80px;
   padding: 12px 14px;
   border-radius: var(--radius-lg);
-  background: #FFF9F5;
-  border: 2px solid #FFE8E0;
+  background: #F7FAFF;
+  border: 2px solid #DCE7FA;
   text-align: center;
   transition: border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
 }

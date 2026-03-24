@@ -157,8 +157,8 @@ const formattedTime = computed(() => formatTime(props.duration))
   padding: 4px 8px;
   border-radius: var(--radius-full);
   color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
-  border: 1px solid rgba(255, 107, 107, 0.2);
+  background: rgba(49, 120, 246, 0.12);
+  border: 1px solid rgba(49, 120, 246, 0.2);
   font-size: 12px;
   font-weight: 800;
   animation: streakChipIn var(--duration-fast) var(--ease-out);
@@ -175,7 +175,7 @@ const formattedTime = computed(() => formatTime(props.duration))
   margin-bottom: 12px;
   overflow: hidden;
   border-radius: var(--radius-full);
-  background: #FFE8E0;
+  background: rgba(49, 120, 246, 0.12);
 }
 
 .progress-fill {
@@ -230,8 +230,8 @@ const formattedTime = computed(() => formatTime(props.duration))
 }
 
 .score-icon {
-  color: var(--candy-yellow-dark);
-  background: var(--candy-yellow-soft);
+  color: var(--candy-pink-dark);
+  background: var(--candy-pink-soft);
 }
 
 .correct-icon {
@@ -240,13 +240,13 @@ const formattedTime = computed(() => formatTime(props.duration))
 }
 
 .time-icon {
-  color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
+  color: var(--candy-yellow-dark);
+  background: var(--candy-yellow-soft);
 }
 
 .accuracy-icon {
-  color: var(--candy-peach-dark);
-  background: var(--candy-peach-soft);
+  color: var(--candy-mint-dark);
+  background: var(--candy-mint-soft);
 }
 
 .stat-value {
