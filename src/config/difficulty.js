@@ -178,6 +178,42 @@ const DIFFICULTY_LEVELS = [
     color: 'var(--candy-lavender-dark)',
     textColor: 'var(--candy-lavender-dark)',
     stars: 5
+  },
+  {
+    id: 16,
+    name: '补空格1',
+    level: '补空格',
+    range: [0, 5],
+    operation: 'missingAddStart',
+    questionCount: 8,
+    description: '5 以内补数',
+    color: 'var(--candy-mint-light)',
+    textColor: 'var(--candy-mint-dark)',
+    stars: 3
+  },
+  {
+    id: 17,
+    name: '补空格2',
+    level: '补空格',
+    range: [0, 10],
+    operation: 'missingAddStart',
+    questionCount: 10,
+    description: '10 以内补数',
+    color: 'var(--candy-yellow-light)',
+    textColor: 'var(--candy-yellow-dark)',
+    stars: 4
+  },
+  {
+    id: 18,
+    name: '补空格3',
+    level: '补空格',
+    range: [0, 20],
+    operation: 'missingAddMixed',
+    questionCount: 12,
+    description: '20 以内补数',
+    color: 'var(--candy-peach-light)',
+    textColor: 'var(--candy-peach-dark)',
+    stars: 5
   }
 ]
 
@@ -186,7 +222,8 @@ export const DIFFICULTY_GROUPS = [
   { name: '初级', levels: [4, 5, 6], color: 'pink' },
   { name: '中级', levels: [7, 8, 9], color: 'yellow' },
   { name: '进级', levels: [10, 11, 12], color: 'peach' },
-  { name: '高级', levels: [13, 14, 15], color: 'lavender' }
+  { name: '高级', levels: [13, 14, 15], color: 'lavender' },
+  { name: '补空格', levels: [16, 17, 18], color: 'mint' }
 ]
 
 export const TOTAL_LEVELS = DIFFICULTY_LEVELS.length

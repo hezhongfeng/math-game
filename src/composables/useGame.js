@@ -42,6 +42,8 @@ export function useGame(difficulty) {
   function cloneQuestion(question, index) {
     return {
       ...question,
+      result: typeof question.result === 'number' ? question.result : question.answer,
+      missingPart: question.missingPart || 'answer',
       id: index + 1,
       userAnswer: null,
       isCorrect: null
@@ -87,6 +89,8 @@ export function useGame(difficulty) {
         operand1: question.operand1,
         operand2: question.operand2,
         operator: question.operator,
+        result: question.result,
+        missingPart: question.missingPart,
         userAnswer: answer,
         correctAnswer: question.answer,
         answer: question.answer

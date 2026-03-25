@@ -48,7 +48,7 @@ onMounted(() => {
             <Sparkles :size="16" />
             <span>准备好了</span>
           </span>
-          <span class="mission-note">15 关</span>
+          <span class="mission-note">{{ TOTAL_LEVELS }} 关</span>
         </div>
 
         <div class="hero-copy">

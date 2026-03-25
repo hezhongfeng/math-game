@@ -27,6 +27,7 @@ const props = defineProps({
 const shouldShowFeedback = computed(() => props.showAnswer && props.question?.userAnswer !== null)
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
+const missingPart = computed(() => props.question?.missingPart || 'answer')
 
 const answerDisplay = computed(() => {
   if (shouldShowFeedback.value) {
@@ -35,6 +36,12 @@ const answerDisplay = computed(() => {
 
   return props.userAnswer || '?'
 })
+
+const answerStateClass = computed(() => ({
+  'is-placeholder': !props.userAnswer && !props.showAnswer,
+  'is-correct': isCorrect.value,
+  'is-wrong': isIncorrect.value
+}))
 </script>
 
 <template>
@@ -44,20 +51,32 @@ const answerDisplay = computed(() => {
     </div>
 
     <div class="math-display font-number" data-testid="question-expression">
-      <span class="number">{{ question.operand1 }}</span>
-      <span class="operator">{{ question.operator }}</span>
-      <span class="number">{{ question.operand2 }}</span>
-      <span class="equals">=</span>
       <span
+        v-if="missingPart === 'operand1'"
         class="answer"
-        :class="{
-          'is-placeholder': !userAnswer && !showAnswer,
-          'is-correct': isCorrect,
-          'is-wrong': isIncorrect
-        }"
+        :class="answerStateClass"
       >
         {{ answerDisplay }}
       </span>
+      <span v-else class="number">{{ question.operand1 }}</span>
+      <span class="operator">{{ question.operator }}</span>
+      <span
+        v-if="missingPart === 'operand2'"
+        class="answer"
+        :class="answerStateClass"
+      >
+        {{ answerDisplay }}
+      </span>
+      <span v-else class="number">{{ question.operand2 }}</span>
+      <span class="equals">=</span>
+      <span
+        v-if="missingPart === 'answer'"
+        class="answer"
+        :class="answerStateClass"
+      >
+        {{ answerDisplay }}
+      </span>
+      <span v-else class="number result">{{ question.result }}</span>
     </div>
   </div>
 </template>

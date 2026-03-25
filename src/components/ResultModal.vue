@@ -202,15 +202,15 @@ function closeMistakesPanel() {
               <div class="mistakes-list">
                 <article
                   v-for="item in incorrectQuestions"
-                  :key="`${item.operand1}-${item.operator}-${item.operand2}-${item.userAnswer}`"
+                  :key="`${item.operand1}-${item.operator}-${item.operand2}-${item.missingPart}-${item.userAnswer}`"
                   class="mistake-card"
                 >
                   <div class="mistake-expression">
-                    <span>{{ item.operand1 }}</span>
+                    <span>{{ item.missingPart === 'operand1' ? '?' : item.operand1 }}</span>
                     <span>{{ item.operator }}</span>
-                    <span>{{ item.operand2 }}</span>
+                    <span>{{ item.missingPart === 'operand2' ? '?' : item.operand2 }}</span>
                     <span>=</span>
-                    <strong>{{ item.correctAnswer }}</strong>
+                    <strong>{{ item.missingPart === 'answer' ? item.correctAnswer : item.result }}</strong>
                   </div>
                   <p class="mistake-answer">
                     我写的是：<span>{{ item.userAnswer }}</span>

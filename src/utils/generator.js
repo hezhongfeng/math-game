@@ -44,8 +44,9 @@ function isEarlyStage(max) {
  * @returns {number} 训练价值分数
  */
 function getQuestionWeight(question, max) {
-  const { operand1, operand2, operator, answer } = question
+  const { operand1, operand2, operator, answer, result, missingPart = 'answer' } = question
   let weight = 1
+  const displayResult = typeof result === 'number' ? result : answer
 
   if (operator === '+') {
     if (operand1 === 0 && operand2 === 0) {
@@ -60,11 +61,11 @@ function getQuestionWeight(question, max) {
       weight += 0.2
     }
 
-    if (answer === 10) {
+    if (displayResult === 10) {
       weight += 0.9
     }
 
-    if (max >= 10 && answer > 10) {
+    if (max >= 10 && displayResult > 10) {
       weight += 0.45
     }
   }
@@ -91,8 +92,20 @@ function getQuestionWeight(question, max) {
     weight += 0.3
   }
 
-  if (answer >= Math.ceil(max * 0.6)) {
+  if (displayResult >= Math.ceil(max * 0.6)) {
     weight += 0.15
+  }
+
+  if (missingPart === 'operand1') {
+    weight += 0.25
+  }
+
+  if (missingPart === 'operand2') {
+    weight += 0.05
+  }
+
+  if (answer === 0) {
+    weight -= isEarlyStage(max) ? 0.15 : 0.3
   }
 
   return Math.max(weight, 0.15)
@@ -145,6 +158,45 @@ function createSubtractionPool(min, max) {
 }
 
 /**
+ * 生成加法缺项题池
+ * @param {number} min - 最小值
+ * @param {number} max - 和的最大值
+ * @param {boolean} includeSecondMissing - 是否允许第二个加数缺失
+ * @returns {Array} 题目池
+ */
+function createMissingAdditionPool(min, max, includeSecondMissing = false) {
+  const pool = []
+
+  for (let result = min; result <= max; result += 1) {
+    for (let operand2 = min; operand2 <= result; operand2 += 1) {
+      const operand1 = result - operand2
+
+      pool.push({
+        operand1,
+        operand2,
+        operator: '+',
+        answer: operand1,
+        result,
+        missingPart: 'operand1'
+      })
+
+      if (includeSecondMissing && operand1 !== operand2) {
+        pool.push({
+          operand1,
+          operand2,
+          operator: '+',
+          answer: operand2,
+          result,
+          missingPart: 'operand2'
+        })
+      }
+    }
+  }
+
+  return pool
+}
+
+/**
  * 根据运算类型创建题池
  * @param {string} operation - 运算类型
  * @param {number} min - 最小值
@@ -158,6 +210,14 @@ function createQuestionPool(operation, min, max) {
 
   if (operation === 'subtract') {
     return createSubtractionPool(min, max)
+  }
+
+  if (operation === 'missingAddStart') {
+    return createMissingAdditionPool(min, max)
+  }
+
+  if (operation === 'missingAddMixed') {
+    return createMissingAdditionPool(min, max, true)
   }
 
   return [...createAdditionPool(min, max), ...createSubtractionPool(min, max)]
@@ -218,6 +278,8 @@ export function generateQuestions(difficulty) {
 
   return questions.map((question, index) => ({
     ...question,
+    result: typeof question.result === 'number' ? question.result : question.answer,
+    missingPart: question.missingPart || 'answer',
     id: index + 1,
     userAnswer: null,
     isCorrect: null

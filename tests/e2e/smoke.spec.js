@@ -11,17 +11,12 @@ async function openFirstLevel(page) {
 
 async function answerQuestionWithCorrectResult(page) {
   const expression = page.getByTestId('question-expression')
-  const expressionText = (await expression.textContent()) || ''
-  const match = expressionText.match(/(\d+)\s*([+-])\s*(\d+)/)
+  const expressionText = ((await expression.textContent()) || '').replace(/\s+/g, '')
+  const answer = getAnswerFromExpression(expressionText)
 
-  if (!match) {
+  if (answer === null) {
     throw new Error(`无法解析题目文本: ${expressionText}`)
   }
-
-  const left = Number(match[1])
-  const operator = match[2]
-  const right = Number(match[3])
-  const answer = operator === '+' ? left + right : left - right
 
   for (const digit of String(answer)) {
     await page.getByTestId(`num-btn-${digit}`).click()
@@ -29,6 +24,40 @@ async function answerQuestionWithCorrectResult(page) {
   }
 
   await page.getByTestId('num-btn-submit').click()
+}
+
+function getAnswerFromExpression(expressionText) {
+  const standardMatch = expressionText.match(/^(\d+)([+-])(\d+)=\?$/)
+
+  if (standardMatch) {
+    const left = Number(standardMatch[1])
+    const operator = standardMatch[2]
+    const right = Number(standardMatch[3])
+
+    return operator === '+' ? left + right : left - right
+  }
+
+  const missingLeftMatch = expressionText.match(/^\?([+-])(\d+)=(\d+)$/)
+
+  if (missingLeftMatch) {
+    const operator = missingLeftMatch[1]
+    const known = Number(missingLeftMatch[2])
+    const result = Number(missingLeftMatch[3])
+
+    return operator === '+' ? result - known : result + known
+  }
+
+  const missingRightMatch = expressionText.match(/^(\d+)([+-])\?=(\d+)$/)
+
+  if (missingRightMatch) {
+    const left = Number(missingRightMatch[1])
+    const operator = missingRightMatch[2]
+    const result = Number(missingRightMatch[3])
+
+    return operator === '+' ? result - left : left - result
+  }
+
+  return null
 }
 
 async function answerQuestionWithObviouslyWrongResult(page, expectedProgressText, options = {}) {
@@ -70,17 +99,28 @@ test.describe('E2E Smoke', () => {
 
   test('answering a question advances progress', async ({ page }) => {
     await openFirstLevel(page)
-    await expect(page.getByText('进度 0/20')).toBeVisible()
+    await expect(page.getByText('0/12')).toBeVisible()
 
     await answerQuestionWithCorrectResult(page)
-    await expect(page.getByText('进度 1/20')).toBeVisible({ timeout: 5_000 })
+    await expect(page.getByText('1/12')).toBeVisible({ timeout: 5_000 })
   })
 
-  test('wrong answers show feedback and then auto-advance', async ({ page }) => {
+  test('wrong answers show feedback and can continue', async ({ page }) => {
     await openFirstLevel(page)
-    await expect(page.getByText('进度 0/20')).toBeVisible()
+    await expect(page.getByText('0/12')).toBeVisible()
 
-    await answerQuestionWithObviouslyWrongResult(page, '进度 1/20')
+    await answerQuestionWithObviouslyWrongResult(page, '0/12', { clickContinueIfVisible: true })
+  })
+
+  test('missing-number level accepts correct answers', async ({ page }) => {
+    await page.goto('/game/16')
+    await expect(page.getByTestId('question-expression')).toBeVisible()
+
+    const expressionText = ((await page.getByTestId('question-expression').textContent()) || '').replace(/\s+/g, '')
+    expect(expressionText.includes('?')).toBeTruthy()
+
+    await answerQuestionWithCorrectResult(page)
+    await expect(page.getByText('1/8')).toBeVisible({ timeout: 5_000 })
   })
 
   test('can finish one full round and see result modal', async ({ page }) => {
@@ -126,7 +166,7 @@ test.describe('E2E Smoke', () => {
 
     await expect(page.getByTestId('result-modal')).toBeVisible()
 
-    const mistakesText = (await page.locator('.mistakes-count').textContent()) || ''
+    const mistakesText = (await page.getByText(/有 \d+ 题答错了。/).textContent()) || ''
     const mistakesMatch = mistakesText.match(/(\d+)/)
 
     if (!mistakesMatch) {
@@ -138,6 +178,6 @@ test.describe('E2E Smoke', () => {
 
     await page.getByTestId('result-retry-mistakes-btn').click()
     await expect(page.getByTestId('question-expression')).toBeVisible()
-    await expect(page.getByText(`进度 0/${mistakeCount}`)).toBeVisible()
+    await expect(page.locator('.summary-pill .stat-value')).toHaveText(`0/${mistakeCount}`)
   })
 })

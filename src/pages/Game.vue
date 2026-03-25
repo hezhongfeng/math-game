@@ -280,6 +280,8 @@ function handleRetryMistakes() {
     operand1: item.operand1,
     operand2: item.operand2,
     operator: item.operator,
+    result: item.result,
+    missingPart: item.missingPart,
     answer: item.correctAnswer
   }))
 
