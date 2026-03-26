@@ -113,7 +113,7 @@ Compact gameplay status panel. The current implementation intentionally avoids s
 
 #### Behavior
 
-- Shows round progress percentage
+- Shows round progress as `current/total`
 - Shows streak badge when `streak >= 3`
 - Shows compact status text such as remaining question count
 - Shows correct-answer count only
@@ -122,7 +122,7 @@ Compact gameplay status panel. The current implementation intentionally avoids s
 
 **File**: `src/components/ResultModal.vue`
 
-Completion modal shown after a round ends. Uses a two-step flow: summary first, mistake review second.
+Completion modal shown after a round ends. Uses a two-step flow: lightweight summary first, mistake review second.
 
 #### Props
 
@@ -165,9 +165,9 @@ Completion modal shown after a round ends. Uses a two-step flow: summary first, 
 
 #### Behavior
 
-- Step 1: summary, stars, stats, and primary actions
-- Step 2: dedicated mistake-review panel opened by "看错题"
-- Supports direct "练错题" action
+- Step 1: stars, short summary text, and primary actions
+- Step 2: dedicated mistake-review panel opened by "看错的"
+- Supports direct "练错的 / 再练" action
 
 ## 🔔 Toast Components
 
