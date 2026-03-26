@@ -207,9 +207,14 @@ function closeMistakesPanel() {
                 >
                   <div class="mistake-expression">
                     <span>{{ item.missingPart === 'operand1' ? '?' : item.operand1 }}</span>
-                    <span>{{ item.operator }}</span>
+                    <span
+                      class="mistake-symbol"
+                      :class="item.operator === '+' ? 'mistake-operator-plus' : 'mistake-operator-minus'"
+                    >
+                      {{ item.operator }}
+                    </span>
                     <span>{{ item.missingPart === 'operand2' ? '?' : item.operand2 }}</span>
-                    <span>=</span>
+                    <span class="mistake-symbol mistake-equals">=</span>
                     <strong>{{ item.missingPart === 'answer' ? item.correctAnswer : item.result }}</strong>
                   </div>
                   <p class="mistake-answer">
@@ -469,6 +474,44 @@ function closeMistakesPanel() {
   font-size: var(--font-lg);
   font-weight: 800;
   line-height: 1.4;
+}
+
+.mistake-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.mistake-operator-plus,
+.mistake-operator-minus {
+  background: rgba(49, 120, 246, 0.12);
+  border-color: rgba(49, 120, 246, 0.24);
+}
+
+.mistake-operator-plus {
+  color: #0F3D91;
+}
+
+.mistake-operator-minus {
+  color: #0D6B57;
+  background: rgba(46, 196, 182, 0.14);
+  border-color: rgba(46, 196, 182, 0.26);
+}
+
+.mistake-equals {
+  color: #8A5A00;
+  background: rgba(245, 201, 74, 0.16);
+  border-color: rgba(245, 201, 74, 0.26);
+  min-width: 28px;
+  height: 28px;
+  font-size: 18px;
 }
 
 .mistake-expression strong {

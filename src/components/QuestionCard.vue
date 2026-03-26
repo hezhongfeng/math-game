@@ -59,7 +59,12 @@ const answerStateClass = computed(() => ({
         {{ answerDisplay }}
       </span>
       <span v-else class="number">{{ question.operand1 }}</span>
-      <span class="operator">{{ question.operator }}</span>
+      <span
+        class="symbol operator"
+        :class="question.operator === '+' ? 'operator-plus' : 'operator-minus'"
+      >
+        {{ question.operator }}
+      </span>
       <span
         v-if="missingPart === 'operand2'"
         class="answer"
@@ -68,7 +73,7 @@ const answerStateClass = computed(() => ({
         {{ answerDisplay }}
       </span>
       <span v-else class="number">{{ question.operand2 }}</span>
-      <span class="equals">=</span>
+      <span class="symbol equals">=</span>
       <span
         v-if="missingPart === 'answer'"
         class="answer"
@@ -127,18 +132,49 @@ const answerStateClass = computed(() => ({
   font-variant-numeric: tabular-nums;
 }
 
+.symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(46px, 10vw, 62px);
+  height: clamp(46px, 10vw, 62px);
+  border-radius: 18px;
+  border: 2px solid transparent;
+  box-shadow: 0 6px 14px rgba(18, 30, 49, 0.08);
+  font-size: clamp(38px, 9vw, 54px);
+  font-weight: 900;
+  line-height: 1;
+}
+
 .operator,
 .equals {
   font-size: clamp(34px, 8vw, 50px);
   font-weight: 800;
 }
 
-.operator {
-  color: var(--candy-pink-dark);
+.operator-plus,
+.operator-minus {
+  background: rgba(49, 120, 246, 0.12);
+  border-color: rgba(49, 120, 246, 0.24);
+}
+
+.operator-plus {
+  color: #0F3D91;
+}
+
+.operator-minus {
+  color: #0D6B57;
+  background: rgba(46, 196, 182, 0.14);
+  border-color: rgba(46, 196, 182, 0.26);
 }
 
 .equals {
-  color: var(--text-muted);
+  color: #8A5A00;
+  background: rgba(245, 201, 74, 0.16);
+  border-color: rgba(245, 201, 74, 0.26);
+  min-width: clamp(40px, 8vw, 52px);
+  height: clamp(40px, 8vw, 52px);
+  font-size: clamp(30px, 7vw, 42px);
 }
 
 .answer {
@@ -201,9 +237,17 @@ const answerStateClass = computed(() => ({
     font-size: 42px;
   }
 
-  .operator,
+  .symbol {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    font-size: 30px;
+  }
+
   .equals {
-    font-size: 28px;
+    min-width: 34px;
+    height: 34px;
+    font-size: 24px;
   }
 }
 </style>
