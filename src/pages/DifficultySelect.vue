@@ -96,15 +96,15 @@ function isDifficultyLocked(difficulty) {
 
       <div class="headline-row">
         <div>
-          <p class="eyebrow">选关</p>
-          <h1 class="title text-child-2xl">选择关卡</h1>
-          <p class="subtitle text-child-sm">按顺序玩，过关再开下一关。</p>
+          <p class="eyebrow">选一关</p>
+          <h1 class="title text-child-2xl">从 1 开始</h1>
+          <p class="subtitle text-child-sm">按顺序玩。</p>
         </div>
       </div>
 
       <div class="progress-panel">
         <div class="progress-copy">
-          <span>总进度</span>
+          <span>已玩</span>
           <strong>{{ progressPercent }}%</strong>
         </div>
         <div class="progress-track">
@@ -122,9 +122,9 @@ function isDifficultyLocked(difficulty) {
         <div class="section-header">
           <div class="section-copy">
             <span class="section-badge" :class="`badge-${group.color}`">{{ group.name }}</span>
-            <p class="section-note">先过这一组</p>
+            <p class="section-note">按顺序</p>
           </div>
-          <span class="section-count text-child-sm">{{ group.levels.length }} 关</span>
+          <span class="section-count text-child-sm">{{ group.levels.length }}关</span>
         </div>
 
         <div class="card-list">

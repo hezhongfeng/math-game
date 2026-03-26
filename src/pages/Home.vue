@@ -1,10 +1,9 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowRight, Play, Sparkles, Target, Trophy } from 'lucide-vue-next'
+import { ArrowRight, Play, Sparkles } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
-import { GAME_CONFIG } from '../config/constants'
 import { TOTAL_LEVELS } from '../config/difficulty'
 
 const router = useRouter()
@@ -13,8 +12,6 @@ const { playClick } = useSound()
 const isReady = ref(false)
 const isLeaving = ref(false)
 const NAVIGATION_DELAY = 180
-
-const progress = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
 function startGame(event) {
   if (isLeaving.value) {
@@ -46,54 +43,23 @@ onMounted(() => {
         <div class="hero-topline">
           <span class="mission-chip">
             <Sparkles :size="16" />
-            <span>准备好了</span>
+            <span>来玩吧</span>
           </span>
-          <span class="mission-note">{{ TOTAL_LEVELS }} 关</span>
+          <span class="mission-note">{{ TOTAL_LEVELS }}关</span>
         </div>
 
         <div class="hero-copy">
-          <p class="eyebrow">数学游戏</p>
-          <h1 class="title">数学大冒险</h1>
-          <p class="subtitle">答对 {{ GAME_CONFIG.PASS_ACCURACY }}% ，解锁下一关。</p>
-        </div>
-
-        <div class="mission-progress">
-          <div class="progress-header">
-            <span>总进度</span>
-            <strong>{{ progress }}%</strong>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
-          </div>
-        </div>
-
-        <div class="stats-grid">
-          <article class="stat-card">
-            <div class="stat-icon primary">
-              <Trophy :size="20" />
-            </div>
-            <div>
-              <p class="stat-value">{{ completedCount }}</p>
-              <p class="stat-label">已过关</p>
-            </div>
-          </article>
-
-          <article class="stat-card">
-            <div class="stat-icon success">
-              <Target :size="20" />
-            </div>
-            <div>
-              <p class="stat-value">{{ TOTAL_LEVELS }}</p>
-              <p class="stat-label">全部关卡</p>
-            </div>
-          </article>
+          <p class="eyebrow">一起算</p>
+          <h1 class="title">算一算</h1>
+          <p class="subtitle">点开始就能玩。</p>
+          <p class="tiny-note">已过 {{ completedCount }} / {{ TOTAL_LEVELS }}</p>
         </div>
       </section>
 
       <section class="action-panel">
         <button class="btn-main" data-testid="start-challenge-btn" @click="startGame($event)">
           <Play :size="22" />
-          <span>开始挑战</span>
+          <span>开始</span>
           <ArrowRight :size="20" />
         </button>
       </section>
@@ -148,15 +114,12 @@ onMounted(() => {
 }
 
 .hero-topline,
-.progress-header,
-.stat-card,
 .btn-main {
   display: flex;
   align-items: center;
 }
 
-.hero-topline,
-.progress-header {
+.hero-topline {
   justify-content: space-between;
 }
 
@@ -209,83 +172,11 @@ onMounted(() => {
   line-height: 1.7;
 }
 
-.mission-progress {
-  margin-bottom: 22px;
-  padding: 16px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border-light);
-}
-
-.progress-header {
-  margin-bottom: 10px;
-  color: var(--text-secondary);
+.tiny-note {
+  margin-top: 10px;
+  color: var(--text-muted);
   font-size: var(--font-sm);
   font-weight: 700;
-}
-
-.progress-header strong {
-  color: var(--text-primary);
-}
-
-.progress-track {
-  height: 10px;
-  border-radius: var(--radius-full);
-  background: rgba(49, 120, 246, 0.12);
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--candy-pink), var(--candy-mint));
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.stat-card {
-  gap: 12px;
-  padding: 16px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--border-light);
-}
-
-.stat-icon {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-}
-
-.stat-icon.primary {
-  background: var(--candy-pink-soft);
-  color: var(--candy-pink-dark);
-}
-
-.stat-icon.success {
-  background: var(--candy-mint-soft);
-  color: var(--candy-mint-dark);
-}
-
-.stat-value {
-  color: var(--text-primary);
-  font-size: 30px;
-  line-height: 1.1;
-  font-weight: 800;
-}
-
-.stat-label {
-  margin-top: 4px;
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  font-weight: 600;
 }
 
 .action-panel {
@@ -322,10 +213,6 @@ onMounted(() => {
 }
 
 @media (hover: hover) {
-  .stat-card:hover {
-    border-color: var(--border-strong);
-  }
-
   .btn-main:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
@@ -391,24 +278,6 @@ onMounted(() => {
   .subtitle {
     font-size: var(--font-base);
     line-height: 1.6;
-  }
-
-  .mission-progress {
-    margin-bottom: 16px;
-    padding: 14px;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .stat-card {
-    padding: 14px;
-  }
-
-  .stat-value {
-    font-size: 26px;
   }
 
   .action-panel {

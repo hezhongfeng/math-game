@@ -28,27 +28,12 @@ const progress = computed(() => {
 
 const remainingCount = computed(() => Math.max(props.totalQuestions - props.currentIndex - 1, 0))
 
-const statusText = computed(() => {
-  if (props.streak >= 5) {
-    return `节奏很好，已经连对 ${props.streak} 题`
-  }
-
-  if (props.streak >= 3) {
-    return '状态不错，继续保持'
-  }
-
-  if (remainingCount.value === 0) {
-    return '最后一题，稳稳收尾'
-  }
-
-  return `还剩 ${remainingCount.value} 题`
-})
 </script>
 
 <template>
   <div class="score-board">
     <div class="progress-header">
-      <span>当前进度</span>
+      <span>进度</span>
       <div class="progress-meta">
         <span
           v-if="streak >= 3"
@@ -56,9 +41,9 @@ const statusText = computed(() => {
           class="streak-chip"
           :class="{ 'is-highlight': streak >= 5 }"
         >
-          连对 {{ streak }}
+          连对{{ streak }}
         </span>
-        <strong>{{ progress }}%</strong>
+        <strong>{{ currentIndex + 1 }}/{{ totalQuestions }}</strong>
       </div>
     </div>
 
@@ -67,10 +52,7 @@ const statusText = computed(() => {
     </div>
 
     <div class="summary-row">
-      <div class="summary-copy">
-        <p class="summary-label">当前状态</p>
-        <p class="summary-value">{{ statusText }}</p>
-      </div>
+      <p class="summary-text">{{ remainingCount === 0 ? '最后一题' : `还剩${remainingCount}题` }}</p>
 
       <div class="summary-pill">
         <div class="stat-icon correct-icon">
@@ -78,7 +60,7 @@ const statusText = computed(() => {
         </div>
         <div>
           <p class="stat-value font-number">{{ correctCount }}/{{ totalQuestions }}</p>
-          <p class="stat-label">已答对</p>
+          <p class="stat-label">答对</p>
         </div>
       </div>
     </div>
@@ -159,22 +141,11 @@ const statusText = computed(() => {
   margin-top: 12px;
 }
 
-.summary-copy {
-  min-width: 0;
-}
-
-.summary-label {
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.summary-value {
-  margin-top: 4px;
+.summary-text {
   color: var(--text-primary);
   font-size: var(--font-base);
   font-weight: 800;
-  line-height: 1.4;
+  line-height: 1.2;
 }
 
 .summary-pill {

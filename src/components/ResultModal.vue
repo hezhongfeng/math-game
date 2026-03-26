@@ -1,8 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { CheckCircle, Clock, Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
+import { Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
 import { GAME_CONFIG } from '../config/constants'
-import { formatTime } from '../utils/format'
 import { getRatingText, getStarCount } from '../utils/stars'
 
 const props = defineProps({
@@ -32,30 +31,18 @@ const remainingToPass = computed(() => Math.max(0, minCorrectCount.value - (prop
 
 const subtitleText = computed(() => {
   if (!didPass.value) {
-    return `还差 ${remainingToPass.value} 题到过关线。`
+    return `还差${remainingToPass.value}题。`
   }
 
   if (!hasIncorrectQuestions.value) {
-    return '这一轮全对，顺利过关。'
+    return '全对啦。'
   }
 
   if (props.isNewBest) {
-    return '已经过关，这次还是最好成绩。'
+    return '这次更棒。'
   }
 
-  return '已经过关，先看错题再练一轮。'
-})
-
-const summaryText = computed(() => {
-  if (!didPass.value) {
-    return `本关需要答对 ${minCorrectCount.value} 题。`
-  }
-
-  if (!hasIncorrectQuestions.value) {
-    return '都答对了。'
-  }
-
-  return `有 ${incorrectQuestions.value.length} 题答错了。`
+  return '过关啦。'
 })
 
 watch(() => props.show, (visible) => {
@@ -94,11 +81,11 @@ function closeMistakesPanel() {
             <div class="topline">
               <span class="result-chip">
                 <Target :size="16" />
-                <span>{{ didPass ? '已过关' : '本轮完成' }}</span>
+                <span>{{ didPass ? '过关啦' : '做完啦' }}</span>
               </span>
               <span v-if="isNewBest" class="record-chip">
                 <Sparkles :size="14" />
-                <span>最好成绩</span>
+                <span>新纪录</span>
               </span>
             </div>
 
@@ -115,54 +102,7 @@ function closeMistakesPanel() {
               />
             </div>
 
-            <section class="summary-section">
-              <div class="section-head">
-                <h3 class="section-title">本轮表现</h3>
-                <p class="section-note">{{ summaryText }}</p>
-              </div>
-
-              <div class="stats-grid">
-                <div class="stat-card">
-                  <div class="stat-icon score">
-                    <Target :size="18" />
-                  </div>
-                  <div>
-                    <p class="stat-label">得分</p>
-                    <p class="stat-value">{{ result.score }}</p>
-                  </div>
-                </div>
-
-                <div class="stat-card">
-                  <div class="stat-icon correct">
-                    <CheckCircle :size="18" />
-                  </div>
-                  <div>
-                    <p class="stat-label">正确</p>
-                    <p class="stat-value">{{ result.correctCount }}/{{ result.totalCount }}</p>
-                  </div>
-                </div>
-
-                <div class="stat-card">
-                  <div class="stat-icon accuracy">
-                    <Star :size="18" />
-                  </div>
-                  <div>
-                    <p class="stat-label">正确率</p>
-                    <p class="stat-value">{{ result.accuracy }}%</p>
-                  </div>
-                </div>
-
-                <div class="stat-card">
-                  <div class="stat-icon time">
-                    <Clock :size="18" />
-                  </div>
-                  <div>
-                    <p class="stat-label">用时</p>
-                    <p class="stat-value">{{ formatTime(result.duration) }}</p>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <p v-if="hasIncorrectQuestions" class="mistake-note">错了 {{ incorrectQuestions.length }} 题</p>
 
             <div class="actions">
               <button
@@ -171,7 +111,7 @@ function closeMistakesPanel() {
                 type="button"
                 @click="openMistakesPanel"
               >
-                <span>看错题</span>
+                <span>看错的</span>
               </button>
 
               <button
@@ -181,7 +121,7 @@ function closeMistakesPanel() {
                 @click="handleRetryMistakes"
               >
                 <RotateCcw :size="18" />
-                <span>练错题</span>
+                <span>练错的</span>
               </button>
 
               <button
@@ -191,12 +131,12 @@ function closeMistakesPanel() {
                 @click="handleRetry"
               >
                 <RotateCcw :size="18" />
-                <span>再玩一次</span>
+                <span>再来</span>
               </button>
 
               <button class="btn-secondary ghost" data-testid="result-home-btn" @click="handleHome">
                 <Home :size="18" />
-                <span>回到选关</span>
+                <span>选关</span>
               </button>
             </div>
           </template>
@@ -205,9 +145,9 @@ function closeMistakesPanel() {
             <div class="mistakes-headline">
               <div>
                 <p class="mistakes-kicker">错题</p>
-                <h2 class="result-title">看看哪题错了</h2>
+                <h2 class="result-title">错了这些</h2>
               </div>
-              <span class="mistakes-count">{{ incorrectQuestions.length }} 题</span>
+              <span class="mistakes-count">{{ incorrectQuestions.length }}题</span>
             </div>
 
             <section class="mistakes-section">
@@ -230,7 +170,7 @@ function closeMistakesPanel() {
                     <strong>{{ item.missingPart === 'answer' ? item.correctAnswer : item.result }}</strong>
                   </div>
                   <p class="mistake-answer">
-                    我写的是：<span>{{ item.userAnswer }}</span>
+                    你写：<span>{{ item.userAnswer }}</span>
                   </p>
                 </article>
               </div>
@@ -243,7 +183,7 @@ function closeMistakesPanel() {
                 @click="handleRetryMistakes"
               >
                 <RotateCcw :size="18" />
-                <span>开始练习</span>
+                <span>再练</span>
               </button>
 
               <button class="btn-secondary" type="button" @click="closeMistakesPanel">
@@ -362,7 +302,6 @@ function closeMistakesPanel() {
   color: #ffe8e0;
 }
 
-.summary-section,
 .mistakes-section {
   margin-bottom: 18px;
   padding: 14px;
@@ -371,78 +310,12 @@ function closeMistakesPanel() {
   border: 1px solid var(--border-light);
 }
 
-.section-head {
-  margin-bottom: 10px;
-}
-
-.section-title {
-  color: var(--text-primary);
+.mistake-note {
+  margin-bottom: 18px;
+  color: var(--text-secondary);
+  text-align: center;
   font-size: var(--font-base);
-  font-weight: 800;
-}
-
-.section-note {
-  margin-top: 4px;
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  line-height: 1.5;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--border-light);
-}
-
-.stat-icon {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-xs);
-}
-
-.stat-icon.score {
-  color: var(--candy-pink-dark);
-  background: var(--candy-pink-soft);
-}
-
-.stat-icon.correct {
-  color: var(--candy-mint-dark);
-  background: var(--candy-mint-soft);
-}
-
-.stat-icon.accuracy {
-  color: var(--candy-yellow-dark);
-  background: var(--candy-yellow-soft);
-}
-
-.stat-icon.time {
-  color: var(--candy-peach-dark);
-  background: var(--candy-peach-soft);
-}
-
-.stat-label {
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  font-weight: 600;
-}
-
-.stat-value {
-  color: var(--text-primary);
-  font-size: var(--font-lg);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .mistakes-headline {

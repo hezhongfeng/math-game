@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { CheckCircle2, ChevronRight, Lock, Star } from 'lucide-vue-next'
-import { GAME_CONFIG } from '../config/constants'
 import { getStarCount } from '../utils/stars'
 
 const props = defineProps({
@@ -33,14 +32,14 @@ const stars = computed(() => {
 const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
 
 const statusText = computed(() => {
-  if (props.isLocked) return `上一关要到 ${GAME_CONFIG.PASS_ACCURACY}%`
+  if (props.isLocked) return '还没到'
   if (props.isCompleted && props.bestScore) {
-    return `已过关 · 最好 ${props.bestScore.accuracy}%`
+    return '已经过了'
   }
   if (props.bestScore) {
-    return `现在 ${props.bestScore.accuracy}% · 到 ${GAME_CONFIG.PASS_ACCURACY}% 过关`
+    return '再试一次'
   }
-  return '开始玩'
+  return '去玩'
 })
 
 function handleSelect(event) {
@@ -67,7 +66,7 @@ function handleSelect(event) {
       <div class="level-content">
         <div class="title-row">
           <h3 class="level-name">{{ difficulty.name }}</h3>
-          <span v-if="!isLocked && !bestScore" class="new-tag">新关</span>
+          <span v-if="!isLocked && !bestScore" class="new-tag">新</span>
         </div>
         <p class="level-desc">{{ difficulty.description }}</p>
         <p class="level-status">{{ statusText }}</p>

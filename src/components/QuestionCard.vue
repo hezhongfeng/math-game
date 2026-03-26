@@ -47,7 +47,7 @@ const answerStateClass = computed(() => ({
 <template>
   <div class="question-card">
     <div class="card-top">
-      <div class="counter-badge">第 {{ currentIndex + 1 }} 题 / 共 {{ totalQuestions }} 题</div>
+      <div class="counter-badge">{{ currentIndex + 1 }} / {{ totalQuestions }}</div>
     </div>
 
     <div class="math-display font-number" data-testid="question-expression">

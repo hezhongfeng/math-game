@@ -102,7 +102,7 @@ async function initGame() {
 
 function submitAnswer() {
   if (isWaiting.value || !userAnswer.value || userAnswer.value.trim() === '') {
-    showError('请先输入答案')
+    showError('先写数字')
     return
   }
 
@@ -148,7 +148,7 @@ function triggerStreakReward() {
     return
   }
 
-  streakRewardText.value = `连对 ${streakCount.value} 题`
+  streakRewardText.value = `连对${streakCount.value}题`
   showStreakReward.value = true
 
   if (streakRewardTimeout) {
@@ -335,7 +335,7 @@ onUnmounted(() => {
       <div v-if="isLoading" class="loading-overlay">
       <div class="loading-panel">
           <div class="spinner"></div>
-          <p class="loading-text text-child-base">正在准备题目...</p>
+          <p class="loading-text text-child-base">准备中</p>
         </div>
       </div>
     </Transition>
@@ -346,8 +346,8 @@ onUnmounted(() => {
       </button>
 
       <div class="title-group">
-        <p class="eyebrow">正在挑战</p>
-        <h1 class="title text-child-lg">{{ difficulty.name }}</h1>
+        <p class="eyebrow">来做题</p>
+        <h1 class="title text-child-lg">第{{ difficulty.id }}关</h1>
         <p class="subtitle text-child-sm">{{ difficulty.description }}</p>
       </div>
 
@@ -389,16 +389,16 @@ onUnmounted(() => {
                 <div class="feedback-icon success">
                   <CheckCircle2 :size="22" />
                 </div>
-                <strong class="feedback-main">答对啦</strong>
+                <strong class="feedback-main">对啦</strong>
               </template>
 
               <template v-else>
                 <div class="feedback-icon error">
                   <AlertCircle :size="22" />
                 </div>
-                <p class="feedback-kicker">正确答案</p>
+                <p class="feedback-kicker">答案</p>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <button class="feedback-continue-btn" @click="handleFeedbackClick">继续</button>
+                <button class="feedback-continue-btn" @click="handleFeedbackClick">下一题</button>
               </template>
             </div>
           </div>
