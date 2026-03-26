@@ -43,6 +43,7 @@ function handleSubmit() {
       </button>
 
       <button data-testid="num-btn-delete" class="num-btn btn-delete" :disabled="disabled" @click="handleDelete">
+        <span class="action-mark">删</span>
         <X :size="34" stroke-width="2.5" />
       </button>
 
@@ -51,6 +52,7 @@ function handleSubmit() {
       </button>
 
       <button data-testid="num-btn-submit" class="num-btn btn-submit" :disabled="disabled" @click="handleSubmit">
+        <span class="action-mark">好</span>
         <Check :size="36" stroke-width="3" />
       </button>
     </div>
@@ -77,6 +79,7 @@ function handleSubmit() {
 }
 
 .num-btn {
+  position: relative;
   min-width: 64px;
   min-height: 64px;
   aspect-ratio: 1;
@@ -97,6 +100,16 @@ function handleSubmit() {
 .num-btn svg {
   width: 32px;
   height: 32px;
+}
+
+.action-mark {
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.78;
 }
 
 .num-btn:active:not(:disabled) {
@@ -130,6 +143,10 @@ function handleSubmit() {
   background: var(--candy-pink-dark);
   border-color: var(--candy-pink-dark);
   box-shadow: none;
+}
+
+.btn-submit .action-mark {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 @media (min-width: 768px) {

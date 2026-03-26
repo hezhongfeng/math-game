@@ -120,7 +120,9 @@ function closeMistakesPanel() {
                 data-testid="result-retry-mistakes-btn"
                 @click="handleRetryMistakes"
               >
-                <RotateCcw :size="18" />
+                <span class="btn-icon">
+                  <RotateCcw :size="18" />
+                </span>
                 <span>练错的</span>
               </button>
 
@@ -130,12 +132,16 @@ function closeMistakesPanel() {
                 data-testid="result-retry-btn"
                 @click="handleRetry"
               >
-                <RotateCcw :size="18" />
+                <span class="btn-icon">
+                  <RotateCcw :size="18" />
+                </span>
                 <span>再来</span>
               </button>
 
               <button class="btn-secondary ghost" data-testid="result-home-btn" @click="handleHome">
-                <Home :size="18" />
+                <span class="btn-icon">
+                  <Home :size="18" />
+                </span>
                 <span>选关</span>
               </button>
             </div>
@@ -182,7 +188,9 @@ function closeMistakesPanel() {
                 data-testid="result-retry-mistakes-btn"
                 @click="handleRetryMistakes"
               >
-                <RotateCcw :size="18" />
+                <span class="btn-icon">
+                  <RotateCcw :size="18" />
+                </span>
                 <span>再练</span>
               </button>
 
@@ -227,6 +235,7 @@ function closeMistakesPanel() {
 .actions,
 .btn-primary,
 .btn-secondary,
+.btn-icon,
 .mistakes-headline,
 .mistake-expression {
   display: flex;
@@ -430,6 +439,15 @@ function closeMistakesPanel() {
   font-weight: 800;
 }
 
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+}
+
 .btn-primary {
   border: none;
   color: white;
@@ -444,6 +462,10 @@ function closeMistakesPanel() {
 
 .btn-secondary.ghost {
   color: var(--text-secondary);
+}
+
+.btn-secondary .btn-icon {
+  background: rgba(49, 120, 246, 0.08);
 }
 
 .btn-primary:active,

@@ -384,7 +384,11 @@ onUnmounted(() => {
             :class="{ 'is-success': isCorrect, 'is-error': isIncorrect }"
             @click="handleFeedbackClick"
           >
-            <div class="feedback-card" :class="{ success: isCorrect, error: isIncorrect }" @click.stop>
+            <div
+              class="feedback-card"
+              :class="{ success: isCorrect, error: isIncorrect }"
+              @click.stop
+            >
               <template v-if="isCorrect">
                 <div class="feedback-icon success">
                   <CheckCircle2 :size="22" />
@@ -398,7 +402,7 @@ onUnmounted(() => {
                 </div>
                 <p class="feedback-kicker">答案</p>
                 <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <button class="feedback-continue-btn" @click="handleFeedbackClick">下一题</button>
+                <p class="feedback-tap-note">点一下继续</p>
               </template>
             </div>
           </div>
@@ -561,11 +565,12 @@ onUnmounted(() => {
 }
 
 .feedback-wrap.is-error {
-  inset: auto 0 0;
+  inset: 0;
   z-index: 6;
-  padding: 0 12px 12px;
-  align-items: flex-end;
-  pointer-events: none;
+  padding: 12px;
+  align-items: center;
+  pointer-events: auto;
+  background: rgba(255, 247, 243, 0.48);
 }
 
 .streak-reward {
@@ -624,12 +629,13 @@ onUnmounted(() => {
 
 .feedback-card.error {
   width: min(100%, 360px);
-  gap: 6px;
-  padding: 16px 16px 14px;
+  gap: 8px;
+  padding: 20px 18px 18px;
   background: #fff7f3;
   border-color: rgba(230, 106, 106, 0.24);
   box-shadow: var(--shadow-sm);
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .feedback-icon {
@@ -660,7 +666,7 @@ onUnmounted(() => {
 
 .feedback-kicker {
   color: var(--text-primary);
-  font-size: var(--font-sm);
+  font-size: var(--font-base);
   font-weight: 800;
 }
 
@@ -678,22 +684,14 @@ onUnmounted(() => {
 
 .feedback-card.error .feedback-main {
   color: var(--candy-red-dark);
+  font-size: 52px;
+  line-height: 1;
 }
 
-.feedback-continue-btn {
-  width: 100%;
-  min-height: 48px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: rgba(230, 106, 106, 0.12);
-  color: var(--candy-red-dark);
-  font-size: var(--font-base);
-  font-weight: 800;
-  border: 1px solid rgba(230, 106, 106, 0.2);
-}
-
-.feedback-continue-btn:active {
-  transform: scale(0.98);
+.feedback-tap-note {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
 }
 
 .loading-overlay {
@@ -844,6 +842,10 @@ onUnmounted(() => {
 
   .feedback-card.success .feedback-main {
     font-size: 17px;
+  }
+
+  .feedback-card.error .feedback-main {
+    font-size: 44px;
   }
 }
 

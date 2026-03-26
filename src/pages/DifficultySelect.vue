@@ -98,7 +98,7 @@ function isDifficultyLocked(difficulty) {
         <div>
           <p class="eyebrow">选一关</p>
           <h1 class="title text-child-2xl">从 1 开始</h1>
-          <p class="subtitle text-child-sm">按顺序玩。</p>
+          <p class="subtitle text-child-sm">先玩上面的。</p>
         </div>
       </div>
 
@@ -120,11 +120,7 @@ function isDifficultyLocked(difficulty) {
         class="section"
       >
         <div class="section-header">
-          <div class="section-copy">
-            <span class="section-badge" :class="`badge-${group.color}`">{{ group.name }}</span>
-            <p class="section-note">按顺序</p>
-          </div>
-          <span class="section-count text-child-sm">{{ group.levels.length }}关</span>
+          <span class="section-badge" :class="`badge-${group.color}`">{{ group.name }}</span>
         </div>
 
         <div class="card-list">
@@ -284,42 +280,19 @@ function isDifficultyLocked(difficulty) {
 }
 
 .section-header {
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 12px 14px;
-}
-
-.section-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.section-badge,
-.section-count {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  border-radius: var(--radius-full);
-  font-weight: 800;
+  margin-bottom: 8px;
+  padding: 4px 2px;
 }
 
 .section-badge {
-  padding: 7px 12px;
-  font-size: var(--font-sm);
-}
-
-.section-note {
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  font-weight: 600;
-}
-
-.section-count {
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border-light);
-  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 0;
+  font-weight: 800;
+  padding: 0;
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 .badge-mint {
@@ -402,12 +375,7 @@ function isDifficultyLocked(difficulty) {
   }
 
   .section-header {
-    align-items: flex-start;
-    padding: 6px 2px 2px;
-  }
-
-  .section-count {
-    padding: 7px 10px;
+    padding: 2px 2px 0;
   }
 }
 </style>

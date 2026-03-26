@@ -58,9 +58,11 @@ onMounted(() => {
 
       <section class="action-panel">
         <button class="btn-main" data-testid="start-challenge-btn" @click="startGame($event)">
-          <Play :size="22" />
+          <span class="btn-main-icon">
+            <Play :size="24" />
+          </span>
           <span>开始</span>
-          <ArrowRight :size="20" />
+          <ArrowRight :size="22" />
         </button>
       </section>
     </div>
@@ -198,6 +200,16 @@ onMounted(() => {
   box-shadow: var(--shadow-sm);
   font-size: var(--font-lg);
   font-weight: 800;
+}
+
+.btn-main-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .btn-main:active {

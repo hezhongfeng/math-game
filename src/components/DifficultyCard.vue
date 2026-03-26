@@ -32,12 +32,12 @@ const stars = computed(() => {
 const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
 
 const statusText = computed(() => {
-  if (props.isLocked) return '还没到'
+  if (props.isLocked) return ''
   if (props.isCompleted && props.bestScore) {
-    return '已经过了'
+    return '再玩'
   }
   if (props.bestScore) {
-    return '再试一次'
+    return '再玩'
   }
   return '去玩'
 })
@@ -65,16 +65,16 @@ function handleSelect(event) {
 
       <div class="level-content">
         <div class="title-row">
-          <h3 class="level-name">{{ difficulty.name }}</h3>
+          <h3 class="level-name">第{{ difficulty.id }}关</h3>
           <span v-if="!isLocked && !bestScore" class="new-tag">新</span>
         </div>
         <p class="level-desc">{{ difficulty.description }}</p>
-        <p class="level-status">{{ statusText }}</p>
+        <p v-if="statusText" class="level-status">{{ statusText }}</p>
       </div>
     </div>
 
     <div class="trailing">
-      <div v-if="!isLocked" class="stars">
+      <div v-if="!isLocked && stars > 0" class="stars">
         <Star
           v-for="n in 5"
           :key="n"
@@ -97,7 +97,7 @@ function handleSelect(event) {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px;
+  padding: 16px 18px;
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--border-light);
@@ -143,21 +143,21 @@ function handleSelect(event) {
 
 .leading {
   min-width: 0;
-  gap: 14px;
+  gap: 16px;
   flex: 1;
 }
 
 .level-badge {
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
   color: white;
-  font-size: var(--font-h3);
-  font-weight: 800;
-  box-shadow: inset 0 -8px 16px rgba(0, 0, 0, 0.12);
+  font-size: 30px;
+  font-weight: 900;
+  box-shadow: inset 0 -10px 18px rgba(0, 0, 0, 0.12);
 }
 
 .level-content {
@@ -165,13 +165,13 @@ function handleSelect(event) {
 }
 
 .title-row {
-  gap: 10px;
-  margin-bottom: 4px;
+  gap: 8px;
+  margin-bottom: 3px;
 }
 
 .level-name {
   color: var(--text-primary);
-  font-size: var(--font-lg);
+  font-size: 20px;
   font-weight: 800;
 }
 
@@ -190,8 +190,9 @@ function handleSelect(event) {
 }
 
 .level-desc {
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   color: var(--text-secondary);
+  font-weight: 700;
 }
 
 .level-status {
@@ -200,7 +201,7 @@ function handleSelect(event) {
 }
 
 .trailing {
-  gap: 12px;
+  gap: 10px;
 }
 
 .stars {
@@ -217,8 +218,8 @@ function handleSelect(event) {
 }
 
 .state-icon {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
 }
 
 .state-icon.completed {
