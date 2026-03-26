@@ -20,7 +20,7 @@ const props = defineProps({
   },
   totalQuestions: {
     type: Number,
-    default: 10
+    default: 20
   }
 })
 

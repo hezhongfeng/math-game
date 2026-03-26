@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { CheckCircle, Clock, Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
+import { GAME_CONFIG } from '../config/constants'
 import { formatTime } from '../utils/format'
 import { getRatingText, getStarCount } from '../utils/stars'
 
@@ -25,20 +26,31 @@ const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
 const showMistakesPanel = ref(false)
+const minCorrectCount = computed(() => Math.ceil((props.result.totalCount || 0) * GAME_CONFIG.PASS_ACCURACY / 100))
+const didPass = computed(() => props.result.accuracy >= GAME_CONFIG.PASS_ACCURACY)
+const remainingToPass = computed(() => Math.max(0, minCorrectCount.value - (props.result.correctCount || 0)))
 
 const subtitleText = computed(() => {
+  if (!didPass.value) {
+    return `还差 ${remainingToPass.value} 题到过关线。`
+  }
+
   if (!hasIncorrectQuestions.value) {
-    return '这一轮全对。'
+    return '这一轮全对，顺利过关。'
   }
 
   if (props.isNewBest) {
-    return '这次最好，先看错题。'
+    return '已经过关，这次还是最好成绩。'
   }
 
-  return '先看错题，再练一轮。'
+  return '已经过关，先看错题再练一轮。'
 })
 
 const summaryText = computed(() => {
+  if (!didPass.value) {
+    return `本关需要答对 ${minCorrectCount.value} 题。`
+  }
+
   if (!hasIncorrectQuestions.value) {
     return '都答对了。'
   }
@@ -82,7 +94,7 @@ function closeMistakesPanel() {
             <div class="topline">
               <span class="result-chip">
                 <Target :size="16" />
-                <span>完成了</span>
+                <span>{{ didPass ? '已过关' : '本轮完成' }}</span>
               </span>
               <span v-if="isNewBest" class="record-chip">
                 <Sparkles :size="14" />
