@@ -42,8 +42,13 @@ function handleSubmit() {
         {{ num }}
       </button>
 
-      <button data-testid="num-btn-delete" class="num-btn btn-delete" :disabled="disabled" @click="handleDelete">
-        <span class="action-mark">删</span>
+      <button
+        data-testid="num-btn-delete"
+        class="num-btn btn-delete"
+        :disabled="disabled"
+        aria-label="删除"
+        @click="handleDelete"
+      >
         <X :size="34" stroke-width="2.5" />
       </button>
 
@@ -51,8 +56,13 @@ function handleSubmit() {
         0
       </button>
 
-      <button data-testid="num-btn-submit" class="num-btn btn-submit" :disabled="disabled" @click="handleSubmit">
-        <span class="action-mark">好</span>
+      <button
+        data-testid="num-btn-submit"
+        class="num-btn btn-submit"
+        :disabled="disabled"
+        aria-label="提交"
+        @click="handleSubmit"
+      >
         <Check :size="36" stroke-width="3" />
       </button>
     </div>
@@ -102,16 +112,6 @@ function handleSubmit() {
   height: 32px;
 }
 
-.action-mark {
-  position: absolute;
-  top: 7px;
-  left: 9px;
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1;
-  opacity: 0.78;
-}
-
 .num-btn:active:not(:disabled) {
   transform: scale(0.96);
   background: #EEF4FF;
@@ -143,10 +143,6 @@ function handleSubmit() {
   background: var(--candy-pink-dark);
   border-color: var(--candy-pink-dark);
   box-shadow: none;
-}
-
-.btn-submit .action-mark {
-  color: rgba(255, 255, 255, 0.88);
 }
 
 @media (min-width: 768px) {
