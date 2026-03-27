@@ -369,6 +369,7 @@ onUnmounted(() => {
           <QuestionCard
             v-if="game.currentQuestion.value"
             :key="questionKey"
+            :class="{ 'is-highlighted': isIncorrect && shouldShowFeedback }"
             :question="game.currentQuestion.value"
             :show-answer="showAnswer"
             :user-answer="userAnswer"
@@ -537,6 +538,12 @@ onUnmounted(() => {
   min-height: 180px;
 }
 
+.is-highlighted {
+  position: relative;
+  z-index: 101; /* 比反馈遮罩层更高 */
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.1); /* 辅助性的局部加深 */
+}
+
 .score-wrap {
   order: 1;
 }
@@ -563,45 +570,53 @@ onUnmounted(() => {
 }
 
 .feedback-wrap.is-error {
-  position: relative; /* 改为相对定位，不遮挡题目 */
-  z-index: 10;
-  padding: 0;
-  margin-top: -20px; /* 负边距使反馈卡片与题目卡片产生轻微重叠感 */
-  pointer-events: auto;
-  background: transparent;
-}
-
-/* 增加遮罩层用于错误状态，但只作为背景 */
-.feedback-wrap.is-error::before {
-  content: '';
-  position: fixed;
+  position: fixed; /* 改为固定定位，实现全屏拦截 */
   inset: 0;
-  z-index: -1;
-  background: rgba(18, 30, 49, 0.12);
-  backdrop-filter: blur(2px);
-}
-
-.feedback-card {
-  width: min(100%, 300px);
+  z-index: 100; /* 极高层级，遮住键盘和页头 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 20px 18px 18px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.98);
-  border: 2px solid var(--border-default);
-  box-shadow: var(--shadow-lg);
+  justify-content: center;
+  padding: 20px;
+  pointer-events: auto;
+  background: rgba(18, 30, 49, 0.4); /* 明显的半透明遮罩 */
+  backdrop-filter: blur(4px); /* 增加磨砂感，让背景操作区彻底模糊 */
+  gap: 20px; /* 题目和反馈之间的间距 */
+}
+
+/* 在模态模式下，我们需要在反馈层里重新展示题目信息，或者确保原题目层级提升 */
+/* 方案：由于 QuestionCard 在原位置，我们将反馈层设计为“透明中间层”，
+   但最简单的办法是让 QuestionCard 在错误状态下临时提升 z-index */
+
+.feedback-card {
+  width: min(100%, 340px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px;
+  border-radius: var(--radius-xl);
+  background: white;
+  border: 3px solid var(--candy-red-dark);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: feedbackPop 0.4s var(--ease-out);
+}
+
+@keyframes feedbackPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .feedback-card.success {
+  position: absolute; /* 成功反馈保持原样，不拦截 */
   width: min(100%, 340px);
   flex-direction: row;
   justify-content: center;
   gap: 10px;
   padding: 14px 16px;
   background: rgba(46, 196, 182, 0.1);
-  border-color: rgba(78, 205, 196, 0.28);
+  border: 2px solid rgba(78, 205, 196, 0.28);
   box-shadow: var(--shadow-sm);
   pointer-events: none;
 }
