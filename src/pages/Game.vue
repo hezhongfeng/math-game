@@ -385,23 +385,39 @@ onUnmounted(() => {
             :class="{ 'is-success': isCorrect, 'is-error': isIncorrect }"
             @click="handleFeedbackClick"
           >
-            <div class="feedback-card" :class="{ success: isCorrect, error: isIncorrect }">
-              <template v-if="isCorrect">
+            <!-- 答错时的对比模态内容 -->
+            <template v-if="isIncorrect">
+              <div class="error-review-container">
+                <!-- 这里的 QuestionCard 会显示用户的错误答案 -->
+                <QuestionCard
+                  :question="game.currentQuestion.value"
+                  :show-answer="true"
+                  :user-answer="userAnswer"
+                  :current-index="game.currentIndex.value"
+                  :total-questions="game.questions.value.length"
+                  class="review-question"
+                />
+                
+                <div class="feedback-card error">
+                  <div class="feedback-icon error">
+                    <AlertCircle :size="22" />
+                  </div>
+                  <p class="feedback-kicker">正确答案是</p>
+                  <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
+                  <p class="feedback-tap-note">看清楚后，点一下继续</p>
+                </div>
+              </div>
+            </template>
+
+            <!-- 答对时的轻量反馈 -->
+            <template v-else>
+              <div class="feedback-card success">
                 <div class="feedback-icon success">
                   <CheckCircle2 :size="22" />
                 </div>
                 <strong class="feedback-main">对啦</strong>
-              </template>
-
-              <template v-else>
-                <div class="feedback-icon error">
-                  <AlertCircle :size="22" />
-                </div>
-                <p class="feedback-kicker">答案</p>
-                <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                <p class="feedback-tap-note">点一下继续</p>
-              </template>
-            </div>
+              </div>
+            </template>
           </div>
         </Transition>
       </section>
@@ -570,46 +586,52 @@ onUnmounted(() => {
 }
 
 .feedback-wrap.is-error {
-  position: fixed; /* 改为固定定位，实现全屏拦截 */
+  position: fixed; /* 全屏拦截 */
   inset: 0;
-  z-index: 100; /* 极高层级，遮住键盘和页头 */
+  z-index: 100;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   pointer-events: auto;
-  background: rgba(18, 30, 49, 0.4); /* 明显的半透明遮罩 */
-  backdrop-filter: blur(4px); /* 增加磨砂感，让背景操作区彻底模糊 */
-  gap: 20px; /* 题目和反馈之间的间距 */
+  background: rgba(18, 30, 49, 0.45);
+  backdrop-filter: blur(6px);
 }
 
-/* 在模态模式下，我们需要在反馈层里重新展示题目信息，或者确保原题目层级提升 */
-/* 方案：由于 QuestionCard 在原位置，我们将反馈层设计为“透明中间层”，
-   但最简单的办法是让 QuestionCard 在错误状态下临时提升 z-index */
-
-.feedback-card {
-  width: min(100%, 340px);
+.error-review-container {
+  width: 100%;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 24px 20px;
-  border-radius: var(--radius-xl);
-  background: white;
-  border: 3px solid var(--candy-red-dark);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-  animation: feedbackPop 0.4s var(--ease-out);
+  gap: 16px; /* 题目和答案之间的间距 */
+  animation: feedbackSlideUp 0.4s var(--ease-out);
 }
 
-@keyframes feedbackPop {
-  0% { transform: scale(0.8); opacity: 0; }
-  70% { transform: scale(1.05); }
-  100% { transform: scale(1); opacity: 1; }
+.review-question {
+  width: 100% !important;
+  background: white !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.02);
+}
+
+.feedback-card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 18px 18px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
 }
 
 .feedback-card.success {
-  position: absolute; /* 成功反馈保持原样，不拦截 */
+  position: absolute;
+  top: 12px;
   width: min(100%, 340px);
   flex-direction: row;
   justify-content: center;
@@ -622,15 +644,11 @@ onUnmounted(() => {
 }
 
 .feedback-card.error {
-  width: min(100%, 360px);
-  gap: 8px;
-  padding: 20px 18px 18px;
   background: white;
-  border-color: var(--candy-red-dark);
-  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.2);
+  border: 4px solid var(--candy-red-dark);
+  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.3);
   pointer-events: auto;
   cursor: pointer;
-  animation: feedbackSlideUp 0.4s var(--ease-out);
 }
 
 @keyframes feedbackSlideUp {
