@@ -384,11 +384,7 @@ onUnmounted(() => {
             :class="{ 'is-success': isCorrect, 'is-error': isIncorrect }"
             @click="handleFeedbackClick"
           >
-            <div
-              class="feedback-card"
-              :class="{ success: isCorrect, error: isIncorrect }"
-              @click.stop
-            >
+            <div class="feedback-card" :class="{ success: isCorrect, error: isIncorrect }">
               <template v-if="isCorrect">
                 <div class="feedback-icon success">
                   <CheckCircle2 :size="22" />
