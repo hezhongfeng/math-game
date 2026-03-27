@@ -6,10 +6,18 @@ const STORAGE_KEY = STORAGE_KEYS.GAME_DATA
 
 /**
  * 默认存档结构
- * @returns {{bestScores: Object, progress: Object}}
  */
 function createDefaultData() {
-  return { bestScores: {}, progress: {} }
+  return {
+    bestScores: {},
+    progress: {},
+    stats: {
+      totalAnswers: 0,
+      totalCorrect: 0,
+      mistakeLedger: {}, // { "5+3": { count: 2, lastAnswer: 7 } }
+      difficultyStats: {} // { "1": { avgTime: 0, totalPlayed: 0 } }
+    }
+  }
 }
 
 // 全局响应式缓存，避免重复读取 localStorage
@@ -21,7 +29,12 @@ if (typeof window !== 'undefined') {
   window.addEventListener('storage', (event) => {
     if (event.key === STORAGE_KEY) {
       try {
-        storageData.value = event.newValue ? JSON.parse(event.newValue) : createDefaultData()
+        const parsed = event.newValue ? JSON.parse(event.newValue) : createDefaultData()
+        storageData.value = {
+          bestScores: parsed.bestScores || {},
+          progress: parsed.progress || {},
+          stats: parsed.stats || createDefaultData().stats
+        }
         isDataLoaded = true
       } catch (error) {
         console.error('同步外部存储数据失败:', error)
@@ -50,7 +63,16 @@ export function useStorage() {
 
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      storageData.value = raw ? JSON.parse(raw) : createDefaultData()
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        storageData.value = {
+          bestScores: parsed.bestScores || {},
+          progress: parsed.progress || {},
+          stats: parsed.stats || createDefaultData().stats
+        }
+      } else {
+        storageData.value = createDefaultData()
+      }
     } catch (error) {
       showError('读取游戏数据失败，请检查浏览器存储设置')
       storageData.value = createDefaultData()
@@ -67,7 +89,8 @@ export function useStorage() {
   function saveData(data) {
     const normalizedData = {
       bestScores: { ...(data?.bestScores || {}) },
-      progress: { ...(data?.progress || {}) }
+      progress: { ...(data?.progress || {}) },
+      stats: { ...(data?.stats || createDefaultData().stats) }
     }
 
     try {
@@ -79,6 +102,68 @@ export function useStorage() {
     }
   }
   
+  /**
+   * 更新游戏统计信息
+   * @param {number} difficultyId - 难度ID
+   * @param {Object} sessionResult - 游戏结果
+   */
+  function updateStats(difficultyId, sessionResult) {
+    const data = loadData()
+    const stats = { ...data.stats }
+
+    // 1. 更新累计计数
+    stats.totalAnswers += sessionResult.totalCount
+    stats.totalCorrect += sessionResult.correctCount
+
+    // 2. 更新错题本
+    sessionResult.incorrectQuestions.forEach(q => {
+      const key = `${q.operand1}${q.operator}${q.operand2}`
+      if (!stats.mistakeLedger[key]) {
+        stats.mistakeLedger[key] = { count: 0, lastAnswer: null }
+      }
+      stats.mistakeLedger[key].count += 1
+      stats.mistakeLedger[key].lastAnswer = q.userAnswer
+    })
+
+    // 3. 更新难度相关统计（计算平均耗时）
+    if (!stats.difficultyStats[difficultyId]) {
+      stats.difficultyStats[difficultyId] = { avgTime: 0, totalPlayed: 0 }
+    }
+    
+    const dStats = stats.difficultyStats[difficultyId]
+    const currentAvg = dStats.avgTime
+    const n = dStats.totalPlayed
+    
+    if (sessionResult.correctCount > 0 && sessionResult.duration > 0) {
+      const sessionAvg = sessionResult.duration / sessionResult.totalCount
+      dStats.avgTime = n === 0 ? sessionAvg : (currentAvg * n + sessionAvg) / (n + 1)
+    }
+    dStats.totalPlayed += 1
+
+    saveData({
+      ...data,
+      stats
+    })
+  }
+  
+  /**
+   * 获取分析数据
+   */
+  function getAnalysis() {
+    const { stats } = loadData()
+    // 获取错误最频繁的前 3 个题目
+    const topMistakes = Object.entries(stats.mistakeLedger)
+      .sort(([, a], [, b]) => b.count - a.count)
+      .slice(0, 3)
+      .map(([key, data]) => ({ question: key, ...data }))
+
+    return {
+      totalAnswers: stats.totalAnswers,
+      totalCorrect: stats.totalCorrect,
+      topMistakes
+    }
+  }
+
   /**
    * 获取某个难度的最佳成绩
    * @param {number} difficultyId - 难度ID
@@ -96,6 +181,9 @@ export function useStorage() {
    * @returns {boolean} 是否更新了最佳成绩
    */
   function updateBestScore(difficultyId, result) {
+    // 首先更新全局统计
+    updateStats(difficultyId, result)
+
     const data = loadData()
     const currentBest = data.bestScores[difficultyId]
     
@@ -107,12 +195,12 @@ export function useStorage() {
       const updatedBestScores = {
         ...data.bestScores,
         [difficultyId]: {
-        score: result.score,
-        correctCount: result.correctCount,
-        totalCount: result.totalCount,
-        accuracy: result.accuracy,
-        duration: result.duration,
-        completedAt: result.completedAt
+          score: result.score,
+          correctCount: result.correctCount,
+          totalCount: result.totalCount,
+          accuracy: result.accuracy,
+          duration: result.duration,
+          completedAt: result.completedAt
         }
       }
 
@@ -150,6 +238,10 @@ export function useStorage() {
     loadData()
     return storageData.value.bestScores
   })
+  const stats = computed(() => {
+    loadData()
+    return storageData.value.stats
+  })
   const completedIds = computed(() => getCompletedDifficulties())
   const completedCount = computed(() => completedIds.value.length)
   
@@ -159,8 +251,10 @@ export function useStorage() {
     updateBestScore,
     getAllBestScores,
     getCompletedDifficulties,
+    getAnalysis,
     // 响应式数据
     bestScores,
+    stats,
     completedIds,
     completedCount
   }

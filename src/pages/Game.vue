@@ -431,6 +431,7 @@ onUnmounted(() => {
       :show="showModal"
       :result="resultData"
       :is-new-best="isNewBest"
+      :difficulty-id="props.id"
       @retry="handleRetry"
       @retry-mistakes="handleRetryMistakes"
       @home="handleHome"
@@ -595,7 +596,7 @@ onUnmounted(() => {
 .streak-reward-enter-from,
 .streak-reward-leave-to {
   opacity: 0;
-  transform: translateY(-6px) scale(0.96);
+  transform: translateY(-10px) scale(0.6) rotate(-5deg);
 }
 
 .feedback-card {
@@ -730,8 +731,16 @@ onUnmounted(() => {
   transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
-.question-enter-from,
-.question-leave-to,
+.question-enter-from {
+  opacity: 0;
+  transform: translateX(32px) scale(0.98);
+}
+
+.question-leave-to {
+  opacity: 0;
+  transform: translateX(-32px) scale(0.98);
+}
+
 .feedback-enter-from,
 .feedback-leave-to {
   opacity: 0;

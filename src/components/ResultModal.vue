@@ -1,8 +1,9 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { Home, RotateCcw, Sparkles, Star, Target } from 'lucide-vue-next'
+import { Award, Home, RotateCcw, Sparkles, Star, Target, TrendingUp } from 'lucide-vue-next'
 import { GAME_CONFIG } from '../config/constants'
 import { getRatingText, getStarCount } from '../utils/stars'
+import { useStorage } from '../composables/useStorage'
 
 const props = defineProps({
   show: {
@@ -16,11 +17,16 @@ const props = defineProps({
   isNewBest: {
     type: Boolean,
     default: false
+  },
+  difficultyId: {
+    type: [Number, String],
+    required: true
   }
 })
 
 const emit = defineEmits(['retry', 'retry-mistakes', 'home'])
 
+const { stats } = useStorage()
 const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
@@ -28,6 +34,53 @@ const showMistakesPanel = ref(false)
 const minCorrectCount = computed(() => Math.ceil((props.result.totalCount || 0) * GAME_CONFIG.PASS_ACCURACY / 100))
 const didPass = computed(() => props.result.accuracy >= GAME_CONFIG.PASS_ACCURACY)
 const remainingToPass = computed(() => Math.max(0, minCorrectCount.value - (props.result.correctCount || 0)))
+
+// 计算成长洞察
+const growthInsight = computed(() => {
+  if (!props.show) return null
+
+  // 1. 检查是否有高频错题（在这局也错了）
+  const ledger = stats.value.mistakeLedger
+  const currentMistakeKeys = incorrectQuestions.value.map(q => `${q.operand1}${q.operator}${q.operand2}`)
+  
+  const persistentMistake = currentMistakeKeys
+    .map(key => ({ key, count: ledger[key]?.count || 0 }))
+    .filter(m => m.count >= 3)
+    .sort((a, b) => b.count - a.count)[0]
+
+  if (persistentMistake) {
+    const displayKey = persistentMistake.key.replace('+', ' + ').replace('-', ' - ')
+    return {
+      type: 'warning',
+      icon: Award,
+      text: `"${displayKey}" 已经错了 ${persistentMistake.count} 次啦，再多练练它！`
+    }
+  }
+
+  // 2. 检查速度是否明显进步
+  const dStats = stats.value.difficultyStats[props.difficultyId]
+  if (dStats && dStats.totalPlayed >= 3 && props.result.correctCount > 0) {
+    const currentAvg = props.result.duration / props.result.totalCount
+    if (currentAvg < dStats.avgTime * 0.85) {
+      return {
+        type: 'success',
+        icon: TrendingUp,
+        text: '算得越来越快了，反应力大提升！'
+      }
+    }
+  }
+
+  // 3. 累计成就提醒
+  if (stats.value.totalCorrect > 0 && stats.value.totalCorrect % 100 === 0) {
+    return {
+      type: 'milestone',
+      icon: Sparkles,
+      text: `哇！你已经累计答对了 ${stats.value.totalCorrect} 道题啦！`
+    }
+  }
+
+  return null
+})
 
 const subtitleText = computed(() => {
   if (!didPass.value) {
@@ -110,6 +163,13 @@ function handleOverlayClick() {
                 fill="currentColor"
               />
             </div>
+
+            <Transition name="insight">
+              <div v-if="growthInsight" class="insight-card" :class="`is-${growthInsight.type}`">
+                <component :is="growthInsight.icon" :size="18" class="insight-icon" />
+                <p class="insight-text">{{ growthInsight.text }}</p>
+              </div>
+            </Transition>
 
             <p v-if="hasIncorrectQuestions" class="mistake-note">错了 {{ incorrectQuestions.length }} 题</p>
 
@@ -318,6 +378,66 @@ function handleOverlayClick() {
 
 .star-inactive {
   color: #ffe8e0;
+}
+
+.insight-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.insight-card.is-warning {
+  background: rgba(255, 107, 107, 0.06);
+  border-color: rgba(255, 107, 107, 0.14);
+}
+
+.insight-card.is-warning .insight-icon {
+  color: var(--candy-red-dark);
+}
+
+.insight-card.is-success {
+  background: rgba(46, 196, 182, 0.08);
+  border-color: rgba(46, 196, 182, 0.16);
+}
+
+.insight-card.is-success .insight-icon {
+  color: var(--candy-mint-dark);
+}
+
+.insight-card.is-milestone {
+  background: rgba(245, 201, 74, 0.12);
+  border-color: rgba(245, 201, 74, 0.22);
+}
+
+.insight-card.is-milestone .insight-icon {
+  color: var(--candy-yellow-dark);
+}
+
+.insight-icon {
+  flex-shrink: 0;
+}
+
+.insight-text {
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.insight-enter-active,
+.insight-leave-active {
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+.insight-enter-from,
+.insight-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .mistakes-section {

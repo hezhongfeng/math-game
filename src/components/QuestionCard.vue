@@ -186,7 +186,11 @@ const answerStateClass = computed(() => ({
   background: #F7FAFF;
   border: 2px solid #DCE7FA;
   text-align: center;
-  transition: border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.answer:not(.is-placeholder) {
+  animation: pop var(--duration-fast) var(--ease-out);
 }
 
 .answer.is-placeholder {
@@ -197,11 +201,32 @@ const answerStateClass = computed(() => ({
   color: var(--candy-mint-dark);
   border-color: rgba(78, 205, 196, 0.4);
   box-shadow: var(--glow-mint);
+  animation: success-pop var(--duration-normal) var(--ease-out);
 }
 
 .answer.is-wrong {
   color: var(--candy-red-dark);
   border-color: rgba(255, 107, 107, 0.4);
+  animation: shake var(--duration-normal) var(--ease-in-out);
+}
+
+@keyframes pop {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes success-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.1); }
+  60% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
 }
 
 @media (max-width: 420px) {
