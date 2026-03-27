@@ -139,8 +139,7 @@ const answerStateClass = computed(() => ({
   min-width: clamp(46px, 10vw, 62px);
   height: clamp(46px, 10vw, 62px);
   border-radius: 18px;
-  border: 2px solid transparent;
-  box-shadow: 0 6px 14px rgba(18, 30, 49, 0.08);
+  box-shadow: none;
   font-size: clamp(38px, 9vw, 54px);
   font-weight: 900;
   line-height: 1;
@@ -148,14 +147,20 @@ const answerStateClass = computed(() => ({
 
 .operator,
 .equals {
-  font-size: clamp(34px, 8vw, 50px);
+  font-size: clamp(38px, 9vw, 56px);
   font-weight: 800;
+}
+
+.operator {
+  min-width: clamp(34px, 7vw, 46px);
+  height: auto;
+  border-radius: 0;
+  background: transparent;
 }
 
 .operator-plus,
 .operator-minus {
-  background: rgba(49, 120, 246, 0.12);
-  border-color: rgba(49, 120, 246, 0.24);
+  background: transparent;
 }
 
 .operator-plus {
@@ -164,17 +169,14 @@ const answerStateClass = computed(() => ({
 
 .operator-minus {
   color: #0D6B57;
-  background: rgba(46, 196, 182, 0.14);
-  border-color: rgba(46, 196, 182, 0.26);
 }
 
 .equals {
   color: #8A5A00;
-  background: rgba(245, 201, 74, 0.16);
-  border-color: rgba(245, 201, 74, 0.26);
+  background: rgba(245, 201, 74, 0.12);
   min-width: clamp(40px, 8vw, 52px);
   height: clamp(40px, 8vw, 52px);
-  font-size: clamp(30px, 7vw, 42px);
+  font-size: clamp(34px, 8vw, 48px);
 }
 
 .answer {
