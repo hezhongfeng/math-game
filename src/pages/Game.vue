@@ -554,6 +554,7 @@ onUnmounted(() => {
   padding: 12px;
   pointer-events: none;
   border-radius: var(--radius-lg);
+  z-index: 5;
 }
 
 .feedback-wrap.is-success {
@@ -562,41 +563,22 @@ onUnmounted(() => {
 }
 
 .feedback-wrap.is-error {
-  inset: 0;
-  z-index: 6;
-  padding: 12px;
-  align-items: center;
+  position: relative; /* 改为相对定位，不遮挡题目 */
+  z-index: 10;
+  padding: 0;
+  margin-top: -20px; /* 负边距使反馈卡片与题目卡片产生轻微重叠感 */
   pointer-events: auto;
-  background: rgba(255, 247, 243, 0.48);
+  background: transparent;
 }
 
-.streak-reward {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border-radius: var(--radius-full);
-  background: var(--candy-yellow-soft);
-  color: var(--candy-yellow-dark);
-  border: 1px solid rgba(255, 230, 109, 0.24);
-  font-size: 12px;
-  font-weight: 800;
-  box-shadow: var(--shadow-sm);
-}
-
-.streak-reward-enter-active,
-.streak-reward-leave-active {
-  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
-}
-
-.streak-reward-enter-from,
-.streak-reward-leave-to {
-  opacity: 0;
-  transform: translateY(-10px) scale(0.6) rotate(-5deg);
+/* 增加遮罩层用于错误状态，但只作为背景 */
+.feedback-wrap.is-error::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(18, 30, 49, 0.12);
+  backdrop-filter: blur(2px);
 }
 
 .feedback-card {
@@ -607,9 +589,9 @@ onUnmounted(() => {
   gap: 8px;
   padding: 20px 18px 18px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   border: 2px solid var(--border-default);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-lg);
 }
 
 .feedback-card.success {
@@ -628,11 +610,17 @@ onUnmounted(() => {
   width: min(100%, 360px);
   gap: 8px;
   padding: 20px 18px 18px;
-  background: #fff7f3;
-  border-color: rgba(230, 106, 106, 0.24);
-  box-shadow: var(--shadow-sm);
+  background: white;
+  border-color: var(--candy-red-dark);
+  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.2);
   pointer-events: auto;
   cursor: pointer;
+  animation: feedbackSlideUp 0.4s var(--ease-out);
+}
+
+@keyframes feedbackSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .feedback-icon {
