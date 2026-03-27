@@ -77,19 +77,29 @@ async function answerQuestionWithObviouslyWrongResult(page, expectedProgressText
     await expect(page.getByText(expectedProgressText)).toBeVisible({ timeout: 5_000 })
   }
 
-  if (options.clickContinueIfVisible) {
-    const continueButton = page.locator('.feedback-continue-btn')
-
-    if (await continueButton.isVisible()) {
-      await continueButton.click()
-    }
+  if (options.clickFeedbackOverlay) {
+    await page.locator('.feedback-wrap.is-error').click()
   }
 
   if (await page.getByTestId('result-modal').isVisible()) {
     return
   }
 
-  await expect(nineButton).toBeEnabled({ timeout: 5_000 })
+  if (options.clickFeedbackOverlay) {
+    await expect(nineButton).toBeEnabled({ timeout: 5_000 })
+  }
+}
+
+async function finishRoundWithWrongAnswers(page) {
+  for (let i = 0; i < 24; i += 1) {
+    if (await page.getByTestId('result-modal').isVisible()) {
+      break
+    }
+
+    await answerQuestionWithObviouslyWrongResult(page, null, { clickFeedbackOverlay: true })
+  }
+
+  await expect(page.getByTestId('result-modal')).toBeVisible()
 }
 
 test.describe('E2E Smoke', () => {
@@ -99,17 +109,20 @@ test.describe('E2E Smoke', () => {
 
   test('answering a question advances progress', async ({ page }) => {
     await openFirstLevel(page)
-    await expect(page.getByText('0/12')).toBeVisible()
+    await expect(page.locator('.summary-pill .stat-value')).toHaveText('0/20')
 
     await answerQuestionWithCorrectResult(page)
-    await expect(page.getByText('1/12')).toBeVisible({ timeout: 5_000 })
+    await expect(page.locator('.summary-pill .stat-value')).toHaveText('1/20', { timeout: 5_000 })
   })
 
   test('wrong answers show feedback and can continue', async ({ page }) => {
     await openFirstLevel(page)
-    await expect(page.getByText('0/12')).toBeVisible()
+    await expect(page.locator('.summary-pill .stat-value')).toHaveText('0/20')
 
-    await answerQuestionWithObviouslyWrongResult(page, '0/12', { clickContinueIfVisible: true })
+    await answerQuestionWithObviouslyWrongResult(page, '0/20')
+    await page.locator('.feedback-wrap.is-error').click()
+    await expect(page.locator('.feedback-card.error')).toBeHidden({ timeout: 5_000 })
+    await expect(page.getByTestId('num-btn-9')).toBeEnabled({ timeout: 5_000 })
   })
 
   test('missing-number level accepts correct answers', async ({ page }) => {
@@ -120,7 +133,7 @@ test.describe('E2E Smoke', () => {
     expect(expressionText.includes('?')).toBeTruthy()
 
     await answerQuestionWithCorrectResult(page)
-    await expect(page.getByText('1/8')).toBeVisible({ timeout: 5_000 })
+    await expect(page.locator('.summary-pill .stat-value')).toHaveText('1/20', { timeout: 5_000 })
   })
 
   test('can finish one full round and see result modal', async ({ page }) => {
@@ -129,20 +142,20 @@ test.describe('E2E Smoke', () => {
     await page.goto('/game/1')
     await expect(page.getByTestId('question-expression')).toBeVisible()
 
-    for (let i = 0; i < 36; i += 1) {
-      if (await page.getByTestId('result-modal').isVisible()) {
-        break
-      }
-
-      await answerQuestionWithObviouslyWrongResult(page, null, { clickContinueIfVisible: true })
-
-      if (await page.getByTestId('result-modal').isVisible()) {
-        break
-      }
-    }
-
-    await expect(page.getByTestId('result-modal')).toBeVisible()
+    await finishRoundWithWrongAnswers(page)
     await page.getByTestId('result-home-btn').click()
+    await expect(page).toHaveURL(/\/difficulty/)
+  })
+
+  test('result modal overlay click returns to difficulty page', async ({ page }) => {
+    test.setTimeout(120_000)
+
+    await page.goto('/game/1')
+    await expect(page.getByTestId('question-expression')).toBeVisible()
+
+    await finishRoundWithWrongAnswers(page)
+
+    await page.locator('.result-overlay').click({ position: { x: 8, y: 8 } })
     await expect(page).toHaveURL(/\/difficulty/)
   })
 
@@ -152,21 +165,9 @@ test.describe('E2E Smoke', () => {
     await page.goto('/game/1')
     await expect(page.getByTestId('question-expression')).toBeVisible()
 
-    for (let i = 0; i < 36; i += 1) {
-      if (await page.getByTestId('result-modal').isVisible()) {
-        break
-      }
+    await finishRoundWithWrongAnswers(page)
 
-      await answerQuestionWithObviouslyWrongResult(page, null, { clickContinueIfVisible: true })
-
-      if (await page.getByTestId('result-modal').isVisible()) {
-        break
-      }
-    }
-
-    await expect(page.getByTestId('result-modal')).toBeVisible()
-
-    const mistakesText = (await page.getByText(/有 \d+ 题答错了。/).textContent()) || ''
+    const mistakesText = (await page.locator('.mistake-note').textContent()) || ''
     const mistakesMatch = mistakesText.match(/(\d+)/)
 
     if (!mistakesMatch) {
