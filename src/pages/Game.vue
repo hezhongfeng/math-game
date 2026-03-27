@@ -369,7 +369,7 @@ onUnmounted(() => {
           <QuestionCard
             v-if="game.currentQuestion.value"
             :key="questionKey"
-            :class="{ 'is-highlighted': isIncorrect && shouldShowFeedback }"
+            :class="{ 'is-hidden-on-error': isIncorrect && shouldShowFeedback }"
             :question="game.currentQuestion.value"
             :show-answer="showAnswer"
             :user-answer="userAnswer"
@@ -554,10 +554,10 @@ onUnmounted(() => {
   min-height: 180px;
 }
 
-.is-highlighted {
-  position: relative;
-  z-index: 101; /* 比反馈遮罩层更高 */
-  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.1); /* 辅助性的局部加深 */
+.is-hidden-on-error {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .score-wrap {
