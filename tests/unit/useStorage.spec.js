@@ -40,18 +40,19 @@ describe('useStorage', () => {
     const storage = useStorage()
 
     const updated = storage.updateBestScore(16, {
-      score: 80,
-      correctCount: 8,
+      score: 90,
+      correctCount: 9,
       totalCount: 10,
-      accuracy: 80,
+      accuracy: 90,
       duration: 25,
-      completedAt: '2026-03-25T00:00:00.000Z'
+      completedAt: '2026-03-25T00:00:00.000Z',
+      incorrectQuestions: []
     })
 
     expect(updated).toBe(true)
     expect(storage.getBestScore(16)).toMatchObject({
-      score: 80,
-      accuracy: 80,
+      score: 90,
+      accuracy: 90,
       duration: 25
     })
     expect(storage.getCompletedDifficulties()).toEqual([16])
@@ -69,7 +70,8 @@ describe('useStorage', () => {
       totalCount: 12,
       accuracy: 100,
       duration: 20,
-      completedAt: '2026-03-25T00:00:00.000Z'
+      completedAt: '2026-03-25T00:00:00.000Z',
+      incorrectQuestions: []
     })
 
     const updated = storage.updateBestScore(5, {
@@ -78,7 +80,8 @@ describe('useStorage', () => {
       totalCount: 12,
       accuracy: 83,
       duration: 18,
-      completedAt: '2026-03-25T00:05:00.000Z'
+      completedAt: '2026-03-25T00:05:00.000Z',
+      incorrectQuestions: []
     })
 
     expect(updated).toBe(false)

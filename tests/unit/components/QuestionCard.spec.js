@@ -1,0 +1,91 @@
+import { describe, expect, test } from 'vitest'
+import { mount } from '@vue/test-utils'
+import QuestionCard from '../../../src/components/QuestionCard.vue'
+
+describe('QuestionCard.vue', () => {
+  const mockQuestion = {
+    operand1: 12,
+    operand2: 5,
+    operator: '+',
+    result: 17,
+    answer: 17,
+    missingPart: 'answer',
+    isCorrect: null
+  }
+
+  test('renders standard addition question correctly', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: mockQuestion,
+        userAnswer: '',
+        currentIndex: 0,
+        totalQuestions: 20
+      }
+    })
+
+    const text = wrapper.text()
+    expect(text).toContain('12')
+    expect(text).toContain('+')
+    expect(text).toContain('5')
+    expect(text).toContain('=')
+    expect(text).toContain('?') // 初始占位符
+    expect(text).toContain('1 / 20') // 计数器
+  })
+
+  test('renders missing operand1 question correctly', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: { ...mockQuestion, missingPart: 'operand1' },
+        userAnswer: '8'
+      }
+    })
+
+    const expression = wrapper.find('[data-testid="question-expression"]')
+    const children = expression.findAll('span')
+    
+    // 第一个 span 应该是 answer 区域（显示输入内容）
+    expect(children[0].classes()).toContain('answer')
+    expect(children[0].text()).toBe('8')
+    // 最后一个 span 应该是结果数字
+    expect(children[children.length - 1].text()).toBe('17')
+  })
+
+  test('shows user answer while typing', async () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: mockQuestion,
+        userAnswer: '1'
+      }
+    })
+
+    expect(wrapper.find('.answer').text()).toBe('1')
+
+    await wrapper.setProps({ userAnswer: '17' })
+    expect(wrapper.find('.answer').text()).toBe('17')
+  })
+
+  test('applies success styles when answer is correct', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: { ...mockQuestion, isCorrect: true },
+        userAnswer: '17',
+        showAnswer: true
+      }
+    })
+
+    expect(wrapper.find('.answer').classes()).toContain('is-correct')
+  })
+
+  test('applies error styles when answer is incorrect', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: { ...mockQuestion, isCorrect: false },
+        userAnswer: '99',
+        showAnswer: true
+      }
+    })
+
+    expect(wrapper.find('.answer').classes()).toContain('is-wrong')
+    expect(wrapper.find('.answer').text()).toBe('99')
+  })
+})

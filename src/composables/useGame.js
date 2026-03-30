@@ -143,6 +143,7 @@ export function useGame(difficulty) {
     score,
     isComplete,
     correctCount,
+    incorrectQuestions,
     startTime,
     endTime,
     // 计算属性
