@@ -16,9 +16,9 @@
   body {
     font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     background:
-      radial-gradient(circle at top left, rgba(92, 157, 255, 0.1), transparent 40%),
-      radial-gradient(circle at bottom right, rgba(107, 203, 119, 0.1), transparent 35%),
-      linear-gradient(180deg, #F9FBFF 0%, #F0F4FF 100%);
+      radial-gradient(circle at top left, var(--brand-primary-glow), transparent 40%),
+      radial-gradient(circle at bottom right, var(--brand-success-glow), transparent 35%),
+      linear-gradient(180deg, var(--bg-light) 0%, var(--bg-dark) 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
@@ -213,8 +213,8 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up,
   .animate-pop,
-  .animate-scale-press,
-  .animate-error-shake {
+  .animate-success,
+  .animate-error {
     animation: none !important;
   }
 
@@ -269,8 +269,6 @@
   will-change: transform;
 }
 
-.animate-fade-in-up,
-.animate-pop,
 .card-question {
   transform: translateZ(0);
   contain: layout style;
