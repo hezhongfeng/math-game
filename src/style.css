@@ -1,10 +1,10 @@
+/* 导入模块化样式 - 必须位于最顶端 */
+@import './assets/styles/variables.css';
+@import './assets/styles/animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* 导入拆分后的样式模块 */
-@import './assets/styles/variables.css';
-@import './assets/styles/animations.css';
 
 @layer base {
   * {
@@ -89,20 +89,20 @@
     border-radius: var(--radius-md);
     color: white;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     border: none;
     box-shadow: var(--shadow-md);
-    transition: background var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+    transition: all var(--duration-normal) var(--ease-standard);
   }
 
   .btn-primary:hover {
-    background: var(--candy-pink-dark);
+    background: var(--candy-pink);
     box-shadow: var(--glow-pink), var(--shadow-lg);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
   }
 
   .btn-primary:active {
-    transform: scale(0.98);
+    transform: translateY(-1px) scale(0.96);
     box-shadow: var(--shadow-sm);
   }
 
@@ -165,11 +165,11 @@
     background: var(--bg-white);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 32px;
+    font-weight: 800;
     border: 2px solid var(--border-light);
     box-shadow: var(--shadow-sm);
-    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+    transition: all var(--duration-fast) var(--ease-standard);
     cursor: pointer;
   }
 
@@ -177,13 +177,12 @@
     border-color: var(--candy-pink);
     color: var(--candy-pink);
     box-shadow: var(--glow-pink);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 
   .btn-circular:active {
-    transform: scale(0.95);
-    background: var(--candy-pink);
-    color: white;
+    transform: scale(0.9);
+    background: var(--candy-pink-soft);
     border-color: var(--candy-pink);
   }
 
