@@ -2,123 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 导入拆分后的样式模块 */
+@import './assets/styles/variables.css';
+@import './assets/styles/animations.css';
+
 @layer base {
-  :root {
-    --tech-blue: #3178F6;
-    --tech-blue-light: #5C98FF;
-    --tech-blue-dark: #215ED1;
-    --tech-blue-soft: #EAF2FF;
-    --tech-blue-glow: rgba(49, 120, 246, 0.18);
-
-    --success-cyan: #2EC4B6;
-    --success-cyan-light: #64D9CE;
-    --success-cyan-dark: #1E9F94;
-    --success-cyan-soft: #E7FBF8;
-    --success-cyan-glow: rgba(46, 196, 182, 0.18);
-
-    --reward-yellow: #F5C94A;
-    --reward-yellow-light: #F9DB7B;
-    --reward-yellow-dark: #C89F24;
-    --reward-yellow-soft: #FFF8DF;
-    --reward-yellow-glow: rgba(245, 201, 74, 0.18);
-
-    --warning-orange: #F28C52;
-    --warning-orange-light: #F6AE7F;
-    --warning-orange-dark: #D96B2A;
-    --warning-orange-soft: #FFF1E7;
-
-    --alert-red: #E66A6A;
-    --alert-red-light: #F08C8C;
-    --alert-red-dark: #C95353;
-    --alert-red-soft: #FFF0F0;
-
-    --candy-pink: var(--tech-blue);
-    --candy-pink-light: var(--tech-blue-light);
-    --candy-pink-dark: var(--tech-blue-dark);
-    --candy-pink-soft: var(--tech-blue-soft);
-    --candy-pink-glow: var(--tech-blue-glow);
-
-    --candy-yellow: var(--reward-yellow);
-    --candy-yellow-light: var(--reward-yellow-light);
-    --candy-yellow-dark: var(--reward-yellow-dark);
-    --candy-yellow-soft: var(--reward-yellow-soft);
-    --candy-yellow-glow: var(--reward-yellow-glow);
-
-    --candy-mint: var(--success-cyan);
-    --candy-mint-light: var(--success-cyan-light);
-    --candy-mint-dark: var(--success-cyan-dark);
-    --candy-mint-soft: var(--success-cyan-soft);
-    --candy-mint-glow: var(--success-cyan-glow);
-
-    --candy-lavender: #6E9BFF;
-    --candy-lavender-light: #9AB8FF;
-    --candy-lavender-dark: #4E74D9;
-    --candy-lavender-soft: #EEF4FF;
-
-    --candy-peach: var(--warning-orange);
-    --candy-peach-light: var(--warning-orange-light);
-    --candy-peach-dark: var(--warning-orange-dark);
-    --candy-peach-soft: var(--warning-orange-soft);
-
-    --candy-red: var(--alert-red);
-    --candy-red-light: var(--alert-red-light);
-    --candy-red-dark: var(--alert-red-dark);
-    --candy-red-soft: var(--alert-red-soft);
-
-    --bg-light: #F4F8FF;
-    --bg-white: #FFFFFF;
-    --bg-dark: #EAF1FF;
-    --bg-panel: rgba(255, 255, 255, 0.88);
-    --bg-panel-strong: rgba(255, 255, 255, 0.94);
-
-    --text-primary: #1F2A44;
-    --text-secondary: #5D6B86;
-    --text-muted: #90A0BC;
-
-    --border-light: #DCE7FA;
-    --border-default: #C8D8F4;
-    --border-strong: #ABC3EE;
-
-    --white: #FFFFFF;
-
-    --radius-xs: 10px;
-    --radius-sm: 14px;
-    --radius-md: 18px;
-    --radius-lg: 24px;
-    --radius-xl: 32px;
-    --radius-full: 9999px;
-
-    --shadow-sm: 0 10px 24px rgba(49, 120, 246, 0.08);
-    --shadow-md: 0 18px 42px rgba(49, 120, 246, 0.1);
-    --shadow-lg: 0 28px 68px rgba(31, 42, 68, 0.14);
-    --shadow-panel: 0 24px 64px rgba(49, 120, 246, 0.1);
-
-    --glow-pink: 0 0 0 6px rgba(49, 120, 246, 0.12);
-    --glow-mint: 0 0 0 6px rgba(46, 196, 182, 0.12);
-    --glow-yellow: 0 0 0 6px rgba(245, 201, 74, 0.12);
-    --glow-peach: 0 0 0 6px rgba(242, 140, 82, 0.12);
-
-    /* 字体大小系统 - 移动优先 */
-    --font-hero: 48px;
-    --font-h1: 36px;
-    --font-h2: 28px;
-    --font-h3: 22px;
-    --font-xl: 32px;
-    --font-lg: 24px;
-    --font-md: 18px;
-    --font-base: 16px;
-    --font-sm: 14px;
-
-    /* 动画时长 - 简约 */
-    --duration-fast: 120ms;
-    --duration-normal: 180ms;
-    --duration-slow: 240ms;
-
-    /* 动画缓动函数 - 简约 */
-    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  }
-
   * {
     margin: 0;
     padding: 0;
@@ -157,93 +45,7 @@
   }
 }
 
-/* ============================================
-   简约动效系统 - Minimalist Animation
-   ============================================ */
-
-/* 入场动画 */
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* 交互反馈动画 */
-@keyframes scale-press {
-  0% { transform: scale(1); }
-  100% { transform: scale(0.96); }
-}
-
-@keyframes error-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  50% { transform: translateX(8px); }
-  75% { transform: translateX(-4px); }
-}
-
-/* 应用类 */
-.animate-fade-in-up {
-  animation: fadeInUp var(--duration-normal) var(--ease-out) forwards;
-}
-
-.animate-pop {
-  animation: pop var(--duration-normal) var(--ease-out);
-}
-
-.animate-scale-press {
-  animation: scale-press var(--duration-fast) var(--ease-standard) forwards;
-}
-
-.animate-error-shake {
-  animation: error-shake var(--duration-slow) var(--ease-standard);
-}
-
-/* Vue Transition 组件标准过渡 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity var(--duration-fast) var(--ease-standard);
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.slide-up-enter-active {
-  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
-}
-
-.slide-up-leave-active {
-  transition: opacity var(--duration-normal) var(--ease-standard), transform var(--duration-normal) var(--ease-standard);
-}
-
-.slide-up-enter-from,
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
 @layer utilities {
-  /* 动画延迟工具类 */
   .delay-100 { animation-delay: 100ms; }
   .delay-200 { animation-delay: 200ms; }
   .delay-300 { animation-delay: 300ms; }
@@ -255,12 +57,10 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* 圆角继承 */
   .rounded-inherit {
     border-radius: inherit;
   }
 
-  /* 文字阴影 */
   .text-shadow {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
@@ -269,32 +69,9 @@
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
-  /* 触摸优化 */
   .touch-manipulation {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  /* 微交互 - 得分增加 */
-  .score-pop {
-    animation: scorePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  @keyframes scorePop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); color: var(--candy-mint); }
-    100% { transform: scale(1); }
-  }
-
-  /* 微交互 - 输入反馈 */
-  .input-feedback {
-    animation: inputFeedback 0.2s ease-out;
-  }
-
-  @keyframes inputFeedback {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
   }
 }
 
@@ -329,7 +106,6 @@
     box-shadow: var(--shadow-sm);
   }
 
-  /* 次要按钮 */
   .btn-secondary {
     height: 56px;
     padding: 0 32px;
@@ -380,7 +156,6 @@
     box-shadow: var(--shadow-sm);
   }
 
-  /* 数字按钮 */
   .btn-circular {
     display: flex;
     align-items: center;
@@ -412,7 +187,6 @@
     border-color: var(--candy-pink);
   }
 
-  /* 卡片系统 */
   .card {
     background: var(--white);
     border-radius: var(--radius-lg);
@@ -431,36 +205,13 @@
     padding: 40px 32px;
     box-shadow: var(--shadow-lg);
   }
-
-  /* 完成状态卡片 */
-  .card-completed {
-    background: rgba(78, 205, 196, 0.1);
-    border-left: 4px solid var(--candy-mint);
-  }
-
-  /* 锁定状态卡片 */
-  .card-locked {
-    opacity: 0.6;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: not-allowed;
-  }
-}
-
-/* 小屏/短屏只保留功能性反馈，减少装饰性持续动画 */
-@media (max-width: 959px), (max-height: 860px) {
-  .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
 }
 
 /* ============================================
    动画性能优化 & 无障碍支持
    ============================================ */
 
-/* 尊重用户的减少动画偏好设置 */
 @media (prefers-reduced-motion: reduce) {
-  /* 禁用所有装饰性动画 */
   .animate-fade-in-up,
   .animate-pop,
   .animate-scale-press,
@@ -468,7 +219,6 @@
     animation: none !important;
   }
 
-  /* 禁用悬停和激活变换 */
   .btn-primary:hover,
   .btn-secondary:hover,
   .btn-success:hover,
@@ -477,28 +227,6 @@
     transform: none !important;
   }
 
-  .btn-primary:active,
-  .btn-secondary:active,
-  .btn-success:active,
-  .btn-circular:active {
-    transform: none !important;
-  }
-
-  /* Vue Transition 组件动画简化 - 仅保留淡入淡出 */
-  .fade-enter-active,
-  .fade-leave-active,
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: opacity 0.01ms ease !important;
-  }
-
-  .slide-up-enter-from,
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: none !important;
-  }
-
-  /* 全局禁用动画 */
   *,
   *::before,
   *::after {
@@ -508,10 +236,6 @@
     scroll-behavior: auto !important;
   }
 }
-
-/* ============================================
-   高对比度模式支持
-   ============================================ */
 
 @media (prefers-contrast: high) {
   :root {
@@ -538,11 +262,6 @@
   }
 }
 
-/* ============================================
-   性能优化
-   ============================================ */
-
-/* GPU 加速 - 仅在必要时启用 */
 .btn-primary,
 .btn-secondary,
 .btn-success,
@@ -551,23 +270,9 @@
   will-change: transform;
 }
 
-/* 动画完成后移除 will-change */
-.animation-complete {
-  will-change: auto;
-}
-
-/* 合成层优化 */
 .animate-fade-in-up,
 .animate-pop,
 .card-question {
   transform: translateZ(0);
   contain: layout style;
-}
-
-/* 焦点指示器 */
-button:focus-visible,
-a:focus-visible {
-  outline: 3px solid var(--candy-pink);
-  outline-offset: 4px;
-  border-radius: var(--radius-sm);
 }
