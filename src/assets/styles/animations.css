@@ -1,22 +1,26 @@
-/* 入场动画 */
+/* ============================================
+   Q弹动效系统 - Bouncy Animation System
+   ============================================ */
+
+/* 全局入场动画 */
 @keyframes fadeInUp {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px) scale(0.96);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes pop {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.85);
     opacity: 0;
   }
-  50% {
-    transform: scale(1.05);
+  60% {
+    transform: scale(1.08);
   }
   100% {
     transform: scale(1);
@@ -24,79 +28,85 @@
   }
 }
 
-/* 交互反馈动画 */
-@keyframes scale-press {
+/* 正确答题的成功跳动 */
+@keyframes success-jump {
   0% { transform: scale(1); }
-  100% { transform: scale(0.96); }
-}
-
-@keyframes error-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  50% { transform: translateX(8px); }
-  75% { transform: translateX(-4px); }
-}
-
-/* 微交互 - 得分增加 */
-@keyframes scorePop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3); color: var(--candy-mint); }
+  30% { transform: scale(1.15) translateY(-10px); }
+  50% { transform: scale(0.95) translateY(0); }
+  75% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
-/* 微交互 - 输入反馈 */
-@keyframes inputFeedback {
+/* 错误答题的柔和摇晃 */
+@keyframes error-soft-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-1deg); }
+  40% { transform: translateX(6px) rotate(1deg); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* 进度条增长动画 */
+@keyframes progress-grow {
+  0% { transform: scaleX(0.95); opacity: 0.8; }
+  50% { transform: scaleX(1.02); opacity: 1; filter: brightness(1.1); }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+/* 得分增加的弹出效果 */
+@keyframes score-pop-up {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  40% { transform: scale(1.4); color: var(--candy-mint); text-shadow: 0 0 12px var(--brand-success-glow); }
   100% { transform: scale(1); }
 }
 
 /* 应用类 */
 .animate-fade-in-up {
-  animation: fadeInUp var(--duration-normal) var(--ease-out) forwards;
+  animation: fadeInUp var(--duration-normal) var(--ease-standard) forwards;
 }
 
 .animate-pop {
-  animation: pop var(--duration-normal) var(--ease-out);
+  animation: pop var(--duration-normal) var(--ease-standard);
 }
 
-.animate-scale-press {
-  animation: scale-press var(--duration-fast) var(--ease-standard) forwards;
+.animate-success {
+  animation: success-jump var(--duration-slow) var(--ease-standard);
 }
 
-.animate-error-shake {
-  animation: error-shake var(--duration-slow) var(--ease-standard);
+.animate-error {
+  animation: error-soft-shake var(--duration-slow) var(--ease-standard);
+}
+
+.progress-active {
+  animation: progress-grow var(--duration-normal) var(--ease-standard);
 }
 
 .score-pop {
-  animation: scorePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: score-pop-up 0.5s var(--ease-standard);
 }
 
-.input-feedback {
-  animation: inputFeedback 0.2s ease-out;
-}
-
-/* Vue Transition 组件标准过渡 */
+/* Vue Transition 组件标准过渡 - 增加回弹感 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity var(--duration-fast) var(--ease-standard);
+  transition: all var(--duration-normal) var(--ease-standard);
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  transform: scale(0.95);
 }
 
 .slide-up-enter-active {
-  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+  transition: all var(--duration-slow) var(--ease-standard);
 }
 
 .slide-up-leave-active {
-  transition: opacity var(--duration-normal) var(--ease-standard), transform var(--duration-normal) var(--ease-standard);
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 .slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px) scale(0.9);
 }

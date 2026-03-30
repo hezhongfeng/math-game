@@ -16,9 +16,9 @@
   body {
     font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     background:
-      radial-gradient(circle at top left, rgba(49, 120, 246, 0.08), transparent 40%),
-      radial-gradient(circle at bottom right, rgba(46, 196, 182, 0.08), transparent 35%),
-      linear-gradient(180deg, #F6FAFF 0%, #EEF4FF 100%);
+      radial-gradient(circle at top left, rgba(92, 157, 255, 0.1), transparent 40%),
+      radial-gradient(circle at bottom right, rgba(107, 203, 119, 0.1), transparent 35%),
+      linear-gradient(180deg, #F9FBFF 0%, #F0F4FF 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     font-size: 16px;

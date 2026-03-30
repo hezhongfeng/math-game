@@ -199,34 +199,21 @@ const answerStateClass = computed(() => ({
 
 .answer.is-correct {
   color: var(--candy-mint-dark);
-  border-color: rgba(78, 205, 196, 0.4);
+  border-color: rgba(107, 203, 119, 0.4);
   box-shadow: var(--glow-mint);
-  animation: success-pop var(--duration-normal) var(--ease-out);
+  animation: success-jump var(--duration-slow) var(--ease-standard);
 }
 
 .answer.is-wrong {
   color: var(--candy-red-dark);
   border-color: rgba(255, 107, 107, 0.4);
-  animation: shake var(--duration-normal) var(--ease-in-out);
+  animation: error-soft-shake var(--duration-normal) var(--ease-standard);
 }
 
 @keyframes pop {
   0% { transform: scale(0.96); }
   50% { transform: scale(1.04); }
   100% { transform: scale(1); }
-}
-
-@keyframes success-pop {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.1); }
-  60% { transform: scale(0.95); }
-  100% { transform: scale(1); }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
 }
 
 @media (max-width: 420px) {

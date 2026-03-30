@@ -1,99 +1,103 @@
 :root {
-  --tech-blue: #3178F6;
-  --tech-blue-light: #5C98FF;
-  --tech-blue-dark: #215ED1;
-  --tech-blue-soft: #EAF2FF;
-  --tech-blue-glow: rgba(49, 120, 246, 0.18);
+  /* 调色盘：从科技感转向充满活力的学习乐园 */
+  --brand-primary: #5C9DFF;        /* 活泼天空蓝 */
+  --brand-primary-light: #8EBAFF;
+  --brand-primary-soft: #EBF3FF;
+  --brand-primary-glow: rgba(92, 157, 255, 0.25);
 
-  --success-cyan: #2EC4B6;
-  --success-cyan-light: #64D9CE;
-  --success-cyan-dark: #1E9F94;
-  --success-cyan-soft: #E7FBF8;
-  --success-cyan-glow: rgba(46, 196, 182, 0.18);
+  --brand-success: #6BCB77;        /* 鼓励绿 (草地感) */
+  --brand-success-light: #94D89D;
+  --brand-success-soft: #EEF9F0;
+  --brand-success-glow: rgba(107, 203, 119, 0.25);
 
-  --reward-yellow: #F5C94A;
-  --reward-yellow-light: #F9DB7B;
-  --reward-yellow-dark: #C89F24;
-  --reward-yellow-soft: #FFF8DF;
-  --reward-yellow-glow: rgba(245, 201, 74, 0.18);
+  --brand-reward: #FFD93D;         /* 阳光金 (奖章感) */
+  --brand-reward-light: #FFE375;
+  --brand-reward-soft: #FFF9E1;
+  --brand-reward-glow: rgba(255, 217, 61, 0.25);
 
-  --warning-orange: #F28C52;
-  --warning-orange-light: #F6AE7F;
-  --warning-orange-dark: #D96B2A;
-  --warning-orange-soft: #FFF1E7;
+  --brand-warning: #FF9F43;        /* 活力橙 */
+  --brand-warning-light: #FFB771;
+  --brand-warning-soft: #FFF5EC;
 
-  --alert-red: #E66A6A;
-  --alert-red-light: #F08C8C;
-  --alert-red-dark: #C95353;
-  --alert-red-soft: #FFF0F0;
+  --brand-alert: #FF6B6B;          /* 珊瑚红 (温和的提示) */
+  --brand-alert-light: #FF9090;
+  --brand-alert-soft: #FFF0F0;
 
-  --candy-pink: var(--tech-blue);
-  --candy-pink-light: var(--tech-blue-light);
-  --candy-pink-dark: var(--tech-blue-dark);
-  --candy-pink-soft: var(--tech-blue-soft);
-  --candy-pink-glow: var(--tech-blue-glow);
+  /* 语义化颜色映射：保持原有变量名，更新色彩表现 */
+  --candy-pink: var(--brand-primary);
+  --candy-pink-light: var(--brand-primary-light);
+  --candy-pink-dark: #4A8EEF;
+  --candy-pink-soft: var(--brand-primary-soft);
+  --candy-pink-glow: var(--brand-primary-glow);
 
-  --candy-yellow: var(--reward-yellow);
-  --candy-yellow-light: var(--reward-yellow-light);
-  --candy-yellow-dark: var(--reward-yellow-dark);
-  --candy-yellow-soft: var(--reward-yellow-soft);
-  --candy-yellow-glow: var(--reward-yellow-glow);
+  --candy-mint: var(--brand-success);
+  --candy-mint-light: var(--brand-success-light);
+  --candy-mint-dark: #58B063;
+  --candy-mint-soft: var(--brand-success-soft);
+  --candy-mint-glow: var(--brand-success-glow);
 
-  --candy-mint: var(--success-cyan);
-  --candy-mint-light: var(--success-cyan-light);
-  --candy-mint-dark: var(--success-cyan-dark);
-  --candy-mint-soft: var(--success-cyan-soft);
-  --candy-mint-glow: var(--success-cyan-glow);
+  --candy-yellow: var(--brand-reward);
+  --candy-yellow-light: var(--brand-reward-light);
+  --candy-yellow-dark: #E6C235;
+  --candy-yellow-soft: var(--brand-reward-soft);
+  --candy-yellow-glow: var(--brand-reward-glow);
 
-  --candy-lavender: #6E9BFF;
-  --candy-lavender-light: #9AB8FF;
-  --candy-lavender-dark: #4E74D9;
-  --candy-lavender-soft: #EEF4FF;
+  --candy-peach: var(--brand-warning);
+  --candy-peach-light: var(--brand-warning-light);
+  --candy-peach-dark: #E68A35;
+  --candy-peach-soft: var(--brand-warning-soft);
 
-  --candy-peach: var(--warning-orange);
-  --candy-peach-light: var(--warning-orange-light);
-  --candy-peach-dark: var(--warning-orange-dark);
-  --candy-peach-soft: var(--warning-orange-soft);
+  --candy-red: var(--brand-alert);
+  --candy-red-light: var(--brand-alert-light);
+  --candy-red-dark: #E65A5A;
+  --candy-red-soft: var(--brand-alert-soft);
 
-  --candy-red: var(--alert-red);
-  --candy-red-light: var(--alert-red-light);
-  --candy-red-dark: var(--alert-red-dark);
-  --candy-red-soft: var(--alert-red-soft);
+  --candy-lavender: #A29BFE;
+  --candy-lavender-light: #C1BCFF;
+  --candy-lavender-dark: #8278E6;
+  --candy-lavender-soft: #F4F3FF;
 
-  --bg-light: #F4F8FF;
+  /* 页面背景与面板 */
+  --bg-light: #F7FAFF;
   --bg-white: #FFFFFF;
-  --bg-dark: #EAF1FF;
-  --bg-panel: rgba(255, 255, 255, 0.88);
-  --bg-panel-strong: rgba(255, 255, 255, 0.94);
+  --bg-dark: #EBF2FF;
+  --bg-panel: rgba(255, 255, 255, 0.92);
+  --bg-panel-strong: rgba(255, 255, 255, 0.98);
 
-  --text-primary: #1F2A44;
-  --text-secondary: #5D6B86;
-  --text-muted: #90A0BC;
+  /* 文字颜色：更柔和的深灰，非纯黑 */
+  --text-primary: #2D3436;
+  --text-secondary: #636E72;
+  --text-muted: #B2BEC3;
 
-  --border-light: #DCE7FA;
-  --border-default: #C8D8F4;
-  --border-strong: #ABC3EE;
+  /* 边框与装饰 */
+  --border-light: #E9F0FA;
+  --border-default: #DCE7F5;
+  --border-strong: #C4D6EF;
 
   --white: #FFFFFF;
 
-  --radius-xs: 10px;
-  --radius-sm: 14px;
-  --radius-md: 18px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
+  /* 形状系统：更大、更圆润 */
+  --radius-xs: 12px;
+  --radius-sm: 16px;
+  --radius-md: 22px;
+  --radius-lg: 32px;
+  --radius-xl: 44px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 10px 24px rgba(49, 120, 246, 0.08);
-  --shadow-md: 0 18px 42px rgba(49, 120, 246, 0.1);
-  --shadow-lg: 0 28px 68px rgba(31, 42, 68, 0.14);
-  --shadow-panel: 0 24px 64px rgba(49, 120, 246, 0.1);
+  /* 阴影系统：更软、更具物理深度感 */
+  --shadow-sm: 0 4px 12px rgba(92, 157, 255, 0.08);
+  --shadow-md: 0 12px 32px rgba(92, 157, 255, 0.12), 0 4px 8px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 24px 64px rgba(31, 42, 68, 0.1), 0 8px 16px rgba(0, 0, 0, 0.04);
+  --shadow-panel: 0 20px 48px rgba(92, 157, 255, 0.12);
 
-  --glow-pink: 0 0 0 6px rgba(49, 120, 246, 0.12);
-  --glow-mint: 0 0 0 6px rgba(46, 196, 182, 0.12);
-  --glow-yellow: 0 0 0 6px rgba(245, 201, 74, 0.12);
-  --glow-peach: 0 0 0 6px rgba(242, 140, 82, 0.12);
+  /* 交互发光 */
+  --glow-pink: 0 0 0 6px rgba(92, 157, 255, 0.12);
+  --glow-mint: 0 0 0 6px rgba(107, 203, 119, 0.12);
+  --glow-yellow: 0 0 0 6px rgba(255, 217, 61, 0.12);
+  --glow-peach: 0 0 0 6px rgba(255, 159, 67, 0.12);
 
-  --font-hero: 48px;
+  /* 字体大小系统 */
+  --font-hero: clamp(40px, 10vw, 56px);
   --font-h1: 36px;
   --font-h2: 28px;
   --font-h3: 22px;
@@ -103,10 +107,11 @@
   --font-base: 16px;
   --font-sm: 14px;
 
-  --duration-fast: 120ms;
-  --duration-normal: 180ms;
-  --duration-slow: 240ms;
+  /* 动画参数：更轻快、回弹感 */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
 
-  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-standard: cubic-bezier(0.34, 1.56, 0.64, 1); /* 带有回弹效果的缓动 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
