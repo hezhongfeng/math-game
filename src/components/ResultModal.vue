@@ -574,7 +574,7 @@ function handleOverlayClick() {
 .btn-secondary {
   border: 2px solid var(--border-light);
   color: var(--brand-primary);
-  background: var(--white);
+  background: var(--bg-white);
 }
 
 .btn-secondary .btn-icon {

@@ -109,7 +109,7 @@
   .btn-secondary {
     height: 56px;
     padding: 0 32px;
-    background: var(--white);
+    background: var(--bg-white);
     border-radius: var(--radius-md);
     color: var(--candy-pink);
     font-size: 18px;
@@ -162,7 +162,7 @@
     justify-content: center;
     width: 72px;
     height: 72px;
-    background: var(--white);
+    background: var(--bg-white);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 28px;
@@ -188,7 +188,7 @@
   }
 
   .card {
-    background: var(--white);
+    background: var(--bg-white);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
@@ -200,7 +200,7 @@
   }
 
   .card-question {
-    background: var(--white);
+    background: var(--bg-white);
     border-radius: var(--radius-xl);
     padding: 40px 32px;
     box-shadow: var(--shadow-lg);
