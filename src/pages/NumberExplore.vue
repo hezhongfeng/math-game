@@ -15,9 +15,6 @@ const showResult = ref(false)
 const errorMsg = ref('')
 const isTransitioning = ref(false)
 
-// 快捷数字
-const quickNumbers = [1, 10, 100, 1000]
-
 // 计算属性：当前输入是否有效
 const isValidInput = computed(() => {
   const num = parseInt(inputNumber.value, 10)
@@ -39,14 +36,7 @@ function handleDelete() {
   inputNumber.value = inputNumber.value.slice(0, -1)
 }
 
-// 快捷数字
-function handleQuickNumber(num) {
-  playClick()
-  inputNumber.value = String(num)
-  handleSubmit()
-}
-
-// 处理提交
+// 处理删除
 function handleSubmit() {
   playSubmit()
   const num = parseInt(inputNumber.value, 10)
@@ -106,18 +96,6 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
           </span>
           <span class="display-unit">个小球</span>
         </div>
-      </div>
-
-      <!-- 快捷数字 -->
-      <div class="quick-numbers">
-        <button
-          v-for="num in quickNumbers"
-          :key="num"
-          class="quick-btn"
-          @click="handleQuickNumber(num)"
-        >
-          {{ num }}
-        </button>
       </div>
 
       <!-- 错误提示 -->
@@ -257,23 +235,23 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 .number-display {
   display: flex;
   justify-content: center;
-  padding: 20px 16px 12px;
+  padding: 12px 16px 8px;
   flex-shrink: 0;
 }
 
 .display-card {
   text-align: center;
-  padding: 16px 32px;
+  padding: 12px 28px;
   background: white;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 102, 255, 0.08);
   border: 1px solid rgba(0, 102, 255, 0.06);
-  min-width: 180px;
+  min-width: 160px;
 }
 
 .display-number {
   display: block;
-  font-size: 64px;
+  font-size: 56px;
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1;
@@ -287,46 +265,16 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 .display-unit {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-top: 4px;
+  margin-top: 2px;
   font-weight: 600;
-}
-
-/* 快捷数字 */
-.quick-numbers {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 0 16px 16px;
-  flex-shrink: 0;
-}
-
-.quick-btn {
-  padding: 8px 20px;
-  border: 1.5px solid rgba(0, 102, 255, 0.2);
-  border-radius: 999px;
-  background: white;
-  color: var(--hero-blue);
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  transition: all 0.15s ease;
-}
-
-.quick-btn:active {
-  transform: scale(0.95);
-  background: var(--hero-blue);
-  color: white;
-  border-color: var(--hero-blue);
 }
 
 /* 错误提示 */
 .error-toast {
-  margin: 0 24px 12px;
-  padding: 10px 16px;
+  margin: 0 24px 8px;
+  padding: 8px 16px;
   background: #FFF0F0;
   color: #D32F2F;
   border-radius: 12px;
@@ -353,20 +301,20 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0 12px max(12px, env(safe-area-inset-bottom));
+  padding: 0 12px max(8px, env(safe-area-inset-bottom));
 }
 
 .keypad-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
   max-width: 360px;
   margin: 0 auto;
   width: 100%;
 }
 
 .key-btn {
-  height: 56px;
+  height: 52px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   background: white;
@@ -547,11 +495,6 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   .key-btn {
     height: 64px;
     font-size: 28px;
-  }
-
-  .quick-btn {
-    padding: 10px 24px;
-    font-size: 16px;
   }
 
   .badge-number {
