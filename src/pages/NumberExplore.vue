@@ -235,7 +235,7 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 .number-display {
   display: flex;
   justify-content: center;
-  padding: 12px 16px 8px;
+  padding: 12px 16px 4px;
   flex-shrink: 0;
 }
 
@@ -273,7 +273,7 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 /* 错误提示 */
 .error-toast {
-  margin: 0 24px 8px;
+  margin: 0 24px 4px;
   padding: 8px 16px;
   background: #FFF0F0;
   color: #D32F2F;
@@ -297,11 +297,11 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 /* 数字键盘 */
 .keypad {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 12px max(8px, env(safe-area-inset-bottom));
+  margin-top: 8px;
 }
 
 .keypad-grid {
