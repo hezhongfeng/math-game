@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   count: {
@@ -8,6 +8,38 @@ const props = defineProps({
     validator: (v) => v >= 1 && v <= 1000
   }
 })
+
+// 3D旋转状态
+const rotateX = ref(-25)
+const rotateY = ref(35)
+const isDragging = ref(false)
+const lastX = ref(0)
+const lastY = ref(0)
+const cubeRef = ref(null)
+
+// 触摸/鼠标事件处理
+function handlePointerDown(e) {
+  isDragging.value = true
+  const point = e.touches ? e.touches[0] : e
+  lastX.value = point.clientX
+  lastY.value = point.clientY
+}
+
+function handlePointerMove(e) {
+  if (!isDragging.value) return
+  e.preventDefault()
+  const point = e.touches ? e.touches[0] : e
+  const deltaX = point.clientX - lastX.value
+  const deltaY = point.clientY - lastY.value
+  rotateY.value += deltaX * 0.5
+  rotateX.value -= deltaY * 0.5
+  lastX.value = point.clientX
+  lastY.value = point.clientY
+}
+
+function handlePointerUp() {
+  isDragging.value = false
+}
 
 // 计算展示数据：严格十进制
 const displayData = computed(() => {
@@ -53,18 +85,141 @@ const ballRows = computed(() => {
   if (balls > 0) result.push(balls)
   return result
 })
+
+// 立方体数据：只渲染外层小球
+const cubeBalls = computed(() => {
+  const balls = []
+  const size = 10
+  const spacing = 14 // 小球间距（像素）
+  
+  // 只渲染可见面（前面、上面、右面）
+  for (let z = 0; z < size; z++) {
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        // 只渲染外层
+        const isFront = z === size - 1
+        const isTop = y === 0
+        const isRight = x === size - 1
+        const isBack = z === 0
+        const isBottom = y === size - 1
+        const isLeft = x === 0
+        
+        // 至少在一个面上
+        if (isFront || isTop || isRight || isBack || isBottom || isLeft) {
+          balls.push({
+            x: x * spacing,
+            y: y * spacing,
+            z: z * spacing,
+            isFront,
+            isTop,
+            isRight
+          })
+        }
+      }
+    }
+  }
+  return balls
+})
+
+onMounted(() => {
+  document.addEventListener('mouseup', handlePointerUp)
+  document.addEventListener('touchend', handlePointerUp)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('mouseup', handlePointerUp)
+  document.removeEventListener('touchend', handlePointerUp)
+})
 </script>
 
 <template>
   <div class="ball-array">
-    <!-- 1000 立方体展示 -->
+    <!-- 1000 立方体展示 - 3D可旋转 -->
     <div v-if="displayData.mode === 'cubes'" class="cubes-container">
-      <div class="cube-visual">
-        <div class="cube-front">
-          <span v-for="i in 100" :key="i" class="ball ball-tiny"></span>
+      <div class="cube-scene">
+        <div 
+          ref="cubeRef"
+          class="cube-3d"
+          :style="{
+            transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+            cursor: isDragging ? 'grabbing' : 'grab'
+          }"
+          @mousedown="handlePointerDown"
+          @mousemove="handlePointerMove"
+          @touchstart.passive="handlePointerDown"
+          @touchmove.prevent="handlePointerMove"
+        >
+          <!-- 前面 -->
+          <div class="cube-face cube-face-front">
+            <div v-for="row in 10" :key="row" class="face-row">
+              <span 
+                v-for="col in 10" 
+                :key="col" 
+                class="ball ball-3d"
+                :style="{ animationDelay: `${(row * 10 + col) * 3}ms` }"
+              ></span>
+            </div>
+          </div>
+          
+          <!-- 后面 -->
+          <div class="cube-face cube-face-back">
+            <div v-for="row in 10" :key="row" class="face-row">
+              <span 
+                v-for="col in 10" 
+                :key="col" 
+                class="ball ball-3d"
+              ></span>
+            </div>
+          </div>
+          
+          <!-- 左面 -->
+          <div class="cube-face cube-face-left">
+            <div v-for="row in 10" :key="row" class="face-row">
+              <span 
+                v-for="col in 10" 
+                :key="col" 
+                class="ball ball-3d"
+              ></span>
+            </div>
+          </div>
+          
+          <!-- 右面 -->
+          <div class="cube-face cube-face-right">
+            <div v-for="row in 10" :key="row" class="face-row">
+              <span 
+                v-for="col in 10" 
+                :key="col" 
+                class="ball ball-3d"
+              ></span>
+            </div>
+          </div>
+          
+          <!-- 上面 -->
+          <div class="cube-face cube-face-top">
+            <div v-for="row in 10" :key="row" class="face-row">
+              <span 
+                v-for="col in 10" 
+                :key="col" 
+                class="ball ball-3d"
+              ></span>
+            </div>
+          </div>
+          
+          <!-- 下面 -->
+          <div class="cube-face cube-face-bottom">
+            <div v-for="row in 10" :key="row" class="face-row">
+              <span 
+                v-for="col in 10" 
+                :key="col" 
+                class="ball ball-3d"
+              ></span>
+            </div>
+          </div>
         </div>
-        <div class="cube-side"></div>
-        <div class="cube-top"></div>
+      </div>
+      
+      <div class="cube-hint">
+        <span>👆 拖动旋转</span>
       </div>
       <div class="cube-label">10 × 10 × 10</div>
     </div>
@@ -228,33 +383,93 @@ const ballRows = computed(() => {
   gap: 4px;
 }
 
-/* 立方体容器 */
+/* ========== 3D立方体 ========== */
 .cubes-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
-.cube-visual {
-  width: 160px;
-  height: 160px;
+.cube-scene {
+  width: 200px;
+  height: 200px;
+  perspective: 600px;
+  perspective-origin: center center;
+}
+
+.cube-3d {
+  width: 100%;
+  height: 100%;
   position: relative;
-  background: linear-gradient(135deg, #3385FF 0%, #0066FF 100%);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    0 8px 32px rgba(0, 102, 255, 0.3),
-    inset 0 2px 8px rgba(255, 255, 255, 0.2);
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.cube-front {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 1px;
-  padding: 8px;
+.cube-face {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  left: 50%;
+  top: 50%;
+  margin-left: -70px;
+  margin-top: -70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+  background: rgba(0, 102, 255, 0.08);
+  border: 1px solid rgba(0, 102, 255, 0.3);
+  border-radius: 8px;
+  backface-visibility: visible;
+}
+
+.face-row {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+}
+
+.ball-3d {
+  width: 10px;
+  height: 10px;
+  animation: ball-appear 0.3s ease-out backwards;
+}
+
+/* 6个面的位置 */
+.cube-face-front {
+  transform: translateZ(70px);
+}
+
+.cube-face-back {
+  transform: rotateY(180deg) translateZ(70px);
+}
+
+.cube-face-left {
+  transform: rotateY(-90deg) translateZ(70px);
+}
+
+.cube-face-right {
+  transform: rotateY(90deg) translateZ(70px);
+}
+
+.cube-face-top {
+  transform: rotateX(90deg) translateZ(70px);
+}
+
+.cube-face-bottom {
+  transform: rotateX(-90deg) translateZ(70px);
+}
+
+.cube-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  background: rgba(0, 102, 255, 0.06);
+  border-radius: 12px;
 }
 
 .cube-label {
@@ -290,6 +505,30 @@ const ballRows = computed(() => {
   .flat-surface {
     padding: 4px;
     gap: 1px;
+  }
+  
+  .cube-scene {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .cube-face {
+    width: 110px;
+    height: 110px;
+    margin-left: -55px;
+    margin-top: -55px;
+  }
+  
+  .cube-face-front { transform: translateZ(55px); }
+  .cube-face-back { transform: rotateY(180deg) translateZ(55px); }
+  .cube-face-left { transform: rotateY(-90deg) translateZ(55px); }
+  .cube-face-right { transform: rotateY(90deg) translateZ(55px); }
+  .cube-face-top { transform: rotateX(90deg) translateZ(55px); }
+  .cube-face-bottom { transform: rotateX(-90deg) translateZ(55px); }
+  
+  .ball-3d {
+    width: 8px;
+    height: 8px;
   }
 }
 </style>
