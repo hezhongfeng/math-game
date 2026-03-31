@@ -359,11 +359,49 @@ onUnmounted(() => {
 .ball-small {
   width: 14px;
   height: 14px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #6DB3FF 0%,
+    #0066FF 50%,
+    #004DB3 100%
+  );
+  box-shadow: 
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 1px 2px rgba(0, 102, 255, 0.3);
+  animation: ball-appear 0.4s ease-out backwards;
 }
 
 .ball-tiny {
   width: 10px;
   height: 10px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #6DB3FF 0%,
+    #0066FF 50%,
+    #004DB3 100%
+  );
+  box-shadow: 
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 1px 2px rgba(0, 102, 255, 0.3);
+  animation: ball-appear 0.4s ease-out backwards;
+}
+
+.ball-3d {
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #6DB3FF 0%,
+    #0066FF 50%,
+    #004DB3 100%
+  );
+  box-shadow: 
+    inset 0 -1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35),
+    0 1px 3px rgba(0, 102, 255, 0.4);
+  animation: ball-appear 0.3s ease-out backwards;
 }
 
 /* 面容器 */
@@ -441,12 +479,6 @@ onUnmounted(() => {
   display: flex;
   gap: 2px;
   justify-content: center;
-}
-
-.ball-3d {
-  width: 10px;
-  height: 10px;
-  animation: ball-appear 0.3s ease-out backwards;
 }
 
 /* 6个面的位置 */
@@ -537,8 +569,8 @@ onUnmounted(() => {
   .cube-face-bottom { transform: rotateX(-90deg) translateZ(55px); }
   
   .ball-3d {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
 }
 </style>
