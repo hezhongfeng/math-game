@@ -448,7 +448,7 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 8px;
+  padding: 0;
 }
 
 .action-bar {
