@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, RotateCcw } from 'lucide-vue-next'
+import NumberPad from '../components/NumberPad.vue'
 import BallArray from '../components/BallArray.vue'
 import { useSound } from '../composables/useSound'
 
@@ -14,12 +15,6 @@ const currentCount = ref(0)
 const showResult = ref(false)
 const errorMsg = ref('')
 const isTransitioning = ref(false)
-
-// 计算属性：当前输入是否有效
-const isValidInput = computed(() => {
-  const num = parseInt(inputNumber.value, 10)
-  return num >= 1 && num <= 1000
-})
 
 // 处理数字输入
 function handleInput(num) {
@@ -70,9 +65,6 @@ function goBack() {
 function goHome() {
   router.push('/')
 }
-
-// 键盘布局
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 </script>
 
 <template>
@@ -104,35 +96,12 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
       </transition>
 
       <!-- 数字键盘 -->
-      <div class="keypad">
-        <div class="keypad-grid">
-          <button
-            v-for="num in numbers"
-            :key="num"
-            class="key-btn"
-            @click="handleInput(num)"
-          >
-            {{ num }}
-          </button>
-          <button class="key-btn key-delete" @click="handleDelete" aria-label="删除">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
-              <line x1="18" y1="9" x2="12" y2="15"/>
-              <line x1="12" y1="9" x2="18" y2="15"/>
-            </svg>
-          </button>
-          <button class="key-btn" @click="handleInput(0)">0</button>
-          <button
-            class="key-btn key-submit"
-            :class="{ 'is-valid': isValidInput }"
-            @click="handleSubmit"
-            aria-label="确认"
-          >
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </button>
-        </div>
+      <div class="keypad-wrapper">
+        <NumberPad 
+          @input="handleInput" 
+          @delete="handleDelete" 
+          @submit="handleSubmit" 
+        />
       </div>
     </main>
 
@@ -235,28 +204,29 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 .number-display {
   display: flex;
   justify-content: center;
-  padding: 16px 16px 8px;
+  padding: 20px 16px 16px;
   flex-shrink: 0;
 }
 
 .display-card {
   text-align: center;
-  padding: 12px 28px;
+  padding: 20px 40px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 102, 255, 0.08);
-  border: 1px solid rgba(0, 102, 255, 0.06);
-  min-width: 160px;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 102, 255, 0.1);
+  border: 1px solid rgba(0, 102, 255, 0.08);
+  min-width: 200px;
 }
 
 .display-number {
   display: block;
-  font-size: 56px;
+  font-size: 80px;
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1;
   font-variant-numeric: tabular-nums;
   transition: color 0.2s ease;
+  letter-spacing: -0.02em;
 }
 
 .display-number.is-empty {
@@ -265,16 +235,17 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 .display-unit {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
-  margin-top: 2px;
+  margin-top: 4px;
   font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 /* 错误提示 */
 .error-toast {
-  margin: 0 24px 4px;
-  padding: 8px 16px;
+  margin: 0 24px 12px;
+  padding: 10px 16px;
   background: #FFF0F0;
   color: #D32F2F;
   border-radius: 12px;
@@ -295,71 +266,39 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   transform: translateY(-8px);
 }
 
-/* 数字键盘 */
-.keypad {
+/* 键盘容器 - 缩小并居中 */
+.keypad-wrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 12px max(8px, env(safe-area-inset-bottom));
-  margin-top: 24px;
-}
-
-.keypad-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  max-width: 360px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.key-btn {
-  height: 52px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 14px;
-  background: white;
-  color: var(--text-primary);
-  font-size: 24px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  transition: all 0.1s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 0 16px max(16px, env(safe-area-inset-bottom));
+  flex-shrink: 0;
 }
 
-.key-btn:active {
-  transform: scale(0.95);
-  background: #f0f4ff;
+.keypad-wrapper :deep(.number-pad) {
+  transform: scale(0.82);
+  transform-origin: center top;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 102, 255, 0.06);
 }
 
-.key-delete {
-  color: var(--warning-orange);
-  background: rgba(255, 107, 53, 0.06);
-  border-color: rgba(255, 107, 53, 0.15);
+.keypad-wrapper :deep(.pad-grid) {
+  gap: 8px;
 }
 
-.key-delete:active {
-  background: rgba(255, 107, 53, 0.15);
+.keypad-wrapper :deep(.num-btn) {
+  min-width: 56px;
+  min-height: 56px;
+  font-size: 32px;
 }
 
-.key-submit {
-  color: white;
-  background: var(--hero-blue);
-  border-color: var(--hero-blue);
-  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.25);
-}
-
-.key-submit:active {
-  transform: scale(0.95);
-  background: var(--hero-blue-dark);
-}
-
-.key-submit:not(.is-valid) {
-  opacity: 0.4;
+.keypad-wrapper :deep(.num-btn svg) {
+  width: 28px;
+  height: 28px;
 }
 
 /* ========== 展示视图 ========== */
