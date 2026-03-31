@@ -41,6 +41,10 @@ function handlePointerUp() {
   isDragging.value = false
 }
 
+function handleTouchCancel() {
+  isDragging.value = false
+}
+
 // 计算展示数据：严格十进制
 const displayData = computed(() => {
   const n = props.count
@@ -124,11 +128,13 @@ const cubeBalls = computed(() => {
 onMounted(() => {
   document.addEventListener('mouseup', handlePointerUp)
   document.addEventListener('touchend', handlePointerUp)
+  document.addEventListener('touchcancel', handleTouchCancel)
 })
 
 onUnmounted(() => {
   document.removeEventListener('mouseup', handlePointerUp)
   document.removeEventListener('touchend', handlePointerUp)
+  document.removeEventListener('touchcancel', handleTouchCancel)
 })
 </script>
 
@@ -146,8 +152,10 @@ onUnmounted(() => {
           }"
           @mousedown="handlePointerDown"
           @mousemove="handlePointerMove"
-          @touchstart.passive="handlePointerDown"
+          @touchstart.prevent="handlePointerDown"
           @touchmove.prevent="handlePointerMove"
+          @touchend="handlePointerUp"
+          @touchcancel="handleTouchCancel"
         >
           <!-- 前面 -->
           <div class="cube-face cube-face-front">
@@ -406,6 +414,8 @@ onUnmounted(() => {
   transition: transform 0.1s ease-out;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cube-face {
