@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 
 const props = defineProps({
   count: {
@@ -9,41 +9,16 @@ const props = defineProps({
   }
 })
 
-// 3D旋转状态
-const rotateX = ref(-25)
-const rotateY = ref(35)
-const isDragging = ref(false)
-const lastX = ref(0)
-const lastY = ref(0)
-const cubeRef = ref(null)
-
-// 触摸/鼠标事件处理
-function handlePointerDown(e) {
-  isDragging.value = true
-  const point = e.touches ? e.touches[0] : e
-  lastX.value = point.clientX
-  lastY.value = point.clientY
-}
-
-function handlePointerMove(e) {
-  if (!isDragging.value) return
-  e.preventDefault()
-  const point = e.touches ? e.touches[0] : e
-  const deltaX = point.clientX - lastX.value
-  const deltaY = point.clientY - lastY.value
-  rotateY.value += deltaX * 0.5
-  rotateX.value -= deltaY * 0.5
-  lastX.value = point.clientX
-  lastY.value = point.clientY
-}
-
-function handlePointerUp() {
-  isDragging.value = false
-}
-
-function handleTouchCancel() {
-  isDragging.value = false
-}
+// Three.js refs
+const canvasRef = ref(null)
+let scene = null
+let camera = null
+let renderer = null
+let controls = null
+let instancedMesh = null
+let animationId = null
+let THREE = null
+let OrbitControls = null
 
 // 计算展示数据：严格十进制
 const displayData = computed(() => {
@@ -90,140 +65,208 @@ const ballRows = computed(() => {
   return result
 })
 
-// 立方体数据：只渲染外层小球
-const cubeBalls = computed(() => {
-  const balls = []
-  const size = 10
-  const spacing = 14 // 小球间距（像素）
+// 动态加载 Three.js
+async function loadThree() {
+  if (THREE) return
   
-  // 只渲染可见面（前面、上面、右面）
-  for (let z = 0; z < size; z++) {
+  const threeModule = await import('three')
+  THREE = threeModule
+  
+  const controlsModule = await import('three/examples/jsm/controls/OrbitControls.js')
+  OrbitControls = controlsModule.OrbitControls
+}
+
+// 初始化 Three.js 场景
+async function initScene() {
+  if (!canvasRef.value) return
+  
+  await loadThree()
+  
+  const container = canvasRef.value
+  const width = container.clientWidth
+  const height = container.clientHeight
+  
+  // 场景
+  scene = new THREE.Scene()
+  
+  // 相机
+  camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000)
+  camera.position.set(8, 6, 8)
+  camera.lookAt(0, 0, 0)
+  
+  // 渲染器
+  renderer = new THREE.WebGLRenderer({ 
+    antialias: true, 
+    alpha: true,
+    powerPreference: 'high-performance'
+  })
+  renderer.setSize(width, height)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.outputColorSpace = THREE.SRGBColorSpace
+  container.appendChild(renderer.domElement)
+  
+  // 控制器
+  controls = new OrbitControls(camera, renderer.domElement)
+  controls.enableZoom = false
+  controls.enablePan = false
+  controls.enableDamping = true
+  controls.dampingFactor = 0.08
+  controls.autoRotate = true
+  controls.autoRotateSpeed = 1.5
+  controls.minPolarAngle = Math.PI * 0.1
+  controls.maxPolarAngle = Math.PI * 0.9
+  controls.target.set(0, 0, 0)
+  
+  // 灯光
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+  scene.add(ambientLight)
+  
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2)
+  directionalLight.position.set(5, 8, 5)
+  scene.add(directionalLight)
+  
+  const directionalLight2 = new THREE.DirectionalLight(0x6DB3FF, 0.4)
+  directionalLight2.position.set(-5, 3, -5)
+  scene.add(directionalLight2)
+  
+  // 创建小球
+  createBalls()
+  
+  // 动画循环
+  animate()
+}
+
+// 创建 1000 个球
+function createBalls() {
+  const size = 10
+  const spacing = 1.2
+  const ballRadius = 0.45
+  const totalBalls = size * size * size // 1000
+  
+  // 球体几何（复用）
+  const sphereGeometry = new THREE.SphereGeometry(ballRadius, 16, 12)
+  
+  // 物理材质 - 真实光照
+  const material = new THREE.MeshPhysicalMaterial({
+    color: 0x0066FF,
+    metalness: 0.05,
+    roughness: 0.25,
+    clearcoat: 0.8,
+    clearcoatRoughness: 0.1,
+    reflectivity: 0.5
+  })
+  
+  // 实例化网格
+  instancedMesh = new THREE.InstancedMesh(sphereGeometry, material, totalBalls)
+  
+  const dummy = new THREE.Object3D()
+  let index = 0
+  
+  // 计算偏移使立方体居中
+  const offset = (size - 1) * spacing / 2
+  
+  for (let x = 0; x < size; x++) {
     for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        // 只渲染外层
-        const isFront = z === size - 1
-        const isTop = y === 0
-        const isRight = x === size - 1
-        const isBack = z === 0
-        const isBottom = y === size - 1
-        const isLeft = x === 0
-        
-        // 至少在一个面上
-        if (isFront || isTop || isRight || isBack || isBottom || isLeft) {
-          balls.push({
-            x: x * spacing,
-            y: y * spacing,
-            z: z * spacing,
-            isFront,
-            isTop,
-            isRight
-          })
-        }
+      for (let z = 0; z < size; z++) {
+        dummy.position.set(
+          x * spacing - offset,
+          y * spacing - offset,
+          z * spacing - offset
+        )
+        dummy.updateMatrix()
+        instancedMesh.setMatrixAt(index, dummy.matrix)
+        index++
       }
     }
   }
-  return balls
-})
+  
+  instancedMesh.instanceMatrix.needsUpdate = true
+  scene.add(instancedMesh)
+}
+
+// 动画循环
+function animate() {
+  animationId = requestAnimationFrame(animate)
+  controls.update()
+  renderer.render(scene, camera)
+}
+
+// 清理
+function cleanup() {
+  if (animationId) {
+    cancelAnimationFrame(animationId)
+    animationId = null
+  }
+  
+  if (controls) {
+    controls.dispose()
+    controls = null
+  }
+  
+  if (renderer) {
+    renderer.dispose()
+    if (renderer.domElement && renderer.domElement.parentNode) {
+      renderer.domElement.parentNode.removeChild(renderer.domElement)
+    }
+    renderer = null
+  }
+  
+  if (instancedMesh) {
+    instancedMesh.geometry?.dispose()
+    instancedMesh.material?.dispose()
+    instancedMesh = null
+  }
+  
+  scene = null
+  camera = null
+}
+
+// 响应窗口大小变化
+function handleResize() {
+  if (!canvasRef.value || !renderer || !camera) return
+  
+  const width = canvasRef.value.clientWidth
+  const height = canvasRef.value.clientHeight
+  
+  camera.aspect = width / height
+  camera.updateProjectionMatrix()
+  renderer.setSize(width, height)
+}
 
 onMounted(() => {
-  document.addEventListener('mouseup', handlePointerUp)
-  document.addEventListener('touchend', handlePointerUp)
-  document.addEventListener('touchcancel', handleTouchCancel)
+  if (displayData.value.mode === 'cubes') {
+    nextTick(() => {
+      initScene()
+    })
+  }
 })
 
 onUnmounted(() => {
-  document.removeEventListener('mouseup', handlePointerUp)
-  document.removeEventListener('touchend', handlePointerUp)
-  document.removeEventListener('touchcancel', handleTouchCancel)
+  cleanup()
+  window.removeEventListener('resize', handleResize)
+})
+
+// 监听模式变化
+watch(() => displayData.value.mode, (newMode) => {
+  if (newMode === 'cubes') {
+    cleanup()
+    nextTick(() => {
+      initScene()
+      window.addEventListener('resize', handleResize)
+    })
+  } else {
+    cleanup()
+    window.removeEventListener('resize', handleResize)
+  }
 })
 </script>
 
 <template>
   <div class="ball-array">
-    <!-- 1000 立方体展示 - 3D可旋转 -->
+    <!-- 1000 立方体展示 - Three.js 3D -->
     <div v-if="displayData.mode === 'cubes'" class="cubes-container">
-      <div class="cube-scene">
-        <div 
-          ref="cubeRef"
-          class="cube-3d"
-          :style="{
-            transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-            cursor: isDragging ? 'grabbing' : 'grab'
-          }"
-          @mousedown="handlePointerDown"
-          @mousemove="handlePointerMove"
-          @touchstart.prevent="handlePointerDown"
-          @touchmove.prevent="handlePointerMove"
-          @touchend="handlePointerUp"
-          @touchcancel="handleTouchCancel"
-        >
-          <!-- 前面 -->
-          <div class="cube-face cube-face-front">
-            <div v-for="row in 10" :key="row" class="face-row">
-              <span 
-                v-for="col in 10" 
-                :key="col" 
-                class="ball ball-3d"
-                :style="{ animationDelay: `${(row * 10 + col) * 3}ms` }"
-              ></span>
-            </div>
-          </div>
-          
-          <!-- 后面 -->
-          <div class="cube-face cube-face-back">
-            <div v-for="row in 10" :key="row" class="face-row">
-              <span 
-                v-for="col in 10" 
-                :key="col" 
-                class="ball ball-3d"
-              ></span>
-            </div>
-          </div>
-          
-          <!-- 左面 -->
-          <div class="cube-face cube-face-left">
-            <div v-for="row in 10" :key="row" class="face-row">
-              <span 
-                v-for="col in 10" 
-                :key="col" 
-                class="ball ball-3d"
-              ></span>
-            </div>
-          </div>
-          
-          <!-- 右面 -->
-          <div class="cube-face cube-face-right">
-            <div v-for="row in 10" :key="row" class="face-row">
-              <span 
-                v-for="col in 10" 
-                :key="col" 
-                class="ball ball-3d"
-              ></span>
-            </div>
-          </div>
-          
-          <!-- 上面 -->
-          <div class="cube-face cube-face-top">
-            <div v-for="row in 10" :key="row" class="face-row">
-              <span 
-                v-for="col in 10" 
-                :key="col" 
-                class="ball ball-3d"
-              ></span>
-            </div>
-          </div>
-          
-          <!-- 下面 -->
-          <div class="cube-face cube-face-bottom">
-            <div v-for="row in 10" :key="row" class="face-row">
-              <span 
-                v-for="col in 10" 
-                :key="col" 
-                class="ball ball-3d"
-              ></span>
-            </div>
-          </div>
-        </div>
+      <div ref="canvasRef" class="canvas-wrapper">
+        <!-- Three.js canvas 将插入这里 -->
       </div>
       
       <div class="cube-hint">
@@ -324,20 +367,16 @@ onUnmounted(() => {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  /* 蓝色径向渐变 - 立体光照效果 */
   background: radial-gradient(
     circle at 30% 30%,
     #6DB3FF 0%,
     #0066FF 50%,
     #004DB3 100%
   );
-  /* 阴影增加立体感 */
   box-shadow: 
     inset 0 -2px 4px rgba(0, 0, 0, 0.2),
     inset 0 2px 4px rgba(255, 255, 255, 0.3),
     0 2px 4px rgba(0, 102, 255, 0.3);
-  
-  /* 出现动画 */
   animation: ball-appear 0.4s ease-out backwards;
 }
 
@@ -372,38 +411,6 @@ onUnmounted(() => {
   animation: ball-appear 0.4s ease-out backwards;
 }
 
-.ball-tiny {
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(
-    circle at 30% 30%,
-    #6DB3FF 0%,
-    #0066FF 50%,
-    #004DB3 100%
-  );
-  box-shadow: 
-    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3),
-    0 1px 2px rgba(0, 102, 255, 0.3);
-  animation: ball-appear 0.4s ease-out backwards;
-}
-
-.ball-3d {
-  width: 14px;
-  height: 14px;
-  background: radial-gradient(
-    circle at 30% 30%,
-    #6DB3FF 0%,
-    #0066FF 50%,
-    #004DB3 100%
-  );
-  box-shadow: 
-    inset 0 -1px 2px rgba(0, 0, 0, 0.25),
-    inset 0 1px 2px rgba(255, 255, 255, 0.35),
-    0 1px 3px rgba(0, 102, 255, 0.4);
-  animation: ball-appear 0.3s ease-out backwards;
-}
-
 /* 面容器 */
 .flats-container {
   display: flex;
@@ -429,7 +436,7 @@ onUnmounted(() => {
   gap: 4px;
 }
 
-/* ========== 3D立方体 ========== */
+/* ========== Three.js 3D立方体 ========== */
 .cubes-container {
   display: flex;
   flex-direction: column;
@@ -437,73 +444,20 @@ onUnmounted(() => {
   gap: 12px;
 }
 
-.cube-scene {
-  width: 200px;
-  height: 200px;
-  perspective: 600px;
-  perspective-origin: center center;
-}
-
-.cube-3d {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.1s ease-out;
-  user-select: none;
-  -webkit-user-select: none;
+.canvas-wrapper {
+  width: 280px;
+  height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(0, 102, 255, 0.03) 0%, transparent 70%);
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.cube-face {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  left: 50%;
-  top: 50%;
-  margin-left: -70px;
-  margin-top: -70px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  padding: 4px;
-  background: rgba(0, 102, 255, 0.08);
-  border: 1px solid rgba(0, 102, 255, 0.3);
-  border-radius: 8px;
-  backface-visibility: visible;
-}
-
-.face-row {
-  display: flex;
-  gap: 2px;
-  justify-content: center;
-}
-
-/* 6个面的位置 */
-.cube-face-front {
-  transform: translateZ(70px);
-}
-
-.cube-face-back {
-  transform: rotateY(180deg) translateZ(70px);
-}
-
-.cube-face-left {
-  transform: rotateY(-90deg) translateZ(70px);
-}
-
-.cube-face-right {
-  transform: rotateY(90deg) translateZ(70px);
-}
-
-.cube-face-top {
-  transform: rotateX(90deg) translateZ(70px);
-}
-
-.cube-face-bottom {
-  transform: rotateX(-90deg) translateZ(70px);
+.canvas-wrapper canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .cube-hint {
@@ -549,28 +503,9 @@ onUnmounted(() => {
     gap: 1px;
   }
   
-  .cube-scene {
-    width: 160px;
-    height: 160px;
-  }
-  
-  .cube-face {
-    width: 110px;
-    height: 110px;
-    margin-left: -55px;
-    margin-top: -55px;
-  }
-  
-  .cube-face-front { transform: translateZ(55px); }
-  .cube-face-back { transform: rotateY(180deg) translateZ(55px); }
-  .cube-face-left { transform: rotateY(-90deg) translateZ(55px); }
-  .cube-face-right { transform: rotateY(90deg) translateZ(55px); }
-  .cube-face-top { transform: rotateX(90deg) translateZ(55px); }
-  .cube-face-bottom { transform: rotateX(-90deg) translateZ(55px); }
-  
-  .ball-3d {
-    width: 10px;
-    height: 10px;
+  .canvas-wrapper {
+    width: 240px;
+    height: 240px;
   }
 }
 </style>
