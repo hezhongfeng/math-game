@@ -14,10 +14,13 @@ const canvasRef = ref(null)
 let scene = null
 let camera = null
 let renderer = null
+let controls = null
 let instancedMesh = null
 let panelMesh = null
 let animationId = null
 let resizeObserver = null
+let orbitDomElement = null
+let orbitTouchStartHandler = null
 let THREE = null
 
 const colors = {
@@ -30,6 +33,57 @@ async function loadThree() {
 
   const threeModule = await import('three')
   THREE = threeModule
+}
+
+function cleanupControls() {
+  if (orbitDomElement && orbitTouchStartHandler) {
+    orbitDomElement.removeEventListener('touchstart', orbitTouchStartHandler)
+  }
+
+  if (orbitDomElement) {
+    orbitDomElement.style.touchAction = ''
+  }
+
+  orbitTouchStartHandler = null
+  orbitDomElement = null
+
+  if (controls) {
+    controls.dispose()
+    controls = null
+  }
+}
+
+async function loadOrbitControls() {
+  if (controls) return
+  await loadThree()
+  const { OrbitControls } = await import('three/addons/controls/OrbitControls.js')
+
+  orbitDomElement = renderer.domElement
+  orbitTouchStartHandler = (e) => {
+    if (e.touches.length > 1) e.preventDefault()
+  }
+
+  controls = new OrbitControls(camera, orbitDomElement)
+  controls.enableDamping = true
+  controls.dampingFactor = 0.08
+  controls.enableZoom = true
+  controls.minDistance = 3
+  controls.maxDistance = 25
+  controls.enablePan = true
+  controls.rotateSpeed = 0.6
+  controls.zoomSpeed = 0.8
+  controls.touches = {
+    ONE: THREE.TOUCH.ROTATE,
+    TWO: THREE.TOUCH.DOLLY
+  }
+  orbitDomElement.addEventListener('touchstart', orbitTouchStartHandler, { passive: false })
+  orbitDomElement.style.touchAction = 'none'
+}
+
+function clearContainer(container) {
+  while (container.firstChild) {
+    container.removeChild(container.firstChild)
+  }
 }
 
 async function initScene() {
@@ -45,6 +99,7 @@ async function initScene() {
   const height = container.clientHeight || 320
 
   cleanup()
+  cleanupControls()
 
   scene = new THREE.Scene()
   scene.background = null
@@ -79,6 +134,7 @@ async function initScene() {
   fillLight.position.set(-6, 2, 6)
   scene.add(fillLight)
 
+  await loadOrbitControls()
   createBalls()
   animate()
 }
@@ -176,31 +232,43 @@ function createBalls() {
 
 function fitCameraToBounds(bounds) {
   const center = bounds.center
-  const maxSpan = Math.max(bounds.width * 1.05, bounds.height * 1.04, bounds.depth * 1.22, 4)
+  const layoutConfig = getLayoutConfig(props.count)
+  const padding = layoutConfig.radius * 2.5 + 0.8
 
-  let distance = maxSpan * 1.04 + 3.6
+  const fovRad = camera.fov * (Math.PI / 180)
+  const vFovHalf = fovRad / 2
+  const aspect = camera.aspect || 1
+
+  const distV = ((bounds.height + padding) / 2) / Math.tan(vFovHalf)
+  const distH = ((bounds.width + padding) / 2) / Math.tan(vFovHalf) / aspect
+
+  let baseDistance = Math.max(distV, distH) * 1.1 + (bounds.depth / 2)
+  let distance = Math.max(baseDistance, 4.5)
+
   let heightBoost = Math.max(bounds.height * 0.08, 0.84)
   let lookTargetY = center.y
 
   if (props.count >= 100) {
-    distance = maxSpan * 1.08 + 4.1
     heightBoost = Math.max(bounds.height * 0.1, 1)
   }
 
   if (props.count >= 500) {
-    distance = maxSpan * 1.12 + 4.6
     heightBoost = Math.max(bounds.height * 0.12, 1.24)
     lookTargetY = center.y + bounds.height * 0.02
   }
 
   if (props.count >= 1000) {
-    distance = maxSpan * 1.14 + 5
     heightBoost = Math.max(bounds.height * 0.14, 1.42)
     lookTargetY = center.y + bounds.height * 0.04
   }
 
   camera.position.set(center.x, center.y + heightBoost, center.z + distance)
   camera.lookAt(center.x, lookTargetY, center.z)
+
+  if (controls) {
+    controls.target.set(center.x, lookTargetY, center.z)
+    controls.update()
+  }
 }
 
 function calculatePositions(count, layoutConfig) {
@@ -266,6 +334,7 @@ function animate() {
   animationId = requestAnimationFrame(animate)
 
   if (renderer && scene && camera) {
+    controls?.update()
     renderer.render(scene, camera)
   }
 }

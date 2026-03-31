@@ -169,7 +169,10 @@ function goHome() {
 
 .result-screen {
   gap: 10px;
-  padding-inline: 10px;
+  padding-inline: 6px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .number-stage,
@@ -335,10 +338,12 @@ function goHome() {
 }
 
 .result-ball-shell {
-  flex: 1;
-  min-height: 0;
+  width: 100%;
+  max-width: calc(100dvh - 280px); /* 留出顶部数字和底部按钮的空间 */
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
   border-radius: 34px;
-  padding: 8px;
+  padding: 4px;
   overflow: hidden;
 }
 
