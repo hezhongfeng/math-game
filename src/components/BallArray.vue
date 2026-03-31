@@ -25,8 +25,8 @@ let orbitTouchStartHandler = null
 let THREE = null
 
 const colors = {
-  ball: 0xeb5757,
-  panel: 0xffffff
+  ball: 0x5C9DFF, // 匹配项目主题色 --brand-primary (#5C9DFF)
+  panel: 0xF7FAFF  // 匹配项目背景色 --bg-light (#F7FAFF)
 }
 
 async function loadThree() {
@@ -104,7 +104,8 @@ async function initScene() {
 
   scene = new THREE.Scene()
   scene.background = null
-  scene.fog = new THREE.Fog(0xfffaf2, 20, 34)
+  // 使用项目风格的雾效 - 冷色调蓝色雾
+  scene.fog = new THREE.Fog(0xF7FAFF, 20, 34)
 
   camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 200)
 
@@ -124,14 +125,15 @@ async function initScene() {
   }
   container.appendChild(renderer.domElement)
 
-  const ambientLight = new THREE.HemisphereLight(0xfffdf8, 0xf3e4d0, 1.75)
+  // 使用冷色调光照，匹配项目科技风格
+  const ambientLight = new THREE.HemisphereLight(0xF7FAFF, 0xEBF2FF, 1.5)
   scene.add(ambientLight)
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.95)
+  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 0.85)
   keyLight.position.set(4.5, 8, 10)
   scene.add(keyLight)
 
-  const fillLight = new THREE.DirectionalLight(0xfff2df, 0.42)
+  const fillLight = new THREE.DirectionalLight(0xDCE7F5, 0.45)
   fillLight.position.set(-6, 2, 6)
   scene.add(fillLight)
 
@@ -161,8 +163,12 @@ function getLayoutConfig(count) {
 }
 
 function createBallMaterial() {
-  return new THREE.MeshLambertMaterial({
-    color: colors.ball
+  // 使用 MeshPhongMaterial 获得更好的光泽效果，匹配项目简约科技风格
+  return new THREE.MeshPhongMaterial({
+    color: colors.ball,
+    specular: 0xFFFFFF,
+    shininess: 30,
+    flatShading: false
   })
 }
 
@@ -179,10 +185,11 @@ function updateBackgroundPanel(bounds) {
   const panelWidth = Math.max(bounds.width + 1.6, 4.8)
   const panelHeight = Math.max(bounds.height + 1.6, 4.8)
   const geometry = new THREE.PlaneGeometry(panelWidth, panelHeight)
+  // 使用柔和的蓝色背景面板，匹配项目风格
   const material = new THREE.MeshBasicMaterial({
-    color: colors.panel,
+    color: 0xEBF2FF, // 匹配 --bg-dark
     transparent: true,
-    opacity: 0.18
+    opacity: 0.15
   })
 
   panelMesh = new THREE.Mesh(geometry, material)
@@ -472,8 +479,9 @@ watch(() => props.count, async () => {
   min-height: 236px;
   border-radius: 28px;
   overflow: hidden;
-  background: linear-gradient(180deg, #fffdfb 0%, #fff9f1 100%);
-  border: 1px solid rgba(214, 182, 140, 0.16);
+  /* 使用项目风格的渐变背景 */
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-dark) 100%);
+  border: 1px solid var(--border-light);
 }
 
 .ball-array::before {

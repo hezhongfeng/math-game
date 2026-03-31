@@ -357,11 +357,6 @@ onMounted(() => {
   cursor: pointer;
 }
 
-.btn-explore {
-  background: linear-gradient(135deg, #3385FF 0%, #0066FF 100%);
-  box-shadow: 0 8px 24px rgba(0, 102, 255, 0.25);
-}
-
 .btn-main-icon {
   width: 32px;
   height: 32px;
@@ -383,10 +378,6 @@ onMounted(() => {
 .btn-main:active {
   transform: scale(0.96);
   background: #295fcb;
-}
-
-.btn-explore:active {
-  background: #0052CC;
 }
 
 .btn-main.is-leaving {
