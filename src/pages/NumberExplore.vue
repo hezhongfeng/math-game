@@ -7,7 +7,7 @@ import BallArray from '../components/BallArray.vue'
 import { useSound } from '../composables/useSound'
 
 const router = useRouter()
-const { playClick, playSuccess } = useSound()
+const { playClick, playSubmit } = useSound()
 
 // 状态
 const inputNumber = ref('')
@@ -32,7 +32,7 @@ function handleDelete() {
 
 // 处理提交
 function handleSubmit() {
-  playSuccess()
+  playSubmit()
   const num = parseInt(inputNumber.value, 10)
   
   if (!num || num < 1) {
