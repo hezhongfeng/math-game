@@ -85,6 +85,7 @@ async function initScene() {
   
   // 场景
   scene = new THREE.Scene()
+  scene.background = new THREE.Color(0xF0F4FF)
   
   // 相机
   camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000)
@@ -118,23 +119,58 @@ async function initScene() {
   controls.maxDistance = 25
   
   // 灯光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4)
   scene.add(ambientLight)
   
   // 主光源 - 右上方
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0)
   directionalLight.position.set(5, 8, 5)
   scene.add(directionalLight)
   
-  // 补光 - 左下方，蓝色调
-  const fillLight = new THREE.DirectionalLight(0x4A90E2, 0.3)
+  // 补光 - 左下方，暖色调
+  const fillLight = new THREE.DirectionalLight(0xFFE4C4, 0.4)
   fillLight.position.set(-5, -2, -3)
   scene.add(fillLight)
   
   // 顶部点光源 - 增加高光
-  const pointLight = new THREE.PointLight(0xffffff, 0.8, 50)
+  const pointLight = new THREE.PointLight(0xffffff, 1.0, 50)
   pointLight.position.set(0, 10, 5)
   scene.add(pointLight)
+  
+  // 环境贴图 - 金属反射需要
+  const pmremGenerator = new THREE.PMREMGenerator(renderer)
+  pmremGenerator.compileEquirectangularShader()
+  
+  // 创建简单的环境场景
+  const envScene = new THREE.Scene()
+  
+  // 顶部亮色（模拟天空）
+  const topLight = new THREE.HemisphereLight(0x87CEEB, 0x362D59, 0.8)
+  envScene.add(topLight)
+  
+  // 添加几个发光球体作为反射源
+  const envGeo = new THREE.SphereGeometry(1, 16, 16)
+  const envMat1 = new THREE.MeshBasicMaterial({ color: 0xffffff })
+  const envSphere1 = new THREE.Mesh(envGeo, envMat1)
+  envSphere1.position.set(5, 5, 5)
+  envSphere1.scale.setScalar(0.5)
+  envScene.add(envSphere1)
+  
+  const envMat2 = new THREE.MeshBasicMaterial({ color: 0x4A90E2 })
+  const envSphere2 = new THREE.Mesh(envGeo, envMat2)
+  envSphere2.position.set(-5, 3, -5)
+  envSphere2.scale.setScalar(0.5)
+  envScene.add(envSphere2)
+  
+  const envMat3 = new THREE.MeshBasicMaterial({ color: 0xFFD700 })
+  const envSphere3 = new THREE.Mesh(envGeo, envMat3)
+  envSphere3.position.set(3, -3, 5)
+  envSphere3.scale.setScalar(0.3)
+  envScene.add(envSphere3)
+  
+  const envMap = pmremGenerator.fromScene(envScene, 0.04).texture
+  scene.environment = envMap
+  pmremGenerator.dispose()
   
   // 创建小球
   createBalls()
@@ -151,17 +187,15 @@ function createBalls() {
   // 球体几何（复用）
   const sphereGeometry = new THREE.SphereGeometry(ballRadius, 24, 16)
   
-  // 物理材质 - 更精致的球体
+  // 金属材质
   const material = new THREE.MeshPhysicalMaterial({
-    color: 0x3B82F6,
-    metalness: 0.0,
-    roughness: 0.15,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.05,
-    reflectivity: 0.8,
-    sheen: 0.3,
-    sheenRoughness: 0.5,
-    sheenColor: new THREE.Color(0x60A5FA)
+    color: 0x4A90E2,
+    metalness: 0.95,
+    roughness: 0.12,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.08,
+    reflectivity: 1.0,
+    envMapIntensity: 1.5
   })
   
   instancedMesh = new THREE.InstancedMesh(sphereGeometry, material, count)
