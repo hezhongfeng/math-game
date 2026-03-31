@@ -106,7 +106,7 @@ async function initScene() {
   
   // 控制器
   controls = new OrbitControls(camera, renderer.domElement)
-  controls.enableZoom = false
+  controls.enableZoom = true
   controls.enablePan = false
   controls.enableDamping = true
   controls.dampingFactor = 0.08
@@ -114,6 +114,8 @@ async function initScene() {
   controls.autoRotateSpeed = 1.5
   controls.minPolarAngle = Math.PI * 0.1
   controls.maxPolarAngle = Math.PI * 0.9
+  controls.minDistance = 3
+  controls.maxDistance = 25
   
   // 灯光
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
