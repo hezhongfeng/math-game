@@ -31,7 +31,7 @@ function handleDelete() {
   inputNumber.value = inputNumber.value.slice(0, -1)
 }
 
-// 处理删除
+// 处理提交
 function handleSubmit() {
   playSubmit()
   const num = parseInt(inputNumber.value, 10)
@@ -96,7 +96,7 @@ function goHome() {
       </transition>
 
       <!-- 数字键盘 -->
-      <div class="keypad-wrapper">
+      <div class="keypad-container">
         <NumberPad 
           @input="handleInput" 
           @delete="handleDelete" 
@@ -200,27 +200,29 @@ function goHome() {
   min-height: 0;
 }
 
-/* 数字显示区 */
+/* 数字显示区 - 占据剩余空间，居中显示 */
 .number-display {
+  flex: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 20px 16px 16px;
-  flex-shrink: 0;
+  padding: 16px;
+  min-height: 0;
 }
 
 .display-card {
   text-align: center;
-  padding: 20px 40px;
+  padding: 24px 48px;
   background: white;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 102, 255, 0.1);
-  border: 1px solid rgba(0, 102, 255, 0.08);
+  border-radius: 28px;
+  box-shadow: 0 8px 40px rgba(0, 102, 255, 0.1);
+  border: 1px solid rgba(0, 102, 255, 0.06);
   min-width: 200px;
 }
 
 .display-number {
   display: block;
-  font-size: 80px;
+  font-size: 88px;
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1;
@@ -235,16 +237,16 @@ function goHome() {
 
 .display-unit {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-secondary);
-  margin-top: 4px;
+  margin-top: 6px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 /* 错误提示 */
 .error-toast {
-  margin: 0 24px 12px;
+  margin: 0 24px 8px;
   padding: 10px 16px;
   background: #FFF0F0;
   color: #D32F2F;
@@ -266,39 +268,39 @@ function goHome() {
   transform: translateY(-8px);
 }
 
-/* 键盘容器 - 缩小并居中 */
-.keypad-wrapper {
+/* 键盘容器 - 居中并缩小 */
+.keypad-container {
   display: flex;
   justify-content: center;
-  padding: 0 16px max(16px, env(safe-area-inset-bottom));
+  padding: 0 16px max(12px, env(safe-area-inset-bottom));
   flex-shrink: 0;
 }
 
-.keypad-wrapper :deep(.number-pad) {
-  transform: scale(0.82);
-  transform-origin: center top;
-  padding: 10px;
+.keypad-container :deep(.number-pad) {
+  width: 260px;
+  padding: 12px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 102, 255, 0.06);
 }
 
-.keypad-wrapper :deep(.pad-grid) {
+.keypad-container :deep(.pad-grid) {
   gap: 8px;
 }
 
-.keypad-wrapper :deep(.num-btn) {
-  min-width: 56px;
-  min-height: 56px;
-  font-size: 32px;
+.keypad-container :deep(.num-btn) {
+  min-width: auto;
+  min-height: 52px;
+  font-size: 30px;
+  border-radius: 12px;
 }
 
-.keypad-wrapper :deep(.num-btn svg) {
-  width: 28px;
-  height: 28px;
+.keypad-container :deep(.num-btn svg) {
+  width: 26px;
+  height: 26px;
 }
 
 /* ========== 展示视图 ========== */
@@ -423,21 +425,20 @@ function goHome() {
   }
 
   .display-number {
-    font-size: 80px;
-  }
-
-  .keypad-grid {
-    max-width: 320px;
-    gap: 12px;
-  }
-
-  .key-btn {
-    height: 64px;
-    font-size: 28px;
+    font-size: 100px;
   }
 
   .badge-number {
     font-size: 48px;
+  }
+
+  .keypad-container :deep(.number-pad) {
+    width: 280px;
+  }
+
+  .keypad-container :deep(.num-btn) {
+    min-height: 56px;
+    font-size: 32px;
   }
 }
 </style>
