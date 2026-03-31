@@ -118,16 +118,23 @@ async function initScene() {
   controls.maxDistance = 25
   
   // 灯光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
   scene.add(ambientLight)
   
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2)
+  // 主光源 - 右上方
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
   directionalLight.position.set(5, 8, 5)
   scene.add(directionalLight)
   
-  const directionalLight2 = new THREE.DirectionalLight(0x6DB3FF, 0.4)
-  directionalLight2.position.set(-5, 3, -5)
-  scene.add(directionalLight2)
+  // 补光 - 左下方，蓝色调
+  const fillLight = new THREE.DirectionalLight(0x4A90E2, 0.3)
+  fillLight.position.set(-5, -2, -3)
+  scene.add(fillLight)
+  
+  // 顶部点光源 - 增加高光
+  const pointLight = new THREE.PointLight(0xffffff, 0.8, 50)
+  pointLight.position.set(0, 10, 5)
+  scene.add(pointLight)
   
   // 创建小球
   createBalls()
@@ -138,20 +145,23 @@ async function initScene() {
 // 创建小球
 function createBalls() {
   const count = props.count
-  const ballRadius = 0.45
-  const spacing = 1.2
+  const ballRadius = 0.42
+  const spacing = 1.15
   
   // 球体几何（复用）
-  const sphereGeometry = new THREE.SphereGeometry(ballRadius, 16, 12)
+  const sphereGeometry = new THREE.SphereGeometry(ballRadius, 24, 16)
   
-  // 物理材质
+  // 物理材质 - 更精致的球体
   const material = new THREE.MeshPhysicalMaterial({
-    color: 0x0066FF,
-    metalness: 0.05,
-    roughness: 0.25,
-    clearcoat: 0.8,
-    clearcoatRoughness: 0.1,
-    reflectivity: 0.5
+    color: 0x3B82F6,
+    metalness: 0.0,
+    roughness: 0.15,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.05,
+    reflectivity: 0.8,
+    sheen: 0.3,
+    sheenRoughness: 0.5,
+    sheenColor: new THREE.Color(0x60A5FA)
   })
   
   instancedMesh = new THREE.InstancedMesh(sphereGeometry, material, count)
