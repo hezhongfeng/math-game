@@ -396,8 +396,8 @@ watch(() => props.count, () => {
 }
 
 .canvas-wrapper {
-  width: 280px;
-  height: 280px;
+  width: min(90vw, 360px);
+  height: min(70vw, 280px);
   border-radius: 16px;
   overflow: hidden;
   background: radial-gradient(circle at center, rgba(0, 102, 255, 0.03) 0%, transparent 70%);
@@ -436,8 +436,8 @@ watch(() => props.count, () => {
 /* 小屏幕适配 */
 @media (max-width: 380px) {
   .canvas-wrapper {
-    width: 240px;
-    height: 240px;
+    width: min(92vw, 320px);
+    height: min(70vw, 240px);
   }
 }
 </style>
