@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added number exploration feature: input 1-1000 and visualize as ball arrays with strict decimal layout (rows → flats → 3D cube)
+- Added 3D rotatable cube visualization for 1000 balls (CSS 3D transforms, touch-drag rotation)
+- Added `BallArray.vue` component with ball array display and 3D cube rotation
+- Added `NumberExplore.vue` page with input view ↔ display view toggle
 - Added Playwright E2E smoke suite for core mobile flow (`tests/e2e/smoke.spec.js`)
 - Added CI workflow to run E2E smoke tests on pull requests (`.github/workflows/e2e-smoke.yml`)
 - Added architecture quick-reference document (`docs/ARCHITECTURE.md`)

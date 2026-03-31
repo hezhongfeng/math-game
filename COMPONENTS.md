@@ -6,6 +6,7 @@ This document describes the current Vue components used in the math game project
 
 ```text
 src/components/
+├── BallArray.vue           # Ball array visualization (3D rotatable cube)
 ├── DifficultyCard.vue      # Difficulty level selection card
 ├── ErrorBoundary.vue       # Error boundary wrapper
 ├── NumberPad.vue           # Numeric keypad (3×4 grid)
@@ -19,6 +20,31 @@ src/components/
 ```
 
 ## 🎮 Core Components
+
+### BallArray
+
+**File**: `src/components/BallArray.vue`
+
+Visualizes a number (1-1000) as an array of balls using strict decimal layout. For 1000, renders a 3D rotatable cube using CSS 3D transforms.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `count` | Number | required | Number to visualize (1-1000) |
+
+#### Display Modes
+
+| Range | Mode | Description |
+|-------|------|-------------|
+| 1-99 | Rows | N rows of 10 + remaining balls |
+| 100-999 | Flats | N 10×10 flat surfaces + remaining rows + balls |
+| 1000 | 3D Cube | 10×10×10 cube with touch-drag rotation |
+
+#### Interaction
+
+- **3D Cube (1000)**: Drag with mouse or touch to rotate the cube and view from any angle
+- **Touch optimized**: `touch-action: none` prevents page scroll during rotation
 
 ### NumberPad
 
@@ -188,6 +214,27 @@ Renders global toast notifications from `useToast()`.
 **File**: `src/components/PWAUpdatePrompt.vue`
 
 Listens to `virtual:pwa-register` and displays an in-app refresh prompt when a new service worker is ready.
+
+## 📄 Page Components
+
+### NumberExplore
+
+**File**: `src/pages/NumberExplore.vue`
+
+Number exploration page allowing children to input a number (1-1000) and visualize it as ball arrays.
+
+#### Features
+
+- **Input View**: Numeric keypad for entering numbers, with validation (1-1000)
+- **Display View**: Shows ball array visualization using `BallArray` component
+- **View Toggle**: Same page, toggles between input and display views
+- **Error Handling**: Displays friendly messages for invalid inputs (0, >1000)
+
+#### Dependencies
+
+- `NumberPad` - Numeric input
+- `BallArray` - Ball array visualization
+- `useSound` - Click and success sounds
 
 ## 📚 See Also
 
