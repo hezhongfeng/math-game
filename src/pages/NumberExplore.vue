@@ -9,67 +9,61 @@ import { useSound } from '../composables/useSound'
 const router = useRouter()
 const { playClick, playSubmit } = useSound()
 
-// 状态
 const inputNumber = ref('')
 const currentCount = ref(0)
 const showResult = ref(false)
-const errorMsg = ref('')
-const isTransitioning = ref(false)
+const isShaking = ref(false)
 
-// 处理数字输入
-function handleInput(num) {
-  playClick()
-  errorMsg.value = ''
-  
-  // 禁止首位输入 0
-  if (inputNumber.value === '' && num === 0) return
-  
-  if (inputNumber.value.length < 3) {
-    const nextVal = inputNumber.value + num
-    if (parseInt(nextVal, 10) > 100) {
-      errorMsg.value = '最大支持 100 哦'
-      return
-    }
-    inputNumber.value = nextVal
-  }
+function pulseNumber() {
+  isShaking.value = true
+  window.setTimeout(() => {
+    isShaking.value = false
+  }, 280)
 }
 
-// 处理删除
+function handleInput(num) {
+  playClick()
+
+  if (inputNumber.value === '' && num === 0) return
+
+  const nextValue = `${inputNumber.value}${num}`
+  const parsed = Number.parseInt(nextValue, 10)
+
+  if (Number.isNaN(parsed) || parsed > 1000) {
+    pulseNumber()
+    return
+  }
+
+  inputNumber.value = nextValue
+}
+
 function handleDelete() {
   playClick()
   inputNumber.value = inputNumber.value.slice(0, -1)
-  errorMsg.value = ''
 }
 
-// 处理提交
 function handleSubmit() {
-  const num = parseInt(inputNumber.value, 10)
-  
-  if (!num || num < 1) {
+  const num = Number.parseInt(inputNumber.value, 10)
+
+  if (Number.isNaN(num) || num < 1 || num > 1000) {
     playClick()
-    errorMsg.value = '请输入数字'
+    pulseNumber()
     return
   }
-  
+
   playSubmit()
-  isTransitioning.value = true
-  setTimeout(() => {
-    currentCount.value = num
-    showResult.value = true
-    isTransitioning.value = false
-  }, 400)
+  currentCount.value = num
+  showResult.value = true
 }
 
-// 返回重新输入
-function goBack() {
+function resetExplore() {
   playClick()
-  showResult.value = false
   inputNumber.value = ''
   currentCount.value = 0
-  errorMsg.value = ''
+  showResult.value = false
+  isShaking.value = false
 }
 
-// 返回首页
 function goHome() {
   playClick()
   router.push('/')
@@ -78,380 +72,291 @@ function goHome() {
 
 <template>
   <div class="explore-page">
-    <!-- 顶部导航 -->
-    <header class="top-nav">
-      <button class="nav-btn" @click="goHome" aria-label="返回首页">
-        <ArrowLeft :size="24" stroke-width="2.5" />
-      </button>
-      <h1 class="page-title">数字探索</h1>
-      <div class="nav-placeholder"></div>
-    </header>
-
-    <!-- 输入视图 -->
-    <main v-if="!showResult" class="input-view animate-fade-in">
-      <!-- 数字显示区 -->
-      <div class="number-display">
-        <div class="display-card-wrapper">
-          <div class="display-card float-anim">
-            <span class="display-number font-number" :class="{ 'is-empty': !inputNumber }">
-              {{ inputNumber || '0' }}
-            </span>
-            <span class="display-unit">个小球</span>
-          </div>
-          <div class="card-shadow"></div>
-        </div>
-      </div>
-
-      <!-- 错误提示 -->
-      <div class="error-container">
-        <transition name="error-pop">
-          <div v-if="errorMsg" class="error-toast">{{ errorMsg }}</div>
-        </transition>
-      </div>
-
-      <!-- 数字键盘 -->
-      <div class="keypad-container">
-        <NumberPad 
-          @input="handleInput" 
-          @delete="handleDelete" 
-          @submit="handleSubmit" 
-        />
-      </div>
-    </main>
-
-    <!-- 展示视图 -->
-    <main v-else class="result-view animate-pop">
-      <!-- 数字徽章 -->
-      <div class="count-header">
-        <div class="count-badge">
-          <span class="badge-number font-number">{{ currentCount }}</span>
-          <span class="badge-label">个小球</span>
-        </div>
-      </div>
-
-      <!-- 小球展示区 -->
-      <div class="ball-area">
-        <BallArray :count="currentCount" />
-      </div>
-
-      <!-- 底部操作 -->
-      <div class="action-bar">
-        <button class="btn-primary btn-retry" @click="goBack">
-          <span>换个数字</span>
+    <template v-if="!showResult">
+      <header class="top-bar">
+        <button class="back-btn" aria-label="返回首页" @click="goHome">
+          <ArrowLeft :size="22" stroke-width="2.8" />
         </button>
-      </div>
-    </main>
+      </header>
 
-    <!-- 魔法过渡遮罩 -->
-    <transition name="fade">
-      <div v-if="isTransitioning" class="magic-overlay">
-        <div class="magic-content">
-          <div class="sparkles">
-            <span>✨</span><span>⭐</span><span>✨</span>
+      <main class="input-screen">
+        <section class="number-stage" :class="{ 'is-shaking': isShaking }">
+          <div class="number-card">
+            <div class="number-card-top">
+              <div class="counter-badge">数一数</div>
+            </div>
+            <div class="number-display font-number">
+              <div class="big-number" :class="{ 'is-empty': !inputNumber }">
+                {{ inputNumber || '?' }}
+              </div>
+            </div>
           </div>
-          <div class="magic-text">正在变出小球...</div>
-        </div>
-      </div>
-    </transition>
+        </section>
+
+        <section class="pad-stage">
+          <NumberPad @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
+        </section>
+      </main>
+    </template>
+
+    <main v-else class="result-screen">
+      <section class="result-number-shell">
+        <div class="big-number font-number">{{ currentCount }}</div>
+      </section>
+
+      <section class="result-ball-shell">
+        <BallArray :count="currentCount" />
+      </section>
+
+      <button class="play-again-btn" @click="resetExplore">
+        <RotateCcw :size="20" />
+        <span>再来一次</span>
+      </button>
+    </main>
   </div>
 </template>
 
 <style scoped>
 .explore-page {
   min-height: 100dvh;
-  background: 
-    radial-gradient(circle at top left, var(--brand-primary-glow), transparent 40%),
-    radial-gradient(circle at bottom right, var(--brand-success-glow), transparent 35%),
-    linear-gradient(180deg, var(--bg-light) 0%, var(--bg-dark) 100%);
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
   padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+  background: #fff;
+  overflow: hidden;
 }
 
-/* ========== 顶部导航 ========== */
-.top-nav {
+.top-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  background: var(--bg-panel);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
-  flex-shrink: 0;
-  z-index: 10;
+  padding: 12px 16px 4px;
 }
 
-.nav-btn {
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: var(--brand-primary-soft);
-  border-radius: var(--radius-sm);
-  display: flex;
+.back-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 28px rgba(49, 120, 246, 0.12);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--brand-primary);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-standard);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
 }
 
-.nav-btn:active {
-  transform: scale(0.9);
-  background: var(--brand-primary-light);
-  color: white;
+.back-btn:active,
+.play-again-btn:active {
+  transform: scale(0.95);
 }
 
-.page-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: 0.02em;
-}
-
-.nav-placeholder {
-  width: 44px;
-}
-
-/* ========== 输入视图 ========== */
-.input-view {
+.input-screen,
+.result-screen {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  padding: 8px 14px 0;
+}
+
+.input-screen {
+  gap: 14px;
+}
+
+.result-screen {
+  gap: 10px;
+  padding-inline: 10px;
+}
+
+.number-stage,
+.result-number-shell,
+.result-ball-shell,
+.play-again-btn {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 36px rgba(58, 87, 152, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.number-stage,
+.result-number-shell {
+  overflow: hidden;
+  border-radius: 34px;
+}
+
+.number-stage {
+  padding: 10px 16px;
+  background: var(--bg-panel-strong);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-lg);
+}
+
+.number-card-top,
+.number-display {
+  display: flex;
+  align-items: center;
+}
+
+.number-card-top {
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.counter-badge {
+  padding: 8px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 800;
 }
 
 .number-display {
-  flex: 1;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 24px 20px;
+  min-height: 112px;
 }
 
-.display-card-wrapper {
+.big-number {
   position: relative;
-  perspective: 1000px;
-}
-
-.display-card {
-  text-align: center;
-  padding: 40px 60px;
-  background: var(--bg-white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  border: 2px solid var(--brand-primary-soft);
-  min-width: 240px;
-  position: relative;
-  z-index: 2;
-}
-
-.card-shadow {
-  position: absolute;
-  bottom: -15px;
-  left: 10%;
-  right: 10%;
-  height: 20px;
-  background: var(--brand-primary-glow);
-  filter: blur(15px);
-  border-radius: 50%;
   z-index: 1;
-}
+  font-weight: 800;
 
-.display-number {
-  display: block;
-  font-size: 110px;
-  font-weight: 900;
-  color: var(--brand-primary);
+  min-width: clamp(88px, 24vw, 132px);
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  border: 2px solid #DCE7FA;
+  background: #F7FAFF;
+  color: var(--text-primary);
   line-height: 1;
-  transition: all 0.3s var(--ease-standard);
-  text-shadow: 0 8px 16px var(--brand-primary-glow);
+  font-size: clamp(48px, 14vw, 76px);
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
 }
 
-.display-number.is-empty {
+
+.big-number.is-empty {
   color: var(--text-muted);
-  opacity: 0.3;
 }
 
-.display-unit {
-  display: block;
-  font-size: 18px;
-  color: var(--text-secondary);
-  margin-top: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+.number-stage.is-shaking .big-number {
+  border-color: rgba(255, 107, 107, 0.4);
+  animation: toy-shake 0.28s ease;
 }
 
-/* 错误提示 */
-.error-container {
-  height: 44px;
+.pad-stage :deep(.number-pad) {
+  width: 100%;
+}
+
+.number-stage :deep(.number-pad),
+.pad-stage :deep(.number-pad) {
+  border-radius: 28px;
+}
+
+.pad-stage :deep(.btn-delete) {
+  color: var(--candy-peach-dark);
+}
+
+.pad-stage :deep(.btn-submit) {
+  color: white;
+}
+
+@media (max-width: 420px) {
+  .number-stage {
+    padding: 10px 14px;
+  }
+
+  .number-card-top {
+    margin-bottom: 8px;
+  }
+
+  .number-display {
+    min-height: 96px;
+  }
+
+  .big-number {
+    min-width: 72px;
+    padding: 10px 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .counter-badge {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .number-display {
+    min-height: 92px;
+  }
+
+  .big-number {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 959px) and (max-height: 860px) {
+  .number-stage {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .number-display {
+    min-height: 88px;
+  }
+}
+
+@media (min-width: 768px) {
+  .number-stage {
+    padding: 12px 18px;
+  }
+}
+
+.number-stage.is-shaking {
+  animation: none;
+}
+
+.number-card {
+  width: 100%;
+}
+
+.result-number-shell {
+  padding: 18px 18px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
 }
 
-.error-toast {
-  padding: 8px 20px;
-  background: var(--brand-alert-soft);
-  color: var(--brand-alert);
-  border-radius: var(--radius-full);
-  font-size: 14px;
-  font-weight: 700;
-  border: 1px solid var(--brand-alert-light);
-  box-shadow: var(--shadow-sm);
-}
-
-.error-pop-enter-active {
-  animation: error-pop-in 0.4s var(--ease-standard);
-}
-.error-pop-leave-active {
-  animation: error-pop-in 0.3s var(--ease-standard) reverse;
-}
-
-@keyframes error-pop-in {
-  0% { opacity: 0; transform: scale(0.8) translateY(10px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* 键盘容器 */
-.keypad-container {
-  display: flex;
-  justify-content: center;
-  padding: 0 16px max(24px, env(safe-area-inset-bottom));
-}
-
-.keypad-container :deep(.number-pad) {
-  width: 100%;
-  max-width: 380px;
-  background: var(--bg-panel-strong);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-panel);
-}
-
-/* ========== 展示视图 ========== */
-.result-view {
+.result-ball-shell {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   min-height: 0;
-}
-
-.count-header {
-  padding: 20px 16px;
-  background: var(--bg-panel);
-  text-align: center;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.count-badge {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px;
-}
-
-.badge-number {
-  font-size: 48px;
-  font-weight: 900;
-  color: var(--brand-primary);
-  text-shadow: 0 4px 12px var(--brand-primary-glow);
-}
-
-.badge-label {
-  font-size: 18px;
-  color: var(--text-secondary);
-  font-weight: 700;
-}
-
-.count-desc {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin-top: 4px;
-  font-weight: 600;
-}
-
-.ball-area {
-  flex: 1;
-  position: relative;
+  border-radius: 34px;
+  padding: 8px;
   overflow: hidden;
 }
 
-.action-bar {
-  padding: 20px 24px max(24px, env(safe-area-inset-bottom));
-  background: var(--bg-panel-strong);
-  display: flex;
-  justify-content: center;
-}
-
-.btn-retry {
+.play-again-btn {
   width: 100%;
-  max-width: 280px;
-  gap: 12px;
-}
-
-/* ========== 魔法过渡 ========== */
-.magic-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  z-index: 100;
-  display: flex;
+  min-height: 64px;
+  border-radius: 24px;
+  padding: 0 20px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  background: var(--brand-primary);
+  border-color: rgba(92, 157, 255, 0.22);
+  box-shadow: 0 12px 28px rgba(92, 157, 255, 0.22);
 }
 
-.magic-content {
-  text-align: center;
-}
-
-.sparkles {
-  font-size: 40px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.sparkles span {
-  animation: float-anim 1.5s infinite ease-in-out;
-}
-
-.sparkles span:nth-child(2) { animation-delay: 0.2s; }
-.sparkles span:nth-child(3) { animation-delay: 0.4s; }
-
-.magic-text {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--brand-primary);
-  letter-spacing: 0.05em;
-}
-
-/* ========== 动画 ========== */
-.float-anim {
-  animation: float-anim 3s infinite ease-in-out;
-}
-
-@keyframes float-anim {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.4s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-
-/* ========== 平板适配 ========== */
-@media (min-width: 768px) {
-  .display-number { font-size: 140px; }
-  .badge-number { font-size: 64px; }
-  .keypad-container :deep(.number-pad) { max-width: 420px; }
-}
 </style>
