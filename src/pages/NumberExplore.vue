@@ -235,7 +235,7 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 .number-display {
   display: flex;
   justify-content: center;
-  padding: 12px 16px 4px;
+  padding: 16px 16px 8px;
   flex-shrink: 0;
 }
 
@@ -301,7 +301,7 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 12px max(8px, env(safe-area-inset-bottom));
-  margin-top: 8px;
+  margin-top: 24px;
 }
 
 .keypad-grid {
