@@ -72,47 +72,49 @@ function goHome() {
 
 <template>
   <div class="explore-page">
-    <template v-if="!showResult">
-      <header class="top-bar">
-        <button class="back-btn" aria-label="返回首页" @click="goHome">
-          <ArrowLeft :size="22" stroke-width="2.8" />
-        </button>
-      </header>
+    <Transition name="fade" mode="out-in">
+      <div v-if="!showResult" class="view-wrapper">
+        <header class="top-bar">
+          <button class="back-btn" aria-label="返回首页" @click="goHome">
+            <ArrowLeft :size="22" stroke-width="2.8" />
+          </button>
+        </header>
 
-      <main class="input-screen">
-        <section class="number-stage" :class="{ 'is-shaking': isShaking }">
-          <div class="number-card">
-            <div class="number-card-top">
-              <div class="counter-badge">数一数</div>
-            </div>
-            <div class="number-display font-number">
-              <div class="big-number" :class="{ 'is-empty': !inputNumber }">
-                {{ inputNumber || '?' }}
+        <main class="input-screen">
+          <section class="number-stage" :class="{ 'is-shaking': isShaking }">
+            <div class="number-card">
+              <div class="number-card-top">
+                <div class="counter-badge">数一数</div>
+              </div>
+              <div class="number-display font-number">
+                <div class="big-number" :class="{ 'is-empty': !inputNumber }">
+                  {{ inputNumber || '?' }}
+                </div>
               </div>
             </div>
-          </div>
+          </section>
+
+          <section class="pad-stage">
+            <NumberPad @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
+          </section>
+        </main>
+      </div>
+
+      <main v-else class="result-screen view-wrapper">
+        <section class="result-number-shell">
+          <div class="big-number font-number">{{ currentCount }}</div>
         </section>
 
-        <section class="pad-stage">
-          <NumberPad @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
+        <section class="result-ball-shell">
+          <BallArray :count="currentCount" />
         </section>
+
+        <button class="play-again-btn" @click="resetExplore">
+          <RotateCcw :size="20" />
+          <span>再来一次</span>
+        </button>
       </main>
-    </template>
-
-    <main v-else class="result-screen">
-      <section class="result-number-shell">
-        <div class="big-number font-number">{{ currentCount }}</div>
-      </section>
-
-      <section class="result-ball-shell">
-        <BallArray :count="currentCount" />
-      </section>
-
-      <button class="play-again-btn" @click="resetExplore">
-        <RotateCcw :size="20" />
-        <span>再来一次</span>
-      </button>
-    </main>
+    </Transition>
   </div>
 </template>
 
@@ -152,6 +154,12 @@ function goHome() {
 .back-btn:active,
 .play-again-btn:active {
   transform: scale(0.95);
+}
+
+.view-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .input-screen,
@@ -364,4 +372,14 @@ function goHome() {
   box-shadow: 0 12px 28px rgba(92, 157, 255, 0.22);
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(0.96) translateY(20px);
+}
 </style>

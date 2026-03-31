@@ -18,6 +18,7 @@ let controls = null
 let instancedMesh = null
 let panelMesh = null
 let animationId = null
+let introStartTime = 0
 let resizeObserver = null
 let orbitDomElement = null
 let orbitTouchStartHandler = null
@@ -215,6 +216,7 @@ function createBalls() {
   for (let i = 0; i < count; i++) {
     const pos = positions[i]
     dummy.position.set(pos.x, pos.y, pos.z)
+    dummy.scale.set(0, 0, 0)
     dummy.updateMatrix()
     instancedMesh.setMatrixAt(i, dummy.matrix)
     instancedMesh.setColorAt(i, ballColor)
@@ -224,10 +226,17 @@ function createBalls() {
   if (instancedMesh.instanceColor) {
     instancedMesh.instanceColor.needsUpdate = true
   }
+  
+  instancedMesh.userData = {
+    positions: positions,
+    animating: true
+  }
 
   updateBackgroundPanel(bounds)
   scene.add(instancedMesh)
   fitCameraToBounds(bounds)
+  
+  introStartTime = performance.now()
 }
 
 function fitCameraToBounds(bounds) {
@@ -330,11 +339,51 @@ function getBounds(positions) {
   }
 }
 
-function animate() {
+function animate(time) {
   animationId = requestAnimationFrame(animate)
 
   if (renderer && scene && camera) {
     controls?.update()
+    
+    if (instancedMesh && instancedMesh.userData.animating) {
+      const positions = instancedMesh.userData.positions
+      const count = positions.length
+      let allDone = true
+      const dummy = new THREE.Object3D()
+      const elapsed = time - introStartTime
+
+      for (let i = 0; i < count; i++) {
+        const delay = (count - i) * 1.5
+        const ballElapsed = Math.max(0, elapsed - delay)
+        const duration = 650
+        
+        let progress = ballElapsed / duration
+        if (progress < 1) {
+          allDone = false
+        } else {
+          progress = 1
+        }
+        
+        const easeOutElastic = (t) => {
+          const c4 = (2 * Math.PI) / 3
+          return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1
+        }
+
+        const scale = easeOutElastic(progress)
+
+        const pos = positions[i]
+        dummy.position.set(pos.x, pos.y, pos.z)
+        dummy.scale.set(scale, scale, scale)
+        dummy.updateMatrix()
+        instancedMesh.setMatrixAt(i, dummy.matrix)
+      }
+      
+      instancedMesh.instanceMatrix.needsUpdate = true
+      if (allDone) {
+        instancedMesh.userData.animating = false
+      }
+    }
+
     renderer.render(scene, camera)
   }
 }
@@ -405,7 +454,7 @@ onUnmounted(() => {
 
 watch(() => props.count, async () => {
   await nextTick()
-  await initScene()
+  createBalls()
 })
 </script>
 
