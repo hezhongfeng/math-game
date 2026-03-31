@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowRight, Play, Sparkles } from 'lucide-vue-next'
+import { ArrowRight, Binary, Play, Sparkles } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { TOTAL_LEVELS } from '../config/difficulty'
@@ -28,6 +28,22 @@ function startGame(event) {
   }
   setTimeout(() => {
     router.push('/difficulty')
+  }, NAVIGATION_DELAY)
+}
+
+function goToExplore(event) {
+  if (isLeaving.value) {
+    return
+  }
+
+  isLeaving.value = true
+  playClick()
+  const btn = event?.currentTarget
+  if (btn) {
+    btn.classList.add('is-leaving')
+  }
+  setTimeout(() => {
+    router.push('/explore')
   }, NAVIGATION_DELAY)
 }
 
@@ -91,6 +107,13 @@ onMounted(() => {
       </section>
 
       <section class="action-panel">
+        <button class="btn-explore" data-testid="explore-btn" @click="goToExplore($event)">
+          <span class="btn-explore-icon">
+            <Binary :size="20" />
+          </span>
+          <span class="btn-explore-text">数字探索</span>
+          <ArrowRight :size="16" class="btn-arrow" />
+        </button>
         <button class="btn-main" data-testid="start-challenge-btn" @click="startGame($event)">
           <span class="btn-main-icon">
             <Play :size="24" />
@@ -311,6 +334,39 @@ onMounted(() => {
 .action-panel {
   border-radius: 28px;
   padding: 12px;
+}
+
+.btn-explore {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #3385FF 0%, #0066FF 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 102, 255, 0.25);
+  transition: all 0.3s var(--ease-out);
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.btn-explore:active {
+  transform: scale(0.96);
+}
+
+.btn-explore-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-main {

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from './pages/Home.vue'
 import DifficultySelect from './pages/DifficultySelect.vue'
 import Game from './pages/Game.vue'
+import NumberExplore from './pages/NumberExplore.vue'
 
 const routes = [
   {
@@ -19,6 +20,12 @@ const routes = [
     name: 'Game',
     component: Game,
     props: true
+  },
+  {
+    path: '/explore',
+    name: 'NumberExplore',
+    component: NumberExplore,
+    meta: { title: '数字探索' }
   },
   // 404 - 未匹配的路由重定向到首页
   {
