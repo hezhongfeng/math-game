@@ -189,9 +189,6 @@ function createBalls() {
     const { flats, rows, balls } = displayData.value
     const flatSize = 10
     const flatGap = 2 // 面之间的间距
-    const rowGap = 0.5 // 行之间的间距
-    
-    let offsetX = 0
     
     // 完整面
     for (let f = 0; f < flats; f++) {
@@ -211,13 +208,13 @@ function createBalls() {
       }
     }
     
-    // 剩余行
+    // 剩余行（从左侧排列）
     const remainingStartX = flats * (flatSize * spacing + flatGap)
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < 10; c++) {
         dummy.position.set(
-          remainingStartX + c * spacing - 4.5 * spacing,
-          r * spacing - (rows - 1) * spacing / 2,
+          remainingStartX + c * spacing,
+          r * spacing,
           0
         )
         dummy.updateMatrix()
@@ -226,12 +223,12 @@ function createBalls() {
       }
     }
     
-    // 剩余小球
+    // 剩余小球（从左侧排列）
     const ballsStartX = remainingStartX
-    const ballsY = rows > 0 ? rows * spacing : 0
+    const ballsY = rows * spacing
     for (let b = 0; b < balls; b++) {
       dummy.position.set(
-        ballsStartX + b * spacing - (balls - 1) * spacing / 2,
+        ballsStartX + b * spacing,
         ballsY,
         0
       )
@@ -241,22 +238,23 @@ function createBalls() {
     }
     
     // 相机位置
-    const totalWidth = flats * (flatSize * spacing + flatGap) + rows * spacing + balls * spacing
-    const camDist = Math.max(totalWidth * 0.8, 6)
-    camera.position.set(0, 0, camDist)
-    controls.target.set(0, 0, 0)
+    const totalWidth = flats * (flatSize * spacing + flatGap) + Math.max(rows * spacing + (balls > 0 ? balls * spacing : 0), 10 * spacing)
+    const totalHeight = Math.max(flatSize * spacing, (rows + (balls > 0 ? 1 : 0)) * spacing)
+    const camDist = Math.max(totalWidth * 0.6, totalHeight * 0.8, 6)
+    camera.position.set(totalWidth * 0.35, totalHeight * 0.35, camDist)
+    controls.target.set(totalWidth * 0.35, totalHeight * 0.35, 0)
     
   } else {
     // 1-99：行 + 剩余
     const { rows, balls } = displayData.value
     
     let y = 0
-    // 完整行
+    // 完整行（从左侧排列）
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < 10; c++) {
         dummy.position.set(
-          c * spacing - 4.5 * spacing,
-          -y,
+          c * spacing,
+          -y * spacing,
           0
         )
         dummy.updateMatrix()
@@ -266,11 +264,11 @@ function createBalls() {
       y++
     }
     
-    // 剩余小球
+    // 剩余小球（从左侧排列）
     for (let b = 0; b < balls; b++) {
       dummy.position.set(
-        b * spacing - (balls - 1) * spacing / 2,
-        -y,
+        b * spacing,
+        -y * spacing,
         0
       )
       dummy.updateMatrix()
@@ -279,10 +277,10 @@ function createBalls() {
     }
     
     // 相机位置
-    const totalHeight = (rows + (balls > 0 ? 1 : 0)) * spacing
-    const camDist = Math.max(totalHeight * 1.2, 5)
-    camera.position.set(0, 0, camDist)
-    controls.target.set(0, 0, 0)
+    const totalRows = rows + (balls > 0 ? 1 : 0)
+    const camDist = Math.max(10 * spacing * 0.8, totalRows * spacing * 0.8, 5)
+    camera.position.set(4.5 * spacing, -(totalRows - 1) * spacing * 0.5, camDist)
+    controls.target.set(4.5 * spacing, -(totalRows - 1) * spacing * 0.5, 0)
   }
   
   instancedMesh.instanceMatrix.needsUpdate = true
