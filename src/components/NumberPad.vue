@@ -75,9 +75,9 @@ function handleSubmit() {
 .number-pad {
   padding: 12px;
   border-radius: 28px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(244, 248, 255, 0.92) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 18px 32px rgba(58, 87, 152, 0.08);
+  background: linear-gradient(180deg, rgba(246, 250, 255, 0.96) 0%, rgba(235, 242, 255, 0.98) 100%);
+  border: 1px solid rgba(92, 157, 255, 0.14);
+  box-shadow: 0 14px 28px rgba(39, 87, 166, 0.08);
 }
 
 .number-pad.is-disabled {
@@ -87,11 +87,8 @@ function handleSubmit() {
 .pad-shell {
   padding: 6px;
   border-radius: 24px;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.9), rgba(246, 249, 255, 0.82)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(241, 246, 255, 0.8));
-  border: 1px solid rgba(49, 120, 246, 0.06);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(92, 157, 255, 0.08);
 }
 
 .pad-grid {
@@ -108,35 +105,25 @@ function handleSubmit() {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(49, 120, 246, 0.08);
+  border: 1px solid rgba(92, 157, 255, 0.14);
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(245, 248, 255, 0.94) 100%);
-  color: var(--text-primary);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.96), 0 10px 18px rgba(49, 120, 246, 0.08);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
+  color: #204274;
+  box-shadow: 0 8px 16px rgba(50, 95, 173, 0.08);
   font-size: 38px;
   font-weight: 900;
   cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
-}
-
-.num-btn::before {
-  content: '';
-  position: absolute;
-  inset: 8px 10px auto;
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  opacity: 0.95;
+  transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 
 .num-btn::after {
   content: '';
   position: absolute;
-  inset: auto 12px 9px;
-  height: 8px;
+  inset: auto 16px 10px;
+  height: 6px;
   border-radius: 999px;
-  background: rgba(73, 124, 217, 0.06);
-  filter: blur(4px);
+  background: rgba(92, 157, 255, 0.08);
+  filter: blur(6px);
 }
 
 .num-btn svg {
@@ -146,36 +133,48 @@ function handleSubmit() {
 
 .num-btn:active:not(:disabled) {
   transform: scale(0.95) translateY(1px);
-  background: #eef4ff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 6px 12px rgba(49, 120, 246, 0.08);
+  background: #edf4ff;
+  box-shadow: 0 4px 10px rgba(50, 95, 173, 0.08);
 }
 
 @media (hover: hover) {
   .num-btn:hover:not(:disabled) {
-    border-color: rgba(49, 120, 246, 0.18);
-    background: #f6f9ff;
+    border-color: rgba(92, 157, 255, 0.26);
+    background: #f7fbff;
+    box-shadow: 0 12px 20px rgba(50, 95, 173, 0.1);
   }
 
   .btn-delete:hover:not(:disabled) {
-    background: #fff4e6;
+    background: #fff1e6;
   }
 
   .btn-submit:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 12px 20px rgba(49, 120, 246, 0.2);
+    box-shadow: 0 14px 24px rgba(39, 128, 96, 0.18);
   }
 }
 
 .btn-delete {
-  color: var(--candy-peach-dark);
-  background: linear-gradient(180deg, #fff7ef 0%, #ffefe0 100%);
+  color: #c96c22;
+  background: linear-gradient(180deg, #fff8f0 0%, #fff0df 100%);
+  border-color: rgba(255, 159, 67, 0.2);
 }
 
 .btn-submit {
   color: white;
-  background: linear-gradient(180deg, #6ca8ff 0%, #4b86f3 100%);
-  border-color: rgba(49, 120, 246, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 10px 16px rgba(49, 120, 246, 0.18);
+  background: linear-gradient(180deg, #62c98a 0%, #4aac70 100%);
+  border-color: rgba(74, 172, 112, 0.28);
+  box-shadow: 0 10px 18px rgba(74, 172, 112, 0.18);
+}
+
+.btn-submit::after {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.num-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+  box-shadow: none;
 }
 
 @media (min-width: 768px) {

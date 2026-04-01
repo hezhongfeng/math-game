@@ -24,6 +24,10 @@ let orbitDomElement = null
 let orbitTouchStartHandler = null
 let THREE = null
 
+function isTouchDevice() {
+  return window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window
+}
+
 const colors = {
   ball: 0x5C9DFF, // 匹配项目主题色 --brand-primary (#5C9DFF)
   panel: 0xF7FAFF  // 匹配项目背景色 --bg-light (#F7FAFF)
@@ -58,6 +62,7 @@ async function loadOrbitControls() {
   if (controls) return
   await loadThree()
   const { OrbitControls } = await import('three/addons/controls/OrbitControls.js')
+  const touchDevice = isTouchDevice()
 
   orbitDomElement = renderer.domElement
   orbitTouchStartHandler = (e) => {
@@ -67,7 +72,7 @@ async function loadOrbitControls() {
   controls = new OrbitControls(camera, orbitDomElement)
   controls.enableDamping = true
   controls.dampingFactor = 0.08
-  controls.enableZoom = true
+  controls.enableZoom = !touchDevice
   controls.minDistance = 3
   controls.maxDistance = 25
   controls.enablePan = true
@@ -75,7 +80,7 @@ async function loadOrbitControls() {
   controls.zoomSpeed = 0.8
   controls.touches = {
     ONE: THREE.TOUCH.ROTATE,
-    TWO: THREE.TOUCH.DOLLY
+    TWO: touchDevice ? THREE.TOUCH.ROTATE : THREE.TOUCH.DOLLY
   }
   orbitDomElement.addEventListener('touchstart', orbitTouchStartHandler, { passive: false })
   orbitDomElement.style.touchAction = 'none'
