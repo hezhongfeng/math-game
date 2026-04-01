@@ -355,24 +355,24 @@ function goHome() {
                     {{ inputNumber || '?' }}
                   </div>
                 </div>
-                <p class="helper-copy">
-                  {{ isChallengeMode ? '先观察球阵，再把你猜到的数字输进来。' : '输入一个数字，马上看看它会变成多少颗球。' }}
+                <p v-if="!isChallengeMode" class="helper-copy">
+                  输入一个数字，马上看看它会变成多少颗球。
                 </p>
                 <p class="status-copy" :class="`is-${statusTone}`" aria-live="polite">
-                  {{ statusMessage }}
+                  {{ isChallengeMode ? challengeStatusText : statusMessage }}
                 </p>
 
                 <div v-if="isChallengeMode" class="challenge-meta">
                   <div class="challenge-card">
-                    <span class="challenge-label">当前范围</span>
+                    <span class="challenge-label">范围</span>
                     <strong>{{ currentChallengeRange.label }}</strong>
                   </div>
                   <div class="challenge-card">
-                    <span class="challenge-label">范围训练</span>
+                    <span class="challenge-label">本档</span>
                     <strong>{{ challengeCorrectInRange }}题</strong>
                   </div>
                   <div class="challenge-card">
-                    <span class="challenge-label">累计答对</span>
+                    <span class="challenge-label">累计</span>
                     <strong>{{ challengeSolvedCount }}</strong>
                   </div>
                 </div>
@@ -595,7 +595,7 @@ function goHome() {
 }
 
 .range-selector-shell {
-  padding: 14px 14px 12px;
+  padding: 10px 12px;
 }
 
 .range-selector-header {
@@ -603,7 +603,7 @@ function goHome() {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .range-title-badge {
@@ -613,16 +613,16 @@ function goHome() {
 .range-selector-copy {
   margin: 0;
   color: #6982a0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-align: right;
 }
 
 .challenge-workspace {
-  padding: 12px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .explore-workspace {
@@ -653,7 +653,7 @@ function goHome() {
 }
 
 .number-stage {
-  padding: 14px 16px 16px;
+  padding: 10px 12px 12px;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(92, 157, 255, 0.14);
   box-shadow: 0 20px 36px rgba(58, 87, 152, 0.1);
@@ -672,7 +672,7 @@ function goHome() {
 .number-card-top {
   justify-content: flex-start;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .counter-badge {
@@ -693,7 +693,7 @@ function goHome() {
 
 .number-display {
   justify-content: center;
-  min-height: 112px;
+  min-height: 76px;
 }
 
 .big-number {
@@ -725,19 +725,19 @@ function goHome() {
 }
 
 .helper-copy {
-  margin-top: 12px;
+  margin-top: 8px;
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
 
 .status-copy {
-  min-height: 22px;
-  margin-top: 8px;
+  min-height: 16px;
+  margin-top: 6px;
   color: #5e738f;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.25;
 }
 
 .status-copy.is-warning {
@@ -752,26 +752,26 @@ function goHome() {
 .challenge-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .range-selector {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 6px;
+  margin-top: 2px;
 }
 
 .range-chip {
-  min-height: 38px;
-  padding: 0 12px;
+  min-height: 32px;
+  padding: 0 10px;
   border: 1px solid rgba(92, 157, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
   color: #466da6;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
@@ -784,28 +784,28 @@ function goHome() {
 }
 
 .challenge-card {
-  min-height: 62px;
-  padding: 10px 8px;
+  min-height: 44px;
+  padding: 6px 4px;
   border: 1px solid rgba(92, 157, 255, 0.12);
-  border-radius: 18px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.82);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   text-align: center;
 }
 
 .challenge-label {
   color: #6a809e;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
 }
 
 .challenge-card strong {
   color: #23497e;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 900;
 }
 
@@ -847,8 +847,8 @@ function goHome() {
 }
 
 .challenge-preview-shell {
-  padding: 12px;
-  border-radius: 28px;
+  padding: 8px;
+  border-radius: 22px;
   background: linear-gradient(180deg, rgba(247, 250, 255, 0.98) 0%, rgba(235, 243, 255, 0.95) 100%);
 }
 
@@ -857,13 +857,13 @@ function goHome() {
   align-items: center;
   gap: 8px;
   color: #3b639c;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .challenge-ball-shell {
-  border-radius: 26px;
+  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -873,7 +873,44 @@ function goHome() {
 }
 
 .challenge-workspace .pad-stage :deep(.number-pad) {
-  border-radius: 24px;
+  padding: 6px;
+  border-radius: 18px;
+}
+
+.challenge-workspace .pad-stage :deep(.pad-shell) {
+  padding: 3px;
+  border-radius: 14px;
+}
+
+.challenge-workspace .pad-stage :deep(.pad-grid) {
+  gap: 6px;
+}
+
+.challenge-workspace .pad-stage :deep(.num-btn) {
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 14px;
+  font-size: 27px;
+}
+
+.challenge-workspace .pad-stage :deep(.num-btn svg) {
+  width: 23px;
+  height: 23px;
+}
+
+.challenge-workspace .challenge-ball-shell :deep(.ball-array),
+.challenge-workspace .challenge-ball-shell :deep(.canvas-wrapper) {
+  min-height: 138px;
+  border-radius: 20px;
+}
+
+.challenge-workspace .challenge-ball-shell :deep(.ball-array::before) {
+  inset: 8px;
+  border-radius: 14px;
+}
+
+.challenge-workspace .challenge-ball-shell :deep(.ball-array::after) {
+  inset: auto 10px 8px;
 }
 
 .pad-stage :deep(.btn-delete) {
@@ -1015,7 +1052,7 @@ function goHome() {
   }
 
   .number-stage {
-    padding: 12px 14px 14px;
+    padding: 8px 10px 10px;
   }
 
   .number-card-top {
@@ -1023,17 +1060,46 @@ function goHome() {
   }
 
   .number-display {
-    min-height: 96px;
+    min-height: 66px;
   }
 
   .big-number {
     min-width: 72px;
-    padding: 10px 10px;
+    padding: 8px 10px;
   }
 
   .challenge-meta,
   .challenge-summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .challenge-workspace {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .challenge-workspace .pad-stage :deep(.number-pad) {
+    padding: 4px;
+  }
+
+  .challenge-workspace .pad-stage :deep(.pad-grid) {
+    gap: 5px;
+  }
+
+  .challenge-workspace .pad-stage :deep(.num-btn) {
+    min-width: 46px;
+    min-height: 46px;
+    font-size: 24px;
+  }
+
+  .challenge-workspace .pad-stage :deep(.num-btn svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .challenge-workspace .challenge-ball-shell :deep(.ball-array),
+  .challenge-workspace .challenge-ball-shell :deep(.canvas-wrapper) {
+    min-height: 124px;
   }
 
   .result-copy {
