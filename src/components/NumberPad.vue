@@ -137,6 +137,12 @@ function handleSubmit() {
   box-shadow: 0 4px 10px rgba(50, 95, 173, 0.08);
 }
 
+.num-btn:focus-visible {
+  outline: none;
+  border-color: rgba(92, 157, 255, 0.32);
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.14);
+}
+
 @media (hover: hover) {
   .num-btn:hover:not(:disabled) {
     border-color: rgba(92, 157, 255, 0.26);

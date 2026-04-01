@@ -23,6 +23,7 @@ let resizeObserver = null
 let orbitDomElement = null
 let orbitTouchStartHandler = null
 let THREE = null
+let animationDummy = null
 
 function isTouchDevice() {
   return window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window
@@ -65,9 +66,6 @@ async function loadOrbitControls() {
   const touchDevice = isTouchDevice()
 
   orbitDomElement = renderer.domElement
-  orbitTouchStartHandler = (e) => {
-    if (e.touches.length > 1) e.preventDefault()
-  }
 
   controls = new OrbitControls(camera, orbitDomElement)
   controls.enableDamping = true
@@ -75,15 +73,26 @@ async function loadOrbitControls() {
   controls.enableZoom = !touchDevice
   controls.minDistance = 3
   controls.maxDistance = 25
-  controls.enablePan = true
+  controls.enablePan = !touchDevice
+  controls.enableRotate = !touchDevice
+  controls.autoRotate = touchDevice
+  controls.autoRotateSpeed = 0.7
   controls.rotateSpeed = 0.6
   controls.zoomSpeed = 0.8
-  controls.touches = {
-    ONE: THREE.TOUCH.ROTATE,
-    TWO: touchDevice ? THREE.TOUCH.ROTATE : THREE.TOUCH.DOLLY
+  if (!touchDevice) {
+    orbitTouchStartHandler = (e) => {
+      if (e.touches.length > 1) e.preventDefault()
+    }
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY
+    }
+    orbitDomElement.addEventListener('touchstart', orbitTouchStartHandler, { passive: false })
+    orbitDomElement.style.touchAction = 'none'
+    return
   }
-  orbitDomElement.addEventListener('touchstart', orbitTouchStartHandler, { passive: false })
-  orbitDomElement.style.touchAction = 'none'
+
+  orbitDomElement.style.touchAction = 'pan-y'
 }
 
 function clearContainer(container) {
@@ -224,6 +233,7 @@ function createBalls() {
 
   const dummy = new THREE.Object3D()
   const ballColor = new THREE.Color(colors.ball)
+  animationDummy = dummy
 
   for (let i = 0; i < count; i++) {
     const pos = positions[i]
@@ -361,7 +371,6 @@ function animate(time) {
       const positions = instancedMesh.userData.positions
       const count = positions.length
       let allDone = true
-      const dummy = new THREE.Object3D()
       const elapsed = time - introStartTime
 
       for (let i = 0; i < count; i++) {
@@ -384,10 +393,10 @@ function animate(time) {
         const scale = easeOutElastic(progress)
 
         const pos = positions[i]
-        dummy.position.set(pos.x, pos.y, pos.z)
-        dummy.scale.set(scale, scale, scale)
-        dummy.updateMatrix()
-        instancedMesh.setMatrixAt(i, dummy.matrix)
+        animationDummy.position.set(pos.x, pos.y, pos.z)
+        animationDummy.scale.set(scale, scale, scale)
+        animationDummy.updateMatrix()
+        instancedMesh.setMatrixAt(i, animationDummy.matrix)
       }
       
       instancedMesh.instanceMatrix.needsUpdate = true
@@ -428,6 +437,7 @@ function cleanup() {
 
   scene = null
   camera = null
+  animationDummy = null
 }
 
 function handleResize() {
