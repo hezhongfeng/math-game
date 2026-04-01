@@ -30,8 +30,75 @@ function isTouchDevice() {
 }
 
 const colors = {
-  ball: 0x5C9DFF, // 匹配项目主题色 --brand-primary (#5C9DFF)
-  panel: 0xF7FAFF  // 匹配项目背景色 --bg-light (#F7FAFF)
+  ballLow: 0x8FD0FF,
+  ballMid: 0x78AEFF,
+  ballHigh: 0x5B8FF2,
+  ballPeak: 0x4D74D9,
+  ballEmissiveLow: 0x2458A3,
+  ballEmissiveHigh: 0x173A79,
+  panel: 0xEAF3FF,
+  panelEdge: 0xD5E7FF,
+  fog: 0xEDF5FF
+}
+
+function getBallPalette(count) {
+  if (count <= 19) {
+    return {
+      color: colors.ballLow,
+      emissive: colors.ballEmissiveLow,
+      opacity: 0.82
+    }
+  }
+
+  if (count <= 99) {
+    return {
+      color: colors.ballMid,
+      emissive: colors.ballEmissiveLow,
+      opacity: 0.88
+    }
+  }
+
+  if (count <= 300) {
+    return {
+      color: colors.ballHigh,
+      emissive: colors.ballEmissiveHigh,
+      opacity: 0.92
+    }
+  }
+
+  return {
+    color: colors.ballPeak,
+    emissive: colors.ballEmissiveHigh,
+    opacity: 0.95
+  }
+}
+
+function getGroupedBallColor(count, index) {
+  const palette = getBallPalette(count)
+  const color = new THREE.Color(palette.color)
+
+  if (count < 20) {
+    const lightnessBoost = (index % 5) * 0.018
+    color.offsetHSL(0, 0, lightnessBoost)
+    return color
+  }
+
+  if (count < 100) {
+    const tenGroup = Math.floor(index / 10)
+    const hueShift = (tenGroup % 2 === 0 ? -1 : 1) * 0.012
+    const lightnessShift = (tenGroup % 2 === 0 ? 1 : -1) * 0.025
+    color.offsetHSL(hueShift, 0.015, lightnessShift)
+    return color
+  }
+
+  const hundredGroup = Math.floor(index / 100)
+  const tenGroup = Math.floor((index % 100) / 10)
+  const hueShift = (hundredGroup % 2 === 0 ? -1 : 1) * 0.018
+  const saturationShift = hundredGroup === 0 ? 0.01 : 0.03
+  const lightnessShift = (tenGroup % 2 === 0 ? 1 : -1) * 0.018
+  color.offsetHSL(hueShift, saturationShift, lightnessShift)
+
+  return color
 }
 
 async function loadThree() {
@@ -118,8 +185,7 @@ async function initScene() {
 
   scene = new THREE.Scene()
   scene.background = null
-  // 使用项目风格的雾效 - 冷色调蓝色雾
-  scene.fog = new THREE.Fog(0xF7FAFF, 20, 34)
+  scene.fog = new THREE.Fog(colors.fog, 18, 32)
 
   camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 200)
 
@@ -139,17 +205,20 @@ async function initScene() {
   }
   container.appendChild(renderer.domElement)
 
-  // 使用冷色调光照，匹配项目科技风格
-  const ambientLight = new THREE.HemisphereLight(0xF7FAFF, 0xEBF2FF, 1.5)
+  const ambientLight = new THREE.HemisphereLight(0xF8FBFF, 0xDCEBFF, 1.22)
   scene.add(ambientLight)
 
-  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 0.85)
-  keyLight.position.set(4.5, 8, 10)
+  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 1.06)
+  keyLight.position.set(6, 8, 11)
   scene.add(keyLight)
 
-  const fillLight = new THREE.DirectionalLight(0xDCE7F5, 0.45)
-  fillLight.position.set(-6, 2, 6)
-  scene.add(fillLight)
+  const rimLight = new THREE.DirectionalLight(0xA8D7FF, 0.62)
+  rimLight.position.set(-7, 5, 8)
+  scene.add(rimLight)
+
+  const bounceLight = new THREE.PointLight(0xCBE6FF, 0.6, 32, 2)
+  bounceLight.position.set(0, -4, 7)
+  scene.add(bounceLight)
 
   await loadOrbitControls()
   createBalls()
@@ -176,13 +245,21 @@ function getLayoutConfig(count) {
   return { radius: 0.26, spacing: 0.68, layerGap: 0.82 }
 }
 
-function createBallMaterial() {
-  // 使用 MeshPhongMaterial 获得更好的光泽效果，匹配项目简约科技风格
-  return new THREE.MeshPhongMaterial({
-    color: colors.ball,
-    specular: 0xFFFFFF,
-    shininess: 30,
-    flatShading: false
+function createBallMaterial(count) {
+  const palette = getBallPalette(count)
+
+  return new THREE.MeshPhysicalMaterial({
+    color: palette.color,
+    emissive: palette.emissive,
+    emissiveIntensity: 0.16,
+    roughness: 0.22,
+    metalness: 0.04,
+    clearcoat: 0.72,
+    clearcoatRoughness: 0.18,
+    transparent: true,
+    opacity: palette.opacity,
+    transmission: 0.08,
+    reflectivity: 0.42
   })
 }
 
@@ -199,11 +276,14 @@ function updateBackgroundPanel(bounds) {
   const panelWidth = Math.max(bounds.width + 1.6, 4.8)
   const panelHeight = Math.max(bounds.height + 1.6, 4.8)
   const geometry = new THREE.PlaneGeometry(panelWidth, panelHeight)
-  // 使用柔和的蓝色背景面板，匹配项目风格
-  const material = new THREE.MeshBasicMaterial({
-    color: 0xEBF2FF, // 匹配 --bg-dark
+  const material = new THREE.MeshPhongMaterial({
+    color: colors.panel,
+    emissive: colors.panelEdge,
+    emissiveIntensity: 0.05,
     transparent: true,
-    opacity: 0.15
+    opacity: 0.28,
+    shininess: 18,
+    specular: colors.panelEdge
   })
 
   panelMesh = new THREE.Mesh(geometry, material)
@@ -227,16 +307,17 @@ function createBalls() {
   const bounds = getBounds(positions)
   const sphereGeometry = new THREE.SphereGeometry(layoutConfig.radius, 24, 24)
 
-  instancedMesh = new THREE.InstancedMesh(sphereGeometry, createBallMaterial(), count)
+  const palette = getBallPalette(count)
+  instancedMesh = new THREE.InstancedMesh(sphereGeometry, createBallMaterial(count), count)
   instancedMesh.castShadow = false
   instancedMesh.receiveShadow = false
 
   const dummy = new THREE.Object3D()
-  const ballColor = new THREE.Color(colors.ball)
   animationDummy = dummy
 
   for (let i = 0; i < count; i++) {
     const pos = positions[i]
+    const ballColor = getGroupedBallColor(count, i)
     dummy.position.set(pos.x, pos.y, pos.z)
     dummy.scale.set(0, 0, 0)
     dummy.updateMatrix()
@@ -494,9 +575,14 @@ watch(() => props.count, async () => {
   min-height: 236px;
   border-radius: 28px;
   overflow: hidden;
-  /* 使用项目风格的渐变背景 */
-  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-dark) 100%);
-  border: 1px solid var(--border-light);
+  background:
+    radial-gradient(circle at top, rgba(142, 186, 255, 0.3) 0%, rgba(142, 186, 255, 0) 38%),
+    radial-gradient(circle at 18% 78%, rgba(107, 203, 119, 0.12) 0%, rgba(107, 203, 119, 0) 34%),
+    linear-gradient(180deg, #f8fbff 0%, #eaf3ff 52%, #dfeeff 100%);
+  border: 1px solid rgba(146, 186, 236, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 18px 36px rgba(72, 116, 188, 0.14);
 }
 
 .ball-array::before {
@@ -504,7 +590,20 @@ watch(() => props.count, async () => {
   position: absolute;
   inset: 12px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.16) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}
+
+.ball-array::after {
+  content: '';
+  position: absolute;
+  inset: auto 18px 12px;
+  height: 34%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(92, 157, 255, 0.18) 0%, rgba(92, 157, 255, 0) 72%);
+  filter: blur(16px);
   pointer-events: none;
 }
 
@@ -534,6 +633,10 @@ watch(() => props.count, async () => {
   .ball-array::before {
     inset: 10px;
     border-radius: 18px;
+  }
+
+  .ball-array::after {
+    inset: auto 14px 10px;
   }
 }
 
