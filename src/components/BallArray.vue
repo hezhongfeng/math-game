@@ -141,8 +141,8 @@ async function loadOrbitControls() {
   controls.minDistance = 3
   controls.maxDistance = 25
   controls.enablePan = !touchDevice
-  controls.enableRotate = !touchDevice
-  controls.autoRotate = touchDevice
+  controls.enableRotate = true
+  controls.autoRotate = false
   controls.autoRotateSpeed = 0.7
   controls.rotateSpeed = 0.6
   controls.zoomSpeed = 0.8
@@ -159,7 +159,11 @@ async function loadOrbitControls() {
     return
   }
 
-  orbitDomElement.style.touchAction = 'pan-y'
+  controls.touches = {
+    ONE: THREE.TOUCH.ROTATE,
+    TWO: THREE.TOUCH.NONE
+  }
+  orbitDomElement.style.touchAction = 'none'
 }
 
 function clearContainer(container) {

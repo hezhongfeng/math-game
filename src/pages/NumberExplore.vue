@@ -320,78 +320,90 @@ function goHome() {
             </button>
           </section>
 
-          <section class="number-stage" :class="{ 'is-shaking': isShaking }">
-            <div class="number-card">
-              <div class="number-card-top">
-                <div class="counter-badge">{{ isChallengeMode ? '数字挑战' : '数字探索' }}</div>
-                <div v-if="isChallengeMode" class="counter-badge range-badge">{{ currentChallengeRange.label }}</div>
-              </div>
-              <div class="number-display font-number">
-                <div class="big-number" :class="{ 'is-empty': !inputNumber }">
-                  {{ inputNumber || '?' }}
-                </div>
-              </div>
-              <p class="helper-copy">
-                {{ isChallengeMode ? '先看下面的小球，再猜一猜是多少。' : '输入一个数字，马上看看它会变成多少颗球。' }}
-              </p>
-              <p class="status-copy" :class="`is-${statusTone}`" aria-live="polite">
-                {{ statusMessage }}
-              </p>
+          <section v-if="isChallengeMode" class="range-selector-shell">
+            <div class="range-selector-header">
+              <div class="counter-badge range-title-badge">选择训练范围</div>
+              <p class="range-selector-copy">先选范围，再看球阵猜数字。</p>
+            </div>
 
-              <div v-if="isChallengeMode" class="challenge-meta">
-                <div class="challenge-card">
-                  <span class="challenge-label">当前范围</span>
-                  <strong>{{ currentChallengeRange.label }}</strong>
-                </div>
-                <div class="challenge-card">
-                  <span class="challenge-label">范围训练</span>
-                  <strong>{{ challengeCorrectInRange }}题</strong>
-                </div>
-                <div class="challenge-card">
-                  <span class="challenge-label">累计答对</span>
-                  <strong>{{ challengeSolvedCount }}</strong>
-                </div>
-              </div>
-
-              <div v-if="isChallengeMode" class="range-selector" aria-label="挑战范围选择">
-                <button
-                  v-for="(range, index) in CHALLENGE_RANGES"
-                  :key="range.label"
-                  class="range-chip"
-                  :class="{ 'is-active': challengeRangeIndex === index }"
-                  type="button"
-                  @click="selectChallengeRange(index)"
-                >
-                  {{ range.label }}
-                </button>
-              </div>
-
-              <div v-else class="quick-counts" aria-label="快捷数字">
-                <button
-                  v-for="num in QUICK_COUNTS"
-                  :key="num"
-                  class="quick-chip"
-                  type="button"
-                  @click="applyQuickCount(num)"
-                >
-                  {{ num }}
-                </button>
-              </div>
+            <div class="range-selector" aria-label="挑战范围选择">
+              <button
+                v-for="(range, index) in CHALLENGE_RANGES"
+                :key="range.label"
+                class="range-chip"
+                :class="{ 'is-active': challengeRangeIndex === index }"
+                type="button"
+                @click="selectChallengeRange(index)"
+              >
+                {{ range.label }}
+              </button>
             </div>
           </section>
 
-          <section v-if="isChallengeMode" class="challenge-preview-shell">
-            <div class="preview-copy">
-              <Target :size="18" />
-              <span>看球阵猜数字</span>
-            </div>
-            <div class="challenge-ball-shell">
-              <BallArray :count="challengeTargetCount" />
-            </div>
+          <section
+            :class="isChallengeMode ? 'challenge-workspace' : 'explore-workspace'"
+            :aria-label="isChallengeMode ? '挑战练习区' : '自由探索区'"
+          >
+            <section class="number-stage" :class="{ 'is-shaking': isShaking }">
+              <div class="number-card">
+                <div class="number-card-top">
+                  <div class="counter-badge">{{ isChallengeMode ? '数字挑战' : '数字探索' }}</div>
+                  <div v-if="isChallengeMode" class="counter-badge range-badge">{{ currentChallengeRange.label }}</div>
+                </div>
+                <div class="number-display font-number">
+                  <div class="big-number" :class="{ 'is-empty': !inputNumber }">
+                    {{ inputNumber || '?' }}
+                  </div>
+                </div>
+                <p class="helper-copy">
+                  {{ isChallengeMode ? '先观察球阵，再把你猜到的数字输进来。' : '输入一个数字，马上看看它会变成多少颗球。' }}
+                </p>
+                <p class="status-copy" :class="`is-${statusTone}`" aria-live="polite">
+                  {{ statusMessage }}
+                </p>
+
+                <div v-if="isChallengeMode" class="challenge-meta">
+                  <div class="challenge-card">
+                    <span class="challenge-label">当前范围</span>
+                    <strong>{{ currentChallengeRange.label }}</strong>
+                  </div>
+                  <div class="challenge-card">
+                    <span class="challenge-label">范围训练</span>
+                    <strong>{{ challengeCorrectInRange }}题</strong>
+                  </div>
+                  <div class="challenge-card">
+                    <span class="challenge-label">累计答对</span>
+                    <strong>{{ challengeSolvedCount }}</strong>
+                  </div>
+                </div>
+
+                <div v-else class="quick-counts" aria-label="快捷数字">
+                  <button
+                    v-for="num in QUICK_COUNTS"
+                    :key="num"
+                    class="quick-chip"
+                    type="button"
+                    @click="applyQuickCount(num)"
+                  >
+                    {{ num }}
+                  </button>
+                </div>
+              </div>
           </section>
 
-          <section class="pad-stage">
-            <NumberPad @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
+            <section v-if="isChallengeMode" class="challenge-preview-shell">
+              <div class="preview-copy">
+                <Target :size="18" />
+                <span>看球阵猜数字</span>
+              </div>
+              <div class="challenge-ball-shell">
+                <BallArray :count="challengeTargetCount" />
+              </div>
+            </section>
+
+            <section class="pad-stage">
+              <NumberPad @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
+            </section>
           </section>
         </main>
       </div>
@@ -570,6 +582,53 @@ function goHome() {
   border-color: rgba(75, 134, 243, 0.24);
   color: #fff;
   box-shadow: 0 12px 22px rgba(75, 134, 243, 0.18);
+}
+
+.range-selector-shell,
+.challenge-workspace {
+  border: 1px solid rgba(92, 157, 255, 0.12);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 30px rgba(58, 87, 152, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.range-selector-shell {
+  padding: 14px 14px 12px;
+}
+
+.range-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.range-title-badge {
+  flex-shrink: 0;
+}
+
+.range-selector-copy {
+  margin: 0;
+  color: #6982a0;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.challenge-workspace {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.explore-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .number-stage,
@@ -789,6 +848,8 @@ function goHome() {
 
 .challenge-preview-shell {
   padding: 12px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(247, 250, 255, 0.98) 0%, rgba(235, 243, 255, 0.95) 100%);
 }
 
 .preview-copy {
@@ -809,6 +870,10 @@ function goHome() {
 .pad-stage :deep(.number-pad) {
   width: 100%;
   border-radius: 28px;
+}
+
+.challenge-workspace .pad-stage :deep(.number-pad) {
+  border-radius: 24px;
 }
 
 .pad-stage :deep(.btn-delete) {
@@ -940,6 +1005,15 @@ function goHome() {
 }
 
 @media (max-width: 420px) {
+  .range-selector-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .range-selector-copy {
+    text-align: left;
+  }
+
   .number-stage {
     padding: 12px 14px 14px;
   }
