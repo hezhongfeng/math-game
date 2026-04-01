@@ -1,10 +1,13 @@
 # 数字探索 - 实现计划
 
+> 注意：本文档是数字探索初版的实现计划，当前已完成且方案已升级。
+> 实际落地版本已使用 Three.js 重写球阵展示，并增加了挑战模式、范围选择、连续探索和更完整的交互反馈。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 实现儿童数字可视化探索功能，孩子可以输入1~1000的数字，看到对应数量的小球阵列
 
-**Architecture:** 同一页面两种视图切换（输入视图↔展示视图），复用现有NumberPad组件，小球使用CSS径向渐变实现立体效果
+**Architecture:** 初版规划为同一页面两种视图切换（输入视图↔展示视图），复用现有 NumberPad 组件；当前实现已经演进为 Three.js 统一 3D 球阵与双模式交互
 
 **Tech Stack:** Vue 3 (Composition API), Tailwind CSS, Lucide Icons
 

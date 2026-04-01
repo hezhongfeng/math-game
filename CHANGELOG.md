@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CI workflow to run E2E smoke tests on pull requests (`.github/workflows/e2e-smoke.yml`)
 - Added architecture quick-reference document (`docs/ARCHITECTURE.md`)
 - Added round-end mistake summary with in-modal review and one-tap retry for incorrect questions
+- Added range-selectable challenge mode to number exploration for repeated practice within specific quantity bands
 
 ### Changed
 
@@ -35,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed star system from 3-tier display/logic to a unified 5-star model across gameplay and UI
 - Changed game audio to a lighter kid-friendly profile with simpler key tones and clearer correct/wrong cues
 - Changed wrong-answer feedback to fullscreen modal overlay while keeping correct feedback lightweight and auto-advance
+- Changed number exploration from a simple input/view toggle into a dual-mode experience with free exploration, structured challenge ranges, inline guidance, and number decomposition feedback
+- Changed ball-array rendering to a unified Three.js decimal layout with refined lighting, translucent materials, grouped color cues, and mobile-friendly auto-rotation
 
 ### Removed
 
@@ -49,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated docs to reflect round-end mistake review and retry flow
 - Updated PWA documentation to reflect the current plugin-generated Service Worker flow
 - Updated component, agent, and architecture docs to match the current gameplay flow, testing setup, and active code structure
+- Updated exploration-related docs to reflect challenge ranges, current Three.js ball-array rendering, and the latest interaction model
 
 ### Fixed
 

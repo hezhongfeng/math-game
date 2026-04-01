@@ -6,7 +6,7 @@ This document describes the current Vue components used in the math game project
 
 ```text
 src/components/
-├── BallArray.vue           # Ball array visualization (3D rotatable cube)
+├── BallArray.vue           # Three.js ball-array visualization
 ├── DifficultyCard.vue      # Difficulty level selection card
 ├── ErrorBoundary.vue       # Error boundary wrapper
 ├── NumberPad.vue           # Numeric keypad (3×4 grid)
@@ -25,7 +25,7 @@ src/components/
 
 **File**: `src/components/BallArray.vue`
 
-Visualizes a number (1-1000) as an array of balls using strict decimal layout. For 1000, renders a 3D rotatable cube using CSS 3D transforms.
+Visualizes a number (1-1000) as a strict decimal ball array using Three.js. The current implementation uses one shared 3D scene across all ranges, with grouped color cues for tens and hundreds plus mobile-friendly interaction defaults.
 
 #### Props
 
@@ -33,24 +33,18 @@ Visualizes a number (1-1000) as an array of balls using strict decimal layout. F
 |------|------|---------|-------------|
 | `count` | Number | required | Number to visualize (1-1000) |
 
-#### Display Modes
+#### Behavior
 
-| Range | Mode | Description |
-|-------|------|-------------|
-| 1-99 | Rows | N rows of 10 + remaining balls |
-| 100-999 | Flats | N 10×10 flat surfaces + remaining rows + balls |
-| 1000 | 3D Cube | 10×10×10 cube with touch-drag rotation |
-
-#### Interaction
-
-- **3D Cube (1000)**: Drag with mouse or touch to rotate the cube and view from any angle
-- **Touch optimized**: `touch-action: none` prevents page scroll during rotation
+- Uses strict decimal spatial layout: ones on X, tens on Y, hundreds on Z
+- Uses layered lighting, translucent materials, and grouped color shifts to make `10` / `100` structures easier to read
+- Mobile devices default to gentle auto-rotation while preserving vertical page scroll
+- Desktop devices support direct rotation and zoom through OrbitControls
 
 ### NumberPad
 
 **File**: `src/components/NumberPad.vue`
 
-A 3×4 numeric keypad with delete and confirm buttons. Optimized for mobile touch interaction.
+A 3×4 numeric keypad with delete and confirm buttons. Optimized for mobile touch interaction and reused by gameplay plus number exploration/challenge flows.
 
 #### Props
 
@@ -221,14 +215,14 @@ Listens to `virtual:pwa-register` and displays an in-app refresh prompt when a n
 
 **File**: `src/pages/NumberExplore.vue`
 
-Number exploration page allowing children to input a number (1-1000) and visualize it as ball arrays.
+Number exploration page supporting both free exploration and range-based challenge practice.
 
 #### Features
 
-- **Input View**: Numeric keypad for entering numbers, with validation (1-1000)
-- **Display View**: Shows ball array visualization using `BallArray` component
-- **View Toggle**: Same page, toggles between input and display views
-- **Error Handling**: Displays friendly messages for invalid inputs (0, >1000)
+- **自由探索**: Enter a number (1-1000), inspect the ball array, then continue stepping through nearby values
+- **挑战模式**: Choose a training range and guess the quantity after inspecting the ball array first
+- **结构辅助**: Shows decomposition like `237 = 2个百 + 3个十 + 7个一`
+- **即时反馈**: Inline guidance, validation states, and challenge-range status
 
 #### Dependencies
 
