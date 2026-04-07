@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { CheckCircle2, ChevronRight, Lock, Star } from 'lucide-vue-next'
 import { getStarCount } from '../utils/stars'
+import { formatPreciseTime } from '../utils/format'
 
 const props = defineProps({
   difficulty: {
@@ -19,6 +20,10 @@ const props = defineProps({
   bestScore: {
     type: Object,
     default: null
+  },
+  leaderboard: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -30,6 +35,10 @@ const stars = computed(() => {
 })
 
 const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
+const bestTimeLabel = computed(() => {
+  if (!props.leaderboard.length) return ''
+  return formatPreciseTime(props.leaderboard[0].durationMs)
+})
 
 const statusText = computed(() => {
   if (props.isLocked) return ''
@@ -69,6 +78,7 @@ function handleSelect(event) {
           <span v-if="!isLocked && !bestScore" class="new-tag">新</span>
         </div>
         <p class="level-desc">{{ difficulty.description }}</p>
+        <p v-if="bestTimeLabel" class="level-time">最快 {{ bestTimeLabel }}</p>
         <p v-if="statusText" class="level-status">{{ statusText }}</p>
       </div>
     </div>
@@ -185,6 +195,7 @@ function handleSelect(event) {
 }
 
 .level-desc,
+.level-time,
 .level-status {
   font-size: var(--font-sm);
 }
@@ -193,6 +204,12 @@ function handleSelect(event) {
   margin-bottom: 3px;
   color: var(--text-secondary);
   font-weight: 700;
+}
+
+.level-time {
+  margin-bottom: 3px;
+  color: var(--brand-primary);
+  font-weight: 800;
 }
 
 .level-status {

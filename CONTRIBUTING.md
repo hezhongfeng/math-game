@@ -78,7 +78,8 @@ If your changes affect:
 - **README.md**: Public-facing features, usage instructions
 - **DESIGN.md**: UI/UX details, responsive design specs
 - **CHANGELOG.md**: All notable code changes
-- **CLAUDE.md**: Architecture changes, dependencies
+- **docs/ARCHITECTURE.md**: Architecture changes, data flow, dependencies
+- **COMPONENTS.md**: Component responsibilities, props, and events
 
 ### 4. Commit Changes
 

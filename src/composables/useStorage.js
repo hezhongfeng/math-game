@@ -10,6 +10,7 @@ const STORAGE_KEY = STORAGE_KEYS.GAME_DATA
 function createDefaultData() {
   return {
     bestScores: {},
+    leaderboards: {},
     progress: {},
     stats: {
       totalAnswers: 0,
@@ -32,6 +33,7 @@ if (typeof window !== 'undefined') {
         const parsed = event.newValue ? JSON.parse(event.newValue) : createDefaultData()
         storageData.value = {
           bestScores: parsed.bestScores || {},
+          leaderboards: parsed.leaderboards || {},
           progress: parsed.progress || {},
           stats: parsed.stats || createDefaultData().stats
         }
@@ -51,6 +53,22 @@ if (typeof window !== 'undefined') {
  */
 export function useStorage() {
   const { error: showError } = useToast()
+
+  function getDurationMs(entry) {
+    if (!entry) {
+      return Number.POSITIVE_INFINITY
+    }
+
+    if (typeof entry.durationMs === 'number') {
+      return entry.durationMs
+    }
+
+    if (typeof entry.duration === 'number') {
+      return entry.duration * 1000
+    }
+
+    return Number.POSITIVE_INFINITY
+  }
   
   /**
    * 从 localStorage 读取数据
@@ -67,6 +85,7 @@ export function useStorage() {
         const parsed = JSON.parse(raw)
         storageData.value = {
           bestScores: parsed.bestScores || {},
+          leaderboards: parsed.leaderboards || {},
           progress: parsed.progress || {},
           stats: parsed.stats || createDefaultData().stats
         }
@@ -89,6 +108,7 @@ export function useStorage() {
   function saveData(data) {
     const normalizedData = {
       bestScores: { ...(data?.bestScores || {}) },
+      leaderboards: { ...(data?.leaderboards || {}) },
       progress: { ...(data?.progress || {}) },
       stats: { ...(data?.stats || createDefaultData().stats) }
     }
@@ -173,6 +193,85 @@ export function useStorage() {
     const data = loadData()
     return data.bestScores[difficultyId] || null
   }
+
+  /**
+   * 获取某关的计时榜单
+   * @param {number} difficultyId - 难度ID
+   * @returns {Array} 榜单列表
+   */
+  function getLeaderboard(difficultyId) {
+    const data = loadData()
+    return data.leaderboards[difficultyId] || []
+  }
+
+  /**
+   * 判断本局是否满足上榜条件
+   * @param {Object} result - 游戏结果
+   * @returns {boolean} 是否满足条件
+   */
+  function isEligibleForLeaderboard(result) {
+    return (result?.accuracy || 0) >= GAME_CONFIG.PASS_ACCURACY && (result?.durationMs || 0) > 0
+  }
+
+  /**
+   * 更新每关前十计时榜
+   * @param {number} difficultyId - 难度ID
+   * @param {Object} result - 游戏结果
+   * @returns {Object} 榜单结果
+   */
+  function updateLeaderboard(difficultyId, result) {
+    const data = loadData()
+    const currentBoard = getLeaderboard(difficultyId)
+
+    if (!isEligibleForLeaderboard(result)) {
+      return {
+        leaderboard: currentBoard,
+        isLeaderboard: false,
+        leaderboardRank: null
+      }
+    }
+
+    const nextEntry = {
+      durationMs: result.durationMs,
+      completedAt: result.completedAt
+    }
+
+    const nextBoard = [...currentBoard, nextEntry]
+      .sort((left, right) => {
+        if (left.durationMs !== right.durationMs) {
+          return left.durationMs - right.durationMs
+        }
+
+        return String(left.completedAt).localeCompare(String(right.completedAt))
+      })
+      .slice(0, 10)
+
+    const leaderboardRank = nextBoard.findIndex((item) => (
+      item.durationMs === nextEntry.durationMs && item.completedAt === nextEntry.completedAt
+    ))
+
+    if (leaderboardRank === -1) {
+      return {
+        leaderboard: currentBoard,
+        isLeaderboard: false,
+        leaderboardRank: null
+      }
+    }
+
+    saveData({
+      ...data,
+      leaderboards: {
+        ...data.leaderboards,
+        [difficultyId]: nextBoard
+      }
+    })
+
+    return {
+      leaderboard: nextBoard,
+      isLeaderboard: true,
+      leaderboardRank: leaderboardRank + 1
+    }
+  }
   
   /**
    * 更新最佳成绩
@@ -186,32 +285,41 @@ export function useStorage() {
 
     const data = loadData()
     const currentBest = data.bestScores[difficultyId]
+    const leaderboardResult = updateLeaderboard(difficultyId, result)
+    const nextData = loadData()
     
     // 判断是否超过最佳成绩
     const isNewBest = !currentBest || result.score > currentBest.score ||
-      (result.score === currentBest.score && result.duration < currentBest.duration)
+      (result.score === currentBest.score && getDurationMs(result) < getDurationMs(currentBest))
     
     if (isNewBest) {
       const updatedBestScores = {
-        ...data.bestScores,
+        ...nextData.bestScores,
         [difficultyId]: {
           score: result.score,
           correctCount: result.correctCount,
           totalCount: result.totalCount,
           accuracy: result.accuracy,
           duration: result.duration,
+          durationMs: result.durationMs,
           completedAt: result.completedAt
         }
       }
 
       saveData({
-        ...data,
+        ...nextData,
         bestScores: updatedBestScores
       })
-      return true
+      return {
+        isNewBest: true,
+        ...leaderboardResult
+      }
     }
     
-    return false
+    return {
+      isNewBest: false,
+      ...leaderboardResult
+    }
   }
   
   /**
@@ -238,6 +346,10 @@ export function useStorage() {
     loadData()
     return storageData.value.bestScores
   })
+  const leaderboards = computed(() => {
+    loadData()
+    return storageData.value.leaderboards
+  })
   const stats = computed(() => {
     loadData()
     return storageData.value.stats
@@ -248,12 +360,14 @@ export function useStorage() {
   return {
     // 方法
     getBestScore,
+    getLeaderboard,
     updateBestScore,
     getAllBestScores,
     getCompletedDifficulties,
     getAnalysis,
     // 响应式数据
     bestScores,
+    leaderboards,
     stats,
     completedIds,
     completedCount

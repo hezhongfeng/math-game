@@ -39,6 +39,13 @@ export function useGame(difficulty) {
     return isNaN(result) ? 0 : result
   })
 
+  const durationMs = computed(() => {
+    if (!startTime.value) return 0
+    const end = endTime.value || Date.now()
+    const result = end - startTime.value
+    return isNaN(result) ? 0 : Math.max(0, result)
+  })
+
   function cloneQuestion(question, index) {
     return {
       ...question,
@@ -130,6 +137,7 @@ export function useGame(difficulty) {
       totalCount: questions.value.length,
       accuracy: accuracy.value,
       duration: duration.value,
+      durationMs: durationMs.value,
       difficulty: difficultyValue.value,
       completedAt: new Date().toISOString(),
       incorrectQuestions: incorrectQuestions.value  // 返回错题列表
@@ -151,6 +159,7 @@ export function useGame(difficulty) {
     progress,
     accuracy,
     duration,
+    durationMs,
     // 方法
     startGame,
     submitAnswer,

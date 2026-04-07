@@ -13,3 +13,18 @@ export function formatTime(seconds) {
   const secs = duration % 60
   return `${minutes}:${secs.toString().padStart(2, '0')}`
 }
+
+/**
+ * 格式化毫秒为 M:SS.t 格式
+ * @param {number} milliseconds - 毫秒数
+ * @returns {string} 格式化后的时间字符串
+ */
+export function formatPreciseTime(milliseconds) {
+  const safeDuration = Math.max(0, Math.floor(milliseconds || 0))
+  const totalSeconds = Math.floor(safeDuration / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  const tenths = Math.floor((safeDuration % 1000) / 100)
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}.${tenths}`
+}

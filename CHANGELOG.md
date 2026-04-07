@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added architecture quick-reference document (`docs/ARCHITECTURE.md`)
 - Added round-end mistake summary with in-modal review and one-tap retry for incorrect questions
 - Added range-selectable challenge mode to number exploration for repeated practice within specific quantity bands
+- Added per-level top-10 speed leaderboards with local fastest-time storage and in-UI display
+- Added short pass-completion praise voice playback using browser speech synthesis
 
 ### Changed
 
@@ -38,6 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed wrong-answer feedback to fullscreen modal overlay while keeping correct feedback lightweight and auto-advance
 - Changed number exploration from a simple input/view toggle into a dual-mode experience with free exploration, structured challenge ranges, inline guidance, and number decomposition feedback
 - Changed ball-array rendering to a unified Three.js decimal layout with refined lighting, translucent materials, grouped color cues, and mobile-friendly auto-rotation
+- Changed arithmetic progression from raw number-range jumps to an 18-level child-learning curve based on counting, combinations, make-ten, bridge-ten, and missing-number stages
+- Changed question counts to grow gradually by stage instead of staying fixed at 20 for every level
+- Changed transition levels to use softer warm-up/core/challenge sampling for smoother difficulty ramps
 
 ### Removed
 
@@ -53,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated PWA documentation to reflect the current plugin-generated Service Worker flow
 - Updated component, agent, and architecture docs to match the current gameplay flow, testing setup, and active code structure
 - Updated exploration-related docs to reflect challenge ranges, current Three.js ball-array rendering, and the latest interaction model
+- Updated docs to reflect the 18-level curriculum, leaderboard behavior, and pass-completion audio feedback
 
 ### Fixed
 

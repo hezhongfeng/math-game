@@ -28,13 +28,14 @@ if (!difficulty) {
   router.replace('/difficulty')
 }
 
-const { updateBestScore } = useStorage()
+const { getLeaderboard, updateBestScore } = useStorage()
 const { error: showError } = useToast()
 const {
   playCorrect,
   playWrong,
   playVictory,
   playUnlock,
+  playPraise,
   playBack,
   playKeyPress,
   playDelete,
@@ -48,6 +49,8 @@ const userAnswer = ref('')
 const showModal = ref(false)
 const resultData = ref(null)
 const isNewBest = ref(false)
+const leaderboard = ref([])
+const leaderboardRank = ref(null)
 const questionKey = ref(0)
 const isLoading = ref(true)
 const currentFeedbackState = ref('idle')
@@ -215,19 +218,45 @@ function handleGameComplete() {
     ...game.getResult(),
     isReviewRound: isReviewRound.value
   }
-  const best = result.isReviewRound ? false : updateBestScore(parseInt(props.id), result)
+  const updateResult = result.isReviewRound
+    ? {
+        isNewBest: false,
+        leaderboard: getLeaderboard(parseInt(props.id, 10)),
+        leaderboardRank: null
+      }
+    : updateBestScore(parseInt(props.id, 10), result)
   const stars = getStarCount(result.accuracy)
+  const didPass = result.accuracy >= GAME_CONFIG.PASS_ACCURACY
 
   triggerHapticFeedback(stars >= 4 ? 'strong' : 'medium')
 
   resultData.value = result
-  isNewBest.value = best
+  isNewBest.value = updateResult.isNewBest
+  leaderboard.value = updateResult.leaderboard || []
+  leaderboardRank.value = updateResult.leaderboardRank
   showModal.value = true
 
-  if (stars >= 4) {
+  if (didPass) {
     playVictory()
-    if (best) {
-      setTimeout(() => playUnlock(), 300)
+
+    if (updateResult.isNewBest) {
+      setTimeout(() => playUnlock(), 460)
+    }
+
+    if (!result.isReviewRound) {
+      setTimeout(() => {
+        if (result.accuracy >= 100) {
+          playPraise('太棒了')
+          return
+        }
+
+        if (result.accuracy >= 90) {
+          playPraise('真棒')
+          return
+        }
+
+        playPraise('过关啦')
+      }, updateResult.isNewBest ? 920 : 520)
     }
   }
 }
@@ -449,6 +478,8 @@ onUnmounted(() => {
       :result="resultData"
       :is-new-best="isNewBest"
       :difficulty-id="props.id"
+      :leaderboard="leaderboard"
+      :leaderboard-rank="leaderboardRank"
       @retry="handleRetry"
       @retry-mistakes="handleRetryMistakes"
       @home="handleHome"

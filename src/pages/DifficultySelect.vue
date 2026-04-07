@@ -8,7 +8,7 @@ import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
 
 const router = useRouter()
-const { getBestScore, getCompletedDifficulties } = useStorage()
+const { getBestScore, getCompletedDifficulties, getLeaderboard } = useStorage()
 const { playClick, playBack } = useSound()
 
 const completedDifficulties = ref(getCompletedDifficulties())
@@ -56,6 +56,10 @@ function selectDifficulty(event, difficulty) {
 
 function getDifficultyBestScore(difficultyId) {
   return getBestScore(difficultyId)
+}
+
+function getDifficultyLeaderboard(difficultyId) {
+  return getLeaderboard(difficultyId)
 }
 
 const lockedStatusMap = computed(() => {
@@ -131,6 +135,7 @@ function isDifficultyLocked(difficulty) {
             :is-locked="isDifficultyLocked(getDifficultyById(id))"
             :is-completed="completedDifficulties.includes(id)"
             :best-score="getDifficultyBestScore(id)"
+            :leaderboard="getDifficultyLeaderboard(id)"
             @select="selectDifficulty"
           />
         </div>

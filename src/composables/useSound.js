@@ -11,6 +11,7 @@ const masterGainNode = ref(null)
 const lowpassNode = ref(null)
 const isInitialized = ref(false)
 const soundLastPlayedAt = new Map()
+let cachedSpeechVoice = null
 
 function createAudioGraph(ctx) {
   const masterGain = ctx.createGain()
@@ -185,6 +186,50 @@ function withTinyVariation(frequency) {
   return frequency * ratio
 }
 
+function getSpeechVoice() {
+  if (cachedSpeechVoice) {
+    return cachedSpeechVoice
+  }
+
+  if (typeof window === 'undefined' || !window.speechSynthesis) {
+    return null
+  }
+
+  const voices = window.speechSynthesis.getVoices()
+  const preferredVoice = voices.find((voice) => (
+    voice.lang?.startsWith('zh') && /female|xiao|mei|ting|hui/i.test(voice.name)
+  )) || voices.find((voice) => voice.lang?.startsWith('zh')) || null
+
+  cachedSpeechVoice = preferredVoice
+  return preferredVoice
+}
+
+function speakPraise(text) {
+  if (typeof window === 'undefined' || !window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') {
+    return
+  }
+
+  if (shouldThrottle('praise')) {
+    return
+  }
+
+  try {
+    const utterance = new SpeechSynthesisUtterance(text)
+    const voice = getSpeechVoice()
+
+    utterance.lang = voice?.lang || 'zh-CN'
+    utterance.voice = voice
+    utterance.rate = 1
+    utterance.pitch = 1.08
+    utterance.volume = 0.8
+
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(utterance)
+  } catch (error) {
+    console.error('播放鼓励语音失败:', error)
+  }
+}
+
 export function playClick() {
   if (shouldThrottle('click')) {
     return
@@ -352,9 +397,17 @@ export function playUnlock() {
   scheduleSequence(ctx, AUDIO_FREQUENCIES.unlock, AUDIO_PARAMS.unlock, ctx.currentTime + 0.008)
 }
 
+export function playPraise(text = '太棒了') {
+  speakPraise(text)
+}
+
 export function useSound() {
   onMounted(() => {
     initAudio()
+
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.getVoices()
+    }
   })
 
   return {
@@ -367,6 +420,7 @@ export function useSound() {
     playQuestion,
     playBack,
     playVictory,
-    playUnlock
+    playUnlock,
+    playPraise
   }
 }

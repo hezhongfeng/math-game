@@ -109,6 +109,7 @@ Card component for displaying a difficulty level in the selection screen.
 | `isLocked` | Boolean | `false` | Whether level is locked |
 | `isCompleted` | Boolean | `false` | Whether level has been cleared |
 | `bestScore` | Object | `null` | Best score data `{ score, accuracy, duration }` |
+| `leaderboard` | Array | `[]` | Current level top-10 fastest times |
 
 #### Events
 
@@ -151,6 +152,9 @@ Completion modal shown after a round ends. Uses a two-step flow: lightweight sum
 | `show` | Boolean | `false` | Whether to show modal |
 | `result` | Object | required | Game result data |
 | `isNewBest` | Boolean | `false` | Whether this is a new best score |
+| `difficultyId` | Number/String | required | Current level id |
+| `leaderboard` | Array | `[]` | Current level top-10 fastest times |
+| `leaderboardRank` | Number | `null` | Current result rank in the leaderboard |
 
 #### Result Object Structure
 
@@ -161,6 +165,7 @@ Completion modal shown after a round ends. Uses a two-step flow: lightweight sum
   totalCount: 10,
   accuracy: 100,
   duration: 120,
+  durationMs: 52340,
   difficulty: { ... },
   completedAt: '...',
   incorrectQuestions: [
@@ -186,6 +191,7 @@ Completion modal shown after a round ends. Uses a two-step flow: lightweight sum
 #### Behavior
 
 - Step 1: stars, short summary text, and primary actions
+- Step 1 also includes current level leaderboard and current rank when applicable
 - Step 2: dedicated mistake-review panel opened by "看错的"
 - Supports direct "练错的 / 再练" action
 

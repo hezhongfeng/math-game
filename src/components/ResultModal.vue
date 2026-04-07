@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { Award, Home, RotateCcw, Sparkles, Star, Target, TrendingUp } from 'lucide-vue-next'
+import { Award, Clock3, Home, RotateCcw, Sparkles, Star, Target, TrendingUp } from 'lucide-vue-next'
 import { GAME_CONFIG } from '../config/constants'
+import { formatPreciseTime } from '../utils/format'
 import { getRatingText, getStarCount } from '../utils/stars'
 import { useStorage } from '../composables/useStorage'
 
@@ -21,6 +22,14 @@ const props = defineProps({
   difficultyId: {
     type: [Number, String],
     required: true
+  },
+  leaderboard: {
+    type: Array,
+    default: () => []
+  },
+  leaderboardRank: {
+    type: Number,
+    default: null
   }
 })
 
@@ -98,6 +107,9 @@ const subtitleText = computed(() => {
   return '过关啦。'
 })
 
+const showLeaderboardRank = computed(() => didPass.value && props.leaderboardRank)
+const leaderboardTitle = computed(() => props.leaderboard.length ? '本关计时榜' : '还没有榜单')
+
 watch(() => props.show, (visible) => {
   if (visible) {
     showMistakesPanel.value = false
@@ -170,6 +182,30 @@ function handleOverlayClick() {
                 <p class="insight-text">{{ growthInsight.text }}</p>
               </div>
             </Transition>
+
+            <section class="leaderboard-panel">
+              <div class="leaderboard-head">
+                <div class="leaderboard-title-wrap">
+                  <Clock3 :size="16" />
+                  <strong>{{ leaderboardTitle }}</strong>
+                </div>
+                <span v-if="showLeaderboardRank" class="leaderboard-rank">第 {{ leaderboardRank }} 名</span>
+              </div>
+
+              <div v-if="leaderboard.length" class="leaderboard-list">
+                <div
+                  v-for="(item, index) in leaderboard"
+                  :key="`${item.completedAt}-${item.durationMs}-${index}`"
+                  class="leaderboard-item"
+                  :class="{ 'is-current': leaderboardRank === index + 1 }"
+                >
+                  <span class="leaderboard-position">{{ index + 1 }}</span>
+                  <span class="leaderboard-time">{{ formatPreciseTime(item.durationMs) }}</span>
+                </div>
+              </div>
+
+              <p v-else class="leaderboard-empty">过关后会把最快时间记在这里。</p>
+            </section>
 
             <p v-if="hasIncorrectQuestions" class="mistake-note">错了 {{ incorrectQuestions.length }} 题</p>
 
@@ -301,6 +337,9 @@ function handleOverlayClick() {
 .topline,
 .result-chip,
 .record-chip,
+.leaderboard-head,
+.leaderboard-title-wrap,
+.leaderboard-item,
 .actions,
 .btn-primary,
 .btn-secondary,
@@ -428,6 +467,71 @@ function handleOverlayClick() {
 .insight-leave-to {
   opacity: 0;
   transform: translateY(8px);
+}
+
+.leaderboard-panel {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--border-light);
+}
+
+.leaderboard-head {
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.leaderboard-title-wrap {
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  font-weight: 800;
+}
+
+.leaderboard-rank {
+  color: var(--brand-primary);
+  font-size: var(--font-sm);
+  font-weight: 800;
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 8px;
+}
+
+.leaderboard-item {
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+}
+
+.leaderboard-item.is-current {
+  border-color: rgba(49, 120, 246, 0.24);
+  background: var(--brand-primary-soft);
+}
+
+.leaderboard-position {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.leaderboard-time {
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  font-weight: 800;
+}
+
+.leaderboard-empty {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 .mistakes-section {

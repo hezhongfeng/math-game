@@ -27,7 +27,8 @@ export const AUDIO_COOLDOWNS = {
   question: 180,
   back: 120,
   victory: 600,
-  unlock: 600
+  unlock: 600,
+  praise: 1800
 }
 
 export const AUDIO_FREQUENCIES = {
