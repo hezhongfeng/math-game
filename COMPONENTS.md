@@ -14,7 +14,6 @@ src/components/
 ├── QuestionCard.vue        # Current question display
 ├── ResultModal.vue         # Completion summary and mistake review
 ├── ScoreBoard.vue          # Compact gameplay status panel
-├── SkeletonCard.vue        # Lightweight loading placeholder
 ├── Toast.vue               # Toast notification item
 └── ToastContainer.vue      # Toast notification container
 ```
