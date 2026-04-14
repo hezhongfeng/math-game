@@ -291,37 +291,37 @@ function getStageSegments(difficulty) {
 
     case 'withinTenIntroAdd':
       return [
-        { count: warmupCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 1 && q.answer <= 7 },
-        { count: coreCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 2 && q.answer <= 9 },
-        { count: challengeCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 3 && q.answer <= 10 }
+        { count: warmupCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 1 && q.answer <= 6 },
+        { count: coreCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 2 && q.answer <= 8 },
+        { count: challengeCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 3 && q.answer <= 9 }
       ]
 
     case 'withinTenIntroSubtract':
       return [
-        { count: warmupCount, predicate: (q) => q.operand2 <= 2 },
-        { count: coreCount, predicate: (q) => q.operand2 <= 3 && q.answer >= 2 },
-        { count: challengeCount, predicate: (q) => q.operand1 >= 8 && q.operand2 <= 4 }
+        { count: warmupCount, predicate: (q) => q.operand1 <= 7 && q.operand2 <= 2 && q.answer >= 1 },
+        { count: coreCount, predicate: (q) => q.operand1 <= 8 && q.operand2 <= 3 && q.answer >= 2 },
+        { count: challengeCount, predicate: (q) => q.operand1 <= 10 && q.operand2 <= 4 && q.answer >= 3 }
       ]
 
     case 'makeTen':
       return [
-        { count: warmupCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 2 },
-        { count: coreCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) >= 3 },
+        { count: warmupCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 1 },
+        { count: coreCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 3 },
         { count: challengeCount, predicate: (q) => q.answer === 10 }
       ]
 
     case 'withinTenAdd':
       return [
-        { count: warmupCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 2 && q.answer <= 10 },
+        { count: warmupCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 2 && q.answer <= 8 },
         { count: coreCount, predicate: (q) => (q.answer === 10 || q.operand1 === q.operand2) && q.answer <= 10 },
-        { count: challengeCount, predicate: (q) => q.answer <= 10 }
+        { count: challengeCount, predicate: (q) => q.answer <= 10 && Math.min(q.operand1, q.operand2) <= 4 }
       ]
 
     case 'withinTenSubtract':
       return [
-        { count: warmupCount, predicate: (q) => q.operand2 <= 3 },
-        { count: coreCount, predicate: (q) => q.answer <= 5 && q.operand1 <= 10 },
-        { count: challengeCount, predicate: (q) => q.operand1 >= 8 }
+        { count: warmupCount, predicate: (q) => q.operand1 <= 7 && q.operand2 <= 2 && q.answer >= 1 },
+        { count: coreCount, predicate: (q) => q.operand1 <= 9 && q.operand2 <= 3 && q.answer >= 2 },
+        { count: challengeCount, predicate: (q) => q.operand1 <= 10 && q.operand2 <= 5 && q.answer >= 2 }
       ]
 
     case 'teenAdd':
@@ -330,25 +330,34 @@ function getStageSegments(difficulty) {
           count: warmupCount,
           predicate: (q) => (
             (q.operand1 === 10 || q.operand2 === 10) &&
-            Math.min(q.operand1, q.operand2) <= 2
+            Math.min(q.operand1, q.operand2) <= 1
           )
         },
         {
           count: coreCount,
           predicate: (q) => (
             (q.operand1 >= 10 || q.operand2 >= 10) &&
-            Math.min(q.operand1, q.operand2) <= 3 &&
-            q.answer <= 15
+            Math.min(q.operand1, q.operand2) <= 2 &&
+            Math.max(q.operand1, q.operand2) <= 11 &&
+            q.answer <= 13
           )
         },
-        { count: challengeCount, predicate: (q) => (q.operand1 >= 10 || q.operand2 >= 10) && q.answer <= 20 }
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            (q.operand1 >= 10 || q.operand2 >= 10) &&
+            Math.min(q.operand1, q.operand2) <= 3 &&
+            Math.max(q.operand1, q.operand2) <= 12 &&
+            q.answer <= 15
+          )
+        }
       ]
 
     case 'teenSubtract':
       return [
-        { count: warmupCount, predicate: (q) => q.operand1 >= 10 && q.operand2 <= 3 && q.answer >= 10 },
-        { count: coreCount, predicate: (q) => q.operand1 >= 10 && q.operand2 <= 5 && q.answer >= 10 },
-        { count: challengeCount, predicate: (q) => q.operand1 >= 10 && q.answer >= 10 }
+        { count: warmupCount, predicate: (q) => q.operand1 <= 11 && q.operand2 <= 1 && q.answer >= 10 },
+        { count: coreCount, predicate: (q) => q.operand1 <= 12 && q.operand2 <= 2 && q.answer >= 10 },
+        { count: challengeCount, predicate: (q) => q.operand1 <= 13 && q.operand2 <= 3 && q.answer >= 10 }
       ]
 
     case 'bridgeTenAdd':
@@ -360,7 +369,7 @@ function getStageSegments(difficulty) {
             q.operand2 < 10 &&
             q.answer > 10 &&
             Math.min(q.operand1, q.operand2) <= 2 &&
-            q.answer <= 12
+            q.answer <= 11
           )
         },
         {
@@ -369,11 +378,20 @@ function getStageSegments(difficulty) {
             q.operand1 < 10 &&
             q.operand2 < 10 &&
             q.answer > 10 &&
-            Math.min(q.operand1, q.operand2) <= 4 &&
-            q.answer <= 14
+            Math.min(q.operand1, q.operand2) <= 3 &&
+            q.answer <= 13
           )
         },
-        { count: challengeCount, predicate: (q) => q.operand1 < 10 && q.operand2 < 10 && q.answer > 10 }
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.operand1 < 10 &&
+            q.operand2 < 10 &&
+            q.answer > 10 &&
+            Math.min(q.operand1, q.operand2) <= 5 &&
+            q.answer <= 15
+          )
+        }
       ]
 
     case 'bridgeTenSubtract':
@@ -383,8 +401,8 @@ function getStageSegments(difficulty) {
           predicate: (q) => (
             q.operand1 >= 10 &&
             q.answer < 10 &&
-            q.operand2 <= 3 &&
-            q.operand1 <= 13
+            q.operand2 <= 2 &&
+            q.operand1 <= 12
           )
         },
         {
@@ -392,11 +410,19 @@ function getStageSegments(difficulty) {
           predicate: (q) => (
             q.operand1 >= 10 &&
             q.answer < 10 &&
-            q.operand2 <= 5 &&
-            q.operand1 <= 15
+            q.operand2 <= 4 &&
+            q.operand1 <= 14
           )
         },
-        { count: challengeCount, predicate: (q) => q.operand1 >= 10 && q.answer < 10 }
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.operand1 >= 10 &&
+            q.answer < 10 &&
+            q.operand2 <= 5 &&
+            q.operand1 <= 16
+          )
+        }
       ]
 
     case 'withinTwentyMixed':
@@ -404,18 +430,46 @@ function getStageSegments(difficulty) {
         {
           count: warmupCount,
           predicate: (q) => (
-            (q.operator === '+' && (q.operand1 >= 10 || q.operand2 >= 10) && Math.min(q.operand1, q.operand2) <= 5) ||
-            (q.operator === '-' && q.operand1 >= 10 && q.operand2 <= 5 && q.answer >= 10)
+            (q.operator === '+' &&
+              (q.operand1 >= 10 || q.operand2 >= 10) &&
+              Math.min(q.operand1, q.operand2) <= 2 &&
+              Math.max(q.operand1, q.operand2) <= 13) ||
+            (q.operator === '-' &&
+              q.operand1 >= 10 &&
+              q.operand1 <= 12 &&
+              q.operand2 <= 2 &&
+              q.answer >= 10)
           )
         },
         {
           count: coreCount,
           predicate: (q) => (
-            (q.operator === '+' && q.operand1 < 10 && q.operand2 < 10 && q.answer > 10) ||
-            (q.operator === '-' && q.operand1 >= 10 && q.answer < 10)
+            (q.operator === '+' &&
+              q.operand1 < 10 &&
+              q.operand2 < 10 &&
+              q.answer > 10 &&
+              Math.min(q.operand1, q.operand2) <= 2 &&
+              q.answer <= 12) ||
+            (q.operator === '-' &&
+              q.operand1 >= 10 &&
+              q.operand1 <= 13 &&
+              q.operand2 <= 3 &&
+              q.answer < 10)
           )
         },
-        { count: challengeCount, predicate: (q) => q.answer <= 20 }
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.answer <= 16 &&
+            (
+              (q.operator === '+' && (
+                (q.operand1 >= 10 || q.operand2 >= 10) ||
+                Math.min(q.operand1, q.operand2) <= 5
+              )) ||
+              (q.operator === '-' && q.operand1 <= 16 && q.operand2 <= 5)
+            )
+          )
+        }
       ]
 
     case 'missingNumberIntro':

@@ -14,6 +14,7 @@
 |------|----------|
 | [DESIGN.md](./DESIGN.md) | 设计规范、移动端约束、视觉原则 |
 | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | 一页看懂路由、数据流与 PWA 架构 |
+| [docs/DIFFICULTY_CURVE.md](./docs/DIFFICULTY_CURVE.md) | 查看 18 关难度曲线、典型题型与边界 |
 | [COMPONENTS.md](./COMPONENTS.md) | 组件职责、输入输出、复用方式 |
 | [PWA.md](./PWA.md) | 安装、离线、更新策略 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | 提交流程、测试要求、PR 规范 |
@@ -397,6 +398,8 @@ touch-action: manipulation;
 - PWA 行为：`vite.config.js` 与 `src/components/PWAUpdatePrompt.vue`
 
 建议：当上述文件行为变化时，同步更新 README 与 CHANGELOG。
+
+- 难度曲线说明：`docs/DIFFICULTY_CURVE.md`
 
 ### 添加新难度
 
