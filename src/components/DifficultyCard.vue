@@ -78,6 +78,7 @@ function handleSelect(event) {
           <span v-if="!isLocked && !bestScore" class="new-tag">新</span>
         </div>
         <p class="level-desc">{{ difficulty.description }}</p>
+        <p v-if="difficulty.helperText" class="level-helper">{{ difficulty.helperText }}</p>
         <p v-if="bestTimeLabel" class="level-time">最快 {{ bestTimeLabel }}</p>
         <p v-if="statusText" class="level-status">{{ statusText }}</p>
       </div>
@@ -195,6 +196,7 @@ function handleSelect(event) {
 }
 
 .level-desc,
+.level-helper,
 .level-time,
 .level-status {
   font-size: var(--font-sm);
@@ -204,6 +206,13 @@ function handleSelect(event) {
   margin-bottom: 3px;
   color: var(--text-secondary);
   font-weight: 700;
+}
+
+.level-helper {
+  margin-bottom: 3px;
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .level-time {

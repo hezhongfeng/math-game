@@ -289,6 +289,37 @@ function getStageSegments(difficulty) {
         { count: challengeCount, predicate: (q) => Math.abs(q.operand1 - q.operand2) <= 1 && q.answer <= 6 }
       ]
 
+    case 'splitWithinFive':
+      return [
+        {
+          count: warmupCount,
+          predicate: (q) => (
+            q.result <= 3 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: coreCount,
+          predicate: (q) => (
+            q.result <= 4 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.result <= 5 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        }
+      ]
+
     case 'withinTenIntroAdd':
       return [
         { count: warmupCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 1 && q.answer <= 6 },
@@ -308,6 +339,37 @@ function getStageSegments(difficulty) {
         { count: warmupCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 1 },
         { count: coreCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 3 },
         { count: challengeCount, predicate: (q) => q.answer === 10 }
+      ]
+
+    case 'splitWithinTen':
+      return [
+        {
+          count: warmupCount,
+          predicate: (q) => (
+            q.result <= 6 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: coreCount,
+          predicate: (q) => (
+            q.result <= 8 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.result <= 10 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        }
       ]
 
     case 'withinTenAdd':
