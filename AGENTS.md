@@ -241,8 +241,8 @@ export function randomInt(min, max) {
 ### Configuration Files
 
 **Difficulty configuration (src/config/difficulty.js):**
-- Contains `DIFFICULTY_LEVELS` array with all 18 levels
-- Each level has: `id`, `name`, `level`, `range`, `operation`, `stage`, `questionCount`, `description`, `color`, `textColor`, `stars`
+- Contains `DIFFICULTY_LEVELS` array with all 20 levels
+- Each level has: `id`, `name`, `level`, `range`, `operation`, `stage`, `questionCount`, `description`, `helperText`, `color`, `textColor`, `stars`
 - Contains `DIFFICULTY_GROUPS` for grouping by level category
 
 **Constants (src/config/constants.js):**
@@ -319,7 +319,7 @@ padding-top: max(10px, env(safe-area-inset-top));
 2. **E2E tests only** - Playwright 冒烟测试已配置，当前没有单元测试框架
 3. **Child-friendly design** - Use rounded corners, bright colors, fun animations
 4. **Mobile-first** - Design for touch screens first, then enhance for desktop
-5. **Progressive difficulty** - 18 levels, must complete previous to unlock next
+5. **Progressive difficulty** - 20 levels, must complete previous to unlock next
 6. **Non-negative results** - Subtraction always ensures result ≥ 0
 7. **Mobile specifications** - See [DESIGN.md](./DESIGN.md) for detailed mobile-first design guidelines
 
