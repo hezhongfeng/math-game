@@ -42,8 +42,7 @@ const slots = computed(() => {
   for (let index = 0; index < target.value; index += 1) {
     items.push({
       id: index,
-      state: index < knownPart.value ? 'known' : 'missing',
-      isFirstMissing: index === knownPart.value
+      state: index < knownPart.value ? 'known' : 'missing'
     })
   }
 
@@ -65,10 +64,7 @@ const columnCount = computed(() => target.value)
         v-for="slot in slots"
         :key="slot.id"
         class="slot"
-        :class="[
-          `is-${slot.state}`,
-          { 'is-first-missing': slot.isFirstMissing }
-        ]"
+        :class="`is-${slot.state}`"
       ></span>
     </div>
   </div>
@@ -113,12 +109,7 @@ const columnCount = computed(() => target.value)
 
 .slot.is-missing {
   background: rgba(255, 255, 255, 0.9);
-  border-style: dashed;
-}
-
-.slot.is-first-missing {
-  border-color: rgba(255, 159, 67, 0.68);
-  box-shadow: 0 0 0 4px rgba(255, 159, 67, 0.1);
+  border-color: rgba(92, 157, 255, 0.26);
 }
 
 @media (max-width: 420px) {
