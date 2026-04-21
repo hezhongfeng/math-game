@@ -88,4 +88,23 @@ describe('QuestionCard.vue', () => {
     expect(wrapper.find('.answer').classes()).toContain('is-wrong')
     expect(wrapper.find('.answer').text()).toBe('99')
   })
+
+  test('does not show strategy text in the question card', () => {
+    const difficulty = { stage: 'pairsWithinFive' }
+    const wrapper = mount(QuestionCard, {
+      props: {
+        difficulty,
+        question: {
+          operand1: 2,
+          operand2: 2,
+          operator: '+',
+          answer: 4,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    expect(wrapper.text()).not.toContain('5 的好朋友')
+    expect(wrapper.text()).not.toContain('还差')
+  })
 })

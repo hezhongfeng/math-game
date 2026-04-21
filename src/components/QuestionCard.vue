@@ -47,36 +47,6 @@ const answerStateClass = computed(() => ({
   'is-correct': isCorrect.value,
   'is-wrong': isIncorrect.value
 }))
-
-const thinkingTip = computed(() => {
-  const stage = props.difficulty?.stage
-
-  if (stage === 'pairsWithinFive') {
-    return '想想谁和谁是 5 的好朋友'
-  }
-
-  if (stage === 'splitWithinFive') {
-    return '看看还差几就能到 5'
-  }
-
-  if (stage === 'makeTen') {
-    return '想想谁和谁能凑成 10'
-  }
-
-  if (stage === 'splitWithinTen') {
-    return '看看还差几就能到 10'
-  }
-
-  if (stage === 'bridgeTenAdd') {
-    return '先凑到 10，再往上加'
-  }
-
-  if (stage === 'bridgeTenSubtract') {
-    return '先退回 10，再继续减'
-  }
-
-  return ''
-})
 </script>
 
 <template>
@@ -118,10 +88,6 @@ const thinkingTip = computed(() => {
       </span>
       <span v-else class="number result">{{ question.result }}</span>
     </div>
-
-    <p v-if="thinkingTip" class="thinking-tip">
-      {{ thinkingTip }}
-    </p>
 
     <NumberBondHint
       :question="question"
@@ -165,15 +131,6 @@ const thinkingTip = computed(() => {
   justify-content: center;
   gap: 8px;
   min-height: 112px;
-}
-
-.thinking-tip {
-  margin-top: 8px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: var(--font-sm);
-  font-weight: 700;
-  line-height: 1.45;
 }
 
 .number,
@@ -276,11 +233,6 @@ const thinkingTip = computed(() => {
 
   .math-display {
     min-height: 96px;
-  }
-
-  .thinking-tip {
-    margin-top: 6px;
-    font-size: 13px;
   }
 
   .answer {

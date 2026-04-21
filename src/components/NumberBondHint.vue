@@ -52,11 +52,6 @@ const slots = computed(() => {
 
 <template>
   <div v-if="shouldShow" class="number-bond-hint" aria-label="数字组合提示">
-    <div class="hint-header">
-      <span>目标 {{ target }}</span>
-      <span>已有 {{ knownPart }}</span>
-    </div>
-
     <div class="slot-row" aria-hidden="true">
       <span
         v-for="slot in slots"
@@ -65,10 +60,6 @@ const slots = computed(() => {
         :class="`is-${slot.state}`"
       ></span>
     </div>
-
-    <p class="hint-text">
-      空着的就是“还差几个”
-    </p>
   </div>
 </template>
 
@@ -82,25 +73,15 @@ const slots = computed(() => {
   border: 1px solid rgba(49, 120, 246, 0.14);
 }
 
-.hint-header,
 .slot-row {
   display: flex;
   align-items: center;
-}
-
-.hint-header {
-  justify-content: center;
-  gap: 10px;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 800;
 }
 
 .slot-row {
   justify-content: center;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: 8px;
 }
 
 .slot {
@@ -119,14 +100,6 @@ const slots = computed(() => {
 .slot.is-missing {
   background: rgba(255, 255, 255, 0.86);
   border-style: dashed;
-}
-
-.hint-text {
-  margin-top: 7px;
-  color: var(--text-muted);
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
 }
 
 @media (max-width: 420px) {
