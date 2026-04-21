@@ -105,8 +105,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'missingAddMixed',
     stage: 'splitWithinFive',
     questionCount: 12,
-    description: '把 5 分成两个数',
-    helperText: '看看 5 能分成谁和谁',
+    description: '5 以内拆分',
+    helperText: '把小数分成两个数',
     color: 'var(--candy-yellow)',
     textColor: 'var(--candy-yellow-dark)',
     stars: 3
@@ -161,8 +161,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'missingAddMixed',
     stage: 'splitWithinTen',
     questionCount: 14,
-    description: '把 10 分成两个数',
-    helperText: '把 10 拆成两个好朋友',
+    description: '10 以内拆分',
+    helperText: '把 10 以内的数拆开',
     color: 'var(--candy-peach)',
     textColor: 'var(--candy-peach-dark)',
     stars: 3

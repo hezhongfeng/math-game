@@ -42,22 +42,33 @@ const slots = computed(() => {
   for (let index = 0; index < target.value; index += 1) {
     items.push({
       id: index,
-      state: index < knownPart.value ? 'known' : 'missing'
+      state: index < knownPart.value ? 'known' : 'missing',
+      isFirstMissing: index === knownPart.value
     })
   }
 
   return items
 })
+
+const columnCount = computed(() => target.value)
 </script>
 
 <template>
-  <div v-if="shouldShow" class="number-bond-hint" aria-label="数字组合提示">
+  <div
+    v-if="shouldShow"
+    class="number-bond-hint"
+    :style="{ '--slot-columns': columnCount }"
+    aria-label="数字组合提示"
+  >
     <div class="slot-row" aria-hidden="true">
       <span
         v-for="slot in slots"
         :key="slot.id"
         class="slot"
-        :class="`is-${slot.state}`"
+        :class="[
+          `is-${slot.state}`,
+          { 'is-first-missing': slot.isFirstMissing }
+        ]"
       ></span>
     </div>
   </div>
@@ -65,51 +76,65 @@ const slots = computed(() => {
 
 <style scoped>
 .number-bond-hint {
-  width: min(100%, 420px);
-  margin: 10px auto 0;
-  padding: 10px 12px;
-  border-radius: var(--radius-lg);
-  background: rgba(247, 250, 255, 0.84);
-  border: 1px solid rgba(49, 120, 246, 0.14);
+  width: fit-content;
+  max-width: min(100%, 420px);
+  margin: 12px auto 0;
+  padding: 9px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(92, 157, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
 }
 
 .slot-row {
-  display: flex;
-  align-items: center;
-}
-
-.slot-row {
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(var(--slot-columns), 24px);
+  grid-auto-rows: 24px;
   gap: 7px;
+  padding: 6px;
+  border-radius: 20px;
+  background: rgba(235, 243, 255, 0.72);
 }
 
 .slot {
-  width: 22px;
-  height: 22px;
+  position: relative;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
-  border: 2px solid rgba(49, 120, 246, 0.38);
+  border: 2px solid rgba(92, 157, 255, 0.36);
+  transition: transform var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
 }
 
 .slot.is-known {
-  background: var(--brand-primary);
+  background: linear-gradient(180deg, var(--brand-primary-light), var(--brand-primary));
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(49, 120, 246, 0.1);
+  box-shadow: 0 4px 10px rgba(92, 157, 255, 0.24);
 }
 
 .slot.is-missing {
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.9);
   border-style: dashed;
+}
+
+.slot.is-first-missing {
+  border-color: rgba(255, 159, 67, 0.68);
+  box-shadow: 0 0 0 4px rgba(255, 159, 67, 0.1);
 }
 
 @media (max-width: 420px) {
   .number-bond-hint {
-    padding: 9px 10px;
+    padding: 8px;
+  }
+
+  .slot-row {
+    grid-template-columns: repeat(var(--slot-columns), 21px);
+    grid-auto-rows: 21px;
+    gap: 5px;
   }
 
   .slot {
-    width: 20px;
-    height: 20px;
+    width: 21px;
+    height: 21px;
   }
 }
 </style>
