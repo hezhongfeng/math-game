@@ -400,6 +400,7 @@ onUnmounted(() => {
             :key="questionKey"
             :class="{ 'is-hidden-on-error': isIncorrect && shouldShowFeedback }"
             :question="game.currentQuestion.value"
+            :difficulty="difficulty"
             :show-answer="showAnswer"
             :user-answer="userAnswer"
             :current-index="game.currentIndex.value"
@@ -420,6 +421,7 @@ onUnmounted(() => {
                 <!-- 这里的 QuestionCard 会显示用户的错误答案 -->
                 <QuestionCard
                   :question="game.currentQuestion.value"
+                  :difficulty="difficulty"
                   :show-answer="true"
                   :user-answer="userAnswer"
                   :current-index="game.currentIndex.value"

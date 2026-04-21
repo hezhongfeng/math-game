@@ -277,7 +277,7 @@ export function useStorage() {
    * 更新最佳成绩
    * @param {number} difficultyId - 难度ID
    * @param {Object} result - 游戏结果
-   * @returns {boolean} 是否更新了最佳成绩
+   * @returns {Object} 最佳成绩与计时榜更新结果
    */
   function updateBestScore(difficultyId, result) {
     // 首先更新全局统计

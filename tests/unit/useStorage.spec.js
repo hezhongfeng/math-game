@@ -49,7 +49,11 @@ describe('useStorage', () => {
       incorrectQuestions: []
     })
 
-    expect(updated).toBe(true)
+    expect(updated).toMatchObject({
+      isNewBest: true,
+      isLeaderboard: false,
+      leaderboardRank: null
+    })
     expect(storage.getBestScore(16)).toMatchObject({
       score: 90,
       accuracy: 90,
@@ -84,7 +88,11 @@ describe('useStorage', () => {
       incorrectQuestions: []
     })
 
-    expect(updated).toBe(false)
+    expect(updated).toMatchObject({
+      isNewBest: false,
+      isLeaderboard: false,
+      leaderboardRank: null
+    })
     expect(storage.getBestScore(5)).toMatchObject({
       score: 120,
       accuracy: 100,
