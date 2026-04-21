@@ -9,11 +9,17 @@ const props = defineProps({
   difficulty: {
     type: Object,
     default: null
+  },
+  enabled: {
+    type: Boolean,
+    default: true
   }
 })
 
 const isSplitStage = computed(() => (
+  props.difficulty?.stage === 'gapWithinFive' ||
   props.difficulty?.stage === 'splitWithinFive' ||
+  props.difficulty?.stage === 'gapWithinTen' ||
   props.difficulty?.stage === 'splitWithinTen'
 ))
 
@@ -27,6 +33,7 @@ const knownPart = computed(() => {
 
 const missingCount = computed(() => Math.max(target.value - knownPart.value, 0))
 const shouldShow = computed(() => (
+  props.enabled &&
   isSplitStage.value &&
   props.question?.operator === '+' &&
   missingPart.value !== 'answer' &&

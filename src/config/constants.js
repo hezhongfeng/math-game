@@ -2,7 +2,8 @@
 
 // LocalStorage 存储键名 - 集中管理避免冲突
 export const STORAGE_KEYS = {
-  GAME_DATA: 'math-game-data'
+  GAME_DATA: 'math-game-data',
+  NUMBER_BOND_HINT: 'math-game-number-bond-hint-enabled'
 }
 
 export const GAME_CONFIG = {

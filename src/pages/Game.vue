@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertCircle, ArrowLeft, CheckCircle2, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
-import { GAME_CONFIG } from '../config/constants'
+import { GAME_CONFIG, STORAGE_KEYS } from '../config/constants'
 import { useGame } from '../composables/useGame'
 import { useStorage } from '../composables/useStorage'
 import { useToast } from '../composables/useToast'
@@ -57,6 +57,7 @@ const currentFeedbackState = ref('idle')
 const streakCount = ref(0)
 const showStreakReward = ref(false)
 const streakRewardText = ref('')
+const showNumberBondHint = ref(true)
 
 const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
@@ -73,6 +74,34 @@ const currentQuestion = computed(() => game.currentQuestion.value)
 const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
 const isIncorrect = computed(() => currentQuestion.value?.isCorrect === false)
 const shouldShowFeedback = computed(() => showAnswer.value && currentQuestion.value?.userAnswer !== null)
+const hasNumberBondHintLevel = computed(() => (
+  difficulty?.stage === 'gapWithinFive' ||
+  difficulty?.stage === 'splitWithinFive' ||
+  difficulty?.stage === 'gapWithinTen' ||
+  difficulty?.stage === 'splitWithinTen'
+))
+
+function loadNumberBondHintSetting() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.NUMBER_BOND_HINT)
+    showNumberBondHint.value = saved === null ? true : saved === 'true'
+  } catch (error) {
+    console.error('读取小球提示设置失败:', error)
+    showNumberBondHint.value = true
+  }
+}
+
+function toggleNumberBondHint() {
+  showNumberBondHint.value = !showNumberBondHint.value
+
+  try {
+    localStorage.setItem(STORAGE_KEYS.NUMBER_BOND_HINT, String(showNumberBondHint.value))
+  } catch (error) {
+    console.error('保存小球提示设置失败:', error)
+  }
+
+  playKeyPress()
+}
 
 function triggerHapticFeedback(level = 'medium') {
   if (navigator.vibrate) {
@@ -339,6 +368,7 @@ function handleKeyPress(event) {
 
 onMounted(() => {
   window.scrollTo(0, 0)
+  loadNumberBondHintSetting()
   initGame()
   window.addEventListener('keydown', handleKeyPress)
 })
@@ -387,6 +417,18 @@ onUnmounted(() => {
 
     <main class="main-layout">
       <section class="question-section">
+        <button
+          v-if="hasNumberBondHintLevel"
+          class="hint-toggle"
+          type="button"
+          :aria-pressed="showNumberBondHint"
+          :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+          data-testid="number-bond-hint-toggle"
+          @click="toggleNumberBondHint"
+        >
+          小球 {{ showNumberBondHint ? '开' : '关' }}
+        </button>
+
         <Transition name="streak-reward">
           <div v-if="showStreakReward" class="streak-reward">
             <Star :size="16" fill="currentColor" />
@@ -405,6 +447,7 @@ onUnmounted(() => {
             :user-answer="userAnswer"
             :current-index="game.currentIndex.value"
             :total-questions="game.questions.value.length"
+            :show-number-bond-hint="showNumberBondHint"
           />
         </Transition>
 
@@ -426,6 +469,7 @@ onUnmounted(() => {
                   :user-answer="userAnswer"
                   :current-index="game.currentIndex.value"
                   :total-questions="game.questions.value.length"
+                  :show-number-bond-hint="showNumberBondHint"
                   class="review-question"
                 />
                 
@@ -585,6 +629,30 @@ onUnmounted(() => {
   position: relative;
   justify-content: flex-start;
   min-height: 180px;
+}
+
+.hint-toggle {
+  align-self: center;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid rgba(92, 157, 255, 0.18);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+  font-size: 13px;
+  font-weight: 800;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.hint-toggle[aria-pressed="true"] {
+  color: var(--brand-primary);
+  background: rgba(235, 243, 255, 0.92);
+}
+
+.hint-toggle:active {
+  transform: scale(0.97);
 }
 
 .is-hidden-on-error {

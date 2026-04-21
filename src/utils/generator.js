@@ -320,6 +320,40 @@ function getStageSegments(difficulty) {
         }
       ]
 
+    case 'gapWithinFive':
+      return [
+        {
+          count: warmupCount,
+          predicate: (q) => (
+            q.missingPart === 'operand2' &&
+            q.result <= 3 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: coreCount,
+          predicate: (q) => (
+            q.missingPart === 'operand2' &&
+            q.result <= 4 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.missingPart === 'operand2' &&
+            q.result <= 5 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        }
+      ]
+
     case 'withinTenIntroAdd':
       return [
         { count: warmupCount, predicate: (q) => Math.min(q.operand1, q.operand2) <= 1 && q.answer <= 6 },
@@ -364,6 +398,40 @@ function getStageSegments(difficulty) {
         {
           count: challengeCount,
           predicate: (q) => (
+            q.result <= 10 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        }
+      ]
+
+    case 'gapWithinTen':
+      return [
+        {
+          count: warmupCount,
+          predicate: (q) => (
+            q.missingPart === 'operand2' &&
+            q.result <= 6 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: coreCount,
+          predicate: (q) => (
+            q.missingPart === 'operand2' &&
+            q.result <= 8 &&
+            q.answer >= 1 &&
+            q.operand1 >= 1 &&
+            q.operand2 >= 1
+          )
+        },
+        {
+          count: challengeCount,
+          predicate: (q) => (
+            q.missingPart === 'operand2' &&
             q.result <= 10 &&
             q.answer >= 1 &&
             q.operand1 >= 1 &&
@@ -422,6 +490,13 @@ function getStageSegments(difficulty) {
         { count: challengeCount, predicate: (q) => q.operand1 <= 13 && q.operand2 <= 3 && q.answer >= 10 }
       ]
 
+    case 'makeTenBridge':
+      return [
+        { count: warmupCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 2 && Math.min(q.operand1, q.operand2) >= 1 },
+        { count: coreCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 4 && Math.min(q.operand1, q.operand2) >= 1 },
+        { count: challengeCount, predicate: (q) => q.answer === 10 && q.operand1 >= 1 && q.operand2 >= 1 }
+      ]
+
     case 'bridgeTenAdd':
       return [
         {
@@ -454,6 +529,13 @@ function getStageSegments(difficulty) {
             q.answer <= 15
           )
         }
+      ]
+
+    case 'subtractFromTen':
+      return [
+        { count: warmupCount, predicate: (q) => q.operand1 === 10 && q.operand2 <= 2 && q.operand2 >= 1 },
+        { count: coreCount, predicate: (q) => q.operand1 === 10 && q.operand2 <= 5 && q.operand2 >= 1 },
+        { count: challengeCount, predicate: (q) => q.operand1 <= 12 && q.operand2 <= 3 && q.operand2 >= 1 && q.answer >= 8 }
       ]
 
     case 'bridgeTenSubtract':

@@ -26,6 +26,10 @@ const props = defineProps({
   totalQuestions: {
     type: Number,
     default: 20
+  },
+  showNumberBondHint: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -92,6 +96,7 @@ const answerStateClass = computed(() => ({
     <NumberBondHint
       :question="question"
       :difficulty="difficulty"
+      :enabled="showNumberBondHint"
     />
   </div>
 </template>

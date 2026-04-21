@@ -76,6 +76,7 @@ Displays the current math question and current position in the round. For split 
 | `userAnswer` | String | `''` | User's current input |
 | `currentIndex` | Number | `0` | Current question index (0-based) |
 | `totalQuestions` | Number | `10` | Total number of questions |
+| `showNumberBondHint` | Boolean | `true` | Whether to render the number-bond visual scaffold |
 
 #### Question Object Structure
 
@@ -100,20 +101,22 @@ Displays the current math question and current position in the round. For split 
 
 **File**: `src/components/NumberBondHint.vue`
 
-Visual slot hint used by split levels. It avoids strategy sentences in the question card and instead shows a row of up to 10 slots: known parts are filled, missing parts remain dashed, and the first missing slot is subtly highlighted.
+Visual slot hint used by split levels. It avoids strategy sentences in the question card and instead shows a row of up to 10 slots: known parts are filled and missing parts remain empty.
 
 #### Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `question` | Object | required | Missing-addition question object with `result` and `missingPart` |
-| `difficulty` | Object | `null` | Current difficulty config; only `splitWithinFive` and `splitWithinTen` display the hint |
+| `difficulty` | Object | `null` | Current difficulty config; only gap/split stages display the hint |
+| `enabled` | Boolean | `true` | Allows the gameplay page to hide the scaffold for fluent practice |
 
 #### Behavior
 
-- Shows only for split stages with missing addends, such as `2 + ? = 5`
+- Shows only for gap/split stages with missing addends, such as `2 + ? = 5`
 - Uses one row for up to 10 slots to reinforce decimal structure
 - Does not display explanatory strategy text, keeping the gameplay screen child-friendly and low-reading
+- Can be toggled from `Game.vue`; the preference is stored in localStorage
 
 ### DifficultyCard
 

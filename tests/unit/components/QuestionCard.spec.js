@@ -107,4 +107,25 @@ describe('QuestionCard.vue', () => {
     expect(wrapper.text()).not.toContain('5 的好朋友')
     expect(wrapper.text()).not.toContain('还差')
   })
+
+  test('can hide number-bond visual hint for fluent practice', async () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        difficulty: { stage: 'gapWithinFive' },
+        question: {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          result: 5,
+          answer: 3,
+          missingPart: 'operand2'
+        }
+      }
+    })
+
+    expect(wrapper.find('.number-bond-hint').exists()).toBe(true)
+
+    await wrapper.setProps({ showNumberBondHint: false })
+    expect(wrapper.find('.number-bond-hint').exists()).toBe(false)
+  })
 })
