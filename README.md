@@ -198,6 +198,7 @@ math-game/
 │   ├── components/          # 可复用组件
 │   │   ├── BallArray.vue         # 小球阵列展示（Three.js 3D球阵）
 │   │   ├── DifficultyCard.vue    # 难度卡片
+│   │   ├── NumberBondHint.vue    # 拆分空位可视化
 │   │   ├── NumberPad.vue         # 数字键盘（含确认按钮）
 │   │   ├── QuestionCard.vue      # 题目卡片
 │   │   ├── ResultModal.vue       # 结果弹窗

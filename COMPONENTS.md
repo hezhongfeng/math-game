@@ -9,6 +9,7 @@ src/components/
 ├── BallArray.vue           # Three.js ball-array visualization
 ├── DifficultyCard.vue      # Difficulty level selection card
 ├── ErrorBoundary.vue       # Error boundary wrapper
+├── NumberBondHint.vue      # Visual number-splitting slot hint
 ├── NumberPad.vue           # Numeric keypad (3×4 grid)
 ├── PWAUpdatePrompt.vue     # In-app PWA refresh prompt
 ├── QuestionCard.vue        # Current question display
@@ -63,13 +64,14 @@ A 3×4 numeric keypad with delete and confirm buttons. Optimized for mobile touc
 
 **File**: `src/components/QuestionCard.vue`
 
-Displays the current math question and current position in the round.
+Displays the current math question and current position in the round. For split stages, it embeds `NumberBondHint` as a low-text visual scaffold.
 
 #### Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `question` | Object | required | Question object with `operand1`, `operand2`, `operator`, `answer` |
+| `difficulty` | Object | `null` | Current difficulty config, used to decide whether split visualization should appear |
 | `showAnswer` | Boolean | `false` | Whether to show answer feedback |
 | `userAnswer` | String | `''` | User's current input |
 | `currentIndex` | Number | `0` | Current question index (0-based) |
@@ -93,6 +95,25 @@ Displays the current math question and current position in the round.
 - Default: shows the question and current input placeholder
 - Correct: shows the correct answer in the answer slot while the success overlay is handled by `Game.vue`
 - Wrong: keeps the user's answer visible while the error feedback card is handled by `Game.vue`
+
+### NumberBondHint
+
+**File**: `src/components/NumberBondHint.vue`
+
+Visual slot hint used by split levels. It avoids strategy sentences in the question card and instead shows a row of up to 10 slots: known parts are filled, missing parts remain dashed, and the first missing slot is subtly highlighted.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `question` | Object | required | Missing-addition question object with `result` and `missingPart` |
+| `difficulty` | Object | `null` | Current difficulty config; only `splitWithinFive` and `splitWithinTen` display the hint |
+
+#### Behavior
+
+- Shows only for split stages with missing addends, such as `2 + ? = 5`
+- Uses one row for up to 10 slots to reinforce decimal structure
+- Does not display explanatory strategy text, keeping the gameplay screen child-friendly and low-reading
 
 ### DifficultyCard
 

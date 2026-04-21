@@ -59,6 +59,12 @@
 - 输出结算结果（供结果弹窗和存储使用）
 - 支持基于指定题目列表重新开局，用于“练错题”
 
+题目展示组件：
+
+- `src/components/QuestionCard.vue` 负责题面、输入占位和答题状态展示
+- `src/components/NumberBondHint.vue` 只在 `splitWithinFive` / `splitWithinTen` 缺项加法中显示空位可视化
+- 拆分提示不展示策略文字；用一排最多 10 个空位表达“已知部分 / 缺少部分”，降低儿童阅读负担
+
 ## 4.1 数字探索逻辑
 
 `src/pages/NumberExplore.vue` 负责：
