@@ -43,12 +43,21 @@ npm run dev
 npm run build
 # or: pnpm build, yarn build
 
+# Run unit tests
+npm run test:unit
+# or: pnpm test:unit, yarn test:unit
+
+# Run Playwright E2E smoke tests
+npm run test:e2e
+# or: pnpm test:e2e, yarn test:e2e
+
 # Preview production build
 npm run preview
 # or: pnpm preview, yarn preview
 ```
 
 **Playwright E2E smoke tests are configured in this project.**
+**Vitest unit tests are also configured for core logic and key components.**
 
 ## Git 提交约定
 
@@ -316,7 +325,7 @@ padding-top: max(10px, env(safe-area-inset-top));
 ## Important Notes
 
 1. **No TypeScript** - This is a pure JavaScript project
-2. **E2E tests only** - Playwright 冒烟测试已配置，当前没有单元测试框架
+2. **Unit + E2E tests** - Vitest 单元测试和 Playwright 冒烟测试均已配置
 3. **Child-friendly design** - Use rounded corners, bright colors, fun animations
 4. **Mobile-first** - Design for touch screens first, then enhance for desktop
 5. **Progressive difficulty** - 24 levels, must complete previous to unlock next

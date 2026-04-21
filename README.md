@@ -5,7 +5,7 @@
 > **⚠️ 重要提示**：本项目专为手机浏览器优化，所有功能必须在移动端环境下完整测试通过后才能合并代码。
 
 ![数学运算游戏](https://img.shields.io/badge/Vue-3-4FC08D?style=flat-square&logo=vue.js)
-![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwind-css)
 
 ## 📚 文档导航（建议先读）
@@ -14,7 +14,7 @@
 |------|----------|
 | [DESIGN.md](./DESIGN.md) | 设计规范、移动端约束、视觉原则 |
 | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | 一页看懂路由、数据流与 PWA 架构 |
-| [docs/DIFFICULTY_CURVE.md](./docs/DIFFICULTY_CURVE.md) | 查看 20 关难度曲线、典型题型与边界 |
+| [docs/DIFFICULTY_CURVE.md](./docs/DIFFICULTY_CURVE.md) | 查看 24 关难度曲线、典型题型与边界 |
 | [COMPONENTS.md](./COMPONENTS.md) | 组件职责、输入输出、复用方式 |
 | [PWA.md](./PWA.md) | 安装、离线、更新策略 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | 提交流程、测试要求、PR 规范 |
@@ -107,6 +107,19 @@ pnpm preview
 
 ## ✅ 测试与质量
 
+### 单元测试（Vitest）
+
+```bash
+pnpm run test:unit
+```
+
+当前单测覆盖：
+
+- 题目生成边界：减法非负、缺项加法、分段规则
+- 游戏核心状态：开始、答题、推进、计时、错题重练
+- 本地存储：最佳成绩、过关解锁、旧存档兼容
+- 关键组件：数字键盘、题目卡片
+
 ### E2E 冒烟测试（Playwright）
 
 ```bash
@@ -132,6 +145,7 @@ pnpm run test:e2e:ui
 ### 合并前最低检查
 
 - `pnpm build` 通过
+- `pnpm run test:unit` 通过
 - `pnpm run test:e2e` 通过
 - 关键交互在手机浏览器实测通过（iOS Safari / Android Chrome）
 
@@ -407,6 +421,7 @@ touch-action: manipulation;
 
 - 难度与关卡数据：`src/config/difficulty.js`
 - 星级规则与评级文案：`src/utils/stars.js`
+- 单元测试用例与命令：`tests/unit/` + `package.json`
 - E2E 用例与命令：`tests/e2e/` + `package.json`
 - PWA 行为：`vite.config.js` 与 `src/components/PWAUpdatePrompt.vue`
 

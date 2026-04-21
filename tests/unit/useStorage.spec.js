@@ -109,4 +109,54 @@ describe('useStorage', () => {
     expect(storage.getAllBestScores()).toEqual({})
     expect(storage.getCompletedDifficulties()).toEqual([])
   })
+
+  test('normalizes legacy stats before updating results', async () => {
+    const legacyData = JSON.stringify({
+      bestScores: {},
+      leaderboards: {},
+      progress: {},
+      stats: {
+        totalAnswers: 3,
+        totalCorrect: 2
+      }
+    })
+    vi.stubGlobal('localStorage', createStorageMock(legacyData))
+
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+
+    expect(() => storage.updateBestScore(8, {
+      score: 0,
+      correctCount: 0,
+      totalCount: 1,
+      accuracy: 0,
+      duration: 12,
+      durationMs: 12000,
+      completedAt: '2026-03-25T00:10:00.000Z',
+      incorrectQuestions: [
+        {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          userAnswer: 4
+        }
+      ]
+    })).not.toThrow()
+
+    expect(storage.stats.value).toMatchObject({
+      totalAnswers: 4,
+      totalCorrect: 2,
+      mistakeLedger: {
+        '2+3': {
+          count: 1,
+          lastAnswer: 4
+        }
+      },
+      difficultyStats: {
+        8: {
+          totalPlayed: 1
+        }
+      }
+    })
+  })
 })

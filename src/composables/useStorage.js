@@ -21,6 +21,36 @@ function createDefaultData() {
   }
 }
 
+/**
+ * 兼容旧版本或部分损坏的存档结构
+ * @param {Object} stats - 已存储的统计数据
+ * @returns {Object} 规范化后的统计数据
+ */
+function normalizeStats(stats) {
+  const defaultStats = createDefaultData().stats
+
+  return {
+    ...defaultStats,
+    ...(stats || {}),
+    mistakeLedger: stats?.mistakeLedger || defaultStats.mistakeLedger,
+    difficultyStats: stats?.difficultyStats || defaultStats.difficultyStats
+  }
+}
+
+/**
+ * 兼容旧版本或部分损坏的完整存档结构
+ * @param {Object} data - 已存储的游戏数据
+ * @returns {Object} 规范化后的游戏数据
+ */
+function normalizeData(data) {
+  return {
+    bestScores: data?.bestScores || {},
+    leaderboards: data?.leaderboards || {},
+    progress: data?.progress || {},
+    stats: normalizeStats(data?.stats)
+  }
+}
+
 // 全局响应式缓存，避免重复读取 localStorage
 const storageData = shallowRef(createDefaultData())
 let isDataLoaded = false
@@ -31,12 +61,7 @@ if (typeof window !== 'undefined') {
     if (event.key === STORAGE_KEY) {
       try {
         const parsed = event.newValue ? JSON.parse(event.newValue) : createDefaultData()
-        storageData.value = {
-          bestScores: parsed.bestScores || {},
-          leaderboards: parsed.leaderboards || {},
-          progress: parsed.progress || {},
-          stats: parsed.stats || createDefaultData().stats
-        }
+        storageData.value = normalizeData(parsed)
         isDataLoaded = true
       } catch (error) {
         console.error('同步外部存储数据失败:', error)
@@ -83,12 +108,7 @@ export function useStorage() {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw)
-        storageData.value = {
-          bestScores: parsed.bestScores || {},
-          leaderboards: parsed.leaderboards || {},
-          progress: parsed.progress || {},
-          stats: parsed.stats || createDefaultData().stats
-        }
+        storageData.value = normalizeData(parsed)
       } else {
         storageData.value = createDefaultData()
       }
@@ -106,12 +126,7 @@ export function useStorage() {
    * 同时更新内存缓存
    */
   function saveData(data) {
-    const normalizedData = {
-      bestScores: { ...(data?.bestScores || {}) },
-      leaderboards: { ...(data?.leaderboards || {}) },
-      progress: { ...(data?.progress || {}) },
-      stats: { ...(data?.stats || createDefaultData().stats) }
-    }
+    const normalizedData = normalizeData(data)
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedData))
