@@ -13,6 +13,14 @@ const lowpassNode = ref(null)
 const isInitialized = ref(false)
 const soundLastPlayedAt = new Map()
 let cachedSpeechVoice = null
+let isSpeechPrimed = false
+let isSpeechPriming = false
+
+function canUseSpeechSynthesis() {
+  return typeof window !== 'undefined' &&
+    window.speechSynthesis &&
+    typeof SpeechSynthesisUtterance !== 'undefined'
+}
 
 function createAudioGraph(ctx) {
   const masterGain = ctx.createGain()
@@ -64,6 +72,61 @@ function resumeAudioContext() {
   }
 }
 
+function syncSpeechVoices() {
+  if (!canUseSpeechSynthesis()) {
+    return
+  }
+
+  const voices = window.speechSynthesis.getVoices()
+  if (voices.length) {
+    cachedSpeechVoice = null
+    getSpeechVoice()
+  }
+}
+
+function primeSpeechSynthesis() {
+  if (!canUseSpeechSynthesis() || isSpeechPrimed || isSpeechPriming) {
+    return
+  }
+
+  try {
+    isSpeechPrimed = true
+    isSpeechPriming = true
+    syncSpeechVoices()
+
+    const utterance = new SpeechSynthesisUtterance('嗯')
+    const voice = getSpeechVoice()
+
+    utterance.lang = voice?.lang || 'zh-CN'
+    utterance.voice = voice
+    utterance.rate = 1
+    utterance.pitch = 1
+    utterance.volume = 0
+    utterance.onend = () => {
+      isSpeechPriming = false
+    }
+    utterance.onerror = () => {
+      isSpeechPriming = false
+    }
+
+    window.speechSynthesis.resume?.()
+    window.speechSynthesis.speak(utterance)
+  } catch (error) {
+    isSpeechPrimed = false
+    isSpeechPriming = false
+    console.error('预热鼓励语音失败:', error)
+  }
+}
+
+function registerSpeechUnlockListeners() {
+  if (typeof document === 'undefined' || !canUseSpeechSynthesis()) {
+    return
+  }
+
+  document.addEventListener('touchstart', primeSpeechSynthesis, { once: true, passive: true })
+  document.addEventListener('click', primeSpeechSynthesis, { once: true, passive: true })
+}
+
 /**
  * 初始化 AudioContext，并建立统一输出总线
  */
@@ -94,6 +157,8 @@ export function initAudio() {
       masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
     })
 
+    registerSpeechUnlockListeners()
+
     isInitialized.value = true
   } catch (error) {
     console.warn('Web Audio API not supported:', error)
@@ -108,6 +173,7 @@ function getReadyAudioContext() {
   }
 
   resumeAudioContext()
+  primeSpeechSynthesis()
   return ctx
 }
 
@@ -206,7 +272,7 @@ function getSpeechVoice() {
 }
 
 function speakPraise(text) {
-  if (typeof window === 'undefined' || !window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') {
+  if (!canUseSpeechSynthesis()) {
     return
   }
 
@@ -224,6 +290,7 @@ function speakPraise(text) {
     utterance.pitch = 1.08
     utterance.volume = 0.8
 
+    window.speechSynthesis.resume?.()
     window.speechSynthesis.cancel()
     window.speechSynthesis.speak(utterance)
   } catch (error) {
@@ -407,6 +474,7 @@ export function playPraise(text = '太棒了') {
  */
 export function stopPraise() {
   if (typeof window !== 'undefined' && window.speechSynthesis) {
+    isSpeechPriming = false
     window.speechSynthesis.cancel()
   }
 }
@@ -455,7 +523,8 @@ export function useSound() {
     initAudio()
 
     if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.getVoices()
+      syncSpeechVoices()
+      window.speechSynthesis.onvoiceschanged = syncSpeechVoices
     }
   })
 

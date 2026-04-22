@@ -104,7 +104,7 @@ const answerStateClass = computed(() => ({
 <style scoped>
 .question-card {
   width: min(100%, 640px);
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: var(--radius-xl);
   background: var(--bg-panel-strong);
   border: 1px solid rgba(255, 255, 255, 0.72);
@@ -119,11 +119,11 @@ const answerStateClass = computed(() => ({
 
 .card-top {
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .counter-badge {
-  padding: 8px 12px;
+  padding: 5px 10px;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--border-light);
@@ -135,7 +135,7 @@ const answerStateClass = computed(() => ({
 .math-display {
   justify-content: center;
   gap: 8px;
-  min-height: 112px;
+  min-height: 82px;
 }
 
 .number,
@@ -233,11 +233,11 @@ const answerStateClass = computed(() => ({
 
 @media (max-width: 420px) {
   .question-card {
-    padding: 10px 14px;
+    padding: 8px 12px;
   }
 
   .math-display {
-    min-height: 96px;
+    min-height: 76px;
   }
 
   .answer {
@@ -249,16 +249,16 @@ const answerStateClass = computed(() => ({
 
 @media (max-width: 360px) {
   .card-top {
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .counter-badge {
-    padding: 8px 10px;
+    padding: 5px 9px;
     font-size: 12px;
   }
 
   .math-display {
-    min-height: 92px;
+    min-height: 72px;
   }
 
   .number,

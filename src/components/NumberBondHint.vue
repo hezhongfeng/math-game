@@ -81,8 +81,8 @@ const columnCount = computed(() => target.value)
 .number-bond-hint {
   width: fit-content;
   max-width: min(100%, 420px);
-  margin: 12px auto 0;
-  padding: 9px;
+  margin: 8px auto 0;
+  padding: 7px;
   border-radius: 26px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(92, 157, 255, 0.14);
@@ -93,8 +93,8 @@ const columnCount = computed(() => target.value)
   display: grid;
   grid-template-columns: repeat(var(--slot-columns), 24px);
   grid-auto-rows: 24px;
-  gap: 7px;
-  padding: 6px;
+  gap: 6px;
+  padding: 5px;
   border-radius: 20px;
   background: rgba(235, 243, 255, 0.72);
 }
@@ -121,13 +121,13 @@ const columnCount = computed(() => target.value)
 
 @media (max-width: 420px) {
   .number-bond-hint {
-    padding: 8px;
+    padding: 6px;
   }
 
   .slot-row {
     grid-template-columns: repeat(var(--slot-columns), 21px);
     grid-auto-rows: 21px;
-    gap: 5px;
+    gap: 4px;
   }
 
   .slot {

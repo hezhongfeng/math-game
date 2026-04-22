@@ -436,18 +436,6 @@ onUnmounted(() => {
 
     <main class="main-layout">
       <section class="question-section">
-        <button
-          v-if="hasNumberBondHintLevel"
-          class="hint-toggle"
-          type="button"
-          :aria-pressed="showNumberBondHint"
-          :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
-          data-testid="number-bond-hint-toggle"
-          @click="toggleNumberBondHint"
-        >
-          小球 {{ showNumberBondHint ? '开' : '关' }}
-        </button>
-
         <Transition name="streak-reward">
           <div v-if="showStreakReward" class="streak-reward">
             <Star :size="16" fill="currentColor" />
@@ -534,6 +522,18 @@ onUnmounted(() => {
             @submit="submitAnswer"
           />
         </div>
+
+        <button
+          v-if="hasNumberBondHintLevel"
+          class="hint-toggle"
+          type="button"
+          :aria-pressed="showNumberBondHint"
+          :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+          data-testid="number-bond-hint-toggle"
+          @click="toggleNumberBondHint"
+        >
+          小球 {{ showNumberBondHint ? '开' : '关' }}
+        </button>
       </section>
     </main>
 
@@ -647,19 +647,19 @@ onUnmounted(() => {
 .question-section {
   position: relative;
   justify-content: flex-start;
-  min-height: 180px;
+  min-height: 142px;
 }
 
 .hint-toggle {
   align-self: center;
-  min-height: 36px;
-  padding: 8px 14px;
+  min-height: 32px;
+  padding: 6px 12px;
   border: 1px solid rgba(92, 157, 255, 0.18);
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.86);
   color: var(--text-secondary);
   box-shadow: var(--shadow-sm);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -686,6 +686,10 @@ onUnmounted(() => {
 
 .keypad-wrap {
   order: 2;
+}
+
+.hint-toggle {
+  order: 3;
 }
 
 .feedback-wrap {
@@ -908,7 +912,7 @@ onUnmounted(() => {
 
   .question-section {
     justify-content: center;
-    min-height: 560px;
+    min-height: 500px;
   }
 
   .control-section {
@@ -962,7 +966,7 @@ onUnmounted(() => {
   }
 
   .question-section {
-    min-height: 152px;
+    min-height: 124px;
   }
 
   .feedback-card {
@@ -1026,7 +1030,7 @@ onUnmounted(() => {
   }
 
   .question-section {
-    min-height: 136px;
+    min-height: 112px;
   }
 }
 
