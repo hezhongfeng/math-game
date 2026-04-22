@@ -35,11 +35,12 @@ const {
   playWrong,
   playVictory,
   playUnlock,
-  playPraise,
+  playResultPraise,
   playBack,
   playKeyPress,
   playDelete,
-  playSubmit
+  playSubmit,
+  stopPraise
 } = useSound()
 
 const game = useGame(difficulty)
@@ -66,6 +67,8 @@ const SUBMIT_DEBOUNCE = 300
 
 let feedbackTimeout = null
 let streakRewardTimeout = null
+let unlockTimeout = null
+let resultPraiseTimeout = null
 let retryQuestions = null
 const isReviewRound = ref(false)
 
@@ -269,25 +272,17 @@ function handleGameComplete() {
     playVictory()
 
     if (updateResult.isNewBest) {
-      setTimeout(() => playUnlock(), 460)
-    }
-
-    if (!result.isReviewRound) {
-      setTimeout(() => {
-        if (result.accuracy >= 100) {
-          playPraise('太棒了')
-          return
-        }
-
-        if (result.accuracy >= 90) {
-          playPraise('真棒')
-          return
-        }
-
-        playPraise('过关啦')
-      }, updateResult.isNewBest ? 920 : 520)
+      unlockTimeout = setTimeout(() => playUnlock(), 460)
     }
   }
+
+  resultPraiseTimeout = setTimeout(() => {
+    playResultPraise({
+      accuracy: result.accuracy,
+      isNewBest: updateResult.isNewBest,
+      isReviewRound: result.isReviewRound
+    })
+  }, didPass ? (updateResult.isNewBest ? 920 : 520) : 320)
 }
 
 function goBack() {
@@ -296,6 +291,8 @@ function goBack() {
 }
 
 function resetRound({ preserveRetryQuestions = false, reviewRound = false } = {}) {
+  stopPraise()
+
   if (!preserveRetryQuestions) {
     retryQuestions = null
   }
@@ -318,6 +315,16 @@ function resetRound({ preserveRetryQuestions = false, reviewRound = false } = {}
   if (streakRewardTimeout) {
     clearTimeout(streakRewardTimeout)
     streakRewardTimeout = null
+  }
+
+  if (unlockTimeout) {
+    clearTimeout(unlockTimeout)
+    unlockTimeout = null
+  }
+
+  if (resultPraiseTimeout) {
+    clearTimeout(resultPraiseTimeout)
+    resultPraiseTimeout = null
   }
 
   initGame()
@@ -350,6 +357,7 @@ function handleRetryMistakes() {
 }
 
 function handleHome() {
+  stopPraise()
   showModal.value = false
   setTimeout(() => {
     router.push('/difficulty')
@@ -375,6 +383,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyPress)
+  stopPraise()
 
   if (feedbackTimeout) {
     clearTimeout(feedbackTimeout)
@@ -384,6 +393,16 @@ onUnmounted(() => {
   if (streakRewardTimeout) {
     clearTimeout(streakRewardTimeout)
     streakRewardTimeout = null
+  }
+
+  if (unlockTimeout) {
+    clearTimeout(unlockTimeout)
+    unlockTimeout = null
+  }
+
+  if (resultPraiseTimeout) {
+    clearTimeout(resultPraiseTimeout)
+    resultPraiseTimeout = null
   }
 })
 </script>

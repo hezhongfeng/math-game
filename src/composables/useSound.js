@@ -3,7 +3,8 @@ import {
   AUDIO_COOLDOWNS,
   AUDIO_ENGINE,
   AUDIO_FREQUENCIES,
-  AUDIO_PARAMS
+  AUDIO_PARAMS,
+  GAME_CONFIG
 } from '../config/constants'
 
 const audioContext = ref(null)
@@ -401,6 +402,54 @@ export function playPraise(text = '太棒了') {
   speakPraise(text)
 }
 
+/**
+ * 停止正在播放或排队的鼓励语音
+ */
+export function stopPraise() {
+  if (typeof window !== 'undefined' && window.speechSynthesis) {
+    window.speechSynthesis.cancel()
+  }
+}
+
+/**
+ * 根据结算结果选择一句主反馈语音
+ * @param {Object} result - 结算反馈参数
+ * @returns {string} 主反馈语音文案
+ */
+export function getResultPraiseText(result = {}) {
+  const accuracy = result.accuracy || 0
+
+  if (result.isNewBest && !result.isReviewRound) {
+    return '新纪录！真厉害！'
+  }
+
+  if (result.isReviewRound) {
+    return accuracy >= 100 ? '复习完成，越来越熟了！' : '再练一次，会更熟！'
+  }
+
+  if (accuracy >= 100) {
+    return '太棒了，全部答对！'
+  }
+
+  if (accuracy >= 90) {
+    return '真厉害，过关啦！'
+  }
+
+  if (accuracy >= GAME_CONFIG.PASS_ACCURACY) {
+    return '过关啦，继续挑战！'
+  }
+
+  return '没关系，再试一次！'
+}
+
+/**
+ * 播放结算主反馈语音
+ * @param {Object} result - 结算反馈参数
+ */
+export function playResultPraise(result = {}) {
+  playPraise(getResultPraiseText(result))
+}
+
 export function useSound() {
   onMounted(() => {
     initAudio()
@@ -421,6 +470,8 @@ export function useSound() {
     playBack,
     playVictory,
     playUnlock,
-    playPraise
+    playPraise,
+    stopPraise,
+    playResultPraise
   }
 }
