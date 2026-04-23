@@ -30,11 +30,11 @@
 `useSound`（`src/composables/useSound.js`）负责：
 
 - 基于 Web Audio API 合成并播放交互音效
-- 在结算时通过浏览器 / 系统 SpeechSynthesis 播放一句主反馈语音
+- 在结算时优先播放内置本地鼓励音频，失败时再通过浏览器 / 系统 SpeechSynthesis 兜底
 - 通过 master gain + lowpass 统一输出链路，降低刺耳感
 - 使用冷却时间限制高频触发，避免连点堆音
 - 使用 `AudioContext.currentTime` 调度多音序列，保证移动端稳定性
-- 在首次触摸 / 点击时静音预热 SpeechSynthesis，提高 iOS Safari 后续结算语音的播放成功率
+- 在初始化后预加载本地鼓励音频，并通过已解锁的 Web Audio 输出链路播放，提高 iOS Safari 结算语音成功率
 
 当前反馈策略：
 
@@ -48,7 +48,7 @@
 - 每轮只播放一句主反馈，避免多句播报打断孩子
 - 新纪录优先，其次是错题重练，再按正确率选择满分 / 高分 / 过关 / 再试一次
 - 语音会延后到胜利音或解锁音之后播放；如果用户立即再来或离开页面，待播放和正在播放的语音都会被清理
-- 语音合成走设备本地能力，不调用联网语音 API；如果设备缺少中文语音包，会自然降级为无语音或系统默认语音
+- 主路径使用 `public/audio/praise/*.wav` 本地文件，不调用联网语音 API；如果本地音频加载失败，才降级到设备 SpeechSynthesis
 
 产品约束：
 

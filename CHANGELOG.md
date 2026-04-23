@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added number exploration feature: input 1-1000 and visualize as ball arrays with strict decimal layout (rows → flats → 3D cube)
+- Added bundled local praise voice clips for round-completion feedback, improving offline and iOS playback reliability
 - Added 3D rotatable cube visualization for 1000 balls (CSS 3D transforms, touch-drag rotation)
 - Added `BallArray.vue` component with ball array display and 3D cube rotation
 - Added `NumberExplore.vue` page with input view ↔ display view toggle
@@ -32,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed PWA update flow to a single path via `vite-plugin-pwa` prompt handling
 - Changed round completion praise into a single primary voice feedback that covers records, passes, retries, and mistake-review rounds
+- Changed round completion praise playback to prefer local Web Audio clips before falling back to SpeechSynthesis
 - Changed PWA implementation cleanup to remove the legacy handwritten Service Worker and unused `usePWA` composable
 - Changed storage handling to reactive cache model with cross-tab synchronization
 - Changed settings lifecycle to single-load initialization with auto-persist on update
@@ -62,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated docs to reflect the 24-level curriculum, leaderboard behavior, and pass-completion audio feedback
 - Updated README and agent guide to reflect the current 24-level curriculum and Vitest unit-test coverage
 - Updated audio and architecture docs to describe the result voice-feedback timing and priority rules
+- Updated audio docs to document local praise clips and offline caching behavior
 
 ### Fixed
 

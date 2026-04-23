@@ -12,9 +12,23 @@ const masterGainNode = ref(null)
 const lowpassNode = ref(null)
 const isInitialized = ref(false)
 const soundLastPlayedAt = new Map()
+const praiseAudioBuffers = new Map()
+const praiseAudioLoading = new Map()
 let cachedSpeechVoice = null
 let isSpeechPrimed = false
 let isSpeechPriming = false
+let currentPraiseSource = null
+let praisePlaybackToken = 0
+
+const PRAISE_AUDIO_SOURCES = {
+  newBest: '/audio/praise/new-best.wav',
+  perfect: '/audio/praise/perfect.wav',
+  greatPass: '/audio/praise/great-pass.wav',
+  pass: '/audio/praise/pass.wav',
+  tryAgain: '/audio/praise/try-again.wav',
+  reviewPerfect: '/audio/praise/review-perfect.wav',
+  reviewMore: '/audio/praise/review-more.wav'
+}
 
 function canUseSpeechSynthesis() {
   return typeof window !== 'undefined' &&
@@ -57,6 +71,62 @@ function warmupAudioContext(ctx) {
 
   oscillator.start(now)
   oscillator.stop(now + 0.01)
+}
+
+async function decodeAudioData(ctx, audioData) {
+  return new Promise((resolve, reject) => {
+    const promise = ctx.decodeAudioData(audioData, resolve, reject)
+
+    if (promise?.then) {
+      promise.then(resolve).catch(reject)
+    }
+  })
+}
+
+async function loadPraiseAudioBuffer(key) {
+  if (praiseAudioBuffers.has(key)) {
+    return praiseAudioBuffers.get(key)
+  }
+
+  if (praiseAudioLoading.has(key)) {
+    return praiseAudioLoading.get(key)
+  }
+
+  const source = PRAISE_AUDIO_SOURCES[key]
+  const ctx = audioContext.value
+
+  if (!source || !ctx || typeof window === 'undefined' || !window.fetch) {
+    return null
+  }
+
+  const loading = window.fetch(source)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`加载鼓励语音失败: ${source}`)
+      }
+
+      return response.arrayBuffer()
+    })
+    .then((audioData) => decodeAudioData(ctx, audioData))
+    .then((buffer) => {
+      praiseAudioBuffers.set(key, buffer)
+      praiseAudioLoading.delete(key)
+      return buffer
+    })
+    .catch((error) => {
+      praiseAudioLoading.delete(key)
+      console.error('加载本地鼓励语音失败:', error)
+      return null
+    })
+
+  praiseAudioLoading.set(key, loading)
+  return loading
+}
+
+function preloadPraiseAudio() {
+  Object.keys(PRAISE_AUDIO_SOURCES).forEach((key) => {
+    loadPraiseAudioBuffer(key)
+  })
 }
 
 function resumeAudioContext() {
@@ -158,6 +228,7 @@ export function initAudio() {
     })
 
     registerSpeechUnlockListeners()
+    preloadPraiseAudio()
 
     isInitialized.value = true
   } catch (error) {
@@ -295,6 +366,68 @@ function speakPraise(text) {
     window.speechSynthesis.speak(utterance)
   } catch (error) {
     console.error('播放鼓励语音失败:', error)
+  }
+}
+
+function stopLocalPraise() {
+  praisePlaybackToken += 1
+
+  if (currentPraiseSource) {
+    try {
+      currentPraiseSource.stop()
+    } catch {
+      // 已经停止的 source 无需处理
+    }
+    currentPraiseSource = null
+  }
+}
+
+function schedulePraiseBuffer(ctx, buffer, token) {
+  if (token !== praisePlaybackToken) {
+    return null
+  }
+
+  if (!buffer || !masterGainNode.value) {
+    return false
+  }
+
+  stopLocalPraise()
+
+  const source = ctx.createBufferSource()
+  const gainNode = ctx.createGain()
+  const now = ctx.currentTime
+
+  source.buffer = buffer
+  gainNode.gain.setValueAtTime(0.86, now)
+  gainNode.gain.setTargetAtTime(0.0001, now + Math.max(buffer.duration - 0.08, 0.05), 0.03)
+  source.connect(gainNode)
+  gainNode.connect(masterGainNode.value)
+  source.onended = () => {
+    if (currentPraiseSource === source) {
+      currentPraiseSource = null
+    }
+  }
+  currentPraiseSource = source
+  source.start(now + 0.01)
+  return true
+}
+
+async function playLocalPraise(key, fallbackText) {
+  const ctx = getReadyAudioContext()
+
+  if (!ctx) {
+    speakPraise(fallbackText)
+    return
+  }
+
+  resumeAudioContext()
+  const token = praisePlaybackToken
+  const buffer = praiseAudioBuffers.get(key) || await loadPraiseAudioBuffer(key)
+
+  const didSchedule = schedulePraiseBuffer(ctx, buffer, token)
+
+  if (didSchedule === false) {
+    speakPraise(fallbackText)
   }
 }
 
@@ -473,6 +606,8 @@ export function playPraise(text = '太棒了') {
  * 停止正在播放或排队的鼓励语音
  */
 export function stopPraise() {
+  stopLocalPraise()
+
   if (typeof window !== 'undefined' && window.speechSynthesis) {
     isSpeechPriming = false
     window.speechSynthesis.cancel()
@@ -511,11 +646,42 @@ export function getResultPraiseText(result = {}) {
 }
 
 /**
+ * 根据结算结果选择本地鼓励语音资源键
+ * @param {Object} result - 结算反馈参数
+ * @returns {string} 本地语音资源键
+ */
+export function getResultPraiseKey(result = {}) {
+  const accuracy = result.accuracy || 0
+
+  if (result.isNewBest && !result.isReviewRound) {
+    return 'newBest'
+  }
+
+  if (result.isReviewRound) {
+    return accuracy >= 100 ? 'reviewPerfect' : 'reviewMore'
+  }
+
+  if (accuracy >= 100) {
+    return 'perfect'
+  }
+
+  if (accuracy >= 90) {
+    return 'greatPass'
+  }
+
+  if (accuracy >= GAME_CONFIG.PASS_ACCURACY) {
+    return 'pass'
+  }
+
+  return 'tryAgain'
+}
+
+/**
  * 播放结算主反馈语音
  * @param {Object} result - 结算反馈参数
  */
 export function playResultPraise(result = {}) {
-  playPraise(getResultPraiseText(result))
+  playLocalPraise(getResultPraiseKey(result), getResultPraiseText(result))
 }
 
 export function useSound() {
