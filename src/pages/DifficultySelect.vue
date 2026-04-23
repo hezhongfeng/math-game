@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Trophy } from 'lucide-vue-next'
 import { DIFFICULTY_GROUPS, getDifficultyById, TOTAL_LEVELS } from '../config/difficulty'
@@ -14,12 +14,49 @@ const { playClick, playBack } = useSound()
 const completedDifficulties = ref(getCompletedDifficulties())
 const isLeaving = ref(false)
 const NAVIGATION_DELAY = 180
+const SCROLL_STORAGE_KEY = 'math-game-difficulty-scroll-y'
 
 const completedCount = computed(() => completedDifficulties.value.length)
 const progressPercent = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
-onMounted(() => {
-  window.scrollTo(0, 0)
+function getSavedScrollY() {
+  try {
+    return Number(sessionStorage.getItem(SCROLL_STORAGE_KEY))
+  } catch (error) {
+    console.error('读取关卡页滚动位置失败:', error)
+    return 0
+  }
+}
+
+function saveScrollY() {
+  try {
+    sessionStorage.setItem(SCROLL_STORAGE_KEY, String(window.scrollY))
+  } catch (error) {
+    console.error('保存关卡页滚动位置失败:', error)
+  }
+}
+
+function clearSavedScrollY() {
+  try {
+    sessionStorage.removeItem(SCROLL_STORAGE_KEY)
+  } catch (error) {
+    console.error('清理关卡页滚动位置失败:', error)
+  }
+}
+
+onMounted(async () => {
+  const savedScrollY = getSavedScrollY()
+
+  if (!Number.isFinite(savedScrollY) || savedScrollY <= 0) {
+    window.scrollTo(0, 0)
+    return
+  }
+
+  await nextTick()
+  requestAnimationFrame(() => {
+    window.scrollTo(0, savedScrollY)
+    clearSavedScrollY()
+  })
 })
 
 function goBack(event) {
@@ -28,6 +65,7 @@ function goBack(event) {
   }
 
   isLeaving.value = true
+  clearSavedScrollY()
   playBack()
   const btn = event?.currentTarget
   if (btn) {
@@ -44,6 +82,7 @@ function selectDifficulty(event, difficulty) {
   }
 
   isLeaving.value = true
+  saveScrollY()
   playClick()
   const btn = event?.currentTarget
   if (btn) {

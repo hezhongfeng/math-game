@@ -50,6 +50,42 @@ function getAnswerFromExpression(expressionText) {
 }
 
 test.describe('E2E Smoke - Core Game Loops', () => {
+  test('keeps difficulty scroll position after returning from a level', async ({ page }) => {
+    await page.goto('/difficulty')
+    await page.evaluate(() => {
+      const bestScores = {}
+
+      for (let id = 1; id <= 23; id += 1) {
+        bestScores[id] = {
+          score: 100,
+          accuracy: 100,
+          completedAt: new Date().toISOString()
+        }
+      }
+
+      window.localStorage.setItem('math-game-data', JSON.stringify({
+        bestScores,
+        leaderboards: {},
+        progress: {},
+        stats: {
+          totalAnswers: 0,
+          totalCorrect: 0,
+          mistakeLedger: {},
+          difficultyStats: {}
+        }
+      }))
+    })
+    await page.reload()
+    await page.getByTestId('difficulty-card-20').scrollIntoViewIfNeeded()
+    const savedScrollY = await page.evaluate(() => window.scrollY)
+
+    await page.getByTestId('difficulty-card-20').click()
+    await expect(page).toHaveURL(/\/game\/20/)
+    await page.getByLabel('返回关卡页').click()
+    await expect(page).toHaveURL(/\/difficulty/)
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(savedScrollY - 2)
+  })
+
   test('successful navigation to game and first answer', async ({ page }) => {
     await openFirstLevel(page)
     

@@ -62,8 +62,8 @@ const showNumberBondHint = ref(true)
 
 const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
-const INPUT_DEBOUNCE = 100
-const SUBMIT_DEBOUNCE = 300
+const INPUT_DEBOUNCE = 45
+const SUBMIT_DEBOUNCE = 120
 
 let feedbackTimeout = null
 let streakRewardTimeout = null
