@@ -10,7 +10,7 @@ export default defineConfig({
       includeAssets: ['favicon.png', 'icons/icon.svg'],
       manifest: false, // 使用 public/manifest.json
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,wav}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,mp3}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -14,26 +14,17 @@ const isInitialized = ref(false)
 const soundLastPlayedAt = new Map()
 const praiseAudioBuffers = new Map()
 const praiseAudioLoading = new Map()
-let cachedSpeechVoice = null
-let isSpeechPrimed = false
-let isSpeechPriming = false
 let currentPraiseSource = null
 let praisePlaybackToken = 0
 
 const PRAISE_AUDIO_SOURCES = {
-  newBest: '/audio/praise/new-best.wav',
-  perfect: '/audio/praise/perfect.wav',
-  greatPass: '/audio/praise/great-pass.wav',
-  pass: '/audio/praise/pass.wav',
-  tryAgain: '/audio/praise/try-again.wav',
-  reviewPerfect: '/audio/praise/review-perfect.wav',
-  reviewMore: '/audio/praise/review-more.wav'
-}
-
-function canUseSpeechSynthesis() {
-  return typeof window !== 'undefined' &&
-    window.speechSynthesis &&
-    typeof SpeechSynthesisUtterance !== 'undefined'
+  newBest: '/audio/praise/new-best.mp3',
+  perfect: '/audio/praise/perfect.mp3',
+  greatPass: '/audio/praise/great-pass.mp3',
+  pass: '/audio/praise/pass.mp3',
+  tryAgain: '/audio/praise/try-again.mp3',
+  reviewPerfect: '/audio/praise/review-perfect.mp3',
+  reviewMore: '/audio/praise/review-more.mp3'
 }
 
 function createAudioGraph(ctx) {
@@ -142,61 +133,6 @@ function resumeAudioContext() {
   }
 }
 
-function syncSpeechVoices() {
-  if (!canUseSpeechSynthesis()) {
-    return
-  }
-
-  const voices = window.speechSynthesis.getVoices()
-  if (voices.length) {
-    cachedSpeechVoice = null
-    getSpeechVoice()
-  }
-}
-
-function primeSpeechSynthesis() {
-  if (!canUseSpeechSynthesis() || isSpeechPrimed || isSpeechPriming) {
-    return
-  }
-
-  try {
-    isSpeechPrimed = true
-    isSpeechPriming = true
-    syncSpeechVoices()
-
-    const utterance = new SpeechSynthesisUtterance('嗯')
-    const voice = getSpeechVoice()
-
-    utterance.lang = voice?.lang || 'zh-CN'
-    utterance.voice = voice
-    utterance.rate = 1
-    utterance.pitch = 1
-    utterance.volume = 0
-    utterance.onend = () => {
-      isSpeechPriming = false
-    }
-    utterance.onerror = () => {
-      isSpeechPriming = false
-    }
-
-    window.speechSynthesis.resume?.()
-    window.speechSynthesis.speak(utterance)
-  } catch (error) {
-    isSpeechPrimed = false
-    isSpeechPriming = false
-    console.error('预热鼓励语音失败:', error)
-  }
-}
-
-function registerSpeechUnlockListeners() {
-  if (typeof document === 'undefined' || !canUseSpeechSynthesis()) {
-    return
-  }
-
-  document.addEventListener('touchstart', primeSpeechSynthesis, { once: true, passive: true })
-  document.addEventListener('click', primeSpeechSynthesis, { once: true, passive: true })
-}
-
 /**
  * 初始化 AudioContext，并建立统一输出总线
  */
@@ -227,7 +163,6 @@ export function initAudio() {
       masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
     })
 
-    registerSpeechUnlockListeners()
     preloadPraiseAudio()
 
     isInitialized.value = true
@@ -244,7 +179,6 @@ function getReadyAudioContext() {
   }
 
   resumeAudioContext()
-  primeSpeechSynthesis()
   return ctx
 }
 
@@ -324,51 +258,6 @@ function withTinyVariation(frequency) {
   return frequency * ratio
 }
 
-function getSpeechVoice() {
-  if (cachedSpeechVoice) {
-    return cachedSpeechVoice
-  }
-
-  if (typeof window === 'undefined' || !window.speechSynthesis) {
-    return null
-  }
-
-  const voices = window.speechSynthesis.getVoices()
-  const preferredVoice = voices.find((voice) => (
-    voice.lang?.startsWith('zh') && /female|xiao|mei|ting|hui/i.test(voice.name)
-  )) || voices.find((voice) => voice.lang?.startsWith('zh')) || null
-
-  cachedSpeechVoice = preferredVoice
-  return preferredVoice
-}
-
-function speakPraise(text) {
-  if (!canUseSpeechSynthesis()) {
-    return
-  }
-
-  if (shouldThrottle('praise')) {
-    return
-  }
-
-  try {
-    const utterance = new SpeechSynthesisUtterance(text)
-    const voice = getSpeechVoice()
-
-    utterance.lang = voice?.lang || 'zh-CN'
-    utterance.voice = voice
-    utterance.rate = 1
-    utterance.pitch = 1.08
-    utterance.volume = 0.8
-
-    window.speechSynthesis.resume?.()
-    window.speechSynthesis.cancel()
-    window.speechSynthesis.speak(utterance)
-  } catch (error) {
-    console.error('播放鼓励语音失败:', error)
-  }
-}
-
 function stopLocalPraise() {
   praisePlaybackToken += 1
 
@@ -412,11 +301,10 @@ function schedulePraiseBuffer(ctx, buffer, token) {
   return true
 }
 
-async function playLocalPraise(key, fallbackText) {
+async function playLocalPraise(key) {
   const ctx = getReadyAudioContext()
 
   if (!ctx) {
-    speakPraise(fallbackText)
     return
   }
 
@@ -427,7 +315,7 @@ async function playLocalPraise(key, fallbackText) {
   const didSchedule = schedulePraiseBuffer(ctx, buffer, token)
 
   if (didSchedule === false) {
-    speakPraise(fallbackText)
+    console.error('播放本地鼓励语音失败:', key)
   }
 }
 
@@ -598,20 +486,11 @@ export function playUnlock() {
   scheduleSequence(ctx, AUDIO_FREQUENCIES.unlock, AUDIO_PARAMS.unlock, ctx.currentTime + 0.008)
 }
 
-export function playPraise(text = '太棒了') {
-  speakPraise(text)
-}
-
 /**
  * 停止正在播放或排队的鼓励语音
  */
 export function stopPraise() {
   stopLocalPraise()
-
-  if (typeof window !== 'undefined' && window.speechSynthesis) {
-    isSpeechPriming = false
-    window.speechSynthesis.cancel()
-  }
 }
 
 /**
@@ -681,17 +560,12 @@ export function getResultPraiseKey(result = {}) {
  * @param {Object} result - 结算反馈参数
  */
 export function playResultPraise(result = {}) {
-  playLocalPraise(getResultPraiseKey(result), getResultPraiseText(result))
+  playLocalPraise(getResultPraiseKey(result))
 }
 
 export function useSound() {
   onMounted(() => {
     initAudio()
-
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      syncSpeechVoices()
-      window.speechSynthesis.onvoiceschanged = syncSpeechVoices
-    }
   })
 
   return {
@@ -705,7 +579,6 @@ export function useSound() {
     playBack,
     playVictory,
     playUnlock,
-    playPraise,
     stopPraise,
     playResultPraise
   }

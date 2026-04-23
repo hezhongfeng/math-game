@@ -27,13 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added round-end mistake summary with in-modal review and one-tap retry for incorrect questions
 - Added range-selectable challenge mode to number exploration for repeated practice within specific quantity bands
 - Added per-level top-10 speed leaderboards with local fastest-time storage and in-UI display
-- Added short pass-completion praise voice playback using browser speech synthesis
+- Added short pass-completion praise voice playback using bundled local audio files
 
 ### Changed
 
 - Changed PWA update flow to a single path via `vite-plugin-pwa` prompt handling
 - Changed round completion praise into a single primary voice feedback that covers records, passes, retries, and mistake-review rounds
-- Changed round completion praise playback to prefer local Web Audio clips before falling back to SpeechSynthesis
+- Changed round completion praise playback to use bundled local audio files directly
 - Changed PWA implementation cleanup to remove the legacy handwritten Service Worker and unused `usePWA` composable
 - Changed storage handling to reactive cache model with cross-tab synchronization
 - Changed settings lifecycle to single-load initialization with auto-persist on update
