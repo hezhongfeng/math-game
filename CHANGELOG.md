@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed arithmetic progression from raw number-range jumps to a 24-level child-learning curve based on counting, combinations, make-ten, bridge-ten, and missing-number stages
 - Changed question counts to grow gradually by stage instead of staying fixed at 20 for every level
 - Changed transition levels to use softer warm-up/core/challenge sampling for smoother difficulty ramps
+- Changed number-bond hint toggle to a floating in-question control that only appears on supported visual-hint questions
 
 ### Removed
 

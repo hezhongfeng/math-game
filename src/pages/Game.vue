@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { AlertCircle, ArrowLeft, CheckCircle2, RotateCcw, Star } from 'lucide-vue-next'
+import { AlertCircle, ArrowLeft, CheckCircle2, CircleDot, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG, STORAGE_KEYS } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -83,6 +83,24 @@ const hasNumberBondHintLevel = computed(() => (
   difficulty?.stage === 'gapWithinTen' ||
   difficulty?.stage === 'splitWithinTen'
 ))
+const currentQuestionHasNumberBondHint = computed(() => {
+  const question = currentQuestion.value
+  if (!hasNumberBondHintLevel.value || !question) return false
+
+  const missingPart = question.missingPart || 'answer'
+  const target = question.result || question.answer || 0
+  const knownPart = missingPart === 'operand1' ? question.operand2 : question.operand1
+  const missingCount = Math.max(target - knownPart, 0)
+
+  return (
+    question.operator === '+' &&
+    missingPart !== 'answer' &&
+    target >= 2 &&
+    target <= 10 &&
+    knownPart > 0 &&
+    missingCount > 0
+  )
+})
 
 function loadNumberBondHintSetting() {
   try {
@@ -458,6 +476,20 @@ onUnmounted(() => {
           />
         </Transition>
 
+        <button
+          v-if="currentQuestionHasNumberBondHint"
+          class="hint-toggle"
+          type="button"
+          :aria-pressed="showNumberBondHint"
+          :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+          :title="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+          data-testid="number-bond-hint-toggle"
+          @click="toggleNumberBondHint"
+        >
+          <CircleDot :size="20" />
+          <span>{{ showNumberBondHint ? '开' : '关' }}</span>
+        </button>
+
         <Transition name="feedback">
           <div
             v-if="shouldShowFeedback"
@@ -523,17 +555,6 @@ onUnmounted(() => {
           />
         </div>
 
-        <button
-          v-if="hasNumberBondHintLevel"
-          class="hint-toggle"
-          type="button"
-          :aria-pressed="showNumberBondHint"
-          :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
-          data-testid="number-bond-hint-toggle"
-          @click="toggleNumberBondHint"
-        >
-          小球 {{ showNumberBondHint ? '开' : '关' }}
-        </button>
       </section>
     </main>
 
@@ -651,16 +672,26 @@ onUnmounted(() => {
 }
 
 .hint-toggle {
-  align-self: center;
-  min-height: 32px;
-  padding: 6px 12px;
-  border: 1px solid rgba(92, 157, 255, 0.18);
-  border-radius: var(--radius-full);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 48px;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1px solid rgba(92, 157, 255, 0.22);
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.86);
   color: var(--text-secondary);
   box-shadow: var(--shadow-sm);
   font-size: 12px;
   font-weight: 800;
+  line-height: 1;
+  transition: transform var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -668,6 +699,7 @@ onUnmounted(() => {
 .hint-toggle[aria-pressed="true"] {
   color: var(--brand-primary);
   background: rgba(235, 243, 255, 0.92);
+  box-shadow: var(--shadow-sm), 0 0 12px rgba(92, 157, 255, 0.18);
 }
 
 .hint-toggle:active {
@@ -686,10 +718,6 @@ onUnmounted(() => {
 
 .keypad-wrap {
   order: 2;
-}
-
-.hint-toggle {
-  order: 3;
 }
 
 .feedback-wrap {
