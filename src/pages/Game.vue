@@ -462,33 +462,37 @@ onUnmounted(() => {
         </Transition>
 
         <Transition name="question" mode="out-in">
-          <QuestionCard
+          <div
             v-if="game.currentQuestion.value"
             :key="questionKey"
-            :class="{ 'is-hidden-on-error': isIncorrect && shouldShowFeedback }"
-            :question="game.currentQuestion.value"
-            :difficulty="difficulty"
-            :show-answer="showAnswer"
-            :user-answer="userAnswer"
-            :current-index="game.currentIndex.value"
-            :total-questions="game.questions.value.length"
-            :show-number-bond-hint="showNumberBondHint"
-          />
-        </Transition>
+            class="question-shell"
+          >
+            <QuestionCard
+              :class="{ 'is-hidden-on-error': isIncorrect && shouldShowFeedback }"
+              :question="game.currentQuestion.value"
+              :difficulty="difficulty"
+              :show-answer="showAnswer"
+              :user-answer="userAnswer"
+              :current-index="game.currentIndex.value"
+              :total-questions="game.questions.value.length"
+              :show-number-bond-hint="showNumberBondHint"
+            />
 
-        <button
-          v-if="currentQuestionHasNumberBondHint"
-          class="hint-toggle"
-          type="button"
-          :aria-pressed="showNumberBondHint"
-          :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
-          :title="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
-          data-testid="number-bond-hint-toggle"
-          @click="toggleNumberBondHint"
-        >
-          <CircleDot :size="20" />
-          <span>{{ showNumberBondHint ? '开' : '关' }}</span>
-        </button>
+            <button
+              v-if="currentQuestionHasNumberBondHint"
+              class="hint-toggle"
+              type="button"
+              :aria-pressed="showNumberBondHint"
+              :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+              :title="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+              data-testid="number-bond-hint-toggle"
+              @click="toggleNumberBondHint"
+            >
+              <CircleDot :size="20" />
+              <span>{{ showNumberBondHint ? '开' : '关' }}</span>
+            </button>
+          </div>
+        </Transition>
 
         <Transition name="feedback">
           <div
@@ -671,10 +675,18 @@ onUnmounted(() => {
   min-height: 142px;
 }
 
+.question-shell {
+  position: relative;
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding-bottom: 18px;
+}
+
 .hint-toggle {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  right: 12px;
+  bottom: 0;
+  transform: translateY(32%);
   z-index: 6;
   display: inline-flex;
   align-items: center;
@@ -703,7 +715,7 @@ onUnmounted(() => {
 }
 
 .hint-toggle:active {
-  transform: scale(0.97);
+  transform: translateY(32%) scale(0.97);
 }
 
 .is-hidden-on-error {
