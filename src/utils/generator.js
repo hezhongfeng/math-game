@@ -137,6 +137,7 @@ function createQuestionPool(operation, min, max) {
     return createMissingAdditionPool(min, max, true)
   }
 
+  console.warn(`Unknown operation "${operation}", falling back to mixed pool`)
   return [...createAdditionPool(min, max), ...createSubtractionPool(min, max)]
 }
 

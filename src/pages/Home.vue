@@ -15,7 +15,7 @@ const NAVIGATION_DELAY = 180
 
 const floatingSymbols = ['+', '-', '=', '?', '1', '2', '3']
 
-function startGame(event) {
+function navigateTo(route, event) {
   if (isLeaving.value) {
     return
   }
@@ -27,24 +27,16 @@ function startGame(event) {
     btn.classList.add('is-leaving')
   }
   setTimeout(() => {
-    router.push('/difficulty')
+    router.push(route)
   }, NAVIGATION_DELAY)
 }
 
-function goToExplore(event) {
-  if (isLeaving.value) {
-    return
-  }
+function startGame(event) {
+  navigateTo('/difficulty', event)
+}
 
-  isLeaving.value = true
-  playClick()
-  const btn = event?.currentTarget
-  if (btn) {
-    btn.classList.add('is-leaving')
-  }
-  setTimeout(() => {
-    router.push('/explore')
-  }, NAVIGATION_DELAY)
+function goToExplore(event) {
+  navigateTo('/explore', event)
 }
 
 onMounted(() => {

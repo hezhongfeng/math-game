@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 const toasts = ref([])
+const timers = new Map()
 
 export function useToast() {
   const DEFAULT_DURATION = 3000
@@ -17,15 +18,21 @@ export function useToast() {
     toasts.value.push(toast)
 
     if (duration > 0) {
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
+        timers.delete(id)
         removeToast(id)
       }, duration)
+      timers.set(id, timerId)
     }
 
     return id
   }
 
   function removeToast(id) {
+    if (timers.has(id)) {
+      clearTimeout(timers.get(id))
+      timers.delete(id)
+    }
     const index = toasts.value.findIndex(t => t.id === id)
     if (index > -1) {
       toasts.value.splice(index, 1)

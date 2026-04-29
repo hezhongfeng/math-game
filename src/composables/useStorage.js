@@ -56,20 +56,31 @@ const storageData = shallowRef(createDefaultData())
 let isDataLoaded = false
 
 // 监听其他标签页的 storage 变化，同步缓存
-if (typeof window !== 'undefined') {
-  window.addEventListener('storage', (event) => {
-    if (event.key === STORAGE_KEY) {
-      try {
-        const parsed = event.newValue ? JSON.parse(event.newValue) : createDefaultData()
-        storageData.value = normalizeData(parsed)
-        isDataLoaded = true
-      } catch (error) {
-        console.error('同步外部存储数据失败:', error)
-        storageData.value = createDefaultData()
-        isDataLoaded = true
-      }
+function handleStorageEvent(event) {
+  if (event.key === STORAGE_KEY) {
+    try {
+      const parsed = event.newValue ? JSON.parse(event.newValue) : createDefaultData()
+      storageData.value = normalizeData(parsed)
+      isDataLoaded = true
+    } catch (error) {
+      console.error('同步外部存储数据失败:', error)
+      storageData.value = createDefaultData()
+      isDataLoaded = true
     }
-  })
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', handleStorageEvent)
+}
+
+/**
+ * 移除跨标签页 storage 事件监听，用于测试清理
+ */
+export function offStorageChange() {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('storage', handleStorageEvent)
+  }
 }
 
 /**
