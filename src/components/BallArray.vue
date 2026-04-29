@@ -21,6 +21,7 @@ let animationId = null
 let introStartTime = 0
 let resizeObserver = null
 let orbitDomElement = null
+let controlsChangeHandler = null
 let orbitTouchStartHandler = null
 let THREE = null
 let animationDummy = null
@@ -117,6 +118,11 @@ function cleanupControls() {
     orbitDomElement.style.touchAction = ''
   }
 
+  if (controls && controlsChangeHandler) {
+    controls.removeEventListener('change', controlsChangeHandler)
+  }
+
+  controlsChangeHandler = null
   orbitTouchStartHandler = null
   orbitDomElement = null
 
@@ -143,6 +149,9 @@ async function loadOrbitControls() {
   controls.enablePan = !touchDevice
   controls.enableRotate = true
   controls.autoRotate = false
+
+  controlsChangeHandler = () => { scheduleRender() }
+  controls.addEventListener('change', controlsChangeHandler)
   controls.autoRotateSpeed = 0.7
   controls.rotateSpeed = 0.6
   controls.zoomSpeed = 0.8
@@ -446,12 +455,26 @@ function getBounds(positions) {
   }
 }
 
+function scheduleRender() {
+  if (!animationId && renderer && scene && camera) {
+    animationId = requestAnimationFrame(renderOnce)
+  }
+}
+
+function renderOnce() {
+  animationId = null
+  if (renderer && scene && camera) {
+    controls?.update()
+    renderer.render(scene, camera)
+  }
+}
+
 function animate(time) {
   animationId = requestAnimationFrame(animate)
 
   if (renderer && scene && camera) {
     controls?.update()
-    
+
     if (instancedMesh && instancedMesh.userData.animating) {
       const positions = instancedMesh.userData.positions
       const count = positions.length
@@ -462,14 +485,14 @@ function animate(time) {
         const delay = (count - i) * 1.5
         const ballElapsed = Math.max(0, elapsed - delay)
         const duration = 650
-        
+
         let progress = ballElapsed / duration
         if (progress < 1) {
           allDone = false
         } else {
           progress = 1
         }
-        
+
         const easeOutElastic = (t) => {
           const c4 = (2 * Math.PI) / 3
           return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1
@@ -483,10 +506,18 @@ function animate(time) {
         animationDummy.updateMatrix()
         instancedMesh.setMatrixAt(i, animationDummy.matrix)
       }
-      
+
       instancedMesh.instanceMatrix.needsUpdate = true
       if (allDone) {
         instancedMesh.userData.animating = false
+        // Stop the rAF loop — render on demand from here on
+        if (animationId) {
+          cancelAnimationFrame(animationId)
+          animationId = null
+        }
+        // Do one final render so the last frame is displayed
+        renderer.render(scene, camera)
+        return
       }
     }
 
@@ -537,6 +568,7 @@ function handleResize() {
   camera.updateProjectionMatrix()
   renderer.setSize(width, height)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  scheduleRender()
 }
 
 onMounted(() => {
@@ -561,7 +593,12 @@ onUnmounted(() => {
 
 watch(() => props.count, async () => {
   await nextTick()
+  if (animationId) {
+    cancelAnimationFrame(animationId)
+    animationId = null
+  }
   createBalls()
+  animate(performance.now())
 })
 </script>
 

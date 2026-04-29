@@ -1,4 +1,4 @@
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import {
   AUDIO_COOLDOWNS,
   AUDIO_ENGINE,
@@ -16,6 +16,7 @@ const praiseAudioBuffers = new Map()
 const praiseAudioLoading = new Map()
 let currentPraiseSource = null
 let praisePlaybackToken = 0
+let visibilityChangeHandler = null
 
 const PRAISE_AUDIO_SOURCES = {
   newBest: '/audio/praise/new-best.mp3',
@@ -148,14 +149,15 @@ export function initAudio() {
       }, { once: true, passive: true })
     }
 
-    document.addEventListener('visibilitychange', () => {
+    visibilityChangeHandler = () => {
       if (!masterGainNode.value) {
         return
       }
 
       const targetGain = document.hidden ? AUDIO_ENGINE.MASTER_GAIN * 0.55 : AUDIO_ENGINE.MASTER_GAIN
       masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
-    })
+    }
+    document.addEventListener('visibilitychange', visibilityChangeHandler)
 
     preloadPraiseAudio()
 
@@ -560,6 +562,13 @@ export function playResultPraise(result = {}) {
 export function useSound() {
   onMounted(() => {
     initAudio()
+  })
+
+  onUnmounted(() => {
+    if (visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', visibilityChangeHandler)
+      visibilityChangeHandler = null
+    }
   })
 
   return {

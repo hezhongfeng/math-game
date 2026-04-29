@@ -287,6 +287,19 @@
 .btn-success,
 .btn-circular,
 .card-hover {
+  will-change: auto;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-circular:hover,
+.card-hover:hover,
+.btn-primary:active,
+.btn-secondary:active,
+.btn-success:active,
+.btn-circular:active,
+.card-hover:active {
   will-change: transform;
 }
 
