@@ -629,6 +629,23 @@ function getStageSegments(difficulty) {
 }
 
 /**
+ * 准备单道题目：补齐 result/missingPart/id，清空作答状态
+ * @param {Object} question - 原始题目对象
+ * @param {number} index - 题目索引
+ * @returns {Object} 标准化后的题目
+ */
+export function prepareQuestion(question, index) {
+  return {
+    ...question,
+    result: typeof question.result === 'number' ? question.result : question.answer,
+    missingPart: question.missingPart || 'answer',
+    id: index + 1,
+    userAnswer: null,
+    isCorrect: null
+  }
+}
+
+/**
  * 根据难度配置生成题目列表
  * @param {Object} difficulty - 难度配置对象
  * @returns {Array} 题目列表
@@ -649,14 +666,7 @@ export function generateQuestions(difficulty) {
 
   const questions = selectBySegments(pool, getStageSegments(difficulty), questionCount)
 
-  return questions.map((question, index) => ({
-    ...question,
-    result: typeof question.result === 'number' ? question.result : question.answer,
-    missingPart: question.missingPart || 'answer',
-    id: index + 1,
-    userAnswer: null,
-    isCorrect: null
-  }))
+  return questions.map((question, index) => prepareQuestion(question, index))
 }
 
 /**

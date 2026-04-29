@@ -1,5 +1,5 @@
 import { ref, computed, toValue } from 'vue'
-import { generateQuestions, checkAnswer } from '../utils/generator'
+import { generateQuestions, checkAnswer, prepareQuestion } from '../utils/generator'
 
 /**
  * 游戏核心逻辑 Composable
@@ -46,24 +46,13 @@ export function useGame(difficulty) {
     return isNaN(result) ? 0 : Math.max(0, result)
   })
 
-  function cloneQuestion(question, index) {
-    return {
-      ...question,
-      result: typeof question.result === 'number' ? question.result : question.answer,
-      missingPart: question.missingPart || 'answer',
-      id: index + 1,
-      userAnswer: null,
-      isCorrect: null
-    }
-  }
-
   /**
    * 开始游戏
    */
   function startGame(options = {}) {
     const customQuestions = Array.isArray(options.questions) ? options.questions : null
     questions.value = customQuestions
-      ? customQuestions.map((question, index) => cloneQuestion(question, index))
+      ? customQuestions.map((question, index) => prepareQuestion(question, index))
       : generateQuestions(difficultyValue.value)
     currentIndex.value = 0
     score.value = 0

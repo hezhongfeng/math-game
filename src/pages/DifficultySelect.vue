@@ -8,15 +8,14 @@ import { useSound } from '../composables/useSound'
 import DifficultyCard from '../components/DifficultyCard.vue'
 
 const router = useRouter()
-const { getBestScore, getCompletedDifficulties, getLeaderboard } = useStorage()
+const { getBestScore, completedIds, getLeaderboard } = useStorage()
 const { playClick, playBack } = useSound()
 
-const completedDifficulties = ref(getCompletedDifficulties())
 const isLeaving = ref(false)
 const NAVIGATION_DELAY = 180
 const SCROLL_STORAGE_KEY = 'math-game-difficulty-scroll-y'
 
-const completedCount = computed(() => completedDifficulties.value.length)
+const completedCount = computed(() => completedIds.value.length)
 const progressPercent = computed(() => Math.round((completedCount.value / TOTAL_LEVELS) * 100))
 
 function getSavedScrollY() {
@@ -103,7 +102,7 @@ function getDifficultyLeaderboard(difficultyId) {
 
 const lockedStatusMap = computed(() => {
   const map = new Map()
-  const completed = completedDifficulties.value
+  const completed = completedIds.value
 
   DIFFICULTY_GROUPS.forEach((group) => {
     group.levels.forEach((id) => {
@@ -172,7 +171,7 @@ function isDifficultyLocked(difficulty) {
             :key="id"
             :difficulty="getDifficultyById(id)"
             :is-locked="isDifficultyLocked(getDifficultyById(id))"
-            :is-completed="completedDifficulties.includes(id)"
+            :is-completed="completedIds.includes(id)"
             :best-score="getDifficultyBestScore(id)"
             :leaderboard="getDifficultyLeaderboard(id)"
             @select="selectDifficulty"

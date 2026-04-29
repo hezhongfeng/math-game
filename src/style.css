@@ -73,6 +73,27 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* 儿童友好字体大小 */
+  .text-child-sm {
+    font-size: var(--font-sm);
+  }
+
+  .text-child-base {
+    font-size: var(--font-base);
+  }
+
+  .text-child-lg {
+    font-size: var(--font-lg);
+  }
+
+  .text-child-xl {
+    font-size: var(--font-xl);
+  }
+
+  .text-child-2xl {
+    font-size: var(--font-2xl);
+  }
 }
 
 @layer components {

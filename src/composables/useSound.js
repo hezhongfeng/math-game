@@ -65,13 +65,7 @@ function warmupAudioContext(ctx) {
 }
 
 async function decodeAudioData(ctx, audioData) {
-  return new Promise((resolve, reject) => {
-    const promise = ctx.decodeAudioData(audioData, resolve, reject)
-
-    if (promise?.then) {
-      promise.then(resolve).catch(reject)
-    }
-  })
+  return ctx.decodeAudioData(audioData)
 }
 
 async function loadPraiseAudioBuffer(key) {
