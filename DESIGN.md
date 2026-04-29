@@ -301,7 +301,7 @@ module.exports = {
 | 功能 | iOS Safari | Android Chrome | 降级方案 |
 |------|------------|----------------|----------|
 | Vibration API | ⚠️ 部分支持 | ✅ | 静默失败 |
-| Web Speech API | ✅ | ✅ | 显示提示 |
+| 本地鼓励语音 / Web Audio | ✅ | ✅ | 静默降级为无语音提示 |
 | LocalStorage | ✅ | ✅ | 使用内存存储 |
 | CSS 动画 | ✅ | ✅ | 使用 JS 动画 |
 | Web Audio API | ✅ (需交互) | ✅ | 显示提示 |
@@ -336,14 +336,14 @@ iOS Safari 对 Web Audio API 有严格的自动播放策略，必须在用户交
 ### 渲染优化
 
 - **CSS 动画**：使用 transform/opacity，避免重排
-- **组件懒加载**：路由级别代码分割
+- **关键库拆分**：`three` 单独打包，降低主包耦合
 - **图标优化**：Lucide Vue Next 按需导入
 
 ### 包体积
 
-- **构建大小**：~146KB (gzip: 53KB)
-- **CSS 大小**：~63KB (gzip: 12KB)
-- **首屏加载**：< 500ms (3G 网络)
+- 构建体积会随着关卡、Three.js 可视化和音频资源变动而变化
+- 如需更新体积数据，请以当前 `npm run build` 产物为准，不要长期维护手写固定数字
+- 首屏性能应优先通过真实构建产物和移动端实测判断
 
 ---
 

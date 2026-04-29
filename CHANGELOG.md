@@ -16,11 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added number exploration feature: input 1-1000 and visualize as ball arrays with strict decimal layout (rows → flats → 3D cube)
+- Added number exploration feature: input 1-1000 and visualize as strict decimal ball arrays
 - Added bundled local praise voice clips for round-completion feedback, improving offline and iOS playback reliability
-- Added 3D rotatable cube visualization for 1000 balls (CSS 3D transforms, touch-drag rotation)
-- Added `BallArray.vue` component with ball array display and 3D cube rotation
-- Added `NumberExplore.vue` page with input view ↔ display view toggle
+- Added `BallArray.vue` component with unified Three.js decimal ball-array rendering
+- Added `NumberExplore.vue` page with free exploration and range-based challenge practice
 - Added Playwright E2E smoke suite for core mobile flow (`tests/e2e/smoke.spec.js`)
 - Added CI workflow to run E2E smoke tests on pull requests (`.github/workflows/e2e-smoke.yml`)
 - Added architecture quick-reference document (`docs/ARCHITECTURE.md`)
@@ -66,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README and agent guide to reflect the current 24-level curriculum and Vitest unit-test coverage
 - Updated audio and architecture docs to describe the result voice-feedback timing and priority rules
 - Updated audio docs to document local praise clips and offline caching behavior
+- Updated CLAUDE, PWA, and design docs to remove outdated level counts, deprecated Web Speech references, and stale PWA wording
 
 ### Fixed
 
