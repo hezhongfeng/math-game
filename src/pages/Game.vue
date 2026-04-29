@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertCircle, ArrowLeft, CheckCircle2, CircleDot, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
@@ -47,11 +47,8 @@ const game = useGame(difficulty)
 const showAnswer = ref(false)
 const isWaiting = ref(false)
 const userAnswer = ref('')
-const showModal = ref(false)
-const resultData = ref(null)
-const isNewBest = ref(false)
-const leaderboard = ref([])
-const leaderboardRank = ref(null)
+const modalResult = ref(null)
+const modalVisible = ref(false)
 const questionKey = ref(0)
 const isLoading = ref(true)
 const currentFeedbackState = ref('idle')
@@ -59,6 +56,14 @@ const streakCount = ref(0)
 const showStreakReward = ref(false)
 const streakRewardText = ref('')
 const showNumberBondHint = ref(true)
+
+watch(modalResult, (result, prev) => {
+  if (result && !prev) {
+    modalVisible.value = true
+  } else if (!result && prev) {
+    modalVisible.value = false
+  }
+})
 
 const lastInputTime = ref(0)
 const lastSubmitTime = ref(0)
@@ -280,11 +285,12 @@ function handleGameComplete() {
 
   triggerHapticFeedback(stars >= 4 ? 'strong' : 'medium')
 
-  resultData.value = result
-  isNewBest.value = updateResult.isNewBest
-  leaderboard.value = updateResult.leaderboard || []
-  leaderboardRank.value = updateResult.leaderboardRank
-  showModal.value = true
+  modalResult.value = {
+    ...result,
+    isNewBest: updateResult.isNewBest,
+    leaderboard: updateResult.leaderboard || [],
+    leaderboardRank: updateResult.leaderboardRank
+  }
 
   if (didPass) {
     playVictory()
@@ -316,7 +322,7 @@ function resetRound({ preserveRetryQuestions = false, reviewRound = false } = {}
   }
 
   isReviewRound.value = reviewRound
-  showModal.value = false
+  modalResult.value = null
   userAnswer.value = ''
   showAnswer.value = false
   isWaiting.value = false
@@ -353,7 +359,7 @@ function handleRetry() {
 }
 
 function handleRetryMistakes() {
-  const incorrectQuestions = resultData.value?.incorrectQuestions || []
+  const incorrectQuestions = modalResult.value?.incorrectQuestions || []
   if (!incorrectQuestions.length) {
     handleRetry()
     return
@@ -376,10 +382,11 @@ function handleRetryMistakes() {
 
 function handleHome() {
   stopPraise()
-  showModal.value = false
+  modalVisible.value = false
   setTimeout(() => {
+    modalResult.value = null
     router.push('/difficulty')
-  }, 150)
+  }, 300)
 }
 
 function handleKeyPress(event) {
@@ -563,13 +570,13 @@ onUnmounted(() => {
     </main>
 
     <ResultModal
-      v-if="resultData"
-      :show="showModal"
-      :result="resultData"
-      :is-new-best="isNewBest"
+      v-if="modalResult"
+      :show="modalVisible"
+      :result="modalResult"
+      :is-new-best="modalResult.isNewBest"
       :difficulty-id="props.id"
-      :leaderboard="leaderboard"
-      :leaderboard-rank="leaderboardRank"
+      :leaderboard="modalResult.leaderboard"
+      :leaderboard-rank="modalResult.leaderboardRank"
       @retry="handleRetry"
       @retry-mistakes="handleRetryMistakes"
       @home="handleHome"
