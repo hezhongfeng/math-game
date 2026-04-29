@@ -397,12 +397,12 @@ function goHome() {
                 <span>看球阵猜数字</span>
               </div>
               <div class="challenge-ball-shell">
-                <BallArray :count="challengeTargetCount" />
+                <BallArray :count="challengeTargetCount" size="compact" />
               </div>
             </section>
 
             <section class="pad-stage">
-              <NumberPad @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
+              <NumberPad size="compact" @input="handleInput" @delete="handleDelete" @submit="handleSubmit" />
             </section>
           </section>
         </main>
@@ -571,7 +571,7 @@ function goHome() {
   border: 1px solid rgba(92, 157, 255, 0.14);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.84);
-  color: #416da9;
+  color: var(--text-blue);
   font-size: 15px;
   font-weight: 800;
   transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
@@ -612,7 +612,7 @@ function goHome() {
 
 .range-selector-copy {
   margin: 0;
-  color: #6982a0;
+  color: var(--text-blue-light);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -680,7 +680,7 @@ function goHome() {
   border-radius: var(--radius-full);
   background: rgba(92, 157, 255, 0.1);
   border: 1px solid rgba(92, 157, 255, 0.12);
-  color: #3f6db4;
+  color: var(--brand-primary);
   font-size: var(--font-sm);
   font-weight: 800;
 }
@@ -688,7 +688,7 @@ function goHome() {
 .range-badge {
   background: rgba(107, 203, 119, 0.12);
   border-color: rgba(107, 203, 119, 0.18);
-  color: #2f8251;
+  color: var(--text-teal);
 }
 
 .number-display {
@@ -705,7 +705,7 @@ function goHome() {
   border: 2px solid rgba(92, 157, 255, 0.18);
   background: linear-gradient(180deg, #ffffff 0%, #f1f7ff 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 10px 20px rgba(92, 157, 255, 0.08);
-  color: #17345f;
+  color: var(--text-navy);
   font-size: clamp(48px, 14vw, 76px);
   font-weight: 800;
   line-height: 1;
@@ -734,18 +734,18 @@ function goHome() {
 .status-copy {
   min-height: 16px;
   margin-top: 6px;
-  color: #5e738f;
+  color: var(--text-blue-subtle);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.25;
 }
 
 .status-copy.is-warning {
-  color: #c96c22;
+  color: var(--text-warning);
 }
 
 .status-copy.is-success {
-  color: #34905a;
+  color: var(--text-success);
 }
 
 .challenge-meta,
@@ -770,7 +770,7 @@ function goHome() {
   border: 1px solid rgba(92, 157, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
-  color: #466da6;
+  color: var(--text-blue-muted);
   font-size: 12px;
   font-weight: 800;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
@@ -798,13 +798,13 @@ function goHome() {
 }
 
 .challenge-label {
-  color: #6a809e;
+  color: var(--text-blue-light);
   font-size: 10px;
   font-weight: 700;
 }
 
 .challenge-card strong {
-  color: #23497e;
+  color: var(--text-blue-dark);
   font-size: 13px;
   font-weight: 900;
 }
@@ -823,7 +823,7 @@ function goHome() {
   border: 1px solid rgba(92, 157, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
-  color: #345f9c;
+  color: var(--brand-primary);
   font-size: 14px;
   font-weight: 800;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
@@ -856,7 +856,7 @@ function goHome() {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #3b639c;
+  color: var(--text-info);
   font-size: 12px;
   font-weight: 800;
   margin-bottom: 6px;
@@ -865,65 +865,6 @@ function goHome() {
 .challenge-ball-shell {
   border-radius: 20px;
   overflow: hidden;
-}
-
-.pad-stage :deep(.number-pad) {
-  width: 100%;
-  border-radius: 28px;
-}
-
-.challenge-workspace .pad-stage :deep(.number-pad) {
-  padding: 6px;
-  border-radius: 18px;
-}
-
-.challenge-workspace .pad-stage :deep(.pad-shell) {
-  padding: 3px;
-  border-radius: 14px;
-}
-
-.challenge-workspace .pad-stage :deep(.pad-grid) {
-  gap: 6px;
-}
-
-.challenge-workspace .pad-stage :deep(.num-btn) {
-  min-width: 50px;
-  min-height: 50px;
-  border-radius: 14px;
-  font-size: 27px;
-}
-
-.challenge-workspace .pad-stage :deep(.num-btn svg) {
-  width: 23px;
-  height: 23px;
-}
-
-.challenge-workspace .challenge-ball-shell :deep(.ball-array),
-.challenge-workspace .challenge-ball-shell :deep(.canvas-wrapper) {
-  min-height: 138px;
-  border-radius: 20px;
-}
-
-.challenge-workspace .challenge-ball-shell :deep(.ball-array::before) {
-  inset: 8px;
-  border-radius: 14px;
-}
-
-.challenge-workspace .challenge-ball-shell :deep(.ball-array::after) {
-  inset: auto 10px 8px;
-}
-
-.pad-stage :deep(.btn-delete) {
-  color: var(--candy-peach-dark);
-}
-
-.pad-stage :deep(.btn-submit) {
-  color: white;
-}
-
-.pad-stage :deep(.num-btn:focus-visible) {
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.16);
 }
 
 .result-number-shell {
@@ -945,11 +886,11 @@ function goHome() {
 .result-badge {
   background: rgba(107, 203, 119, 0.12);
   border-color: rgba(107, 203, 119, 0.18);
-  color: #2f8251;
+  color: var(--text-teal);
 }
 
 .result-copy {
-  color: #46617f;
+  color: var(--text-blue-subtle);
   font-size: 15px;
   font-weight: 800;
   line-height: 1.5;
@@ -981,7 +922,7 @@ function goHome() {
   min-height: 52px;
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 247, 255, 0.96) 100%);
-  color: #244a7f;
+  color: var(--text-info-dark);
   font-size: 18px;
   font-weight: 900;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
@@ -1009,7 +950,7 @@ function goHome() {
 }
 
 .secondary-btn {
-  color: #355b93;
+  color: var(--text-info-muted);
 }
 
 @media (hover: hover) {
@@ -1018,7 +959,7 @@ function goHome() {
   .secondary-btn:hover,
   .range-chip:hover:not(.is-active) {
     border-color: rgba(92, 157, 255, 0.28);
-    background: #f7fbff;
+    background: var(--bg-light);
   }
 
   .mode-btn:hover:not(.is-active) {
@@ -1076,30 +1017,6 @@ function goHome() {
   .challenge-workspace {
     padding: 6px;
     gap: 6px;
-  }
-
-  .challenge-workspace .pad-stage :deep(.number-pad) {
-    padding: 4px;
-  }
-
-  .challenge-workspace .pad-stage :deep(.pad-grid) {
-    gap: 5px;
-  }
-
-  .challenge-workspace .pad-stage :deep(.num-btn) {
-    min-width: 46px;
-    min-height: 46px;
-    font-size: 24px;
-  }
-
-  .challenge-workspace .pad-stage :deep(.num-btn svg) {
-    width: 20px;
-    height: 20px;
-  }
-
-  .challenge-workspace .challenge-ball-shell :deep(.ball-array),
-  .challenge-workspace .challenge-ball-shell :deep(.canvas-wrapper) {
-    min-height: 124px;
   }
 
   .result-copy {

@@ -263,7 +263,7 @@ onMounted(() => {
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(49, 120, 246, 0.06);
-  color: #3178F6;
+  color: var(--text-link);
   font-size: 13px;
   font-weight: 700;
 }
@@ -377,7 +377,7 @@ onMounted(() => {
 
 .btn-main:active {
   transform: scale(0.96);
-  background: #295fcb;
+  background: var(--brand-primary-dark);
 }
 
 .btn-main.is-leaving {

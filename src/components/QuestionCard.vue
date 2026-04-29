@@ -179,15 +179,15 @@ const answerStateClass = computed(() => ({
 }
 
 .operator-plus {
-  color: #0F3D91;
+  color: var(--operator-add);
 }
 
 .operator-minus {
-  color: #0D6B57;
+  color: var(--operator-subtract);
 }
 
 .equals {
-  color: #8A5A00;
+  color: var(--operator-equals);
   background: rgba(245, 201, 74, 0.12);
   min-width: clamp(40px, 8vw, 52px);
   height: clamp(40px, 8vw, 52px);
@@ -198,8 +198,8 @@ const answerStateClass = computed(() => ({
   min-width: 80px;
   padding: 12px 14px;
   border-radius: var(--radius-lg);
-  background: #F7FAFF;
-  border: 2px solid #DCE7FA;
+  background: var(--bg-light);
+  border: 2px solid var(--border-default);
   text-align: center;
   transition: all var(--duration-fast) var(--ease-standard);
 }

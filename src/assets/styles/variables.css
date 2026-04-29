@@ -17,6 +17,7 @@
 
   --brand-warning: #FF9F43;        /* 活力橙 */
   --brand-warning-light: #FFB771;
+  --brand-warning-dark: #E68A35;
   --brand-warning-soft: #FFF5EC;
 
   --brand-alert: #FF6B6B;          /* 珊瑚红 (温和的提示) */
@@ -56,6 +57,30 @@
   --candy-lavender-light: #C1BCFF;
   --candy-lavender-dark: #8278E6;
   --candy-lavender-soft: #F4F3FF;
+
+  /* 运算符颜色 */
+  --operator-add: #0F3D91;
+  --operator-subtract: #0D6B57;
+  --operator-equals: #8A5A00;
+
+  /* 文字色彩扩展 */
+  --text-blue: #416da9;
+  --text-blue-dark: #23497e;
+  --text-blue-light: #6982a0;
+  --text-blue-muted: #466da6;
+  --text-blue-subtle: #5e738f;
+  --text-navy: #17345f;
+  --text-teal: #2f8251;
+  --text-link: #3178F6;
+  --text-info: #3b639c;
+  --text-info-dark: #244a7f;
+  --text-info-muted: #355b93;
+  --text-warning: #c96c22;
+  --text-success: #34905a;
+
+  /* 品牌扩展 */
+  --brand-primary-dark: #295fcb;
+  --brand-success-dark: #34905a;
 
   /* 页面背景与面板 */
   --bg-light: #F7FAFF;

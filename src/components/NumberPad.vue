@@ -5,6 +5,11 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  size: {
+    type: String,
+    default: 'normal',
+    validator: (v) => ['normal', 'compact'].includes(v)
   }
 })
 
@@ -29,7 +34,7 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="number-pad" :class="{ 'is-disabled': disabled }">
+  <div class="number-pad" :class="{ 'is-disabled': disabled, 'number-pad--compact': size === 'compact' }">
     <div class="pad-shell">
       <div class="pad-grid">
         <button
@@ -183,6 +188,46 @@ function handleSubmit() {
   box-shadow: none;
 }
 
+.number-pad--compact {
+  width: 100%;
+  padding: 6px;
+  border-radius: 18px;
+}
+
+.number-pad--compact .pad-shell {
+  padding: 3px;
+  border-radius: 14px;
+}
+
+.number-pad--compact .pad-grid {
+  gap: 6px;
+}
+
+.number-pad--compact .num-btn {
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 14px;
+  font-size: 27px;
+}
+
+.number-pad--compact .num-btn svg {
+  width: 23px;
+  height: 23px;
+}
+
+.number-pad--compact .btn-delete {
+  color: var(--candy-peach-dark);
+}
+
+.number-pad--compact .btn-submit {
+  color: white;
+}
+
+.number-pad--compact .num-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.16);
+}
+
 @media (min-width: 768px) {
   .number-pad {
     padding: 18px;
@@ -226,6 +271,25 @@ function handleSubmit() {
   .num-btn svg {
     width: 30px;
     height: 30px;
+  }
+
+  .number-pad--compact {
+    padding: 4px;
+  }
+
+  .number-pad--compact .pad-grid {
+    gap: 5px;
+  }
+
+  .number-pad--compact .num-btn {
+    min-width: 46px;
+    min-height: 46px;
+    font-size: 24px;
+  }
+
+  .number-pad--compact .num-btn svg {
+    width: 20px;
+    height: 20px;
   }
 }
 

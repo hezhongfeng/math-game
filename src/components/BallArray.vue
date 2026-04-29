@@ -6,6 +6,11 @@ const props = defineProps({
     type: Number,
     required: true,
     validator: (v) => v >= 1 && v <= 1000
+  },
+  size: {
+    type: String,
+    default: 'normal',
+    validator: (v) => ['normal', 'compact'].includes(v)
   }
 })
 
@@ -603,7 +608,7 @@ watch(() => props.count, async () => {
 </script>
 
 <template>
-  <div class="ball-array">
+  <div class="ball-array" :class="{ 'ball-array--compact': size === 'compact' }">
     <div ref="canvasRef" class="canvas-wrapper"></div>
   </div>
 </template>
@@ -664,6 +669,21 @@ watch(() => props.count, async () => {
   height: 100% !important;
 }
 
+.ball-array--compact,
+.ball-array--compact .canvas-wrapper {
+  min-height: 138px;
+  border-radius: 20px;
+}
+
+.ball-array--compact::before {
+  inset: 8px;
+  border-radius: 14px;
+}
+
+.ball-array--compact::after {
+  inset: auto 10px 8px;
+}
+
 @media (max-width: 420px) {
   .ball-array,
   .canvas-wrapper {
@@ -678,6 +698,11 @@ watch(() => props.count, async () => {
 
   .ball-array::after {
     inset: auto 14px 10px;
+  }
+
+  .ball-array--compact,
+  .ball-array--compact .canvas-wrapper {
+    min-height: 124px;
   }
 }
 

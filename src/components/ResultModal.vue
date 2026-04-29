@@ -371,8 +371,8 @@ function handleOverlayClick() {
 }
 
 .record-chip {
-  color: #E68A35;
-  background: #FFF5EC;
+  color: var(--brand-warning-dark);
+  background: var(--brand-warning-soft);
 }
 
 .result-title {
@@ -406,7 +406,7 @@ function handleOverlayClick() {
 .star-icon:nth-child(5) { animation-delay: 450ms; }
 
 .star-inactive {
-  color: #E9F0FA;
+  color: var(--border-light);
 }
 
 .insight-card {
@@ -608,17 +608,17 @@ function handleOverlayClick() {
 }
 
 .mistake-operator-plus {
-  color: #0F3D91;
+  color: var(--operator-add);
   background: var(--brand-primary-soft);
 }
 
 .mistake-operator-minus {
-  color: #0D6B57;
+  color: var(--operator-subtract);
   background: var(--brand-success-soft);
 }
 
 .mistake-equals {
-  color: #8A5A00;
+  color: var(--operator-equals);
   background: var(--brand-reward-soft);
 }
 
