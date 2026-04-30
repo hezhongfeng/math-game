@@ -29,7 +29,7 @@ const props = defineProps({
   },
   showNumberBondHint: {
     type: Boolean,
-    default: true
+    default: false
   }
 })
 

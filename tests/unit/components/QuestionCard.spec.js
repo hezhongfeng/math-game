@@ -112,6 +112,7 @@ describe('QuestionCard.vue', () => {
     const wrapper = mount(QuestionCard, {
       props: {
         difficulty: { stage: 'gapWithinFive' },
+        showNumberBondHint: true,
         question: {
           operand1: 2,
           operand2: 3,
@@ -127,5 +128,86 @@ describe('QuestionCard.vue', () => {
 
     await wrapper.setProps({ showNumberBondHint: false })
     expect(wrapper.find('.number-bond-hint').exists()).toBe(false)
+  })
+
+  test('keeps ball visual hint off by default', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: {
+          operand1: 3,
+          operand2: 2,
+          operator: '+',
+          answer: 5,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    expect(wrapper.find('[data-testid="ball-hint"]').exists()).toBe(false)
+  })
+
+  test('shows addition balls as two groups', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 3,
+          operand2: 2,
+          operator: '+',
+          answer: 5,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    const hint = wrapper.find('[data-testid="ball-hint"]')
+    const slots = hint.findAll('.slot')
+
+    expect(hint.classes()).toContain('is-addition')
+    expect(slots).toHaveLength(5)
+    expect(slots.filter(slot => slot.classes().includes('is-addend-one'))).toHaveLength(3)
+    expect(slots.filter(slot => slot.classes().includes('is-addend-two'))).toHaveLength(2)
+    expect(hint.attributes('style')).toContain('--slot-columns: 10')
+  })
+
+  test('shows subtraction balls with removed items', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 5,
+          operand2: 2,
+          operator: '-',
+          answer: 3,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    const hint = wrapper.find('[data-testid="ball-hint"]')
+    const slots = hint.findAll('.slot')
+
+    expect(hint.classes()).toContain('is-subtraction')
+    expect(slots).toHaveLength(5)
+    expect(slots.filter(slot => slot.classes().includes('is-removed'))).toHaveLength(2)
+    expect(slots.filter(slot => slot.classes().includes('is-remaining'))).toHaveLength(3)
+  })
+
+  test('caps ball visual hint at 30 balls', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 20,
+          operand2: 20,
+          operator: '+',
+          answer: 40,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    expect(wrapper.findAll('.slot')).toHaveLength(30)
+    expect(wrapper.find('.overflow-badge').text()).toBe('+10')
   })
 })

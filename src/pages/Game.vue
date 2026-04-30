@@ -55,7 +55,7 @@ const currentFeedbackState = ref('idle')
 const streakCount = ref(0)
 const showStreakReward = ref(false)
 const streakRewardText = ref('')
-const showNumberBondHint = ref(true)
+const showNumberBondHint = ref(false)
 
 watch(modalResult, (result, prev) => {
   if (result && !prev) {
@@ -82,38 +82,31 @@ const currentQuestion = computed(() => game.currentQuestion.value)
 const isCorrect = computed(() => currentQuestion.value?.isCorrect === true)
 const isIncorrect = computed(() => currentQuestion.value?.isCorrect === false)
 const shouldShowFeedback = computed(() => showAnswer.value && currentQuestion.value?.userAnswer !== null)
-const hasNumberBondHintLevel = computed(() => (
-  difficulty?.stage === 'gapWithinFive' ||
-  difficulty?.stage === 'splitWithinFive' ||
-  difficulty?.stage === 'gapWithinTen' ||
-  difficulty?.stage === 'splitWithinTen'
-))
 const currentQuestionHasNumberBondHint = computed(() => {
   const question = currentQuestion.value
-  if (!hasNumberBondHintLevel.value || !question) return false
+  if (!question) return false
 
   const missingPart = question.missingPart || 'answer'
-  const target = question.result || question.answer || 0
-  const knownPart = missingPart === 'operand1' ? question.operand2 : question.operand1
-  const missingCount = Math.max(target - knownPart, 0)
+  let ballCount = 0
 
-  return (
-    question.operator === '+' &&
-    missingPart !== 'answer' &&
-    target >= 2 &&
-    target <= 10 &&
-    knownPart > 0 &&
-    missingCount > 0
-  )
+  if (question.operator === '+' && missingPart !== 'answer') {
+    ballCount = question.result || question.answer || 0
+  } else if (question.operator === '+') {
+    ballCount = (Number(question.operand1) || 0) + (Number(question.operand2) || 0)
+  } else if (question.operator === '-') {
+    ballCount = Number(question.operand1) || 0
+  }
+
+  return ballCount > 0
 })
 
 function loadNumberBondHintSetting() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.NUMBER_BOND_HINT)
-    showNumberBondHint.value = saved === null ? true : saved === 'true'
+    showNumberBondHint.value = saved === null ? false : saved === 'true'
   } catch (error) {
     console.error('读取小球提示设置失败:', error)
-    showNumberBondHint.value = true
+    showNumberBondHint.value = false
   }
 }
 
