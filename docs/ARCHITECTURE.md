@@ -70,9 +70,9 @@
 题目展示组件：
 
 - `src/components/QuestionCard.vue` 负责题面、输入占位和答题状态展示
-- `src/components/NumberBondHint.vue` 只在 `gapWithinFive` / `splitWithinFive` / `gapWithinTen` / `splitWithinTen` 缺项加法中显示空位可视化
-- 拆分提示不展示策略文字；用一排最多 10 个空位表达“已知部分 / 缺少部分”，降低儿童阅读负担
-- `Game.vue` 提供悬浮“小球开/关”切换，仅在当前题目会显示空位可视化时出现；关闭后会写入 `math-game-number-bond-hint-enabled`，方便熟练后练习
+- `src/components/NumberBondHint.vue` 根据题型显示极简小球辅助：加法用两组小球表达合并，减法用划掉的小球表达拿走，缺项加法用实心/空心表达已知与未知
+- 小球辅助不展示策略文字；每行固定 10 个位置，最多渲染 30 个小球，超过部分以 `+N` 标记，兼顾十进制感和移动端空间
+- `Game.vue` 提供悬浮“小球开/关”切换，仅在当前题目支持小球辅助时出现；默认关闭，打开后会写入 `math-game-number-bond-hint-enabled`，方便熟练后练习
 
 ## 4.1 数字探索逻辑
 

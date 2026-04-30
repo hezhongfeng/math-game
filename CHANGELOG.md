@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed question counts to grow gradually by stage instead of staying fixed at 20 for every level
 - Changed transition levels to use softer warm-up/core/challenge sampling for smoother difficulty ramps
 - Changed number-bond hint toggle to a floating in-question control that only appears on supported visual-hint questions
+- Changed ball visual hints to default off, support addition/subtraction/missing-number strategies, and render in fixed rows of 10 with a 30-ball cap
 
 ### Removed
 
@@ -66,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated audio and architecture docs to describe the result voice-feedback timing and priority rules
 - Updated audio docs to document local praise clips and offline caching behavior
 - Updated CLAUDE, PWA, and design docs to remove outdated level counts, deprecated Web Speech references, and stale PWA wording
+- Updated README, architecture, and difficulty-curve docs to describe the current ball visual-hint behavior
 
 ### Fixed
 
