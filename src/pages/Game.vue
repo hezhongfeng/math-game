@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { AlertCircle, ArrowLeft, CheckCircle2, CircleDot, RotateCcw, Star } from 'lucide-vue-next'
+import { AlertCircle, ArrowLeft, CheckCircle2, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
 import { GAME_CONFIG, STORAGE_KEYS } from '../config/constants'
 import { useGame } from '../composables/useGame'
@@ -476,21 +476,9 @@ onUnmounted(() => {
               :current-index="game.currentIndex.value"
               :total-questions="game.questions.value.length"
               :show-number-bond-hint="showNumberBondHint"
+              :show-number-bond-hint-toggle="currentQuestionHasNumberBondHint"
+              @toggle-number-bond-hint="toggleNumberBondHint"
             />
-
-            <button
-              v-if="currentQuestionHasNumberBondHint"
-              class="hint-toggle"
-              type="button"
-              :aria-pressed="showNumberBondHint"
-              :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
-              :title="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
-              data-testid="number-bond-hint-toggle"
-              @click="toggleNumberBondHint"
-            >
-              <CircleDot :size="20" />
-              <span>{{ showNumberBondHint ? '开' : '关' }}</span>
-            </button>
           </div>
         </Transition>
 
@@ -679,43 +667,6 @@ onUnmounted(() => {
   position: relative;
   width: min(100%, 640px);
   margin: 0 auto;
-  padding-bottom: 18px;
-}
-
-.hint-toggle {
-  position: absolute;
-  right: 12px;
-  bottom: 0;
-  transform: translateY(32%);
-  z-index: 6;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-width: 48px;
-  min-height: 44px;
-  padding: 6px 8px;
-  border: 1px solid rgba(92, 157, 255, 0.22);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.86);
-  color: var(--text-secondary);
-  box-shadow: var(--shadow-sm);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1;
-  transition: transform var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-.hint-toggle[aria-pressed="true"] {
-  color: var(--brand-primary);
-  background: rgba(235, 243, 255, 0.92);
-  box-shadow: var(--shadow-sm), 0 0 12px rgba(92, 157, 255, 0.18);
-}
-
-.hint-toggle:active {
-  transform: translateY(32%) scale(0.97);
 }
 
 .is-hidden-on-error {

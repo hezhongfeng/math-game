@@ -210,4 +210,40 @@ describe('QuestionCard.vue', () => {
     expect(wrapper.findAll('.slot')).toHaveLength(30)
     expect(wrapper.find('.overflow-badge').text()).toBe('+10')
   })
+
+  test('renders quiet pill toggle in card header when supported', async () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: false,
+        showNumberBondHintToggle: true,
+        question: {
+          operand1: 3,
+          operand2: 2,
+          operator: '+',
+          answer: 5,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    const toggle = wrapper.find('[data-testid="number-bond-hint-toggle"]')
+
+    expect(toggle.exists()).toBe(true)
+    expect(toggle.attributes('aria-pressed')).toBe('false')
+    expect(toggle.text()).toContain('小球')
+    expect(toggle.text()).toContain('关')
+
+    await toggle.trigger('click')
+    expect(wrapper.emitted('toggle-number-bond-hint')).toHaveLength(1)
+  })
+
+  test('hides ball toggle when the current question has no visual hint', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: mockQuestion
+      }
+    })
+
+    expect(wrapper.find('[data-testid="number-bond-hint-toggle"]').exists()).toBe(false)
+  })
 })

@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { CircleDot } from 'lucide-vue-next'
 import NumberBondHint from './NumberBondHint.vue'
 
 const props = defineProps({
@@ -30,8 +31,14 @@ const props = defineProps({
   showNumberBondHint: {
     type: Boolean,
     default: false
+  },
+  showNumberBondHintToggle: {
+    type: Boolean,
+    default: false
   }
 })
+
+const emit = defineEmits(['toggle-number-bond-hint'])
 
 const shouldShowFeedback = computed(() => props.showAnswer && props.question?.userAnswer !== null)
 const isCorrect = computed(() => props.question.isCorrect === true)
@@ -57,6 +64,20 @@ const answerStateClass = computed(() => ({
   <div class="question-card">
     <div class="card-top">
       <div class="counter-badge">{{ currentIndex + 1 }} / {{ totalQuestions }}</div>
+      <button
+        v-if="showNumberBondHintToggle"
+        class="hint-toggle"
+        type="button"
+        :aria-pressed="showNumberBondHint"
+        :aria-label="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+        :title="showNumberBondHint ? '关闭小球提示' : '打开小球提示'"
+        data-testid="number-bond-hint-toggle"
+        @click="emit('toggle-number-bond-hint')"
+      >
+        <CircleDot :size="15" aria-hidden="true" />
+        <span>小球</span>
+        <strong>{{ showNumberBondHint ? '开' : '关' }}</strong>
+      </button>
     </div>
 
     <div class="math-display font-number" data-testid="question-expression">
@@ -130,6 +151,41 @@ const answerStateClass = computed(() => ({
   color: var(--text-secondary);
   font-size: var(--font-sm);
   font-weight: 800;
+}
+
+.hint-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 7px 10px;
+  border: 1px solid rgba(92, 157, 255, 0.18);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--text-secondary);
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.hint-toggle strong {
+  color: inherit;
+  font-size: 12px;
+}
+
+.hint-toggle[aria-pressed="true"] {
+  color: var(--brand-primary);
+  background: rgba(235, 243, 255, 0.9);
+  border-color: rgba(92, 157, 255, 0.28);
+}
+
+.hint-toggle:active {
+  transform: scale(0.97);
 }
 
 .math-display {
