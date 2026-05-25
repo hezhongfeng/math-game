@@ -15,6 +15,7 @@ async function openFirstLevel(page) {
 }
 
 async function solveQuestion(page, isCorrect = true) {
+  await expect(page.locator('.loading-overlay')).toBeHidden()
   const expression = page.locator('.question-card:not(.review-question) [data-testid="question-expression"]').first()
   await expect(expression).toBeVisible()
   
@@ -27,11 +28,32 @@ async function solveQuestion(page, isCorrect = true) {
       await page.getByTestId(`num-btn-${digit}`).click()
     }
   } else {
-    // 输入一个显然错误的答案
-    await page.getByTestId('num-btn-9').click({ clickCount: 3 })
+    // 输入一个显然错误的答案，避免依赖移动端对多连击的处理差异
+    const wrongAnswer = getWrongAnswerFromExpression(text)
+    for (const digit of String(wrongAnswer)) {
+      await page.getByTestId(`num-btn-${digit}`).click()
+    }
   }
   
   await page.getByTestId('num-btn-submit').click()
+}
+
+async function getTotalQuestions(page) {
+  const progressText = await page.locator('.question-card:not(.review-question) .counter-badge').first().textContent()
+  const match = progressText?.match(/(\d+)\s*\/\s*(\d+)/)
+
+  if (!match) {
+    throw new Error(`Unable to read total question count from "${progressText}"`)
+  }
+
+  return Number(match[2])
+}
+
+async function dismissErrorFeedback(page) {
+  const feedback = page.locator('.feedback-card.error')
+  await expect(feedback).toBeVisible()
+  await page.locator('.feedback-wrap.is-error').click()
+  await expect(feedback).toBeHidden()
 }
 
 function getAnswerFromExpression(expressionText) {
@@ -47,6 +69,16 @@ function getAnswerFromExpression(expressionText) {
   if (match) return match[1] === '+' ? Number(match[3]) - Number(match[1]) : Number(match[1]) - Number(match[3])
   
   return null
+}
+
+function getWrongAnswerFromExpression(expressionText) {
+  const correctAnswer = getAnswerFromExpression(expressionText)
+
+  if (correctAnswer === 9) {
+    return 8
+  }
+
+  return 9
 }
 
 test.describe('E2E Smoke - Core Game Loops', () => {
@@ -110,20 +142,25 @@ test.describe('E2E Smoke - Core Game Loops', () => {
     await expect(feedback).toBeVisible()
     
     // 恢复游戏
-    await page.locator('.feedback-wrap.is-error').click()
-    await expect(feedback).toBeHidden()
+    await dismissErrorFeedback(page)
   })
 
   test('complete a full session and return home', async ({ page }) => {
     test.setTimeout(120_000)
-    await page.goto('/game/1')
+    await openFirstLevel(page)
+    const totalQuestions = await getTotalQuestions(page)
+    const counter = page.locator('.question-card:not(.review-question) .counter-badge').first()
     
-    // 快速完成一局（这里全部答错以节省脚本逻辑复杂度，验证流程通畅即可）
-    for (let i = 0; i < 20; i++) {
+    // 走完整的答题主流程，错误反馈已由单独用例覆盖。
+    for (let i = 0; i < totalQuestions; i++) {
       if (await page.getByTestId('result-modal').isVisible()) break
-      await solveQuestion(page, false)
-      // 处理反馈遮罩
-      await page.locator('.feedback-wrap.is-error').click()
+      await solveQuestion(page, true)
+
+      if (i === totalQuestions - 1) {
+        break
+      }
+
+      await expect(counter).toHaveText(new RegExp(`^${i + 2}\\s*/\\s*${totalQuestions}$`))
     }
     
     // 验证结算面板
