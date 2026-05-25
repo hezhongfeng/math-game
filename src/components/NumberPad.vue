@@ -35,50 +35,48 @@ function handleSubmit() {
 
 <template>
   <div class="number-pad" :class="{ 'is-disabled': disabled, 'number-pad--compact': size === 'compact' }">
-    <div class="pad-shell">
-      <div class="pad-grid">
-        <button
-          v-for="num in numbers"
-          :key="num"
-          :data-testid="`num-btn-${num}`"
-          class="num-btn font-number"
-          :disabled="disabled"
-          @click="handleInput(num)"
-        >
-          {{ num }}
-        </button>
+    <div class="pad-grid">
+      <button
+        v-for="num in numbers"
+        :key="num"
+        :data-testid="`num-btn-${num}`"
+        class="num-btn font-number"
+        :disabled="disabled"
+        @click="handleInput(num)"
+      >
+        {{ num }}
+      </button>
 
-        <button
-          data-testid="num-btn-delete"
-          class="num-btn btn-delete"
-          :disabled="disabled"
-          aria-label="删除"
-          @click="handleDelete"
-        >
-          <X :size="34" stroke-width="2.5" />
-        </button>
+      <button
+        data-testid="num-btn-delete"
+        class="num-btn btn-delete"
+        :disabled="disabled"
+        aria-label="删除"
+        @click="handleDelete"
+      >
+        <X :size="34" stroke-width="2.5" />
+      </button>
 
-        <button data-testid="num-btn-0" class="num-btn font-number" :disabled="disabled" @click="handleInput(0)">
-          0
-        </button>
+      <button data-testid="num-btn-0" class="num-btn font-number" :disabled="disabled" @click="handleInput(0)">
+        0
+      </button>
 
-        <button
-          data-testid="num-btn-submit"
-          class="num-btn btn-submit"
-          :disabled="disabled"
-          aria-label="提交"
-          @click="handleSubmit"
-        >
-          <Check :size="36" stroke-width="3" />
-        </button>
-      </div>
+      <button
+        data-testid="num-btn-submit"
+        class="num-btn btn-submit"
+        :disabled="disabled"
+        aria-label="提交"
+        @click="handleSubmit"
+      >
+        <Check :size="36" stroke-width="3" />
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .number-pad {
-  padding: 12px;
+  padding: 18px;
   border-radius: 28px;
   background: linear-gradient(180deg, rgba(246, 250, 255, 0.96) 0%, rgba(235, 242, 255, 0.98) 100%);
   border: 1px solid rgba(92, 157, 255, 0.14);
@@ -87,13 +85,6 @@ function handleSubmit() {
 
 .number-pad.is-disabled {
   opacity: 0.7;
-}
-
-.pad-shell {
-  padding: 6px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.52);
-  border: 1px solid rgba(92, 157, 255, 0.08);
 }
 
 .pad-grid {
@@ -190,13 +181,8 @@ function handleSubmit() {
 
 .number-pad--compact {
   width: 100%;
-  padding: 6px;
+  padding: 9px;
   border-radius: 18px;
-}
-
-.number-pad--compact .pad-shell {
-  padding: 3px;
-  border-radius: 14px;
 }
 
 .number-pad--compact .pad-grid {
@@ -230,12 +216,7 @@ function handleSubmit() {
 
 @media (min-width: 768px) {
   .number-pad {
-    padding: 18px;
-  }
-
-  .pad-shell {
-    padding: 8px;
-    border-radius: 26px;
+    padding: 26px;
   }
 
   .pad-grid {
@@ -250,13 +231,8 @@ function handleSubmit() {
 
 @media (max-width: 420px) {
   .number-pad {
-    padding: 10px;
+    padding: 15px;
     border-radius: 24px;
-  }
-
-  .pad-shell {
-    padding: 5px;
-    border-radius: 20px;
   }
 
   .pad-grid {
@@ -274,7 +250,7 @@ function handleSubmit() {
   }
 
   .number-pad--compact {
-    padding: 4px;
+    padding: 7px;
   }
 
   .number-pad--compact .pad-grid {
@@ -295,13 +271,8 @@ function handleSubmit() {
 
 @media (max-width: 959px) and (max-height: 860px) {
   .number-pad {
-    padding: 8px;
+    padding: 12px;
     border-radius: 22px;
-  }
-
-  .pad-shell {
-    padding: 4px;
-    border-radius: 18px;
   }
 
   .pad-grid {
