@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { getResultPraiseKey, getResultPraiseText } from '../../src/composables/useSound'
 
 describe('useSound result praise', () => {
@@ -39,5 +39,122 @@ describe('useSound result praise', () => {
     expect(getResultPraiseKey({ accuracy: 85 })).toBe('pass')
     expect(getResultPraiseText({ accuracy: 84 })).toBe('没关系，再试一次！')
     expect(getResultPraiseKey({ accuracy: 84 })).toBe('tryAgain')
+  })
+})
+
+function createMockAudioContext(initialState = 'running') {
+  const createGainNode = () => ({
+    gain: {
+      value: 0,
+      setValueAtTime: vi.fn(),
+      exponentialRampToValueAtTime: vi.fn(),
+      setTargetAtTime: vi.fn()
+    },
+    connect: vi.fn()
+  })
+
+  const ctx = {
+    state: initialState,
+    currentTime: 1,
+    destination: {},
+    createGain: vi.fn(() => createGainNode()),
+    createBiquadFilter: vi.fn(() => ({
+      type: 'lowpass',
+      frequency: { value: 0 },
+      Q: { value: 0 },
+      connect: vi.fn()
+    })),
+    createOscillator: vi.fn(() => ({
+      type: 'sine',
+      frequency: {
+        setValueAtTime: vi.fn(),
+        exponentialRampToValueAtTime: vi.fn()
+      },
+      connect: vi.fn(),
+      start: vi.fn(),
+      stop: vi.fn()
+    })),
+    decodeAudioData: vi.fn(async () => ({})),
+    resume: vi.fn(async () => {
+      ctx.state = 'running'
+    })
+  }
+
+  return ctx
+}
+
+async function loadSoundModule(initialState = 'running') {
+  vi.resetModules()
+
+  const mockContext = createMockAudioContext(initialState)
+
+  class MockAudioContext {
+    constructor() {
+      return mockContext
+    }
+  }
+
+  Object.defineProperty(window, 'AudioContext', {
+    configurable: true,
+    writable: true,
+    value: MockAudioContext
+  })
+  Object.defineProperty(window, 'webkitAudioContext', {
+    configurable: true,
+    writable: true,
+    value: undefined
+  })
+  Object.defineProperty(window, 'fetch', {
+    configurable: true,
+    writable: true,
+    value: undefined
+  })
+
+  return {
+    mockContext,
+    soundModule: await import('../../src/composables/useSound')
+  }
+}
+
+afterEach(() => {
+  vi.restoreAllMocks()
+  vi.resetModules()
+  delete window.AudioContext
+  delete window.webkitAudioContext
+  delete window.fetch
+})
+
+describe('useSound audio interruption recovery', () => {
+  test('resumes interrupted audio context when playing a sound after foregrounding', async () => {
+    const { mockContext, soundModule } = await loadSoundModule('interrupted')
+
+    soundModule.playClick()
+
+    expect(mockContext.resume).toHaveBeenCalledTimes(1)
+  })
+
+  test('resumes interrupted audio context when the page becomes visible again', async () => {
+    const { mockContext, soundModule } = await loadSoundModule('running')
+
+    Object.defineProperty(document, 'hidden', {
+      configurable: true,
+      value: false
+    })
+
+    soundModule.initAudio()
+    mockContext.state = 'interrupted'
+    document.dispatchEvent(new Event('visibilitychange'))
+
+    expect(mockContext.resume).toHaveBeenCalledTimes(1)
+  })
+
+  test('resumes interrupted audio context on pageshow after returning to the app', async () => {
+    const { mockContext, soundModule } = await loadSoundModule('running')
+
+    soundModule.initAudio()
+    mockContext.state = 'interrupted'
+    window.dispatchEvent(new Event('pageshow'))
+
+    expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
 })

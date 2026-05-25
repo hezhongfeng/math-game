@@ -17,6 +17,7 @@ const praiseAudioLoading = new Map()
 let currentPraiseSource = null
 let praisePlaybackToken = 0
 let visibilityChangeHandler = null
+let pageShowHandler = null
 
 const PRAISE_AUDIO_SOURCES = {
   newBest: '/audio/praise/new-best.mp3',
@@ -121,7 +122,7 @@ function resumeAudioContext() {
     return
   }
 
-  if (ctx.state === 'suspended') {
+  if (ctx.state === 'suspended' || ctx.state === 'interrupted') {
     ctx.resume().catch(() => {
       // 忽略恢复失败，避免打断主流程
     })
@@ -154,10 +155,24 @@ export function initAudio() {
         return
       }
 
+      if (!document.hidden) {
+        resumeAudioContext()
+      }
+
       const targetGain = document.hidden ? AUDIO_ENGINE.MASTER_GAIN * 0.55 : AUDIO_ENGINE.MASTER_GAIN
       masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
     }
     document.addEventListener('visibilitychange', visibilityChangeHandler)
+
+    pageShowHandler = () => {
+      if (!masterGainNode.value) {
+        return
+      }
+
+      resumeAudioContext()
+      masterGainNode.value.gain.setTargetAtTime(AUDIO_ENGINE.MASTER_GAIN, ctx.currentTime, 0.04)
+    }
+    window.addEventListener('pageshow', pageShowHandler)
 
     preloadPraiseAudio()
 
@@ -568,6 +583,11 @@ export function useSound() {
     if (visibilityChangeHandler) {
       document.removeEventListener('visibilitychange', visibilityChangeHandler)
       visibilityChangeHandler = null
+    }
+
+    if (pageShowHandler) {
+      window.removeEventListener('pageshow', pageShowHandler)
+      pageShowHandler = null
     }
   })
 
