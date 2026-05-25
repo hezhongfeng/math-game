@@ -106,25 +106,19 @@ function handleSubmit() {
   background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
   color: #204274;
   box-shadow: 0 8px 16px rgba(50, 95, 173, 0.08);
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 900;
   cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 
 .num-btn::after {
-  content: '';
-  position: absolute;
-  inset: auto 16px 10px;
-  height: 6px;
-  border-radius: 999px;
-  background: transparent;
-  box-shadow: 0 4px 10px rgba(92, 157, 255, 0.22);
+  content: none;
 }
 
 .num-btn svg {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
 }
 
 .num-btn:active:not(:disabled) {
@@ -170,7 +164,7 @@ function handleSubmit() {
 }
 
 .btn-submit::after {
-  background: rgba(255, 255, 255, 0.14);
+  content: none;
 }
 
 .num-btn:disabled {
@@ -193,12 +187,12 @@ function handleSubmit() {
   min-width: 50px;
   min-height: 50px;
   border-radius: var(--radius-xs);
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .number-pad--compact .num-btn svg {
-  width: 23px;
-  height: 23px;
+  width: 26px;
+  height: 26px;
 }
 
 .number-pad--compact .btn-delete {
@@ -225,7 +219,7 @@ function handleSubmit() {
 
   .num-btn {
     min-height: 78px;
-    font-size: 46px;
+    font-size: 50px;
   }
 }
 
@@ -240,13 +234,13 @@ function handleSubmit() {
   }
 
   .num-btn {
-    font-size: 34px;
+    font-size: 38px;
     border-radius: var(--radius-sm);
   }
 
   .num-btn svg {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
   }
 
   .number-pad--compact {
@@ -260,12 +254,12 @@ function handleSubmit() {
   .number-pad--compact .num-btn {
     min-width: 46px;
     min-height: 46px;
-    font-size: 24px;
+    font-size: 27px;
   }
 
   .number-pad--compact .num-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 23px;
+    height: 23px;
   }
 }
 
@@ -280,13 +274,13 @@ function handleSubmit() {
   }
 
   .num-btn {
-    font-size: 32px;
+    font-size: 36px;
     border-radius: var(--radius-sm);
   }
 
   .num-btn svg {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 }
 </style>
