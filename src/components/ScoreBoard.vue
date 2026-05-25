@@ -104,7 +104,7 @@ const remainingCount = computed(() => Math.max(props.totalQuestions - props.curr
 .streak-chip {
   padding: 4px 8px;
   border-radius: var(--radius-full);
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   background: rgba(49, 120, 246, 0.08);
   border: 1px solid rgba(49, 120, 246, 0.14);
   font-size: 12px;
@@ -127,7 +127,7 @@ const remainingCount = computed(() => Math.max(props.totalQuestions - props.curr
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--candy-pink), var(--candy-mint));
+  background: linear-gradient(90deg, var(--candy-blue), var(--candy-mint));
   transition: width var(--duration-slow) var(--ease-out);
 }
 

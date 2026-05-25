@@ -51,8 +51,8 @@ const DIFFICULTY_LEVELS = [
     questionCount: 24,
     description: '5 以内加法',
     helperText: '把小数慢慢加到 5',
-    color: 'var(--candy-pink-light)',
-    textColor: 'var(--candy-pink-dark)',
+    color: 'var(--candy-blue-light)',
+    textColor: 'var(--candy-blue-dark)',
     stars: 2
   },
   {
@@ -65,8 +65,8 @@ const DIFFICULTY_LEVELS = [
     questionCount: 24,
     description: '5 以内减法',
     helperText: '从 5 里拿走几个',
-    color: 'var(--candy-pink)',
-    textColor: 'var(--candy-pink-dark)',
+    color: 'var(--candy-blue)',
+    textColor: 'var(--candy-blue-dark)',
     stars: 2
   },
   {
@@ -79,8 +79,8 @@ const DIFFICULTY_LEVELS = [
     questionCount: 30,
     description: '5 以内加减',
     helperText: '看看是变多还是变少',
-    color: 'var(--candy-pink-dark)',
-    textColor: 'var(--candy-pink-dark)',
+    color: 'var(--candy-blue-dark)',
+    textColor: 'var(--candy-blue-dark)',
     stars: 3
   },
   {

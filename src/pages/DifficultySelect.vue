@@ -252,7 +252,7 @@ function isDifficultyLocked(difficulty) {
 
 .header-badge {
   padding: 10px 12px;
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   background: rgba(49, 120, 246, 0.08);
 }
 
@@ -262,7 +262,7 @@ function isDifficultyLocked(difficulty) {
 
 .eyebrow {
   margin-bottom: 8px;
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   font-size: var(--font-sm);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -308,7 +308,7 @@ function isDifficultyLocked(difficulty) {
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--candy-pink), var(--candy-mint));
+  background: linear-gradient(90deg, var(--candy-blue), var(--candy-mint));
 }
 
 .main-content {
@@ -344,8 +344,8 @@ function isDifficultyLocked(difficulty) {
 }
 
 .badge-pink {
-  background: var(--candy-pink-soft);
-  color: var(--candy-pink-dark);
+  background: var(--candy-blue-soft);
+  color: var(--candy-blue-dark);
 }
 
 .badge-yellow {

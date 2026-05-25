@@ -201,7 +201,7 @@ onMounted(() => {
   line-height: 1;
 }
 
-.logo-plus { color: var(--candy-pink-dark); }
+.logo-plus { color: var(--candy-blue-dark); }
 .logo-minus { color: var(--candy-mint-dark); }
 
 .logo-sparkle {
@@ -255,7 +255,7 @@ onMounted(() => {
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(49, 120, 246, 0.06);
-  color: var(--text-link);
+  color: var(--text-blue);
   font-size: 13px;
   font-weight: 700;
 }
@@ -336,7 +336,7 @@ onMounted(() => {
   height: 64px;
   border: none;
   border-radius: 22px;
-  background: var(--candy-pink-dark);
+  background: var(--candy-blue-dark);
   color: white;
   display: flex;
   align-items: center;

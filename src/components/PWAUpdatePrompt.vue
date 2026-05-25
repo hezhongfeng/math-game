@@ -108,7 +108,7 @@ async function handleUpdate() {
   height: 52px;
   border: none;
   border-radius: var(--radius-md);
-  background: var(--candy-pink);
+  background: var(--candy-blue);
   color: white;
   font-size: var(--font-base);
   font-weight: 800;

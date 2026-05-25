@@ -705,7 +705,7 @@ function goHome() {
   border: 2px solid rgba(92, 157, 255, 0.18);
   background: linear-gradient(180deg, #ffffff 0%, #f1f7ff 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 10px 20px rgba(92, 157, 255, 0.08);
-  color: var(--text-navy);
+  color: var(--text-blue-dark);
   font-size: clamp(48px, 14vw, 76px);
   font-weight: 800;
   line-height: 1;
@@ -734,7 +734,7 @@ function goHome() {
 .status-copy {
   min-height: 16px;
   margin-top: 6px;
-  color: var(--text-blue-subtle);
+  color: var(--text-blue-light);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.25;
@@ -770,7 +770,7 @@ function goHome() {
   border: 1px solid rgba(92, 157, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
-  color: var(--text-blue-muted);
+  color: var(--text-blue);
   font-size: 12px;
   font-weight: 800;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
@@ -856,7 +856,7 @@ function goHome() {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-info);
+  color: var(--text-blue);
   font-size: 12px;
   font-weight: 800;
   margin-bottom: 6px;
@@ -890,7 +890,7 @@ function goHome() {
 }
 
 .result-copy {
-  color: var(--text-blue-subtle);
+  color: var(--text-blue-light);
   font-size: 15px;
   font-weight: 800;
   line-height: 1.5;
@@ -922,7 +922,7 @@ function goHome() {
   min-height: 52px;
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 247, 255, 0.96) 100%);
-  color: var(--text-info-dark);
+  color: var(--text-blue-dark);
   font-size: 18px;
   font-weight: 900;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
@@ -950,7 +950,7 @@ function goHome() {
 }
 
 .secondary-btn {
-  color: var(--text-info-muted);
+  color: var(--text-blue-light);
 }
 
 @media (hover: hover) {

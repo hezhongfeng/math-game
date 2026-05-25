@@ -136,7 +136,7 @@ function getIcon(type) {
 }
 
 .icon-info {
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   background: rgba(49, 120, 246, 0.12);
 }
 </style>

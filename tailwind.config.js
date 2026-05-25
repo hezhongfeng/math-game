@@ -18,14 +18,17 @@ export default {
           primary: 'var(--brand-primary)',
           success: 'var(--brand-success)',
           reward: 'var(--brand-reward)',
+          warning: 'var(--brand-warning)',
           alert: 'var(--brand-alert)',
+          accent: 'var(--brand-accent)',
         },
         candy: {
-          pink: 'var(--candy-pink)',
+          blue: 'var(--candy-blue)',
           mint: 'var(--candy-mint)',
           yellow: 'var(--candy-yellow)',
           peach: 'var(--candy-peach)',
           red: 'var(--candy-red)',
+          accent: 'var(--candy-lavender)',
         }
       },
       fontFamily: {

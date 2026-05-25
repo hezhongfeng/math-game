@@ -187,7 +187,7 @@ function retry() {
 
 .btn-retry {
   color: white;
-  background: linear-gradient(135deg, var(--candy-pink) 0%, var(--candy-pink-dark) 100%);
+  background: linear-gradient(135deg, var(--candy-blue) 0%, var(--candy-blue-dark) 100%);
 }
 
 .btn-home {
@@ -204,7 +204,7 @@ function retry() {
 @media (hover: hover) {
   .btn-retry:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md), var(--glow-pink);
+    box-shadow: var(--shadow-md), var(--glow-blue);
   }
 
   .btn-home:hover {

@@ -34,7 +34,7 @@ const stars = computed(() => {
   return getStarCount(props.bestScore.accuracy)
 })
 
-const levelColor = computed(() => props.difficulty.color || 'var(--candy-pink)')
+const levelColor = computed(() => props.difficulty.color || 'var(--candy-blue)')
 const bestTimeLabel = computed(() => {
   if (!props.leaderboard.length) return ''
   return formatPreciseTime(props.leaderboard[0].durationMs)
@@ -190,7 +190,7 @@ function handleSelect(event) {
   padding: 4px 10px;
   border-radius: var(--radius-full);
   background: rgba(49, 120, 246, 0.12);
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   font-size: 12px;
   font-weight: 800;
 }

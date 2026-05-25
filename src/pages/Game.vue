@@ -616,7 +616,7 @@ onUnmounted(() => {
 }
 
 .nav-btn-accent {
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   background: rgba(49, 120, 246, 0.08);
 }
 
@@ -627,7 +627,7 @@ onUnmounted(() => {
 
 .eyebrow {
   margin-bottom: 4px;
-  color: var(--candy-pink-dark);
+  color: var(--candy-blue-dark);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -850,7 +850,7 @@ onUnmounted(() => {
   width: 42px;
   height: 42px;
   border: 4px solid rgba(49, 120, 246, 0.14);
-  border-top-color: var(--candy-pink);
+  border-top-color: var(--candy-blue);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

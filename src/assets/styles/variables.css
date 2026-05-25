@@ -23,13 +23,21 @@
   --brand-alert: #FF6B6B;          /* 珊瑚红 (温和的提示) */
   --brand-alert-light: #FF9090;
   --brand-alert-soft: #FFF0F0;
+  --brand-alert-dark: #E65A5A;
+  --brand-alert-glow: rgba(255, 107, 107, 0.25);
+  --brand-warning-glow: rgba(255, 159, 67, 0.25);
+
+  --brand-accent: #A29BFE;         /* 薰衣草紫 (装饰点缀) */
+  --brand-accent-light: #C1BCFF;
+  --brand-accent-dark: #8278E6;
+  --brand-accent-soft: #F4F3FF;
 
   /* 语义化颜色映射：保持原有变量名，更新色彩表现 */
-  --candy-pink: var(--brand-primary);
-  --candy-pink-light: var(--brand-primary-light);
-  --candy-pink-dark: #4A8EEF;
-  --candy-pink-soft: var(--brand-primary-soft);
-  --candy-pink-glow: var(--brand-primary-glow);
+  --candy-blue: var(--brand-primary);
+  --candy-blue-light: var(--brand-primary-light);
+  --candy-blue-dark: #4A8EEF;
+  --candy-blue-soft: var(--brand-primary-soft);
+  --candy-blue-glow: var(--brand-primary-glow);
 
   --candy-mint: var(--brand-success);
   --candy-mint-light: var(--brand-success-light);
@@ -67,14 +75,8 @@
   --text-blue: #416da9;
   --text-blue-dark: #23497e;
   --text-blue-light: #6982a0;
-  --text-blue-muted: #466da6;
-  --text-blue-subtle: #5e738f;
-  --text-navy: #17345f;
   --text-teal: #2f8251;
   --text-link: #3178F6;
-  --text-info: #3b639c;
-  --text-info-dark: #244a7f;
-  --text-info-muted: #355b93;
   --text-warning: #c96c22;
   --text-success: #34905a;
 
@@ -88,6 +90,13 @@
   --bg-dark: #EBF2FF;
   --bg-panel: rgba(255, 255, 255, 0.92);
   --bg-panel-strong: rgba(255, 255, 255, 0.98);
+
+  /* 组件级色彩 */
+  --btn-submit: linear-gradient(180deg, #62c98a 0%, #4aac70 100%);
+  --btn-submit-shadow: rgba(39, 128, 96, 0.18);
+  --card-gray-bg: #f8fafc;
+  --card-gray-border: #e2e8f0;
+  --overlay-dark: rgba(18, 30, 49, 0.28);
 
   /* 文字颜色：更柔和的深灰，非纯黑 */
   --text-primary: #2D3436;
@@ -114,7 +123,7 @@
   --shadow-panel: 0 20px 48px rgba(92, 157, 255, 0.12);
 
   /* 交互发光 */
-  --glow-pink: 0 0 16px 2px rgba(74, 144, 226, 0.35);
+  --glow-blue: 0 0 16px 2px rgba(74, 144, 226, 0.35);
   --glow-mint: 0 0 16px 2px rgba(0, 208, 132, 0.35);
   --glow-yellow: 0 0 16px 2px rgba(255, 199, 0, 0.35);
   --glow-peach: 0 0 16px 2px rgba(255, 159, 67, 0.35);

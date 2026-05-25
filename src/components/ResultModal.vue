@@ -416,8 +416,8 @@ function handleOverlayClick() {
   margin: 0 0 20px;
   padding: 14px 16px;
   border-radius: var(--radius-md);
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--card-gray-bg);
+  border: 1px solid var(--card-gray-border);
 }
 
 .insight-card.is-warning {
