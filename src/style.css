@@ -266,6 +266,10 @@
     --border-focus: #000000;
   }
 
+  body {
+    background: white !important;
+  }
+
   .btn-primary {
     border: 2px solid black;
     box-shadow: 0 4px 0 0 #000000, 0 8px 16px rgba(0, 0, 0, 0.3);

@@ -619,7 +619,7 @@ watch(() => props.count, async () => {
   width: 100%;
   height: 100%;
   min-height: 236px;
-  border-radius: 28px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background:
     radial-gradient(circle at top, rgba(142, 186, 255, 0.3) 0%, rgba(142, 186, 255, 0) 38%),
@@ -628,28 +628,18 @@ watch(() => props.count, async () => {
   border: 1px solid rgba(146, 186, 236, 0.38);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 18px 36px rgba(72, 116, 188, 0.14);
+    0 18px 36px rgba(72, 116, 188, 0.14),
+    0 12px 28px rgba(92, 157, 255, 0.08);
 }
 
 .ball-array::before {
   content: '';
   position: absolute;
   inset: 12px;
-  border-radius: 20px;
+  border-radius: var(--radius-md);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.16) 100%);
   border: 1px solid rgba(255, 255, 255, 0.24);
-  pointer-events: none;
-}
-
-.ball-array::after {
-  content: '';
-  position: absolute;
-  inset: auto 18px 12px;
-  height: 34%;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(92, 157, 255, 0.18) 0%, rgba(92, 157, 255, 0) 72%);
-  filter: blur(16px);
   pointer-events: none;
 }
 
@@ -658,7 +648,7 @@ watch(() => props.count, async () => {
   width: 100%;
   height: 100%;
   min-height: 236px;
-  border-radius: 28px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: transparent;
 }
@@ -672,32 +662,24 @@ watch(() => props.count, async () => {
 .ball-array--compact,
 .ball-array--compact .canvas-wrapper {
   min-height: 138px;
-  border-radius: 20px;
+  border-radius: var(--radius-md);
 }
 
 .ball-array--compact::before {
   inset: 8px;
-  border-radius: 14px;
-}
-
-.ball-array--compact::after {
-  inset: auto 10px 8px;
+  border-radius: var(--radius-xs);
 }
 
 @media (max-width: 420px) {
   .ball-array,
   .canvas-wrapper {
     min-height: 212px;
-    border-radius: 24px;
+    border-radius: var(--radius-md);
   }
 
   .ball-array::before {
     inset: 10px;
-    border-radius: 18px;
-  }
-
-  .ball-array::after {
-    inset: auto 14px 10px;
+    border-radius: var(--radius-sm);
   }
 
   .ball-array--compact,

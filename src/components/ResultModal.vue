@@ -505,7 +505,7 @@ function handleOverlayClick() {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-xs);
   background: var(--bg-white);
   border: 1px solid var(--border-light);
 }
@@ -600,7 +600,7 @@ function handleOverlayClick() {
   justify-content: center;
   min-width: 34px;
   height: 34px;
-  border-radius: 12px;
+  border-radius: var(--radius-xs);
   border: none;
   font-size: 24px;
   font-weight: 900;

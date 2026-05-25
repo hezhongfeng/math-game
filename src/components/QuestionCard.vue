@@ -209,7 +209,7 @@ const answerStateClass = computed(() => ({
   justify-content: center;
   min-width: clamp(46px, 10vw, 62px);
   height: clamp(46px, 10vw, 62px);
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   box-shadow: none;
   font-size: clamp(38px, 9vw, 54px);
   font-weight: 900;
@@ -325,7 +325,7 @@ const answerStateClass = computed(() => ({
   .symbol {
     min-width: 40px;
     height: 40px;
-    border-radius: 14px;
+    border-radius: var(--radius-xs);
     font-size: 30px;
   }
 

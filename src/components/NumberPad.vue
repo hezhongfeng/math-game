@@ -77,7 +77,7 @@ function handleSubmit() {
 <style scoped>
 .number-pad {
   padding: 18px;
-  border-radius: 28px;
+  border-radius: var(--radius-lg);
   background: linear-gradient(180deg, rgba(246, 250, 255, 0.96) 0%, rgba(235, 242, 255, 0.98) 100%);
   border: 1px solid rgba(92, 157, 255, 0.14);
   box-shadow: 0 14px 28px rgba(39, 87, 166, 0.08);
@@ -102,7 +102,7 @@ function handleSubmit() {
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(92, 157, 255, 0.14);
-  border-radius: 20px;
+  border-radius: var(--radius-md);
   background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
   color: #204274;
   box-shadow: 0 8px 16px rgba(50, 95, 173, 0.08);
@@ -118,8 +118,8 @@ function handleSubmit() {
   inset: auto 16px 10px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(92, 157, 255, 0.08);
-  filter: blur(6px);
+  background: transparent;
+  box-shadow: 0 4px 10px rgba(92, 157, 255, 0.22);
 }
 
 .num-btn svg {
@@ -182,7 +182,7 @@ function handleSubmit() {
 .number-pad--compact {
   width: 100%;
   padding: 9px;
-  border-radius: 18px;
+  border-radius: var(--radius-sm);
 }
 
 .number-pad--compact .pad-grid {
@@ -192,7 +192,7 @@ function handleSubmit() {
 .number-pad--compact .num-btn {
   min-width: 50px;
   min-height: 50px;
-  border-radius: 14px;
+  border-radius: var(--radius-xs);
   font-size: 27px;
 }
 
@@ -232,7 +232,7 @@ function handleSubmit() {
 @media (max-width: 420px) {
   .number-pad {
     padding: 15px;
-    border-radius: 24px;
+    border-radius: var(--radius-md);
   }
 
   .pad-grid {
@@ -241,7 +241,7 @@ function handleSubmit() {
 
   .num-btn {
     font-size: 34px;
-    border-radius: 18px;
+    border-radius: var(--radius-sm);
   }
 
   .num-btn svg {
@@ -272,7 +272,7 @@ function handleSubmit() {
 @media (max-width: 959px) and (max-height: 860px) {
   .number-pad {
     padding: 12px;
-    border-radius: 22px;
+    border-radius: var(--radius-md);
   }
 
   .pad-grid {
@@ -281,7 +281,7 @@ function handleSubmit() {
 
   .num-btn {
     font-size: 32px;
-    border-radius: 16px;
+    border-radius: var(--radius-sm);
   }
 
   .num-btn svg {

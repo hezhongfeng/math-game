@@ -1,19 +1,19 @@
 :root {
   /* 调色盘：从科技感转向充满活力的学习乐园 */
-  --brand-primary: #5C9DFF;        /* 活泼天空蓝 */
-  --brand-primary-light: #8EBAFF;
+  --brand-primary: #4A90E2;        /* 活泼天空蓝 */
+  --brand-primary-light: #7FB0EC;
   --brand-primary-soft: #EBF3FF;
-  --brand-primary-glow: rgba(92, 157, 255, 0.25);
+  --brand-primary-glow: rgba(74, 144, 226, 0.25);
 
-  --brand-success: #6BCB77;        /* 鼓励绿 (草地感) */
-  --brand-success-light: #94D89D;
+  --brand-success: #00D084;        /* 鼓励绿 (草地感) */
+  --brand-success-light: #40DFAB;
   --brand-success-soft: #EEF9F0;
-  --brand-success-glow: rgba(107, 203, 119, 0.25);
+  --brand-success-glow: rgba(0, 208, 132, 0.25);
 
-  --brand-reward: #FFD93D;         /* 阳光金 (奖章感) */
-  --brand-reward-light: #FFE375;
+  --brand-reward: #FFC700;         /* 阳光金 (奖章感) */
+  --brand-reward-light: #FFD633;
   --brand-reward-soft: #FFF9E1;
-  --brand-reward-glow: rgba(255, 217, 61, 0.25);
+  --brand-reward-glow: rgba(255, 199, 0, 0.25);
 
   --brand-warning: #FF9F43;        /* 活力橙 */
   --brand-warning-light: #FFB771;
@@ -114,10 +114,10 @@
   --shadow-panel: 0 20px 48px rgba(92, 157, 255, 0.12);
 
   /* 交互发光 */
-  --glow-pink: 0 0 0 6px rgba(92, 157, 255, 0.12);
-  --glow-mint: 0 0 0 6px rgba(107, 203, 119, 0.12);
-  --glow-yellow: 0 0 0 6px rgba(255, 217, 61, 0.12);
-  --glow-peach: 0 0 0 6px rgba(255, 159, 67, 0.12);
+  --glow-pink: 0 0 16px 2px rgba(74, 144, 226, 0.35);
+  --glow-mint: 0 0 16px 2px rgba(0, 208, 132, 0.35);
+  --glow-yellow: 0 0 16px 2px rgba(255, 199, 0, 0.35);
+  --glow-peach: 0 0 16px 2px rgba(255, 159, 67, 0.35);
 
   /* 字体大小系统 */
   --font-hero: clamp(40px, 10vw, 56px);
