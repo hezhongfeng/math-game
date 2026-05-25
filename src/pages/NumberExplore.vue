@@ -765,13 +765,13 @@ function goHome() {
 }
 
 .range-chip {
-  min-height: 32px;
-  padding: 0 10px;
+  min-height: 44px;
+  padding: 0 12px;
   border: 1px solid rgba(92, 157, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
   color: var(--text-blue);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   transition: transform var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
@@ -818,7 +818,7 @@ function goHome() {
 }
 
 .quick-chip {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 14px;
   border: 1px solid rgba(92, 157, 255, 0.16);
   border-radius: 999px;

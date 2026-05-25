@@ -139,17 +139,14 @@ function closeMistakesPanel() {
 function handleOverlayClick() {
   if (showMistakesPanel.value) {
     closeMistakesPanel()
-    return
   }
-
-  handleHome()
 }
 </script>
 
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="show" class="result-overlay" @click="handleOverlayClick">
+      <div v-if="show" class="result-overlay">
         <div class="result-card" data-testid="result-modal" @click.stop>
           <template v-if="!showMistakesPanel">
             <div class="topline">

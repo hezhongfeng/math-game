@@ -94,30 +94,32 @@ const ariaLabel = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="shouldShow"
-    class="number-bond-hint"
-    :class="`is-${strategy}`"
-    :style="{ '--slot-columns': columnCount }"
-    :aria-label="ariaLabel"
-    data-testid="ball-hint"
-  >
-    <div class="slot-row" aria-hidden="true">
-      <span
-        v-for="slot in slots"
-        :key="slot.id"
-        class="slot"
-        :class="`is-${slot.state}`"
-      ></span>
-      <span
-        v-if="overflowCount > 0"
-        class="overflow-badge"
-        aria-hidden="true"
-      >
-        +{{ overflowCount }}
-      </span>
+  <Transition name="hint-fade">
+    <div
+      v-if="shouldShow"
+      class="number-bond-hint"
+      :class="`is-${strategy}`"
+      :style="{ '--slot-columns': columnCount }"
+      :aria-label="ariaLabel"
+      data-testid="ball-hint"
+    >
+      <div class="slot-row" aria-hidden="true">
+        <span
+          v-for="slot in slots"
+          :key="slot.id"
+          class="slot"
+          :class="`is-${slot.state}`"
+        ></span>
+        <span
+          v-if="overflowCount > 0"
+          class="overflow-badge"
+          aria-hidden="true"
+        >
+          +{{ overflowCount }}
+        </span>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -197,6 +199,17 @@ const ariaLabel = computed(() => {
   color: var(--brand-primary-dark);
   font-size: 12px;
   font-weight: 800;
+}
+
+.hint-fade-enter-active,
+.hint-fade-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.hint-fade-enter-from,
+.hint-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 @media (max-width: 420px) {

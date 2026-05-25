@@ -15,6 +15,8 @@ const props = defineProps({
 })
 
 const canvasRef = ref(null)
+const isLoading = ref(true)
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 let scene = null
 let camera = null
@@ -241,6 +243,7 @@ async function initScene() {
   await loadOrbitControls()
   createBalls()
   animate()
+  isLoading.value = false
 }
 
 function getLayoutConfig(count) {
@@ -483,6 +486,25 @@ function animate(time) {
     if (instancedMesh && instancedMesh.userData.animating) {
       const positions = instancedMesh.userData.positions
       const count = positions.length
+
+      if (prefersReducedMotion) {
+        for (let i = 0; i < count; i++) {
+          const pos = positions[i]
+          animationDummy.position.set(pos.x, pos.y, pos.z)
+          animationDummy.scale.set(1, 1, 1)
+          animationDummy.updateMatrix()
+          instancedMesh.setMatrixAt(i, animationDummy.matrix)
+        }
+        instancedMesh.instanceMatrix.needsUpdate = true
+        instancedMesh.userData.animating = false
+        if (animationId) {
+          cancelAnimationFrame(animationId)
+          animationId = null
+        }
+        renderer.render(scene, camera)
+        return
+      }
+
       let allDone = true
       const elapsed = time - introStartTime
 
@@ -609,6 +631,11 @@ watch(() => props.count, async () => {
 
 <template>
   <div class="ball-array" :class="{ 'ball-array--compact': size === 'compact' }">
+    <div v-if="isLoading" class="loading-indicator">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
     <div ref="canvasRef" class="canvas-wrapper"></div>
   </div>
 </template>
@@ -668,6 +695,52 @@ watch(() => props.count, async () => {
 .ball-array--compact::before {
   inset: 8px;
   border-radius: var(--radius-xs);
+}
+
+.loading-indicator {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.loading-indicator .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(91, 143, 242, 0.6);
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+
+.loading-indicator .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-indicator .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dot-pulse {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-indicator .dot {
+    animation: none;
+    transform: scale(1);
+    opacity: 0.6;
+  }
 }
 
 @media (max-width: 420px) {

@@ -185,12 +185,13 @@ function isDifficultyLocked(difficulty) {
 <style scoped>
 .page {
   min-height: 100vh;
-  padding: 18px 14px 36px;
+  min-height: 100dvh;
+  padding: calc(env(safe-area-inset-top, 0px) + 18px) 14px 36px;
 }
 
 .header-panel {
   position: sticky;
-  top: 10px;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
   z-index: 10;
   margin-bottom: 18px;
   padding: 18px;

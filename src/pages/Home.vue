@@ -85,7 +85,7 @@ onMounted(() => {
           <p class="subtitle">有趣又好玩的数学游戏。</p>
         </div>
 
-        <div class="stats-grid">
+        <div v-if="completedCount > 0 || (stats.totalCorrect || 0) > 0" class="stats-grid">
           <div class="stat-item">
             <span class="stat-value">{{ completedCount }}</span>
             <span class="stat-label">已通关</span>
@@ -95,6 +95,10 @@ onMounted(() => {
             <span class="stat-value">{{ stats.totalCorrect || 0 }}</span>
             <span class="stat-label">累计答对</span>
           </div>
+        </div>
+        <div v-else class="welcome-hint">
+          <Sparkles :size="20" class="welcome-sparkle" />
+          <span>开始你的第一关吧！</span>
         </div>
       </section>
 
@@ -121,6 +125,7 @@ onMounted(() => {
 <style scoped>
 .home-page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,6 +325,26 @@ onMounted(() => {
   width: 1px;
   height: 32px;
   background: rgba(0, 0, 0, 0.06);
+}
+
+/* 首次用户欢迎提示 */
+.welcome-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.welcome-sparkle {
+  color: var(--candy-yellow-dark);
+  animation: pulse 2s ease-in-out infinite;
 }
 
 /* 操作区域 */

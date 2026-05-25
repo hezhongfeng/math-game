@@ -568,7 +568,7 @@ onUnmounted(() => {
 <style scoped>
 .page {
   min-height: 100dvh;
-  padding: 12px;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 12px 12px;
 }
 
 .header-panel,
