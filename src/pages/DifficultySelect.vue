@@ -12,7 +12,7 @@ const { getBestScore, completedIds, getLeaderboard } = useStorage()
 const { playClick, playBack } = useSound()
 
 const isLeaving = ref(false)
-const NAVIGATION_DELAY = 180
+const BACK_NAVIGATION_DELAY = 180
 const SCROLL_STORAGE_KEY = 'math-game-difficulty-scroll-y'
 
 const completedCount = computed(() => completedIds.value.length)
@@ -72,7 +72,7 @@ function goBack(event) {
   }
   setTimeout(() => {
     router.push('/')
-  }, NAVIGATION_DELAY)
+  }, BACK_NAVIGATION_DELAY)
 }
 
 function selectDifficulty(event, difficulty) {
@@ -87,9 +87,7 @@ function selectDifficulty(event, difficulty) {
   if (btn) {
     btn.classList.add('is-leaving')
   }
-  setTimeout(() => {
-    router.push(`/game/${difficulty.id}`)
-  }, NAVIGATION_DELAY)
+  router.push(`/game/${difficulty.id}`)
 }
 
 function getDifficultyBestScore(difficultyId) {

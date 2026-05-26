@@ -143,9 +143,8 @@ function triggerHapticFeedback(level = 'medium') {
   }
 }
 
-async function initGame() {
+function initGame() {
   isLoading.value = true
-  await new Promise((resolve) => setTimeout(resolve, 240))
   game.startGame(retryQuestions ? { questions: retryQuestions } : undefined)
   retryQuestions = null
   isLoading.value = false
