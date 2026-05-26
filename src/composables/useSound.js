@@ -116,17 +116,23 @@ function preloadPraiseAudio() {
   })
 }
 
+function isRecoverableAudioState(state) {
+  return state === 'suspended' || state === 'interrupted'
+}
+
 function resumeAudioContext() {
   const ctx = audioContext.value
   if (!ctx) {
-    return
+    return Promise.resolve()
   }
 
-  if (ctx.state === 'suspended' || ctx.state === 'interrupted') {
-    ctx.resume().catch(() => {
+  if (isRecoverableAudioState(ctx.state)) {
+    return ctx.resume().catch(() => {
       // 忽略恢复失败，避免打断主流程
     })
   }
+
+  return Promise.resolve()
 }
 
 /**
@@ -134,7 +140,6 @@ function resumeAudioContext() {
  */
 export function initAudio() {
   if (isInitialized.value) {
-    resumeAudioContext()
     return
   }
 
@@ -146,7 +151,7 @@ export function initAudio() {
 
     if (ctx.state === 'suspended') {
       document.addEventListener('touchstart', () => {
-        ctx.resume().catch(() => {})
+        resumeAudioContext()
       }, { once: true, passive: true })
     }
 
@@ -182,15 +187,31 @@ export function initAudio() {
   }
 }
 
-function getReadyAudioContext() {
+function withReadyAudioContext(callback) {
   initAudio()
   const ctx = audioContext.value
   if (!ctx || !masterGainNode.value) {
-    return null
+    return
   }
 
-  resumeAudioContext()
-  return ctx
+  const run = (hasRetriedAfterResume = false) => {
+    if (audioContext.value !== ctx || !masterGainNode.value || ctx.state === 'closed') {
+      return
+    }
+
+    if (isRecoverableAudioState(ctx.state)) {
+      if (hasRetriedAfterResume) {
+        return
+      }
+
+      resumeAudioContext().then(() => run(true))
+      return
+    }
+
+    callback(ctx)
+  }
+
+  run()
 }
 
 function shouldThrottle(key) {
@@ -313,21 +334,16 @@ function schedulePraiseBuffer(ctx, buffer, token) {
 }
 
 async function playLocalPraise(key) {
-  const ctx = getReadyAudioContext()
+  withReadyAudioContext(async (ctx) => {
+    const token = praisePlaybackToken
+    const buffer = praiseAudioBuffers.get(key) || await loadPraiseAudioBuffer(key)
 
-  if (!ctx) {
-    return
-  }
+    const didSchedule = schedulePraiseBuffer(ctx, buffer, token)
 
-  resumeAudioContext()
-  const token = praisePlaybackToken
-  const buffer = praiseAudioBuffers.get(key) || await loadPraiseAudioBuffer(key)
-
-  const didSchedule = schedulePraiseBuffer(ctx, buffer, token)
-
-  if (didSchedule === false) {
-    console.error('播放本地鼓励语音失败:', key)
-  }
+    if (didSchedule === false) {
+      console.error('播放本地鼓励语音失败:', key)
+    }
+  })
 }
 
 export function playClick() {
@@ -335,15 +351,12 @@ export function playClick() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleTone(ctx, {
-    frequency: withTinyVariation(AUDIO_FREQUENCIES.click),
-    startTime: ctx.currentTime + 0.004,
-    ...AUDIO_PARAMS.click
+  withReadyAudioContext((ctx) => {
+    scheduleTone(ctx, {
+      frequency: withTinyVariation(AUDIO_FREQUENCIES.click),
+      startTime: ctx.currentTime + 0.004,
+      ...AUDIO_PARAMS.click
+    })
   })
 }
 
@@ -352,15 +365,12 @@ export function playKeyPress() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleTone(ctx, {
-    frequency: withTinyVariation(AUDIO_FREQUENCIES.key),
-    startTime: ctx.currentTime + 0.004,
-    ...AUDIO_PARAMS.key
+  withReadyAudioContext((ctx) => {
+    scheduleTone(ctx, {
+      frequency: withTinyVariation(AUDIO_FREQUENCIES.key),
+      startTime: ctx.currentTime + 0.004,
+      ...AUDIO_PARAMS.key
+    })
   })
 }
 
@@ -369,16 +379,13 @@ export function playDelete() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleTone(ctx, {
-    frequency: AUDIO_FREQUENCIES.delete.start,
-    endFrequency: AUDIO_FREQUENCIES.delete.end,
-    startTime: ctx.currentTime + 0.004,
-    ...AUDIO_PARAMS.delete
+  withReadyAudioContext((ctx) => {
+    scheduleTone(ctx, {
+      frequency: AUDIO_FREQUENCIES.delete.start,
+      endFrequency: AUDIO_FREQUENCIES.delete.end,
+      startTime: ctx.currentTime + 0.004,
+      ...AUDIO_PARAMS.delete
+    })
   })
 }
 
@@ -387,12 +394,9 @@ export function playSubmit() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleSequence(ctx, AUDIO_FREQUENCIES.submit, AUDIO_PARAMS.submit)
+  withReadyAudioContext((ctx) => {
+    scheduleSequence(ctx, AUDIO_FREQUENCIES.submit, AUDIO_PARAMS.submit)
+  })
 }
 
 export function playCorrect() {
@@ -400,26 +404,23 @@ export function playCorrect() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
+  withReadyAudioContext((ctx) => {
+    const startTime = ctx.currentTime + 0.006
+    scheduleSequence(ctx, AUDIO_FREQUENCIES.correct, AUDIO_PARAMS.correct, startTime)
 
-  const startTime = ctx.currentTime + 0.006
-  scheduleSequence(ctx, AUDIO_FREQUENCIES.correct, AUDIO_PARAMS.correct, startTime)
+    const finalIndex = AUDIO_FREQUENCIES.correct.length - 1
+    const finalStart = startTime + AUDIO_PARAMS.correct.interval * finalIndex
+    const finalNote = AUDIO_FREQUENCIES.correct[finalIndex]
 
-  const finalIndex = AUDIO_FREQUENCIES.correct.length - 1
-  const finalStart = startTime + AUDIO_PARAMS.correct.interval * finalIndex
-  const finalNote = AUDIO_FREQUENCIES.correct[finalIndex]
-
-  scheduleTone(ctx, {
-    frequency: finalNote,
-    startTime: finalStart + 0.012,
-    duration: AUDIO_PARAMS.correct.sparkleDuration,
-    gain: AUDIO_PARAMS.correct.sparkleGain,
-    type: AUDIO_PARAMS.correct.sparkleType,
-    attack: 0.003,
-    release: 0.04
+    scheduleTone(ctx, {
+      frequency: finalNote,
+      startTime: finalStart + 0.012,
+      duration: AUDIO_PARAMS.correct.sparkleDuration,
+      gain: AUDIO_PARAMS.correct.sparkleGain,
+      type: AUDIO_PARAMS.correct.sparkleType,
+      attack: 0.003,
+      release: 0.04
+    })
   })
 }
 
@@ -428,12 +429,9 @@ export function playWrong() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleSequence(ctx, AUDIO_FREQUENCIES.wrong, AUDIO_PARAMS.wrong)
+  withReadyAudioContext((ctx) => {
+    scheduleSequence(ctx, AUDIO_FREQUENCIES.wrong, AUDIO_PARAMS.wrong)
+  })
 }
 
 export function playQuestion() {
@@ -441,15 +439,12 @@ export function playQuestion() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleTone(ctx, {
-    frequency: AUDIO_FREQUENCIES.question,
-    startTime: ctx.currentTime + 0.004,
-    ...AUDIO_PARAMS.question
+  withReadyAudioContext((ctx) => {
+    scheduleTone(ctx, {
+      frequency: AUDIO_FREQUENCIES.question,
+      startTime: ctx.currentTime + 0.004,
+      ...AUDIO_PARAMS.question
+    })
   })
 }
 
@@ -458,16 +453,13 @@ export function playBack() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleTone(ctx, {
-    frequency: AUDIO_FREQUENCIES.back.start,
-    endFrequency: AUDIO_FREQUENCIES.back.end,
-    startTime: ctx.currentTime + 0.004,
-    ...AUDIO_PARAMS.back
+  withReadyAudioContext((ctx) => {
+    scheduleTone(ctx, {
+      frequency: AUDIO_FREQUENCIES.back.start,
+      endFrequency: AUDIO_FREQUENCIES.back.end,
+      startTime: ctx.currentTime + 0.004,
+      ...AUDIO_PARAMS.back
+    })
   })
 }
 
@@ -476,12 +468,9 @@ export function playVictory() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleSequence(ctx, AUDIO_FREQUENCIES.victory, AUDIO_PARAMS.victory, ctx.currentTime + 0.008)
+  withReadyAudioContext((ctx) => {
+    scheduleSequence(ctx, AUDIO_FREQUENCIES.victory, AUDIO_PARAMS.victory, ctx.currentTime + 0.008)
+  })
 }
 
 export function playUnlock() {
@@ -489,12 +478,9 @@ export function playUnlock() {
     return
   }
 
-  const ctx = getReadyAudioContext()
-  if (!ctx) {
-    return
-  }
-
-  scheduleSequence(ctx, AUDIO_FREQUENCIES.unlock, AUDIO_PARAMS.unlock, ctx.currentTime + 0.008)
+  withReadyAudioContext((ctx) => {
+    scheduleSequence(ctx, AUDIO_FREQUENCIES.unlock, AUDIO_PARAMS.unlock, ctx.currentTime + 0.008)
+  })
 }
 
 /**

@@ -42,7 +42,11 @@ describe('useSound result praise', () => {
   })
 })
 
-function createMockAudioContext(initialState = 'running') {
+function createMockAudioContext(initialState = 'running', options = {}) {
+  let resolveResumePromise = null
+  const resumePromise = options.resumePromise || new Promise((resolve) => {
+    resolveResumePromise = resolve
+  })
   const createGainNode = () => ({
     gain: {
       value: 0,
@@ -75,18 +79,26 @@ function createMockAudioContext(initialState = 'running') {
       stop: vi.fn()
     })),
     decodeAudioData: vi.fn(async () => ({})),
-    resume: vi.fn(async () => {
+    resume: vi.fn(() => {
       ctx.state = 'running'
+      return resumePromise
     })
   }
 
-  return ctx
+  return {
+    ctx,
+    resolveResume: () => {
+      if (resolveResumePromise) {
+        resolveResumePromise()
+      }
+    }
+  }
 }
 
-async function loadSoundModule(initialState = 'running') {
+async function loadSoundModule(initialState = 'running', options = {}) {
   vi.resetModules()
 
-  const mockContext = createMockAudioContext(initialState)
+  const { ctx: mockContext, resolveResume } = createMockAudioContext(initialState, options)
 
   class MockAudioContext {
     constructor() {
@@ -112,6 +124,7 @@ async function loadSoundModule(initialState = 'running') {
 
   return {
     mockContext,
+    resolveResume,
     soundModule: await import('../../src/composables/useSound')
   }
 }
@@ -126,15 +139,50 @@ afterEach(() => {
 
 describe('useSound audio interruption recovery', () => {
   test('resumes interrupted audio context when playing a sound after foregrounding', async () => {
-    const { mockContext, soundModule } = await loadSoundModule('interrupted')
+    const { mockContext, resolveResume, soundModule } = await loadSoundModule('interrupted')
 
     soundModule.playClick()
+    resolveResume()
+    await Promise.resolve()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
 
+  test('waits for interrupted audio context to resume before scheduling sound', async () => {
+    const { mockContext, resolveResume, soundModule } = await loadSoundModule('interrupted')
+
+    soundModule.playClick()
+
+    expect(mockContext.resume).toHaveBeenCalledTimes(1)
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
+
+    resolveResume()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(2)
+  })
+
+  test('waits for an already initialized interrupted context before playing again', async () => {
+    const { mockContext, resolveResume, soundModule } = await loadSoundModule('running')
+
+    soundModule.initAudio()
+    mockContext.state = 'interrupted'
+
+    soundModule.playClick()
+
+    expect(mockContext.resume).toHaveBeenCalledTimes(1)
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
+
+    resolveResume()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(2)
+  })
+
   test('resumes interrupted audio context when the page becomes visible again', async () => {
-    const { mockContext, soundModule } = await loadSoundModule('running')
+    const { mockContext, resolveResume, soundModule } = await loadSoundModule('running')
 
     Object.defineProperty(document, 'hidden', {
       configurable: true,
@@ -144,16 +192,20 @@ describe('useSound audio interruption recovery', () => {
     soundModule.initAudio()
     mockContext.state = 'interrupted'
     document.dispatchEvent(new Event('visibilitychange'))
+    resolveResume()
+    await Promise.resolve()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
 
   test('resumes interrupted audio context on pageshow after returning to the app', async () => {
-    const { mockContext, soundModule } = await loadSoundModule('running')
+    const { mockContext, resolveResume, soundModule } = await loadSoundModule('running')
 
     soundModule.initAudio()
     mockContext.state = 'interrupted'
     window.dispatchEvent(new Event('pageshow'))
+    resolveResume()
+    await Promise.resolve()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
