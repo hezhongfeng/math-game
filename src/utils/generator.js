@@ -142,6 +142,19 @@ function createQuestionPool(operation, min, max) {
 }
 
 /**
+ * 为综合关题目打上题型标签
+ * @param {Array} questions - 原始题目
+ * @param {string} mixBucket - 题型桶名称
+ * @returns {Array} 带标签的题目
+ */
+function addMixBucket(questions, mixBucket) {
+  return questions.map((question) => ({
+    ...question,
+    mixBucket
+  }))
+}
+
+/**
  * 生成题目唯一键
  * @param {Object} question - 题目对象
  * @returns {string} 唯一键
@@ -178,6 +191,125 @@ function sampleWithRepeats(pool, count) {
   }
 
   return selected
+}
+
+/**
+ * 从指定题型桶中挑选题目
+ * @param {Array} questions - 题型桶题目
+ * @param {number} count - 目标数量
+ * @param {Set<string>} usedKeys - 已使用题目
+ * @returns {Array} 抽取后的题目
+ */
+function selectFromBucket(questions, count, usedKeys) {
+  const picked = []
+
+  shuffle(questions).forEach((question) => {
+    const key = `${question.mixBucket}:${getQuestionKey(question)}`
+
+    if (picked.length >= count || usedKeys.has(key)) {
+      return
+    }
+
+    usedKeys.add(key)
+    picked.push(question)
+  })
+
+  if (picked.length < count) {
+    picked.push(...sampleWithRepeats(questions, count - picked.length))
+  }
+
+  return picked
+}
+
+/**
+ * 构建 10 以内综合关题型桶
+ * @returns {Object} 题型桶
+ */
+function createWithinTenMixedBuckets() {
+  const addPool = createAdditionPool(0, 10).filter((question) => question.answer <= 10)
+  const subtractPool = createSubtractionPool(0, 10)
+  const missingPool = createMissingAdditionPool(0, 10, true)
+
+  return {
+    direct: addMixBucket([...addPool, ...subtractPool], 'direct'),
+    gap: addMixBucket(
+      missingPool.filter((question) => (
+        question.missingPart === 'operand2' &&
+        question.operand1 >= 1 &&
+        question.operand2 >= 1 &&
+        question.result <= 10
+      )),
+      'gap'
+    ),
+    split: addMixBucket(
+      missingPool.filter((question) => (
+        question.missingPart === 'operand1' &&
+        question.operand1 >= 1 &&
+        question.operand2 >= 1 &&
+        question.result <= 10
+      )),
+      'split'
+    )
+  }
+}
+
+/**
+ * 构建 20 以内综合进阶关题型桶
+ * @returns {Object} 题型桶
+ */
+function createWithinTwentyAdvancedBuckets() {
+  const addPool = createAdditionPool(0, 20).filter((question) => question.answer <= 20)
+  const subtractPool = createSubtractionPool(0, 20).filter((question) => question.answer <= 20)
+  const missingPool = createMissingAdditionPool(0, 20, true)
+
+  return {
+    direct: addMixBucket(
+      [
+        ...addPool.filter((question) => (
+          (question.operand1 >= 10 || question.operand2 >= 10) &&
+          Math.min(question.operand1, question.operand2) <= 3
+        )),
+        ...subtractPool.filter((question) => (
+          question.operand1 >= 10 &&
+          question.operand2 <= 3 &&
+          question.answer >= 10
+        ))
+      ],
+      'direct'
+    ),
+    bridge: addMixBucket(
+      [
+        ...addPool.filter((question) => (
+          question.operand1 < 10 &&
+          question.operand2 < 10 &&
+          question.answer > 10
+        )),
+        ...subtractPool.filter((question) => (
+          question.operand1 >= 10 &&
+          question.answer < 10 &&
+          question.operand2 >= 1
+        ))
+      ],
+      'bridge'
+    ),
+    blank: addMixBucket(
+      missingPool.filter((question) => (
+        question.missingPart === 'operand2' &&
+        question.operand1 >= 1 &&
+        question.operand2 >= 1 &&
+        question.result <= 20
+      )),
+      'blank'
+    ),
+    bond: addMixBucket(
+      addPool.filter((question) => (
+        question.answer === 10 &&
+        question.operand1 >= 1 &&
+        question.operand2 >= 1
+      )),
+      'bond'
+    )
+  }
 }
 
 /**
@@ -630,6 +762,53 @@ function getStageSegments(difficulty) {
 }
 
 /**
+ * 生成综合关题目
+ * @param {string} stage - 当前阶段
+ * @param {number} questionCount - 题量
+ * @returns {Array|null} 综合关题目或空
+ */
+function selectCapstoneQuestions(stage, questionCount) {
+  const usedKeys = new Set()
+
+  if (stage === 'withinTenMixed') {
+    const buckets = createWithinTenMixedBuckets()
+
+    return shuffle([
+      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 6 || q.operand2 <= 2), 6, usedKeys),
+      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 9 || q.operand2 <= 4), 5, usedKeys),
+      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 10), 5, usedKeys),
+      ...selectFromBucket(buckets.gap.filter((q) => q.result <= 6), 3, usedKeys),
+      ...selectFromBucket(buckets.gap.filter((q) => q.result <= 8), 3, usedKeys),
+      ...selectFromBucket(buckets.gap.filter((q) => q.result <= 10), 2, usedKeys),
+      ...selectFromBucket(buckets.split.filter((q) => q.result <= 6), 3, usedKeys),
+      ...selectFromBucket(buckets.split.filter((q) => q.result <= 8), 3, usedKeys),
+      ...selectFromBucket(buckets.split.filter((q) => q.result <= 10), 2, usedKeys)
+    ]).slice(0, questionCount)
+  }
+
+  if (stage === 'withinTwentyMixedAdvanced') {
+    const buckets = createWithinTwentyAdvancedBuckets()
+
+    return shuffle([
+      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 12), 6, usedKeys),
+      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 16), 6, usedKeys),
+      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 20), 4, usedKeys),
+      ...selectFromBucket(buckets.bridge.filter((q) => q.answer <= 12), 3, usedKeys),
+      ...selectFromBucket(buckets.bridge.filter((q) => q.answer <= 16), 4, usedKeys),
+      ...selectFromBucket(buckets.bridge.filter((q) => q.answer <= 20), 3, usedKeys),
+      ...selectFromBucket(buckets.blank.filter((q) => q.result <= 12), 3, usedKeys),
+      ...selectFromBucket(buckets.blank.filter((q) => q.result <= 16), 3, usedKeys),
+      ...selectFromBucket(buckets.blank.filter((q) => q.result <= 20), 2, usedKeys),
+      ...selectFromBucket(buckets.bond.filter((q) => Math.min(q.operand1, q.operand2) <= 2), 2, usedKeys),
+      ...selectFromBucket(buckets.bond.filter((q) => Math.min(q.operand1, q.operand2) <= 4), 2, usedKeys),
+      ...selectFromBucket(buckets.bond, 2, usedKeys)
+    ]).slice(0, questionCount)
+  }
+
+  return null
+}
+
+/**
  * 准备单道题目：补齐 result/missingPart/id，清空作答状态
  * @param {Object} question - 原始题目对象
  * @param {number} index - 题目索引
@@ -657,7 +836,13 @@ export function generateQuestions(difficulty) {
     return []
   }
 
-  const { range, operation, questionCount } = difficulty
+  const { range, operation, questionCount, stage } = difficulty
+  const capstoneQuestions = selectCapstoneQuestions(stage, questionCount)
+
+  if (capstoneQuestions) {
+    return capstoneQuestions.map((question, index) => prepareQuestion(question, index))
+  }
+
   const [min, max] = range
   const pool = createQuestionPool(operation, min, max)
 

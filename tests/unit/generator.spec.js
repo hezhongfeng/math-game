@@ -130,4 +130,93 @@ describe('generator', () => {
     expect(checkAnswer(question, 3)).toBe(true)
     expect(checkAnswer(question, 2)).toBe(false)
   })
+
+  test('withinTenMixed keeps the planned 16/8/8 blend across direct, gap, and split prompts', () => {
+    const questions = generateQuestions({
+      range: [0, 10],
+      operation: 'mixed',
+      stage: 'withinTenMixed',
+      questionCount: 32
+    })
+
+    expect(questions).toHaveLength(32)
+
+    const direct = questions.filter((question) => question.mixBucket === 'direct')
+    const gap = questions.filter((question) => question.mixBucket === 'gap')
+    const split = questions.filter((question) => question.mixBucket === 'split')
+
+    expect(direct).toHaveLength(16)
+    expect(gap).toHaveLength(8)
+    expect(split).toHaveLength(8)
+
+    direct.forEach((question) => {
+      expect(question.missingPart).toBe('answer')
+      expect(['+', '-']).toContain(question.operator)
+      expect(question.result).toBe(question.answer)
+    })
+
+    gap.forEach((question) => {
+      expect(question.operator).toBe('+')
+      expect(question.missingPart).toBe('operand2')
+      expect(question.result).toBeLessThanOrEqual(10)
+      expect(question.answer).toBe(question.operand2)
+    })
+
+    split.forEach((question) => {
+      expect(question.operator).toBe('+')
+      expect(question.missingPart).toBe('operand1')
+      expect(question.operand1).toBeGreaterThanOrEqual(1)
+      expect(question.operand2).toBeGreaterThanOrEqual(1)
+      expect(question.result).toBeLessThanOrEqual(10)
+      expect(question.answer).toBe(question.operand1)
+    })
+  })
+
+  test('withinTwentyMixedAdvanced keeps the planned 16/10/8/6 blend across direct, bridge, blank, and bond prompts', () => {
+    const questions = generateQuestions({
+      range: [0, 20],
+      operation: 'mixed',
+      stage: 'withinTwentyMixedAdvanced',
+      questionCount: 40
+    })
+
+    expect(questions).toHaveLength(40)
+
+    const direct = questions.filter((question) => question.mixBucket === 'direct')
+    const bridge = questions.filter((question) => question.mixBucket === 'bridge')
+    const blank = questions.filter((question) => question.mixBucket === 'blank')
+    const bond = questions.filter((question) => question.mixBucket === 'bond')
+
+    expect(direct).toHaveLength(16)
+    expect(bridge).toHaveLength(10)
+    expect(blank).toHaveLength(8)
+    expect(bond).toHaveLength(6)
+
+    direct.forEach((question) => {
+      expect(question.missingPart).toBe('answer')
+      expect(question.result).toBe(question.answer)
+      expect(question.answer).toBeLessThanOrEqual(20)
+    })
+
+    bridge.forEach((question) => {
+      expect(question.missingPart).toBe('answer')
+      expect(['+', '-']).toContain(question.operator)
+      expect(question.answer).toBeLessThanOrEqual(20)
+    })
+
+    blank.forEach((question) => {
+      expect(question.operator).toBe('+')
+      expect(question.missingPart).toBe('operand2')
+      expect(question.result).toBeLessThanOrEqual(20)
+      expect(question.answer).toBe(question.operand2)
+    })
+
+    bond.forEach((question) => {
+      expect(question.operator).toBe('+')
+      expect(question.missingPart).toBe('answer')
+      expect(question.answer).toBe(10)
+      expect(question.operand1).toBeGreaterThanOrEqual(1)
+      expect(question.operand2).toBeGreaterThanOrEqual(1)
+    })
+  })
 })
