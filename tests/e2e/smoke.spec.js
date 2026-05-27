@@ -82,12 +82,12 @@ function getWrongAnswerFromExpression(expressionText) {
 }
 
 test.describe('E2E Smoke - Core Game Loops', () => {
-  test('keeps difficulty scroll position after returning from a level', async ({ page }) => {
+  test('keeps difficulty scroll position after returning from a deeper level', async ({ page }) => {
     await page.goto('/difficulty')
     await page.evaluate(() => {
       const bestScores = {}
 
-      for (let id = 1; id <= 23; id += 1) {
+      for (let id = 1; id <= 25; id += 1) {
         bestScores[id] = {
           score: 100,
           accuracy: 100,
@@ -108,11 +108,11 @@ test.describe('E2E Smoke - Core Game Loops', () => {
       }))
     })
     await page.reload()
-    await page.getByTestId('difficulty-card-20').scrollIntoViewIfNeeded()
+    await page.getByTestId('difficulty-card-26').scrollIntoViewIfNeeded()
     const savedScrollY = await page.evaluate(() => window.scrollY)
 
-    await page.getByTestId('difficulty-card-20').click()
-    await expect(page).toHaveURL(/\/game\/20/)
+    await page.getByTestId('difficulty-card-26').click()
+    await expect(page).toHaveURL(/\/game\/26/)
     await page.getByLabel('返回关卡页').click()
     await expect(page).toHaveURL(/\/difficulty/)
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(savedScrollY - 2)
