@@ -227,6 +227,20 @@ const DIFFICULTY_LEVELS = [
     id: 17,
     name: '17',
     level: '6组',
+    range: [0, 10],
+    operation: 'mixed',
+    stage: 'withinTenMixed',
+    questionCount: 32,
+    description: '10 以内综合',
+    helperText: '把前面学过的方法一起用起来',
+    color: 'var(--candy-lavender-light)',
+    textColor: 'var(--candy-lavender-dark)',
+    stars: 4
+  },
+  {
+    id: 18,
+    name: '18',
+    level: '7组',
     range: [0, 20],
     operation: 'add',
     stage: 'teenAdd',
@@ -238,9 +252,9 @@ const DIFFICULTY_LEVELS = [
     stars: 4
   },
   {
-    id: 18,
-    name: '18',
-    level: '6组',
+    id: 19,
+    name: '19',
+    level: '7组',
     range: [0, 20],
     operation: 'subtract',
     stage: 'teenSubtract',
@@ -252,8 +266,8 @@ const DIFFICULTY_LEVELS = [
     stars: 4
   },
   {
-    id: 19,
-    name: '19',
+    id: 20,
+    name: '20',
     level: '7组',
     range: [0, 10],
     operation: 'add',
@@ -266,9 +280,9 @@ const DIFFICULTY_LEVELS = [
     stars: 4
   },
   {
-    id: 20,
-    name: '20',
-    level: '7组',
+    id: 21,
+    name: '21',
+    level: '8组',
     range: [0, 20],
     operation: 'add',
     stage: 'bridgeTenAdd',
@@ -280,9 +294,9 @@ const DIFFICULTY_LEVELS = [
     stars: 5
   },
   {
-    id: 21,
-    name: '21',
-    level: '7组',
+    id: 22,
+    name: '22',
+    level: '8组',
     range: [0, 20],
     operation: 'subtract',
     stage: 'subtractFromTen',
@@ -294,8 +308,8 @@ const DIFFICULTY_LEVELS = [
     stars: 4
   },
   {
-    id: 22,
-    name: '22',
+    id: 23,
+    name: '23',
     level: '8组',
     range: [0, 20],
     operation: 'subtract',
@@ -308,9 +322,9 @@ const DIFFICULTY_LEVELS = [
     stars: 5
   },
   {
-    id: 23,
-    name: '23',
-    level: '8组',
+    id: 24,
+    name: '24',
+    level: '9组',
     range: [0, 20],
     operation: 'mixed',
     stage: 'withinTwentyMixed',
@@ -322,15 +336,29 @@ const DIFFICULTY_LEVELS = [
     stars: 5
   },
   {
-    id: 24,
-    name: '24',
-    level: '8组',
+    id: 25,
+    name: '25',
+    level: '9组',
     range: [0, 12],
     operation: 'missingAddMixed',
     stage: 'missingNumberIntro',
     questionCount: 40,
     description: '找空格',
     helperText: '想想哪一个数躲起来了',
+    color: 'var(--candy-peach-light)',
+    textColor: 'var(--candy-peach-dark)',
+    stars: 5
+  },
+  {
+    id: 26,
+    name: '26',
+    level: '9组',
+    range: [0, 20],
+    operation: 'mixed',
+    stage: 'withinTwentyMixedAdvanced',
+    questionCount: 40,
+    description: '20 以内综合进阶',
+    helperText: '把加减、找空格和凑十一起用起来',
     color: 'var(--candy-peach-light)',
     textColor: 'var(--candy-peach-dark)',
     stars: 5
@@ -343,9 +371,10 @@ export const DIFFICULTY_GROUPS = [
   { name: '3组', levels: [7, 8, 9], color: 'yellow' },
   { name: '4组', levels: [10, 11, 12], color: 'peach' },
   { name: '5组', levels: [13, 14, 15], color: 'peach' },
-  { name: '6组', levels: [16, 17, 18], color: 'lavender' },
-  { name: '7组', levels: [19, 20, 21], color: 'mint' },
-  { name: '8组', levels: [22, 23, 24], color: 'yellow' }
+  { name: '6组', levels: [16, 17], color: 'lavender' },
+  { name: '7组', levels: [18, 19, 20], color: 'lavender' },
+  { name: '8组', levels: [21, 22, 23], color: 'mint' },
+  { name: '9组', levels: [24, 25, 26], color: 'yellow' }
 ]
 
 export const TOTAL_LEVELS = DIFFICULTY_LEVELS.length
