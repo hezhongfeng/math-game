@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed wrong-answer feedback to fullscreen modal overlay while keeping correct feedback lightweight and auto-advance
 - Changed number exploration from a simple input/view toggle into a dual-mode experience with free exploration, structured challenge ranges, inline guidance, and number decomposition feedback
 - Changed ball-array rendering to a unified Three.js decimal layout with refined lighting, translucent materials, grouped color cues, and mobile-friendly auto-rotation
-- Changed arithmetic progression from raw number-range jumps to a 24-level child-learning curve based on counting, combinations, make-ten, bridge-ten, and missing-number stages
+- Changed arithmetic progression from raw number-range jumps to a 26-level child-learning curve based on counting, combinations, make-ten, bridge-ten, and missing-number stages
 - Changed question counts to grow gradually by stage instead of staying fixed at 20 for every level
 - Changed transition levels to use softer warm-up/core/challenge sampling for smoother difficulty ramps
 - Changed number-bond hint toggle to a floating in-question control that only appears on supported visual-hint questions
@@ -62,8 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated PWA documentation to reflect the current plugin-generated Service Worker flow
 - Updated component, agent, and architecture docs to match the current gameplay flow, testing setup, and active code structure
 - Updated exploration-related docs to reflect challenge ranges, current Three.js ball-array rendering, and the latest interaction model
-- Updated docs to reflect the 24-level curriculum, leaderboard behavior, and pass-completion audio feedback
-- Updated README and agent guide to reflect the current 24-level curriculum and Vitest unit-test coverage
+- Updated docs to reflect the 26-level curriculum, leaderboard behavior, and pass-completion audio feedback
+- Updated README and agent guide to reflect the current 26-level curriculum and Vitest unit-test coverage
 - Updated audio and architecture docs to describe the result voice-feedback timing and priority rules
 - Updated audio docs to document local praise clips and offline caching behavior
 - Updated CLAUDE, PWA, and design docs to remove outdated level counts, deprecated Web Speech references, and stale PWA wording

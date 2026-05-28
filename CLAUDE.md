@@ -72,7 +72,7 @@ Notes:
 ### Difficulty & Question Generation
 
 - Difficulty progression is sequential: level `N` unlocks only after passing `N-1`
-- The 24-level curriculum progresses by child strategy, not just numeric range growth
+- The 26-level curriculum progresses by child strategy, not just numeric range growth
 - Question counts vary by level from `10` to `20` depending on stage and objective
 - `src/utils/generator.js` builds candidate pools and samples weighted questions instead of using pure random generation
 

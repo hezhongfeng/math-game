@@ -91,7 +91,7 @@ node scripts/generate-icons.js
 {
   "name": "数学运算游戏",
   "short_name": "数学游戏",
-  "description": "专为儿童设计的数学运算游戏，包含渐进式加减法练习与 24 个主线关卡",
+  "description": "专为儿童设计的数学运算游戏，包含渐进式加减法练习与 26 个主线关卡",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F5F7FA",
