@@ -189,8 +189,54 @@ describe('QuestionCard.vue', () => {
 
     expect(hint.classes()).toContain('is-subtraction')
     expect(slots).toHaveLength(5)
+    expect(slots.slice(0, 3).every(slot => slot.classes().includes('is-remaining'))).toBe(true)
+    expect(slots.slice(3).every(slot => slot.classes().includes('is-removed'))).toBe(true)
     expect(slots.filter(slot => slot.classes().includes('is-removed'))).toHaveLength(2)
     expect(slots.filter(slot => slot.classes().includes('is-remaining'))).toHaveLength(3)
+  })
+
+  test('shows missing first addend as leading empty slots', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 3,
+          operand2: 2,
+          operator: '+',
+          result: 5,
+          answer: 3,
+          missingPart: 'operand1'
+        }
+      }
+    })
+
+    const slots = wrapper.findAll('[data-testid="ball-hint"] .slot')
+
+    expect(slots).toHaveLength(5)
+    expect(slots.slice(0, 3).every(slot => slot.classes().includes('is-missing'))).toBe(true)
+    expect(slots.slice(3).every(slot => slot.classes().includes('is-known'))).toBe(true)
+  })
+
+  test('shows missing second addend as trailing empty slots', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          result: 5,
+          answer: 3,
+          missingPart: 'operand2'
+        }
+      }
+    })
+
+    const slots = wrapper.findAll('[data-testid="ball-hint"] .slot')
+
+    expect(slots).toHaveLength(5)
+    expect(slots.slice(0, 2).every(slot => slot.classes().includes('is-known'))).toBe(true)
+    expect(slots.slice(2).every(slot => slot.classes().includes('is-missing'))).toBe(true)
   })
 
   test('caps ball visual hint at 30 balls', () => {

@@ -53,12 +53,6 @@ const totalCount = computed(() => {
 const displayCount = computed(() => Math.min(Math.max(totalCount.value, 0), MAX_BALL_COUNT))
 const overflowCount = computed(() => Math.max(totalCount.value - displayCount.value, 0))
 
-const knownPart = computed(() => {
-  if (missingPart.value === 'operand1') return operand2.value
-  if (missingPart.value === 'operand2') return operand1.value
-  return 0
-})
-
 const shouldShow = computed(() => (
   props.enabled &&
   strategy.value !== null &&
@@ -72,11 +66,15 @@ const slots = computed(() => {
     let state = 'known'
 
     if (strategy.value === 'split') {
-      state = index < knownPart.value ? 'known' : 'missing'
+      if (missingPart.value === 'operand1') {
+        state = index < operand1.value ? 'missing' : 'known'
+      } else {
+        state = index < operand1.value ? 'known' : 'missing'
+      }
     } else if (strategy.value === 'addition') {
       state = index < operand1.value ? 'addend-one' : 'addend-two'
     } else if (strategy.value === 'subtraction') {
-      state = index < operand2.value ? 'removed' : 'remaining'
+      state = index < operand1.value - operand2.value ? 'remaining' : 'removed'
     }
 
     items.push({ id: index, state })
@@ -138,10 +136,12 @@ const ariaLabel = computed(() => {
   display: grid;
   grid-template-columns: repeat(var(--slot-columns), 24px);
   grid-auto-rows: 24px;
-  gap: 6px;
+  column-gap: 6px;
+  row-gap: 8px;
   padding: 5px;
   border-radius: 20px;
   background: rgba(235, 243, 255, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(92, 157, 255, 0.08);
 }
 
 .slot {
@@ -167,10 +167,16 @@ const ariaLabel = computed(() => {
   box-shadow: 0 4px 10px rgba(107, 203, 119, 0.22);
 }
 
-.slot.is-missing,
 .slot.is-removed {
   background: rgba(255, 255, 255, 0.9);
   border-color: rgba(92, 157, 255, 0.26);
+}
+
+.slot.is-missing {
+  background: rgba(255, 255, 255, 0.64);
+  border-color: rgba(92, 157, 255, 0.48);
+  border-style: dashed;
+  box-shadow: inset 0 0 0 3px rgba(235, 243, 255, 0.82);
 }
 
 .slot.is-removed::after {
@@ -220,7 +226,8 @@ const ariaLabel = computed(() => {
   .slot-row {
     grid-template-columns: repeat(var(--slot-columns), 21px);
     grid-auto-rows: 21px;
-    gap: 4px;
+    column-gap: 4px;
+    row-gap: 6px;
   }
 
   .slot {
