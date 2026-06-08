@@ -124,8 +124,10 @@ const ariaLabel = computed(() => {
 .number-bond-hint {
   width: fit-content;
   max-width: min(100%, 420px);
+  max-height: 132px;
   margin: 8px auto 0;
   padding: 7px;
+  overflow: hidden;
   border-radius: 26px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(92, 157, 255, 0.14);
@@ -209,13 +211,23 @@ const ariaLabel = computed(() => {
 
 .hint-fade-enter-active,
 .hint-fade-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    max-height var(--duration-normal) var(--ease-out),
+    margin-top var(--duration-normal) var(--ease-out),
+    padding-top var(--duration-normal) var(--ease-out),
+    padding-bottom var(--duration-normal) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
 }
 
 .hint-fade-enter-from,
 .hint-fade-leave-to {
+  max-height: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
   opacity: 0;
-  transform: scale(0.95);
+  transform: translateY(-6px) scale(0.98);
 }
 
 @media (max-width: 420px) {
