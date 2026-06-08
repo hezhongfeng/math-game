@@ -95,7 +95,8 @@ function getDifficultyBestScore(difficultyId) {
 }
 
 function getDifficultyLeaderboard(difficultyId) {
-  return getLeaderboard(difficultyId)
+  const difficulty = getDifficultyById(difficultyId)
+  return getLeaderboard(difficultyId, difficulty.questionCount)
 }
 
 const lockedStatusMap = computed(() => {

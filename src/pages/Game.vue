@@ -268,7 +268,7 @@ function handleGameComplete() {
   const updateResult = result.isReviewRound
     ? {
         isNewBest: false,
-        leaderboard: getLeaderboard(parseInt(props.id, 10)),
+        leaderboard: getLeaderboard(parseInt(props.id, 10), result.totalCount),
         leaderboardRank: null
       }
     : updateBestScore(parseInt(props.id, 10), result)

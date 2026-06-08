@@ -105,6 +105,20 @@ export function useStorage() {
 
     return Number.POSITIVE_INFINITY
   }
+
+  /**
+   * 只保留与当前题量一致的榜单记录
+   * @param {Array} leaderboard - 原始榜单
+   * @param {number|null} totalCount - 当前题量
+   * @returns {Array} 过滤后的榜单
+   */
+  function filterLeaderboardByTotalCount(leaderboard, totalCount) {
+    if (typeof totalCount !== 'number') {
+      return leaderboard
+    }
+
+    return leaderboard.filter((item) => item?.totalCount === totalCount)
+  }
   
   /**
    * 从 localStorage 读取数据
@@ -223,11 +237,12 @@ export function useStorage() {
   /**
    * 获取某关的计时榜单
    * @param {number} difficultyId - 难度ID
+   * @param {number} [totalCount] - 当前题量
    * @returns {Array} 榜单列表
    */
-  function getLeaderboard(difficultyId) {
+  function getLeaderboard(difficultyId, totalCount = null) {
     const data = loadData()
-    return data.leaderboards[difficultyId] || []
+    return filterLeaderboardByTotalCount(data.leaderboards[difficultyId] || [], totalCount)
   }
 
   /**
@@ -247,7 +262,7 @@ export function useStorage() {
    */
   function updateLeaderboard(difficultyId, result) {
     const data = loadData()
-    const currentBoard = getLeaderboard(difficultyId)
+    const currentBoard = getLeaderboard(difficultyId, result.totalCount)
 
     if (!isEligibleForLeaderboard(result)) {
       return {
@@ -259,7 +274,8 @@ export function useStorage() {
 
     const nextEntry = {
       durationMs: result.durationMs,
-      completedAt: result.completedAt
+      completedAt: result.completedAt,
+      totalCount: result.totalCount
     }
 
     const nextBoard = [...currentBoard, nextEntry]

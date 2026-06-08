@@ -159,4 +159,65 @@ describe('useStorage', () => {
       }
     })
   })
+
+  test('filters leaderboards to the requested question count', async () => {
+    const storedData = JSON.stringify({
+      bestScores: {},
+      leaderboards: {
+        3: [
+          { durationMs: 12000, completedAt: '2026-03-25T00:00:00.000Z', totalCount: 20 },
+          { durationMs: 9000, completedAt: '2026-03-25T00:01:00.000Z', totalCount: 10 },
+          { durationMs: 7000, completedAt: '2026-03-25T00:02:00.000Z' }
+        ]
+      },
+      progress: {},
+      stats: {}
+    })
+    vi.stubGlobal('localStorage', createStorageMock(storedData))
+
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+
+    expect(storage.getLeaderboard(3, 20)).toEqual([
+      { durationMs: 12000, completedAt: '2026-03-25T00:00:00.000Z', totalCount: 20 }
+    ])
+  })
+
+  test('adds leaderboard entries only against matching question counts', async () => {
+    const storedData = JSON.stringify({
+      bestScores: {},
+      leaderboards: {
+        4: [
+          { durationMs: 10000, completedAt: '2026-03-25T00:00:00.000Z', totalCount: 12 },
+          { durationMs: 18000, completedAt: '2026-03-25T00:01:00.000Z', totalCount: 10 }
+        ]
+      },
+      progress: {},
+      stats: {}
+    })
+    vi.stubGlobal('localStorage', createStorageMock(storedData))
+
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+
+    const updated = storage.updateBestScore(4, {
+      score: 100,
+      correctCount: 10,
+      totalCount: 10,
+      accuracy: 100,
+      duration: 15,
+      durationMs: 15000,
+      completedAt: '2026-03-25T00:05:00.000Z',
+      incorrectQuestions: []
+    })
+
+    expect(updated).toMatchObject({
+      isLeaderboard: true,
+      leaderboardRank: 1
+    })
+    expect(storage.getLeaderboard(4, 10)).toEqual([
+      { durationMs: 15000, completedAt: '2026-03-25T00:05:00.000Z', totalCount: 10 },
+      { durationMs: 18000, completedAt: '2026-03-25T00:01:00.000Z', totalCount: 10 }
+    ])
+  })
 })
