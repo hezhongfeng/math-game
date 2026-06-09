@@ -1,414 +1,162 @@
-# Contributing Guide
+# 贡献指南
 
-Thank you for your interest in contributing to the Math Game for Children! This document provides guidelines and instructions for contributing to this project.
+## 环境准备
 
-## 📋 Table of Contents
-
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Workflow](#development-workflow)
-- [Code Style Guidelines](#code-style-guidelines)
-- [Commit Message Guidelines](#commit-message-guidelines)
-- [Pull Request Process](#pull-request-process)
-- [Adding New Features](#adding-new-features)
-- [Reporting Bugs](#reporting-bugs)
-- [Documentation](#documentation)
-
-## 📝 Code of Conduct
-
-This project is dedicated to providing a positive experience for children. Therefore:
-
-- Keep all content child-friendly and age-appropriate
-- Avoid adding any external dependencies without thorough review
-- Prioritize performance and accessibility for young users
-- Test thoroughly on mobile devices before submitting
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm/pnpm/yarn
-- A modern code editor (VS Code recommended)
-- Chrome DevTools for mobile device testing
-
-### Setup
+- Node.js 20 或兼容版本
+- npm（CI 使用 npm；仓库也保留 pnpm lockfile）
+- 现代浏览器
 
 ```bash
-# 1. Fork the repository on GitHub
-# 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/math-game.git
-cd math-game
-
-# 3. Install dependencies
-pnpm install
-# or: npm install
-
-# 4. Start development server
-pnpm dev
+npm install
+npm run dev
 ```
 
-The dev server will start at `http://localhost:5173`.
+## 开发流程
 
-## 🔄 Development Workflow
+1. 从最新主分支创建分支。
+2. 阅读 [`AGENTS.md`](./AGENTS.md) 和相关专项文档。
+3. 保持改动聚焦，遵循现有组件和 composable 模式。
+4. 为行为变化添加或更新测试。
+5. 更新相关文档和 `CHANGELOG.md` 的 `Unreleased`。
+6. 运行构建、单测和 E2E。
 
-### 1. Create a Branch
+推荐分支名：
+
+- `feature/...`
+- `fix/...`
+- `docs/...`
+- `refactor/...`
+- `test/...`
+
+## 代码规范
+
+### Vue 与 JavaScript
+
+- 使用 `<script setup>`。
+- Props 必须声明类型和默认值。
+- Emits 使用事件名数组。
+- 不引入 TypeScript。
+- 组合式逻辑使用 `use` 前缀。
+- 公共工具函数添加必要 JSDoc。
+- 捕获异常时至少记录错误并提供安全回退。
+
+### 样式与交互
+
+- 遵循 [`DESIGN.md`](./DESIGN.md)。
+- 保持简约、移动优先和儿童友好。
+- 触摸目标至少 `44×44px`，数字键盘至少 `64×64px`。
+- 使用现有 CSS 变量；Tailwind 和 scoped CSS 按当前代码模式混合使用。
+- 动画应短且有目的，并支持 reduced motion。
+
+### 提交信息
+
+推荐 Conventional Commits，说明尽量使用中文：
+
+```text
+feat(explore): 增加新的数量挑战范围
+fix(storage): 按当前题量过滤计时榜
+docs: 同步项目文档与当前实现
+test(game): 补充完整通关流程
+```
+
+## 测试
 
 ```bash
-git checkout -b feature/your-feature-name
-# or
-git checkout -b fix/bug-description
+npm run build
+npm run test:unit
+npm run test:e2e
 ```
 
-Branch naming conventions:
-- `feature/` - New features
-- `fix/` - Bug fixes
-- `docs/` - Documentation updates
-- `refactor/` - Code refactoring
-- `style/` - UI/styling changes
+按改动类型补充验证：
 
-### 2. Make Changes
+| 改动 | 验证 |
+|------|------|
+| generator、stars、format | 对应工具单测 |
+| useGame、useStorage、useSound | composable 单测 |
+| 组件 props、events、状态 | Vue Test Utils |
+| 路由、反馈、完整回合 | Playwright |
+| 视觉和触摸 | 320/390px + 桌面 + 真机 |
+| PWA | 生产构建、manifest、Service Worker 更新 |
 
-- Follow the [Code Style Guidelines](#code-style-guidelines)
-- Test your changes on mobile devices using Chrome DevTools
-- Verify accessibility (color contrast, touch targets)
+Playwright 当前使用两套 Chromium 移动设备参数。涉及 iOS 音频、PWA、振动或 Safari 布局时，必须补充 Safari/WebKit 或真机检查。
 
-### 3. Update Documentation
+## 新增关卡
 
-If your changes affect:
-- **README.md**: Public-facing features, usage instructions
-- **DESIGN.md**: UI/UX details, responsive design specs
-- **CHANGELOG.md**: All notable code changes
-- **docs/ARCHITECTURE.md**: Architecture changes, data flow, dependencies
-- **COMPONENTS.md**: Component responsibilities, props, and events
+1. 编辑 `src/config/difficulty.js`。
+2. 选择或实现明确的 `stage` 和 `operation`。
+3. 更新 `DIFFICULTY_GROUPS`。
+4. 为题量和题型分布补充测试。
+5. 更新 `docs/DIFFICULTY_CURVE.md`。
 
-### 4. Commit Changes
+示例结构：
 
-```bash
-git add .
-git commit -m "feat: add new difficulty level for multiplication"
-```
-
-See [Commit Message Guidelines](#commit-message-guidelines) for format.
-
-### 5. Push and Create PR
-
-```bash
-git push origin feature/your-feature-name
-```
-
-Then create a Pull Request on GitHub.
-
-## 💻 Code Style Guidelines
-
-### Vue Components
-
-Always use `<script setup>` syntax:
-
-```vue
-<script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-
-const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const emit = defineEmits(['input', 'submit'])
-</script>
-```
-
-### Import Order
-
-1. Vue imports
-2. Vue Router imports
-3. External libraries
-4. Internal composables (`../composables/*`)
-5. Internal config (`../config/*`)
-6. Internal utils (`../utils/*`)
-
-### Naming Conventions
-
-| Type | Convention | Example |
-|------|-----------|---------|
-| Components | PascalCase | `NumberPad.vue` |
-| Composables | camelCase with `use` prefix | `useGame` |
-| Utilities | camelCase | `generateQuestions` |
-| Constants | UPPER_SNAKE_CASE | `DIFFICULTY_LEVELS` |
-
-### Styling
-
-- Use Tailwind utility classes extensively
-- Mobile-first responsive design
-- Minimum touch target: 64×64px
-- Always include `-webkit-tap-highlight-color: transparent`
-- Always include `touch-action: manipulation`
-
-Example:
-```vue
-<button class="min-h-[64px] min-w-[64px] md:min-h-[72px] active:scale-95
-               -webkit-tap-highlight-color: transparent touch-action: manipulation">
-```
-
-### Error Handling
-
-Never use empty catch blocks:
-
-```javascript
-try {
-  const data = localStorage.getItem('key')
-  return JSON.parse(data)
-} catch (error) {
-  console.error('Failed to load data:', error)
-  return defaultValue
-}
-```
-
-## 📝 Commit Message Guidelines
-
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-提交说明约定：
-
-- 提交信息尽量使用中文
-- 若需要保留英文术语，可在中文语义下混用必要的代码标识、模块名或命令名
-- 推荐使用 Conventional Commits 风格
-- 推荐格式：`type(scope): 中文说明`
-- 示例：`feat(ui): 应用统一字体样式与动画效果`
-
-### Format
-
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-```
-
-### Types
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation only
-- `style`: Code style (formatting, missing semi-colons, etc.)
-- `refactor`: Code refactoring
-- `perf`: Performance improvement
-- `test`: Adding or correcting tests
-- `chore`: Build process, dependencies, etc.
-
-### Examples
-
-```bash
-# Feature
-feat: add multiplication difficulty levels
-
-# Bug fix
-fix: resolve iOS audio playback issue
-
-# Documentation
-docs: update mobile testing guide
-
-# Refactoring
-refactor(utils): extract audio synthesis logic
-
-# Performance
-perf: optimize particle animation rendering
-```
-
-## 🔍 Pull Request Process
-
-1. **Ensure all checks pass**:
-   - Code builds without errors: `npm run build`
-   - E2E smoke passes: `pnpm run test:e2e`
-   - No console errors in browser
-   - Mobile testing completed
-
-## 🧪 Testing Expectations
-
-Before opening a PR, please run:
-
-```bash
-pnpm build
-pnpm run test:e2e
-```
-
-For local debugging:
-
-```bash
-pnpm run test:e2e:headed
-# or
-pnpm run test:e2e:ui
-```
-
-If your change impacts gameplay flow, add or update at least one smoke test in `tests/e2e/`.
-
-2. **Update documentation**:
-   - Add changes to CHANGELOG.md
-   - Update relevant docs if needed
-
-3. **PR Description**:
-   - Clearly describe what changed and why
-   - Include screenshots for UI changes
-   - List any breaking changes
-
-4. **Review Process**:
-   - Address reviewer feedback promptly
-   - Keep commits clean (squash if needed)
-
-## ➕ Adding New Features
-
-### Adding a New Difficulty Level
-
-1. Edit `src/config/difficulty.js`:
 ```javascript
 {
-  id: 16,
-  name: '大师1',
-  level: '大师',
-  range: [1, 1000],
-  operation: 'add',
-  questionCount: 30,
-  description: '1-1000 以内加法',
-  color: 'bg-purple-400',
-  textColor: 'text-purple-600',
+  id: 27,
+  name: '27',
+  level: '10组',
+  range: [0, 20],
+  operation: 'mixed',
+  stage: 'newStage',
+  questionCount: 40,
+  description: '关卡说明',
+  helperText: '给孩子的短提示',
+  color: 'var(--candy-blue)',
+  textColor: 'var(--candy-blue-dark)',
   stars: 5
 }
 ```
 
-2. Update `DIFFICULTY_GROUPS` if adding a new group
-3. Test the new level in-game
-4. Update documentation
+不要只增加配置而不实现 generator 对应阶段。
 
-### Adding a New Sound Effect
+## 新增组件
 
-1. Define frequency in `src/config/constants.js`:
-```javascript
-AUDIO_FREQUENCIES: {
-  NEW_SOUND: [523.25, 659.25, 783.99] // C5, E5, G5
-}
-```
+1. 放入 `src/components/`。
+2. 定义 props、events 和无障碍语义。
+3. 遵循移动端触摸和 reduced-motion 规则。
+4. 添加关键组件测试。
+5. 公开接口变化同步 `COMPONENTS.md`。
 
-2. Add parameters in `AUDIO_PARAMS`
-3. Implement a dedicated playback function in `src/composables/useSound.js`
-4. Call that function from the relevant component or page
+## 修改存储
 
-### Adding a New Component
+- 必须兼容旧记录和部分损坏数据。
+- 新字段需要默认值或过滤策略。
+- 榜单条目保留 `totalCount`。
+- 更新 `useStorage.spec.js` 与架构文档。
 
-1. Create file in `src/components/`
-2. Use `<script setup>` syntax
-3. Define props and emits explicitly
-4. Add JSDoc comments for public methods
-5. Ensure mobile-first responsive design
-6. Add to relevant pages
+## 修改音频
 
-## 🐛 Reporting Bugs
+- 参数位于 `src/config/constants.js`。
+- 播放和 AudioContext 生命周期位于 `src/composables/useSound.js`。
+- 本地鼓励语音位于 `public/audio/praise/`。
+- 不增加第二套音频状态管理。
+- 移动端自动播放限制必须实测。
 
-### Before Reporting
+## 修改 PWA
 
-- Check if the issue already exists
-- Test on different browsers/devices
-- Verify it's not a known limitation
+PWA 的事实来源：
 
-### Bug Report Template
+- `vite.config.js`
+- `public/manifest.json`
+- `src/components/PWAUpdatePrompt.vue`
 
-```markdown
-**Description**
-Clear description of the bug
+不要新增手写 `public/sw.js` 或重复注册链路。
 
-**Steps to Reproduce**
-1. Go to '...'
-2. Click on '...'
-3. See error
+## Pull Request 检查
 
-**Expected Behavior**
-What you expected to happen
+- [ ] 改动范围清晰，无无关重构
+- [ ] `npm run build` 通过
+- [ ] `npm run test:unit` 通过
+- [ ] `npm run test:e2e` 通过
+- [ ] 手机布局和触摸交互已验证
+- [ ] 无新的控制台错误
+- [ ] LocalStorage 变化向后兼容
+- [ ] PWA 更新链路未被破坏
+- [ ] 相关文档已更新
+- [ ] `CHANGELOG.md` 已记录用户可见变化
 
-**Actual Behavior**
-What actually happened
+## 文档边界
 
-**Environment**
-- Device: [e.g. iPhone 12]
-- OS: [e.g. iOS 17.2]
-- Browser: [e.g. Safari]
-- Version: [e.g. 1.0.0]
+现行行为以 README、AGENTS、DESIGN、COMPONENTS、PWA、ARCHITECTURE 和源码为准。
 
-**Screenshots**
-If applicable, add screenshots
-
-**Additional Context**
-Any other relevant information
-```
-
-## 📚 Documentation
-
-### Documentation Structure
-
-| File | Purpose | Update When... |
-|------|---------|----------------|
-| `README.md` | User-facing overview | Features, setup, usage change |
-| `DESIGN.md` | Design specifications | UI/UX, responsive design changes |
-| `AGENTS.md` | Developer guidelines | Code style, patterns change |
-| `CLAUDE.md` | Architecture overview | Project structure, dependencies |
-| `CHANGELOG.md` | Version history | Every code change |
-| `CONTRIBUTING.md` | Contribution guide | Workflow, standards change |
-
-### Documentation Style
-
-- Use clear, concise language
-- Include code examples
-- Add tables for structured data
-- Use emoji sparingly for visual cues
-- Keep line length reasonable (<100 chars)
-
-## 🧪 Testing Checklist
-
-Before submitting a PR, verify:
-
-### Functionality
-- [ ] Game starts correctly
-- [ ] All difficulty levels work
-- [ ] Score calculation is accurate
-- [ ] LocalStorage persistence works
-- [ ] Wrong-answer flow requires manual confirmation before continuing
-
-### Mobile
-- [ ] Tested on Chrome DevTools mobile devices
-- [ ] Touch targets are appropriate size (≥64px)
-- [ ] No horizontal scroll issues
-- [ ] Safe areas work on notched devices
-
-### Audio
-- [ ] Sound effects play on interaction
-- [ ] iOS Safari audio works
-- [ ] No audio errors in console
-
-### Accessibility
-- [ ] Color contrast is sufficient
-- [ ] Interactive elements are focusable
-- [ ] Touch feedback is visible
-
-## 🚀 Release PR Checklist
-
-For PRs that will be merged into `master`, verify:
-
-- [ ] `pnpm build` passes
-- [ ] `pnpm run test:e2e` passes
-- [ ] Core flow is smoke-tested on mobile browser (iOS Safari / Android Chrome)
-- [ ] No new console errors during normal gameplay
-- [ ] LocalStorage schema changes (if any) are backward compatible
-- [ ] PWA update prompt still works after the change
-- [ ] Related docs are updated (`README`, `DESIGN`, `ARCHITECTURE`, etc.)
-- [ ] `CHANGELOG.md` has an `Unreleased` entry
-
-## 💡 Questions?
-
-If you have questions or need clarification:
-
-1. Check existing documentation first
-2. Search closed issues on GitHub
-3. Open a new issue with the "question" label
-
-Thank you for contributing! 🎉
+`specs/`、`docs/superpowers/` 与 `design-system/` 保存历史方案或参考，不应直接作为实现说明引用。

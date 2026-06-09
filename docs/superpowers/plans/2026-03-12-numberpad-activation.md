@@ -1,5 +1,7 @@
 # NumberPad 激活态优化实施计划
 
+> **归档资料**：计划已经结束，不要继续执行本文任务。当前组件行为见 `COMPONENTS.md`。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development to implement this plan.
 
 **目标:** 为数字键盘按钮添加背景色变化的激活态，使触摸反馈更明显

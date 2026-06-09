@@ -1,5 +1,7 @@
 # 音效反馈系统实现计划
 
+> **归档资料**：计划已经被后续音频实现取代，不要按复选框继续执行。当前说明见 `SOUND_SYSTEM_SIMPLE.md`。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 为数学游戏添加完整的音效反馈系统,包括9种场景的音效

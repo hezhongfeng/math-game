@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed question transitions to keep the card and keypad stable while only cross-fading the expression
+- Changed leaderboard comparison to include and filter by the current round question count
 - Changed PWA update flow to a single path via `vite-plugin-pwa` prompt handling
 - Changed round completion praise into a single primary voice feedback that covers records, passes, retries, and mistake-review rounds
 - Changed round completion praise playback to use bundled local audio files directly
@@ -54,6 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Reorganized active documentation around source-of-truth files and separated historical plans from current behavior
+- Updated README, design, component, architecture, PWA, audio, contribution, and agent guides to match the current 26-level implementation
 - Updated README with documentation navigation, capability matrix, and testing commands
 - Updated contribution guide with E2E and release checklists
 - Updated changelog rules to keep `Unreleased` concise and categorized

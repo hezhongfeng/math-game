@@ -1,5 +1,7 @@
 # Design System Master File
 
+> **设计参考归档**：这是生成式设计参考，不是当前 UI 的事实来源。实现规范以根目录 `DESIGN.md` 和 CSS 变量为准。
+
 > **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
 > If that file exists, its rules **override** this Master file.
 > If not, strictly follow the rules below.

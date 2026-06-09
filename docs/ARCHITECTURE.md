@@ -1,118 +1,152 @@
-# Architecture Overview
+# 项目架构
 
-这是一份面向协作者的"一页架构图"，用于快速理解项目关键路径。
+本文描述当前运行时结构。源码与配置优先于历史设计稿。
 
-## 1. 运行时结构
+## 运行时结构
 
-- 前端框架：Vue 3（`<script setup>`）
-- 路由：Vue Router（`src/router.js`）
-- 构建：Vite + vite-plugin-pwa
+应用由 Vue 3、Vue Router 和 Vite 构建，不使用后端服务、Pinia 或 TypeScript。
 
-核心页面流：
+```mermaid
+flowchart TD
+  Home["/ 首页"] --> Difficulty["/difficulty 选关"]
+  Home --> Explore["/explore 数字探索"]
+  Difficulty --> Game["/game/:id 游戏"]
+  Game --> Result["ResultModal 结算"]
+  Result --> Game
+  Result --> Difficulty
+```
 
-1. `/` 首页（"开始"入口 + "数字探索"入口）
-2. `/difficulty` 难度选择（关卡解锁）
-3. `/game/:id` 游戏页（作答、反馈、结算）
-4. `/explore` 数字探索（自由探索 + 范围挑战 + 3D 球阵可视化）
+路由组件均采用动态导入。未知路径重定向到首页。
 
-## 2. 数据流与持久化
+## 游戏数据流
 
-- 游戏记录存储键：`math-game-data`
+```mermaid
+flowchart LR
+  DifficultyConfig["difficulty.js"] --> Generator["generator.js"]
+  Generator --> UseGame["useGame"]
+  UseGame --> GamePage["Game.vue"]
+  GamePage --> QuestionCard
+  GamePage --> ScoreBoard
+  GamePage --> ResultModal
+  GamePage --> Storage["useStorage"]
+  Storage --> LocalStorage
+```
 
-`useStorage`（`src/composables/useStorage.js`）：
+`useGame` 负责：
 
-- 负责最佳成绩读取与更新
-- 负责每关前 10 名计时榜的读取与更新
-- 使用全局响应式缓存 + `storage` 事件同步跨标签页状态
+- 根据关卡配置生成或准备题目
+- 当前题目、索引、分数、正确数和错题
+- 正确率、秒级耗时和毫秒耗时
+- 正常回合与指定错题列表重新开局
 
-## 3.1 音频反馈架构
+`Game.vue` 负责：
 
-`useSound`（`src/composables/useSound.js`）负责：
+- 输入节流、提交和反馈时序
+- 正确答案自动推进，错误答案手动确认
+- 连对提示、振动和音效触发
+- 正常结算、重新开始和错题重练
+- 小球辅助偏好持久化
 
-- 基于 Web Audio API 合成并播放交互音效
-- 在结算时播放内置本地鼓励音频
-- 通过 master gain + lowpass 统一输出链路，降低刺耳感
-- 使用冷却时间限制高频触发，避免连点堆音
-- 使用 `AudioContext.currentTime` 调度多音序列，保证移动端稳定性
-- 在初始化后预加载本地鼓励音频，并通过已解锁的 Web Audio 输出链路播放，提高 iOS Safari 结算语音成功率
+题目卡本身保持稳定，只对算式内容执行轻量切换动画，避免换题时卡片和数字键盘跳位。
 
-当前反馈策略：
+## 题目生成
 
-1. 输入/删除/提交：短音提示，节奏轻快
-2. 正确：上行奖励音，自动进入下一题
-3. 错误：温和提示音 + 大号答案反馈卡，点击反馈区域继续
-4. 完成关卡：庆祝音、解锁音、结算主反馈语音分层触发，并在结果弹窗中展示计时榜与本轮错题
+关卡事实来源：
 
-结算语音策略：
+- `src/config/difficulty.js`：26 个关卡、分组、题量和阶段
+- `src/utils/generator.js`：候选题池、阶段分段和抽题策略
 
-- 每轮只播放一句主反馈，避免多句播报打断孩子
-- 新纪录优先，其次是错题重练，再按正确率选择满分 / 高分 / 过关 / 再试一次
-- 语音会延后到胜利音或解锁音之后播放；如果用户立即再来或离开页面，待播放和正在播放的语音都会被清理
-- 语音使用 `public/audio/praise/*.mp3` 本地文件，不调用联网语音 API，也不在运行时合成语音
+常规关卡按热身、核心、挑战约 `40% / 40% / 20%` 选题。部分综合关卡使用专门的题型配比。所有题目通过 `prepareQuestion()` 补齐 `id`、`result`、`missingPart` 和作答状态。
 
-产品约束：
+## 持久化
 
-- 音效与触觉反馈默认开启
-- 当前版本不提供“音效/震动设置”开关
+`useStorage` 使用模块级 `shallowRef` 缓存 LocalStorage 数据，并监听 `storage` 事件同步其他标签页。
 
-## 4. 游戏核心逻辑
+`math-game-data` 当前结构：
 
-`useGame`（`src/composables/useGame.js`）负责：
+```javascript
+{
+  bestScores: {
+    [difficultyId]: {
+      score,
+      correctCount,
+      totalCount,
+      accuracy,
+      duration,
+      durationMs,
+      completedAt
+    }
+  },
+  leaderboards: {
+    [difficultyId]: [
+      { durationMs, completedAt, totalCount }
+    ]
+  },
+  progress: {},
+  stats: {
+    totalAnswers,
+    totalCorrect,
+    mistakeLedger,
+    difficultyStats
+  }
+}
+```
 
-- 生成题目（`src/utils/generator.js`）
-- 按关卡阶段输出对应的分段题目
-- 提交答案与回合结果统计
-- 记录本轮错题数据（题目、用户答案、正确答案）
-- 进度、正确率、耗时计算
-- 输出结算结果（供结果弹窗和存储使用）
-- 支持基于指定题目列表重新开局，用于“练错题”
+关键规则：
 
-题目展示组件：
+- 通过线为 `85%`。
+- 完成状态由最佳成绩正确率推导。
+- 每关保存前 10 名计时记录。
+- 榜单按当前关卡 `questionCount` 过滤，不混用不同题量的成绩。
+- 无 `totalCount` 的旧榜单条目无法确认可比性，不显示在当前榜单。
+- 旧版或部分损坏的统计结构会在读取时补齐默认字段。
 
-- `src/components/QuestionCard.vue` 负责题面、输入占位和答题状态展示
-- `src/components/NumberBondHint.vue` 根据题型显示极简小球辅助：加法用两组小球表达合并，减法用划掉的小球表达拿走，缺项加法用实心/空心表达已知与未知
-- 小球辅助不展示策略文字；每行固定 10 个位置，最多渲染 30 个小球，超过部分以 `+N` 标记，兼顾十进制感和移动端空间
-- `QuestionCard.vue` 在题卡右上角提供“小球 开/关”胶囊切换，仅在当前题目支持小球辅助时出现；默认关闭，打开后由 `Game.vue` 写入 `math-game-number-bond-hint-enabled`，方便熟练后练习
+## 小球辅助
 
-## 4.1 数字探索逻辑
+`QuestionCard.vue` 承载开关，`NumberBondHint.vue` 负责图形：
 
-`src/pages/NumberExplore.vue` 负责：
+- 加法：两组不同颜色的小球。
+- 减法：保留与划掉的小球。
+- 缺项加法：实心表示已知，空心表示未知。
+- 每行 10 个位置，最多渲染 30 个，超出部分显示 `+N`。
+- 默认关闭，偏好保存在 `math-game-number-bond-hint-enabled`。
 
-- 管理自由探索 / 挑战模式切换
-- 维护挑战范围配置与当前训练档位
-- 处理输入校验、状态提示、数位拆解文案
-- 在结果页驱动连续探索（如 `-1 / +1 / +10`）
+## 数字探索
 
-`src/components/BallArray.vue` 负责：
+`NumberExplore.vue` 管理自由探索和范围挑战；`BallArray.vue` 使用 Three.js 渲染 1-1000。
 
-- 使用 Three.js 渲染统一的 3D 十进制球阵
-- 通过 `x/y/z` 轴分别表达个位、十位、百位结构
-- 根据数量范围调整球体颜色、透明度与分组层次
-- 在移动端使用自动旋转 + 可滚动页面，在桌面端支持直接交互
+- X、Y、Z 方向分别表达个位、十位和百位层次。
+- 移动端默认缓慢自动旋转并保留页面滚动。
+- 桌面端通过 OrbitControls 支持旋转和缩放。
+- `three` 在 Vite 构建中单独拆包。
 
-## 5. PWA 更新链路
+## 音频与触觉
 
-- 插件：`vite-plugin-pwa`（`vite.config.js`）
-- 清单：`public/manifest.json`
-- 更新提示组件：`src/components/PWAUpdatePrompt.vue`
-- 策略：`prompt` 模式，发现新版本时在应用内提示刷新
-- 注册方式：组件内通过 `virtual:pwa-register` 调用插件返回的更新函数
+`useSound.js` 集中管理单例 AudioContext：
 
-说明：项目不再保留手写 Service Worker 或独立的 PWA 更新状态层，避免两套实现并存造成理解和维护成本。
+- 交互音效由振荡器生成。
+- master gain 和 low-pass filter 统一控制输出。
+- 各音效有独立冷却时间。
+- 页面恢复时尝试恢复被中断的音频上下文。
+- 结算语音来自 `public/audio/praise/*.mp3`，每轮只播放一个主反馈。
 
-## 6. E2E 冒烟测试
+音效和振动默认开启，目前没有设置开关。Vibration API 不可用时静默降级。
 
-Playwright 配置：
+## PWA
 
-- `playwright.config.js`
-- `tests/e2e/smoke.spec.js`
+PWA 只有一条实现链：
 
-当前覆盖：
+1. `vite-plugin-pwa` 在构建时生成 Workbox Service Worker。
+2. `public/manifest.json` 提供应用清单。
+3. `PWAUpdatePrompt.vue` 使用 `virtual:pwa-register` 提示用户刷新。
 
-1. 首页 -> 选关 -> 进入游戏页
-2. 作答后进度推进
-3. 完成一局 -> 结果弹窗 -> 返回关卡页
+开发环境不启用 Service Worker。详细配置见 [`../PWA.md`](../PWA.md)。
 
-CI 工作流：
+## 测试与 CI
 
-- `.github/workflows/e2e-smoke.yml`（PR 自动执行）
+- Vitest：`tests/unit/`
+- Playwright：`tests/e2e/smoke.spec.js`
+- 构建与单测：`.github/workflows/ci.yml`
+- E2E：`.github/workflows/e2e-smoke.yml`
+
+Playwright 配置包含 Pixel 7 和 iPhone 13 两套移动设备参数，但当前未显式配置 WebKit，CI 也只安装 Chromium。因此 E2E 是两套移动端 Chromium 模拟，不能替代 iOS Safari 真机验证。

@@ -49,7 +49,6 @@ const isWaiting = ref(false)
 const userAnswer = ref('')
 const modalResult = ref(null)
 const modalVisible = ref(false)
-const questionKey = ref(0)
 const isLoading = ref(true)
 const currentFeedbackState = ref('idle')
 const streakCount = ref(0)
@@ -244,7 +243,6 @@ function handleNextQuestion() {
     return
   }
 
-  questionKey.value += 1
   userAnswer.value = ''
   showAnswer.value = false
   isWaiting.value = false
@@ -321,7 +319,6 @@ function resetRound({ preserveRetryQuestions = false, reviewRound = false } = {}
   currentFeedbackState.value = 'idle'
   streakCount.value = 0
   showStreakReward.value = false
-  questionKey.value = 0
 
   if (feedbackTimeout) {
     clearTimeout(feedbackTimeout)
@@ -460,26 +457,23 @@ onUnmounted(() => {
           </div>
         </Transition>
 
-        <Transition name="question" mode="out-in">
-          <div
-            v-if="game.currentQuestion.value"
-            :key="questionKey"
-            class="question-shell"
-          >
-            <QuestionCard
-              :class="{ 'is-hidden-on-error': isIncorrect && shouldShowFeedback }"
-              :question="game.currentQuestion.value"
-              :difficulty="difficulty"
-              :show-answer="showAnswer"
-              :user-answer="userAnswer"
-              :current-index="game.currentIndex.value"
-              :total-questions="game.questions.value.length"
-              :show-number-bond-hint="showNumberBondHint"
-              :show-number-bond-hint-toggle="currentQuestionHasNumberBondHint"
-              @toggle-number-bond-hint="toggleNumberBondHint"
-            />
-          </div>
-        </Transition>
+        <div
+          v-if="game.currentQuestion.value"
+          class="question-shell"
+        >
+          <QuestionCard
+            :class="{ 'is-hidden-on-error': isIncorrect && shouldShowFeedback }"
+            :question="game.currentQuestion.value"
+            :difficulty="difficulty"
+            :show-answer="showAnswer"
+            :user-answer="userAnswer"
+            :current-index="game.currentIndex.value"
+            :total-questions="game.questions.value.length"
+            :show-number-bond-hint="showNumberBondHint"
+            :show-number-bond-hint-toggle="currentQuestionHasNumberBondHint"
+            @toggle-number-bond-hint="toggleNumberBondHint"
+          />
+        </div>
 
         <Transition name="feedback">
           <div
@@ -859,21 +853,9 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
-.question-enter-active,
-.question-leave-active,
 .feedback-enter-active,
 .feedback-leave-active {
   transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
-}
-
-.question-enter-from {
-  opacity: 0;
-  transform: translateX(32px) scale(0.98);
-}
-
-.question-leave-to {
-  opacity: 0;
-  transform: translateX(-32px) scale(0.98);
 }
 
 .feedback-enter-from,

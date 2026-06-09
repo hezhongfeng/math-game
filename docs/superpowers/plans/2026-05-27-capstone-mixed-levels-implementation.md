@@ -1,5 +1,7 @@
 # 阶段综合关 Implementation Plan
 
+> **归档资料**：计划已完成。当前 26 关配置和题量以 `src/config/difficulty.js` 与 `docs/DIFFICULTY_CURVE.md` 为准。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 为主线新增 `10 以内综合` 和 `20 以内综合进阶` 两个阶段收口关卡，并把总关卡数扩展到 `26`
@@ -807,4 +809,3 @@ All unit tests passed
 综合关通过 mixBucket 规则精确控制题型比例；
 DifficultySelect、Home 进度、解锁逻辑继续复用 TOTAL_LEVELS / DIFFICULTY_GROUPS 自动生效。
 ```
-

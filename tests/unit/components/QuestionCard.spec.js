@@ -32,6 +32,36 @@ describe('QuestionCard.vue', () => {
     expect(text).toContain('1 / 20') // 计数器
   })
 
+  test('keeps the card stable while switching the expression', async () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        question: { ...mockQuestion, id: 1 },
+        currentIndex: 0,
+        totalQuestions: 20
+      }
+    })
+    const cardElement = wrapper.find('.question-card').element
+
+    await wrapper.setProps({
+      question: {
+        id: 2,
+        operand1: 8,
+        operand2: 3,
+        operator: '-',
+        result: 5,
+        answer: 5,
+        missingPart: 'answer',
+        isCorrect: null
+      },
+      currentIndex: 1
+    })
+
+    expect(wrapper.find('.question-card').element).toBe(cardElement)
+    expect(wrapper.find('[data-testid="question-expression"]').text()).toContain('8')
+    expect(wrapper.find('[data-testid="question-expression"]').text()).toContain('-')
+    expect(wrapper.find('.counter-badge').text()).toBe('2 / 20')
+  })
+
   test('renders missing operand1 question correctly', () => {
     const wrapper = mount(QuestionCard, {
       props: {

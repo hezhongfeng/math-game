@@ -2,6 +2,8 @@
 
 这份文档用于说明当前 26 关主线的学习目标、典型题型和难度边界。
 
+> 关卡字段和题量的唯一事实来源是 `src/config/difficulty.js`；本文负责解释教学意图。
+
 核心原则：
 
 - 先建立数感，再进入组合记忆
@@ -71,4 +73,5 @@
 
 - 关卡配置：`src/config/difficulty.js`
 - 出题规则：`src/utils/generator.js`
-- 如果修改了关卡顺序、题量或阶段目标，请同步更新本文件与 `README.md`
+- 关卡配置变化后先更新 `tests/unit/difficulty.spec.js` 和对应 generator 测试
+- 如果修改了关卡顺序、题量或阶段目标，请同步更新本文件；README 只维护阶段摘要，避免复制整张表

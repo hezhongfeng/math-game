@@ -1,5 +1,7 @@
 # Mobile Page Overrides
 
+> **设计参考归档**：这是旧的生成页面参考，不应覆盖当前根目录 `DESIGN.md` 或组件源码。
+
 > **PROJECT:** Math Game
 > **Generated:** 2026-01-30 14:30:09
 > **Page Type:** Search Results

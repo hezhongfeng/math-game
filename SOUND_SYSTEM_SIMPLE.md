@@ -1,168 +1,124 @@
-# 简化版音效系统说明
+# 音频系统
 
-## 设计理念
+当前音频系统由 Web Audio 合成交互音效，并用本地 MP3 播放结算鼓励语音。实现集中在 `src/composables/useSound.js`。
 
-**回归简单好听** - 移除了所有复杂的合成技术，回归纯净的音效体验。
+## 设计目标
 
-### 核心原则
-1. **简单**：每个音效都是单一波形，清晰易懂
-2. **好听**：使用和谐的音阶，避免刺耳声音
-3. **纯净**：移除复杂效果，保持声音干净
-4. **实用**：满足游戏基本需求，不追求炫技
+- 声音短、清晰、不过度刺激。
+- 高频操作有冷却，避免连点叠音。
+- 同一轮只播放一条结算主反馈。
+- iOS 音频上下文被中断后可恢复。
+- 音频不可用时不阻塞游戏。
 
-## 音效类型
+音效和振动默认开启，目前没有设置开关。
 
-### 1. 数字键音效 (0-9)
-- **波形**：三角波 (triangle)
-- **音阶**：C5 到 E6 的简单音阶
-- **时长**：40ms
-- **特点**：每个数字有独特的音高，清晰易辨
+## 核心文件
 
-### 2. 功能键音效
-- **通用点击**：A5 三角波，30ms
-- **删除键**：C5 到 G4 下滑音，正弦波，50ms
-- **提交键**：E5 到 G5 双音上扬，正弦波，60ms
+| 文件 | 作用 |
+|------|------|
+| `src/config/constants.js` | master gain、冷却、频率和播放参数 |
+| `src/composables/useSound.js` | AudioContext 生命周期和播放 API |
+| `public/audio/praise/*.mp3` | 本地结算语音 |
+| `tests/unit/useSound.spec.js` | 语音选择、恢复和生命周期测试 |
 
-### 3. 反馈音效
-- **正确反馈**：E5 到 A5 双音上扬，正弦波，100ms
-- **错误反馈**：D5 到 A4 下滑音，三角波，80ms
+## 输出链路
 
-### 4. 胜利音效
-- **音阶**：C5, D5, E5, F5, G5
-- **根据星星数量**：1星播放1个音符，5星播放5个音符
-- **波形**：三角波，每个音符90ms
-
-### 5. 结算主反馈语音
-- **实现**：直接播放内置 MP3 本地音频
-- **策略**：每轮只播放一句短语音，适合识字少的孩子直接听反馈
-- **优先级**：新纪录 > 错题重练 > 满分 > 高分 > 过关 > 再试一次
-- **避让**：语音延后到胜利音或解锁音之后播放，并在重开或离开页面时清理待播放和正在播放的语音
-- **移动端兼容**：本地音频通过已解锁的 Web Audio 链路播放，提升 iOS Safari 的结算语音成功率
-- **离线能力**：`public/audio/praise/*.mp3` 会随 PWA 预缓存，不依赖联网语音服务，也不在运行时合成语音
-
-## 技术实现
-
-### 核心文件
-```
-src/config/constants.js          # 音效频率和参数配置
-src/composables/useSound.js      # 音效播放器与音频上下文管理
+```text
+Oscillator / AudioBufferSource
+          ↓
+      Master Gain
+          ↓
+       Low-pass
+          ↓
+      Destination
 ```
 
-### 音频链路
-```
-Oscillator -> Master Gain -> Destination
-```
-- 移除了所有滤波器和效果器
-- 直接纯净输出
-- 前后台音量自动调节
+所有音频共享一个 AudioContext、master gain 和 low-pass filter。
 
-### 性能优化
-- **冷却时间**：防止音效叠加
-- **移动端兼容**：iOS Safari 和微信浏览器支持
-- **内存管理**：自动清理
+## 播放 API
 
-## 使用方法
+`useSound()` 返回：
 
-### 基本播放
 ```javascript
-import { useSound } from './composables/useSound'
-
-const { playSound } = useSound()
-
-// 数字键
-playSound('click', { keyKind: 'digit', digit: 5 })
-
-// 功能键
-playSound('click', { keyKind: 'delete' })
-playSound('click', { keyKind: 'submit' })
-
-// 反馈
-playSound('correct')
-playSound('wrong')
-
-// 胜利音效
-playSound('win', { stars: 3 })
+const {
+  playClick,
+  playKeyPress,
+  playDelete,
+  playSubmit,
+  playCorrect,
+  playWrong,
+  playQuestion,
+  playBack,
+  playVictory,
+  playUnlock,
+  playResultPraise,
+  stopPraise
+} = useSound()
 ```
 
-### 初始化
-当前版本不再单独暴露 `audioContext` 工具文件，音频初始化已收敛在 `src/composables/useSound.js` 中，由组件在挂载和交互时自动处理。
+组件应调用语义化方法，不直接创建振荡器或新的 AudioContext。
 
-## 音效参数调整
+## 反馈策略
 
-### 频率调整
-编辑 `src/config/constants.js` 中的 `AUDIO_FREQUENCIES`：
-```javascript
-digits: [
-  523.25,  // C5 - 0
-  587.33,  // D5 - 1
-  // ... 可以调整音高
-]
+| 场景 | 行为 |
+|------|------|
+| 点击/数字/删除 | 短三角波或下滑音 |
+| 提交 | 短上行音序 |
+| 正确 | 明亮上行音序 |
+| 错误 | 温和下降音 |
+| 下一题 | 低音量提示音 |
+| 返回 | 短下降音 |
+| 通关 | 庆祝音序 |
+| 解锁 | 独立高音提示 |
+
+具体频率和时长以 `AUDIO_FREQUENCIES`、`AUDIO_PARAMS` 为准，不在本文复制易漂移的数值。
+
+## 结算语音
+
+语音 key：
+
+- `new-best`
+- `review-perfect`
+- `review-more`
+- `perfect`
+- `great-pass`
+- `pass`
+- `try-again`
+
+选择优先级：
+
+1. 新纪录
+2. 错题重练
+3. 满分
+4. 高分通过
+5. 普通通过
+6. 再试一次
+
+胜利或解锁音先播放，主反馈语音延后。重新开始、返回或组件卸载时必须调用 `stopPraise()` 清理待播和正在播放的语音。
+
+本地 MP3 已包含在 PWA 的预缓存类型中，不依赖联网语音服务。
+
+## 移动端生命周期
+
+- 首次用户交互时初始化或恢复 AudioContext。
+- `pageshow` 后尝试恢复被系统中断的上下文。
+- 页面隐藏时降低 master gain，恢复可见时还原。
+- 播放前再次检查上下文状态。
+- iOS 物理静音、系统策略或浏览器限制仍可能导致无声，应静默降级。
+
+## 调整音效
+
+1. 在 `src/config/constants.js` 修改对应频率或参数。
+2. 保持增益克制，避免多个音序叠加失真。
+3. 不绕过冷却机制。
+4. 更新或新增 `useSound.spec.js`。
+5. 在 Android Chrome 和 iOS Safari 真机检查。
+
+## 验证
+
+```bash
+npm run test:unit -- useSound
+npm run test:e2e
 ```
 
-### 音量调整
-编辑 `src/config/constants.js` 中的 `AUDIO_PARAMS`：
-```javascript
-digit: {
-  gain: 0.08,  // 调整增益
-  duration: 0.04,
-  wave: 'triangle'
-}
-```
-
-## 测试方法
-
-1. **直接测试**：打开 `test-sounds.html` 文件
-2. **游戏内测试**：运行游戏，测试实际使用场景
-3. **移动端测试**：在手机浏览器中测试
-
-## 与复杂版的区别
-
-| 特性 | 复杂版 | 简化版 |
-|------|--------|--------|
-| 合成技术 | FM、加法、脉冲波 | 单一波形 |
-| 音频效果 | 混响、压缩、滤波 | 无效果 |
-| 音效复杂度 | 高，有谐波叠加 | 低，纯净单一 |
-| 学习成本 | 高 | 低 |
-| 维护难度 | 高 | 低 |
-| 适合场景 | 专业音频应用 | 儿童教育游戏 |
-
-## 优势
-
-1. **代码简洁**：文件大小减少 70%
-2. **易于调试**：问题定位简单
-3. **性能更好**：CPU 占用低
-4. **兼容性高**：所有浏览器支持
-5. **易于调整**：参数直观易懂
-
-## 后续调整建议
-
-如果觉得音效还需要调整：
-
-### 1. 调整音高
-- 觉得太高：将所有频率乘以 0.8-0.9
-- 觉得太低：将所有频率乘以 1.1-1.2
-
-### 2. 调整时长
-- 觉得太短：增加所有 duration 值
-- 觉得太长：减少所有 duration 值
-
-### 3. 调整音量
-- 觉得太响：减少所有 gain 值
-- 觉得太轻：增加所有 gain 值
-
-### 4. 更换波形
-- 想要更柔和：使用 'sine' 波
-- 想要更明亮：使用 'triangle' 波
-- 想要更有力：使用 'square' 波
-
-## 总结
-
-简化版音效系统专注于**简单、好听、实用**，完全满足数学游戏的需求。所有音效都是程序生成的，无需外部音频文件，加载快，内存占用小，跨平台兼容性好。
-
-音效设计考虑了儿童游戏的特性：
-- 声音清晰不刺耳
-- 反馈明确易懂
-- 节奏舒适不急促
-- 整体和谐统一
-
-这种设计既保持了专业水准，又避免了过度复杂，非常适合教育类游戏应用。
+自动化测试不能验证主观听感和 iOS 物理静音行为。音频变化需要游戏内实听。

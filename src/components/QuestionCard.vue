@@ -44,6 +44,7 @@ const shouldShowFeedback = computed(() => props.showAnswer && props.question?.us
 const isCorrect = computed(() => props.question.isCorrect === true)
 const isIncorrect = computed(() => props.question.isCorrect === false)
 const missingPart = computed(() => props.question?.missingPart || 'answer')
+const questionTransitionKey = computed(() => props.question?.id ?? props.currentIndex)
 
 const answerDisplay = computed(() => {
   if (shouldShowFeedback.value) {
@@ -80,38 +81,46 @@ const answerStateClass = computed(() => ({
       </button>
     </div>
 
-    <div class="math-display font-number" data-testid="question-expression">
-      <span
-        v-if="missingPart === 'operand1'"
-        class="answer"
-        :class="answerStateClass"
-      >
-        {{ answerDisplay }}
-      </span>
-      <span v-else class="number">{{ question.operand1 }}</span>
-      <span
-        class="symbol operator"
-        :class="question.operator === '+' ? 'operator-plus' : 'operator-minus'"
-      >
-        {{ question.operator }}
-      </span>
-      <span
-        v-if="missingPart === 'operand2'"
-        class="answer"
-        :class="answerStateClass"
-      >
-        {{ answerDisplay }}
-      </span>
-      <span v-else class="number">{{ question.operand2 }}</span>
-      <span class="symbol equals">=</span>
-      <span
-        v-if="missingPart === 'answer'"
-        class="answer"
-        :class="answerStateClass"
-      >
-        {{ answerDisplay }}
-      </span>
-      <span v-else class="number result">{{ question.result }}</span>
+    <div class="math-stage">
+      <Transition name="expression">
+        <div
+          :key="questionTransitionKey"
+          class="math-display font-number"
+          data-testid="question-expression"
+        >
+          <span
+            v-if="missingPart === 'operand1'"
+            class="answer"
+            :class="answerStateClass"
+          >
+            {{ answerDisplay }}
+          </span>
+          <span v-else class="number">{{ question.operand1 }}</span>
+          <span
+            class="symbol operator"
+            :class="question.operator === '+' ? 'operator-plus' : 'operator-minus'"
+          >
+            {{ question.operator }}
+          </span>
+          <span
+            v-if="missingPart === 'operand2'"
+            class="answer"
+            :class="answerStateClass"
+          >
+            {{ answerDisplay }}
+          </span>
+          <span v-else class="number">{{ question.operand2 }}</span>
+          <span class="symbol equals">=</span>
+          <span
+            v-if="missingPart === 'answer'"
+            class="answer"
+            :class="answerStateClass"
+          >
+            {{ answerDisplay }}
+          </span>
+          <span v-else class="number result">{{ question.result }}</span>
+        </div>
+      </Transition>
     </div>
 
     <NumberBondHint
@@ -188,10 +197,35 @@ const answerStateClass = computed(() => ({
   transform: scale(0.97);
 }
 
+.math-stage {
+  position: relative;
+  min-height: 82px;
+}
+
 .math-display {
+  position: absolute;
+  inset: 0;
   justify-content: center;
   gap: 8px;
-  min-height: 82px;
+  width: 100%;
+}
+
+.expression-enter-active,
+.expression-leave-active {
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+  will-change: opacity, transform;
+}
+
+.expression-enter-from {
+  opacity: 0;
+  transform: translateX(10px) scale(0.995);
+}
+
+.expression-leave-to {
+  opacity: 0;
+  transform: translateX(-8px) scale(0.995);
 }
 
 .number,
@@ -292,7 +326,7 @@ const answerStateClass = computed(() => ({
     padding: 8px 12px;
   }
 
-  .math-display {
+  .math-stage {
     min-height: 76px;
   }
 
@@ -313,7 +347,7 @@ const answerStateClass = computed(() => ({
     font-size: 12px;
   }
 
-  .math-display {
+  .math-stage {
     min-height: 72px;
   }
 

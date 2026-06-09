@@ -1,5 +1,7 @@
 # 音效重设计实施总结
 
+> **归档资料（历史方案）**：本文记录早期音效重设计阶段，不代表当前实现。当前音频行为以 `SOUND_SYSTEM_SIMPLE.md`、`src/composables/useSound.js` 和 `src/config/constants.js` 为准。
+
 ## 完成的工作
 
 ### 1. 音效参数重设计 ✅

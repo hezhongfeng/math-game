@@ -1,266 +1,178 @@
-# Components Documentation
+# 组件说明
 
-This document describes the current Vue components used in the math game project.
+本文记录当前 `src/components/` 中组件的职责和公开接口。源码中的 `defineProps` / `defineEmits` 是最终事实来源。
 
-## 📁 Component Directory Structure
-
-```text
-src/components/
-├── BallArray.vue           # Three.js ball-array visualization
-├── DifficultyCard.vue      # Difficulty level selection card
-├── ErrorBoundary.vue       # Error boundary wrapper
-├── NumberBondHint.vue      # Visual number-splitting slot hint
-├── NumberPad.vue           # Numeric keypad (3×4 grid)
-├── PWAUpdatePrompt.vue     # In-app PWA refresh prompt
-├── QuestionCard.vue        # Current question display
-├── ResultModal.vue         # Completion summary and mistake review
-├── ScoreBoard.vue          # Compact gameplay status panel
-├── Toast.vue               # Toast notification item
-└── ToastContainer.vue      # Toast notification container
-```
-
-## 🎮 Core Components
-
-### BallArray
-
-**File**: `src/components/BallArray.vue`
-
-Visualizes a number (1-1000) as a strict decimal ball array using Three.js. The current implementation uses one shared 3D scene across all ranges, with grouped color cues for tens and hundreds plus mobile-friendly interaction defaults.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `count` | Number | required | Number to visualize (1-1000) |
-
-#### Behavior
-
-- Uses strict decimal spatial layout: ones on X, tens on Y, hundreds on Z
-- Uses layered lighting, translucent materials, and grouped color shifts to make `10` / `100` structures easier to read
-- Mobile devices default to gentle auto-rotation while preserving vertical page scroll
-- Desktop devices support direct rotation and zoom through OrbitControls
-
-### NumberPad
-
-**File**: `src/components/NumberPad.vue`
-
-A 3×4 numeric keypad with delete and confirm buttons. Optimized for mobile touch interaction and reused by gameplay plus number exploration/challenge flows.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `disabled` | Boolean | `false` | Disable all buttons |
-
-#### Events
-
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `input` | `number` | Number button pressed (0-9) |
-| `delete` | - | Delete button pressed |
-| `submit` | - | Confirm button pressed |
+## 核心游戏组件
 
 ### QuestionCard
 
-**File**: `src/components/QuestionCard.vue`
+显示题号、算式、输入状态和可选小球辅助开关。换题时卡片保持不动，仅算式内容进行轻量交叉过渡。
 
-Displays the current math question and current position in the round. For split stages, it embeds `NumberBondHint` as a low-text visual scaffold.
+| Prop | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `question` | Object | 必填 | 标准化题目对象 |
+| `difficulty` | Object | `null` | 当前关卡配置 |
+| `showAnswer` | Boolean | `false` | 是否进入答案反馈状态 |
+| `userAnswer` | String | `''` | 当前输入 |
+| `currentIndex` | Number | `0` | 当前题目索引 |
+| `totalQuestions` | Number | `20` | 本轮题量 |
+| `showNumberBondHint` | Boolean | `false` | 是否显示小球辅助 |
+| `showNumberBondHintToggle` | Boolean | `false` | 是否显示小球开关 |
 
-#### Props
+事件：
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `question` | Object | required | Question object with `operand1`, `operand2`, `operator`, `answer` |
-| `difficulty` | Object | `null` | Current difficulty config, used to decide whether split visualization should appear |
-| `showAnswer` | Boolean | `false` | Whether to show answer feedback |
-| `userAnswer` | String | `''` | User's current input |
-| `currentIndex` | Number | `0` | Current question index (0-based) |
-| `totalQuestions` | Number | `10` | Total number of questions |
-| `showNumberBondHint` | Boolean | `true` | Whether to render the number-bond visual scaffold |
+- `toggle-number-bond-hint`
 
-#### Question Object Structure
+标准题目对象：
 
 ```javascript
 {
-  operand1: 5,
-  operand2: 3,
+  id: 1,
+  operand1: 3,
+  operand2: 2,
   operator: '+',
-  answer: 8,
+  result: 5,
+  answer: 5,
+  missingPart: 'answer',
   userAnswer: null,
   isCorrect: null
 }
 ```
 
-#### Visual States
-
-- Default: shows the question and current input placeholder
-- Correct: shows the correct answer in the answer slot while the success overlay is handled by `Game.vue`
-- Wrong: keeps the user's answer visible while the error feedback card is handled by `Game.vue`
+`missingPart` 可为 `operand1`、`operand2` 或 `answer`。
 
 ### NumberBondHint
 
-**File**: `src/components/NumberBondHint.vue`
+将题目转换为最多 30 个二维小球位置，不显示策略文字。
 
-Visual slot hint used by split levels. It avoids strategy sentences in the question card and instead shows a row of up to 10 slots: known parts are filled and missing parts remain empty.
+| Prop | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `question` | Object | 必填 | 当前题目 |
+| `difficulty` | Object | `null` | 保留的关卡上下文 |
+| `enabled` | Boolean | `true` | 是否显示辅助 |
 
-#### Props
+支持所有可计算球数的加法、减法和缺项加法，不只限于 gap/split 关卡。每行固定 10 个位置，超过 30 个时显示 `+N`。
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `question` | Object | required | Missing-addition question object with `result` and `missingPart` |
-| `difficulty` | Object | `null` | Current difficulty config; only gap/split stages display the hint |
-| `enabled` | Boolean | `true` | Allows the gameplay page to hide the scaffold for fluent practice |
+### NumberPad
 
-#### Behavior
+3×4 数字键盘，包含 0-9、删除和确认。
 
-- Shows only for gap/split stages with missing addends, such as `2 + ? = 5`
-- Uses one row for up to 10 slots to reinforce decimal structure
-- Does not display explanatory strategy text, keeping the gameplay screen child-friendly and low-reading
-- Can be toggled from `Game.vue`; the preference is stored in localStorage
+| Prop | 类型 | 默认值 |
+|------|------|--------|
+| `disabled` | Boolean | `false` |
+| `size` | String | `'normal'` |
 
-### DifficultyCard
+事件：
 
-**File**: `src/components/DifficultyCard.vue`
+- `input(number)`
+- `delete`
+- `submit`
 
-Card component for displaying a difficulty level in the selection screen.
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `difficulty` | Object | required | Difficulty config object |
-| `isLocked` | Boolean | `false` | Whether level is locked |
-| `isCompleted` | Boolean | `false` | Whether level has been cleared |
-| `bestScore` | Object | `null` | Best score data `{ score, accuracy, duration }` |
-| `leaderboard` | Array | `[]` | Current level top-10 fastest times |
-
-#### Events
-
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `select` | `(event, difficulty)` | Emitted when card is clicked and not locked |
+`size` 支持 `normal` 和 `compact`，数字探索页使用紧凑模式适配不同视图。
 
 ### ScoreBoard
 
-**File**: `src/components/ScoreBoard.vue`
+游戏中的紧凑状态区。
 
-Compact gameplay status panel. The current implementation intentionally avoids showing score, timer, and accuracy during play.
+| Prop | 类型 | 默认值 |
+|------|------|--------|
+| `currentIndex` | Number | `0` |
+| `totalQuestions` | Number | `0` |
+| `correctCount` | Number | `0` |
+| `streak` | Number | `0` |
 
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `currentIndex` | Number | `0` | Current question index |
-| `totalQuestions` | Number | `0` | Total questions |
-| `correctCount` | Number | `0` | Number of correct answers |
-| `streak` | Number | `0` | Current correct-answer streak |
-
-#### Behavior
-
-- Shows round progress as `current/total`
-- Shows streak badge when `streak >= 3`
-- Shows compact status text such as remaining question count
-- Shows correct-answer count only
+显示进度、剩余题量、正确数，以及连续答对 3 题以上的提示。不在作答过程中显示计时和总分。
 
 ### ResultModal
 
-**File**: `src/components/ResultModal.vue`
+结算弹窗，第一层展示评级、榜单和操作；第二层展示错题列表。
 
-Completion modal shown after a round ends. Uses a two-step flow: lightweight summary first, mistake review second.
+| Prop | 类型 | 默认值 |
+|------|------|--------|
+| `show` | Boolean | `false` |
+| `result` | Object | 必填 |
+| `isNewBest` | Boolean | `false` |
+| `difficultyId` | Number/String | 必填 |
+| `leaderboard` | Array | `[]` |
+| `leaderboardRank` | Number | `null` |
 
-#### Props
+事件：
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `show` | Boolean | `false` | Whether to show modal |
-| `result` | Object | required | Game result data |
-| `isNewBest` | Boolean | `false` | Whether this is a new best score |
-| `difficultyId` | Number/String | required | Current level id |
-| `leaderboard` | Array | `[]` | Current level top-10 fastest times |
-| `leaderboardRank` | Number | `null` | Current result rank in the leaderboard |
+- `retry`
+- `retry-mistakes`
+- `home`
 
-#### Result Object Structure
+结果对象包含：
 
 ```javascript
 {
-  score: 100,
-  correctCount: 10,
-  totalCount: 10,
-  accuracy: 100,
-  duration: 120,
-  durationMs: 52340,
-  difficulty: { ... },
-  completedAt: '...',
-  incorrectQuestions: [
-    {
-      operand1: 5,
-      operand2: 3,
-      operator: '+',
-      userAnswer: 7,
-      correctAnswer: 8
-    }
-  ]
+  score,
+  correctCount,
+  totalCount,
+  accuracy,
+  duration,
+  durationMs,
+  difficulty,
+  completedAt,
+  incorrectQuestions,
+  isReviewRound
 }
 ```
 
-#### Events
+榜单由存储层按当前题量过滤。错题重练结果不会更新最佳成绩或榜单。
 
-| Event | Description |
-|-------|-------------|
-| `retry` | User wants to retry the same round |
-| `retry-mistakes` | User wants to retry only incorrect questions |
-| `home` | User wants to return to difficulty selection |
+### DifficultyCard
 
-#### Behavior
+选关卡片。
 
-- Step 1: stars, short summary text, and primary actions
-- Step 1 also includes current level leaderboard and current rank when applicable
-- Step 2: dedicated mistake-review panel opened by "看错的"
-- Supports direct "练错的 / 再练" action
+| Prop | 类型 | 默认值 |
+|------|------|--------|
+| `difficulty` | Object | 必填 |
+| `isLocked` | Boolean | `false` |
+| `isCompleted` | Boolean | `false` |
+| `bestScore` | Object | `null` |
+| `leaderboard` | Array | `[]` |
 
-## 🔔 Toast Components
+事件：
 
-### Toast
+- `select(event, difficulty)`
 
-**File**: `src/components/Toast.vue`
+榜单非空时显示最快完成时间。
 
-Receives a single `toast` object and emits `remove` when dismissed.
+## 数字探索
 
-### ToastContainer
+### BallArray
 
-**File**: `src/components/ToastContainer.vue`
+使用 Three.js 将 `count` 表示为十进制 3D 球阵。
 
-Renders global toast notifications from `useToast()`.
+| Prop | 类型 | 默认值 |
+|------|------|--------|
+| `count` | Number | 必填 |
+| `size` | String | `'normal'` |
+
+`size="compact"` 用于紧凑场景。移动端默认自动旋转；桌面端支持 OrbitControls。
+
+## 基础设施组件
 
 ### PWAUpdatePrompt
 
-**File**: `src/components/PWAUpdatePrompt.vue`
+通过 `virtual:pwa-register` 监听新 Service Worker。发现更新时显示刷新操作。
 
-Listens to `virtual:pwa-register` and displays an in-app refresh prompt when a new service worker is ready.
+### Toast / ToastContainer
 
-## 📄 Page Components
+`Toast` 接收单个 toast 对象并发出 `remove`；`ToastContainer` 连接全局 `useToast()` 队列。
 
-### NumberExplore
+### ErrorBoundary
 
-**File**: `src/pages/NumberExplore.vue`
+捕获子树渲染错误并显示降级界面，避免整个应用空白。
 
-Number exploration page supporting both free exploration and range-based challenge practice.
+## 页面组件
 
-#### Features
+页面位于 `src/pages/`：
 
-- **自由探索**: Enter a number (1-1000), inspect the ball array, then continue stepping through nearby values
-- **挑战模式**: Choose a training range and guess the quantity after inspecting the ball array first
-- **结构辅助**: Shows decomposition like `237 = 2个百 + 3个十 + 7个一`
-- **即时反馈**: Inline guidance, validation states, and challenge-range status
+- `Home.vue`：首页入口与进度摘要
+- `DifficultySelect.vue`：关卡选择、解锁和滚动位置恢复
+- `Game.vue`：游戏主循环与反馈
+- `NumberExplore.vue`：自由探索和范围挑战
 
-#### Dependencies
-
-- `NumberPad` - Numeric input
-- `BallArray` - Ball array visualization
-- `useSound` - Click and success sounds
-
-## 📚 See Also
-
-- [AGENTS.md](./AGENTS.md) - Development guidelines
-- [DESIGN.md](./DESIGN.md) - Design specifications
-- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture overview
+页面不是通用组件，其状态流见 [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)。

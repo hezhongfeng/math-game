@@ -1,5 +1,7 @@
 # Design System Master File
 
+> **设计参考归档**：这是旧主题参考，不是当前颜色、组件或动效规范。请使用根目录 `DESIGN.md`。
+
 > **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
 > If that file exists, its rules **override** this Master file.
 > If not, strictly follow the rules below.
