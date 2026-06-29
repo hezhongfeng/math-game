@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Simplified the home page to one short entrance transition, clearer primary/secondary actions, lighter panels, and safe-area-aware spacing
 - Unified child-facing copy around the “算一算” name, level progression, answer feedback, mistake review, and number exploration
 - Renamed ambiguous curriculum labels and guidance to use clearer terms such as “找缺数”, “十几”, “凑十加法”, and “破十减法”
 - Changed the canonical package manager and CI workflows to pnpm 11 with a single frozen lockfile

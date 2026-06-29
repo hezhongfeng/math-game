@@ -82,6 +82,13 @@ function getWrongAnswerFromExpression(expressionText) {
 }
 
 test.describe('E2E Smoke - Core Game Loops', () => {
+  test('uses semantic links for home navigation', async ({ page }) => {
+    await page.goto('/')
+
+    await expect(page.getByTestId('start-challenge-btn')).toHaveAttribute('href', '/difficulty')
+    await expect(page.getByTestId('explore-btn')).toHaveAttribute('href', '/explore')
+  })
+
   test('supports keyboard navigation from difficulty selection', async ({ page }) => {
     await page.goto('/difficulty')
     const firstLevel = page.getByTestId('difficulty-card-1')

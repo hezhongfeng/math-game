@@ -1,68 +1,19 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { ArrowRight, Binary, Play, Sparkles } from 'lucide-vue-next'
 import { useStorage } from '../composables/useStorage'
 import { useSound } from '../composables/useSound'
 import { TOTAL_LEVELS } from '../config/difficulty'
 
-const router = useRouter()
 const { completedCount, stats } = useStorage()
 const { playClick } = useSound()
-const isReady = ref(false)
-const isLeaving = ref(false)
-const NAVIGATION_DELAY = 180
-
-const floatingSymbols = ['+', '-', '=', '?', '1', '2', '3']
-
-function navigateTo(route, event) {
-  if (isLeaving.value) {
-    return
-  }
-
-  isLeaving.value = true
-  playClick()
-  const btn = event?.currentTarget
-  if (btn) {
-    btn.classList.add('is-leaving')
-  }
-  setTimeout(() => {
-    router.push(route)
-  }, NAVIGATION_DELAY)
-}
-
-function startGame(event) {
-  navigateTo('/difficulty', event)
-}
-
-function goToExplore(event) {
-  navigateTo('/explore', event)
-}
-
-onMounted(() => {
-  requestAnimationFrame(() => {
-    isReady.value = true
-  })
-})
 </script>
 
 <template>
   <div class="home-page">
-    <!-- 动态背景 -->
-    <div class="bg-decorations">
-      <span 
-        v-for="(sym, i) in floatingSymbols" 
-        :key="i" 
-        class="float-item"
-        :style="{ '--delay': `${i * 1.5}s`, '--left': `${10 + i * 15}%`, '--top': `${20 + (i % 3) * 20}%` }"
-      >
-        {{ sym }}
-      </span>
-    </div>
-
-    <main id="main-content" class="home-shell" :class="{ 'is-ready': isReady }">
+    <main id="main-content" class="home-shell">
       <header class="logo-area">
-        <div class="logo-circle">
+        <div class="logo-circle" aria-hidden="true">
           <Sparkles :size="32" class="logo-sparkle" />
           <div class="logo-inner">
             <span class="logo-plus">+</span>
@@ -74,7 +25,7 @@ onMounted(() => {
       <section class="hero-panel">
         <div class="hero-topline">
           <span class="mission-chip">
-            <Sparkles :size="14" />
+            <Sparkles :size="14" aria-hidden="true" />
             <span>启蒙数学</span>
           </span>
           <span class="mission-note">{{ TOTAL_LEVELS }}关卡</span>
@@ -97,26 +48,26 @@ onMounted(() => {
           </div>
         </div>
         <div v-else class="welcome-hint">
-          <Sparkles :size="20" class="welcome-sparkle" />
+          <Sparkles :size="20" class="welcome-sparkle" aria-hidden="true" />
           <span>开始你的第一关吧！</span>
         </div>
       </section>
 
       <section class="action-panel">
-        <button class="btn-main" data-testid="start-challenge-btn" @click="startGame($event)">
+        <RouterLink class="btn-main" data-testid="start-challenge-btn" to="/difficulty" @click="playClick">
           <span class="btn-main-icon">
-            <Play :size="24" />
+            <Play :size="24" aria-hidden="true" />
           </span>
           <span class="btn-text">开始闯关</span>
-          <ArrowRight :size="20" class="btn-arrow" />
-        </button>
-        <button class="btn-main btn-explore" data-testid="explore-btn" @click="goToExplore($event)">
+          <ArrowRight :size="20" class="btn-arrow" aria-hidden="true" />
+        </RouterLink>
+        <RouterLink class="btn-main btn-explore" data-testid="explore-btn" to="/explore" @click="playClick">
           <span class="btn-main-icon">
-            <Binary :size="24" />
+            <Binary :size="24" aria-hidden="true" />
           </span>
           <span class="btn-text">数字探索</span>
-          <ArrowRight :size="20" class="btn-arrow" />
-        </button>
+          <ArrowRight :size="20" class="btn-arrow" aria-hidden="true" />
+        </RouterLink>
       </section>
     </main>
   </div>
@@ -129,35 +80,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 18px;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 24px)
+    calc(env(safe-area-inset-right, 0px) + 18px)
+    calc(env(safe-area-inset-bottom, 0px) + 24px)
+    calc(env(safe-area-inset-left, 0px) + 18px);
   background: radial-gradient(circle at top left, #f8faff 0%, #eef4ff 100%);
   position: relative;
   overflow: hidden;
-}
-
-/* 动态背景装饰 */
-.bg-decorations {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.float-item {
-  position: absolute;
-  left: var(--left);
-  top: var(--top);
-  font-size: 28px;
-  font-weight: 900;
-  color: rgba(49, 120, 246, 0.04);
-  animation: float 6s ease-in-out infinite;
-  animation-delay: var(--delay);
-  user-select: none;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  50% { transform: translateY(-20px) rotate(10deg); }
 }
 
 .home-shell {
@@ -168,6 +98,19 @@ onMounted(() => {
   gap: 20px;
   position: relative;
   z-index: 1;
+  animation: home-enter 220ms var(--ease-out) both;
+}
+
+@keyframes home-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Logo 区域 */
@@ -175,14 +118,6 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   margin-bottom: 8px;
-  opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-}
-
-.is-ready .logo-area {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .logo-circle {
@@ -214,30 +149,15 @@ onMounted(() => {
   top: -12px;
   right: -12px;
   color: var(--candy-yellow-dark);
-  filter: drop-shadow(0 0 8px rgba(245, 201, 74, 0.4));
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 /* 面板通用样式 */
 .hero-panel,
 .action-panel {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
-
-.is-ready .hero-panel { transition-delay: 150ms; opacity: 1; transform: translateY(0); }
-.is-ready .action-panel { transition-delay: 250ms; opacity: 1; transform: translateY(0); }
 
 .hero-panel {
   border-radius: 32px;
@@ -281,12 +201,14 @@ onMounted(() => {
   font-size: 42px;
   font-weight: 800;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .subtitle {
   color: var(--text-secondary);
   font-size: 16px;
   font-weight: 500;
+  text-wrap: pretty;
 }
 
 /* 统计网格 */
@@ -344,7 +266,6 @@ onMounted(() => {
 
 .welcome-sparkle {
   color: var(--candy-yellow-dark);
-  animation: pulse 2s ease-in-out infinite;
 }
 
 /* 操作区域 */
@@ -359,7 +280,7 @@ onMounted(() => {
 .btn-main {
   width: 100%;
   height: 64px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 22px;
   background: var(--candy-blue-dark);
   color: white;
@@ -370,8 +291,16 @@ onMounted(() => {
   font-size: 18px;
   font-weight: 800;
   box-shadow: 0 8px 24px rgba(49, 120, 246, 0.2);
-  transition: background 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), filter 0.3s var(--ease-out), opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
   cursor: pointer;
+}
+
+.btn-explore {
+  background: var(--bg-white);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-blue-dark);
 }
 
 .btn-main-icon {
@@ -384,12 +313,17 @@ onMounted(() => {
   justify-content: center;
 }
 
+.btn-explore .btn-main-icon {
+  background: var(--candy-blue-soft);
+  color: var(--text-blue);
+}
+
 .btn-text {
   letter-spacing: 0.02em;
 }
 
 .btn-arrow {
-  transition: transform 0.3s var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 
 .btn-main:active {
@@ -397,16 +331,21 @@ onMounted(() => {
   background: var(--brand-primary-dark);
 }
 
-.btn-main.is-leaving {
-  opacity: 0.5;
-  transform: scale(0.9) translateY(4px);
-  filter: blur(2px);
+.btn-explore:active {
+  background: var(--candy-blue-soft);
+  color: var(--text-blue-dark);
 }
 
 @media (hover: hover) {
   .btn-main:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 32px rgba(49, 120, 246, 0.3);
+  }
+
+  .btn-explore:hover {
+    background: var(--candy-blue-soft);
+    border-color: var(--brand-primary-light);
+    box-shadow: var(--shadow-md);
   }
   
   .btn-main:hover .btn-arrow {
@@ -422,5 +361,38 @@ onMounted(() => {
   .stat-value { font-size: 20px; }
   .logo-circle { width: 72px; height: 72px; border-radius: 24px; }
   .logo-inner { font-size: 30px; }
+}
+
+@media (max-height: 640px) {
+  .home-page {
+    align-items: flex-start;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  }
+
+  .home-shell {
+    gap: 12px;
+  }
+
+  .logo-area {
+    margin-bottom: 0;
+  }
+
+  .logo-circle {
+    width: 64px;
+    height: 64px;
+  }
+
+  .hero-panel {
+    padding: 18px;
+  }
+
+  .hero-topline {
+    margin-bottom: 16px;
+  }
+
+  .hero-copy {
+    margin-bottom: 20px;
+  }
 }
 </style>
