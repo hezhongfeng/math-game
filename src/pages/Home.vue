@@ -82,7 +82,7 @@ onMounted(() => {
 
         <div class="hero-copy">
           <h1 class="title">算一算</h1>
-          <p class="subtitle">有趣又好玩的数学游戏。</p>
+          <p class="subtitle">从简单加减法开始，一关一关练熟。</p>
         </div>
 
         <div v-if="completedCount > 0 || (stats.totalCorrect || 0) > 0" class="stats-grid">
@@ -107,7 +107,7 @@ onMounted(() => {
           <span class="btn-main-icon">
             <Play :size="24" />
           </span>
-          <span class="btn-text">开始挑战</span>
+          <span class="btn-text">开始闯关</span>
           <ArrowRight :size="20" class="btn-arrow" />
         </button>
         <button class="btn-main btn-explore" data-testid="explore-btn" @click="goToExplore($event)">

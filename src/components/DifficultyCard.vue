@@ -42,13 +42,17 @@ const bestTimeLabel = computed(() => {
 
 const statusText = computed(() => {
   if (props.isLocked) return ''
-  if (props.isCompleted && props.bestScore) {
-    return '再玩'
+  if (props.isCompleted) return '再玩'
+  if (props.bestScore) return '继续练'
+  return '开始'
+})
+
+const actionLabel = computed(() => {
+  if (props.isLocked) {
+    return `第${props.difficulty.id}关，完成第${props.difficulty.id - 1}关后解锁`
   }
-  if (props.bestScore) {
-    return '再玩'
-  }
-  return '去玩'
+
+  return `${statusText.value}，第${props.difficulty.id}关：${props.difficulty.description}`
 })
 
 function handleSelect(event) {
@@ -104,7 +108,7 @@ function handleSelect(event) {
       class="card-action"
       type="button"
       :disabled="isLocked"
-      :aria-label="isLocked ? `第${difficulty.id}关，尚未解锁` : `${statusText}第${difficulty.id}关：${difficulty.description}`"
+      :aria-label="actionLabel"
       @click="handleSelect"
     />
   </article>

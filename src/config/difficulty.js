@@ -8,7 +8,7 @@ const DIFFICULTY_LEVELS = [
     stage: 'addTiny',
     questionCount: 20,
     description: '0-3 加法',
-    helperText: '小数一起加一加',
+    helperText: '把两个小数字加起来',
     color: 'var(--candy-mint-light)',
     textColor: 'var(--candy-mint-dark)',
     stars: 1
@@ -50,7 +50,7 @@ const DIFFICULTY_LEVELS = [
     stage: 'addWithinFive',
     questionCount: 24,
     description: '5 以内加法',
-    helperText: '把小数慢慢加到 5',
+    helperText: '把 5 以内的数加起来',
     color: 'var(--candy-blue-light)',
     textColor: 'var(--candy-blue-dark)',
     stars: 2
@@ -64,7 +64,7 @@ const DIFFICULTY_LEVELS = [
     stage: 'subtractWithinFive',
     questionCount: 24,
     description: '5 以内减法',
-    helperText: '从 5 里拿走几个',
+    helperText: '从 5 以内的数里拿走几个',
     color: 'var(--candy-blue)',
     textColor: 'var(--candy-blue-dark)',
     stars: 2
@@ -92,7 +92,7 @@ const DIFFICULTY_LEVELS = [
     stage: 'pairsWithinFive',
     questionCount: 30,
     description: '5 以内组合',
-    helperText: '记住好朋友数字',
+    helperText: '找找哪些数字能合在一起',
     color: 'var(--candy-yellow-light)',
     textColor: 'var(--candy-yellow-dark)',
     stars: 3
@@ -105,8 +105,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'missingAddMixed',
     stage: 'gapWithinFive',
     questionCount: 24,
-    description: '5 以内找缺口',
-    helperText: '先找还缺几个',
+    description: '5 以内找缺数',
+    helperText: '找出藏起来的数',
     color: 'var(--candy-yellow)',
     textColor: 'var(--candy-yellow-dark)',
     stars: 3
@@ -120,7 +120,7 @@ const DIFFICULTY_LEVELS = [
     stage: 'splitWithinFive',
     questionCount: 24,
     description: '5 以内拆分',
-    helperText: '把小数分成两个数',
+    helperText: '把一个数分成两个数',
     color: 'var(--candy-yellow)',
     textColor: 'var(--candy-yellow-dark)',
     stars: 3
@@ -175,8 +175,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'missingAddMixed',
     stage: 'gapWithinTen',
     questionCount: 28,
-    description: '10 以内找缺口',
-    helperText: '先补到目标数',
+    description: '10 以内找缺数',
+    helperText: '想想还差几到目标数',
     color: 'var(--candy-peach)',
     textColor: 'var(--candy-peach-dark)',
     stars: 3
@@ -245,8 +245,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     stage: 'teenAdd',
     questionCount: 32,
-    description: '10几加几',
-    helperText: '先从 10 开始往上加',
+    description: '十几加几',
+    helperText: '从十几开始往上加',
     color: 'var(--candy-lavender-light)',
     textColor: 'var(--candy-lavender-dark)',
     stars: 4
@@ -259,8 +259,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     stage: 'teenSubtract',
     questionCount: 32,
-    description: '10几减几',
-    helperText: '从 10几里慢慢减掉',
+    description: '十几减几',
+    helperText: '从十几里减去几个',
     color: 'var(--candy-lavender)',
     textColor: 'var(--candy-lavender-dark)',
     stars: 4
@@ -287,7 +287,7 @@ const DIFFICULTY_LEVELS = [
     operation: 'add',
     stage: 'bridgeTenAdd',
     questionCount: 32,
-    description: '20 以内过十加',
+    description: '20 以内凑十加法',
     helperText: '先凑到 10，再往上加',
     color: 'var(--candy-lavender-dark)',
     textColor: 'var(--candy-lavender-dark)',
@@ -315,8 +315,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'subtract',
     stage: 'bridgeTenSubtract',
     questionCount: 36,
-    description: '20 以内退位减',
-    helperText: '先退回 10，再减下去',
+    description: '20 以内破十减法',
+    helperText: '先减到 10，再继续减',
     color: 'var(--candy-mint-light)',
     textColor: 'var(--candy-mint-dark)',
     stars: 5
@@ -343,8 +343,8 @@ const DIFFICULTY_LEVELS = [
     operation: 'missingAddMixed',
     stage: 'missingNumberIntro',
     questionCount: 40,
-    description: '找空格',
-    helperText: '想想哪一个数躲起来了',
+    description: '找缺数',
+    helperText: '找出藏起来的数',
     color: 'var(--candy-peach-light)',
     textColor: 'var(--candy-peach-dark)',
     stars: 5
@@ -358,7 +358,7 @@ const DIFFICULTY_LEVELS = [
     stage: 'withinTwentyMixedAdvanced',
     questionCount: 40,
     description: '20 以内综合进阶',
-    helperText: '把加减、找空格和凑十一起用起来',
+    helperText: '把加减、找缺数和凑十一起用起来',
     color: 'var(--candy-peach-light)',
     textColor: 'var(--candy-peach-dark)',
     stars: 5

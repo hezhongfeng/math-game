@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Unified child-facing copy around the “算一算” name, level progression, answer feedback, mistake review, and number exploration
+- Renamed ambiguous curriculum labels and guidance to use clearer terms such as “找缺数”, “十几”, “凑十加法”, and “破十减法”
 - Changed the canonical package manager and CI workflows to pnpm 11 with a single frozen lockfile
 - Updated Vite, Vitest, PostCSS, Workbox, and PWA build dependencies to current compatible releases
 - Restored browser zoom and standardized modal focus isolation, focus trapping, and focus restoration
@@ -81,6 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed completed-progress, failed-level, mistake-review, and challenge-status copy so each label matches the underlying state
 - Fixed the development server host policy by removing unrestricted host acceptance
 - Fixed non-semantic card interaction, unannounced async feedback, and inaccessible modal background focus
 - Fixed manifest and Vite PWA config drift by removing nonexistent screenshot references and pointing included assets at real files

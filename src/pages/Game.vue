@@ -159,7 +159,7 @@ function initGame() {
 
 function submitAnswer() {
   if (isWaiting.value || !userAnswer.value || userAnswer.value.trim() === '') {
-    showError('先写数字')
+    showError('先输入答案')
     return
   }
 
@@ -516,7 +516,7 @@ onUnmounted(() => {
                   </div>
                   <p id="incorrect-feedback-title" class="feedback-kicker">正确答案是</p>
                   <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                  <p class="feedback-tap-note">看清楚后，继续下一题</p>
+                  <p class="feedback-tap-note">点一下，继续下一题</p>
                 </div>
               </div>
 

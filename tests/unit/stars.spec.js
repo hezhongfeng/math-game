@@ -12,11 +12,12 @@ describe('stars', () => {
   })
 
   test('maps accuracy thresholds to rating text', () => {
-    expect(getRatingText(69)).toBe('加油！')
-    expect(getRatingText(70)).toBe('再来！')
-    expect(getRatingText(80)).toBe('不错！')
-    expect(getRatingText(90)).toBe('很好！')
-    expect(getRatingText(95)).toBe('真棒！')
-    expect(getRatingText(100)).toBe('太棒了！')
+    expect(getRatingText(69)).toBe('再练一次！')
+    expect(getRatingText(70)).toBe('继续加油！')
+    expect(getRatingText(84)).toBe('继续加油！')
+    expect(getRatingText(85)).toBe('顺利过关！')
+    expect(getRatingText(90)).toBe('做得很好！')
+    expect(getRatingText(95)).toBe('非常棒！')
+    expect(getRatingText(100)).toBe('全部答对！')
   })
 })

@@ -23,11 +23,11 @@ const ariaLabel = computed(() => {
   const ones = props.count % 10
   const parts = []
 
-  if (hundreds) parts.push(`${hundreds}个百`)
-  if (tens) parts.push(`${tens}个十`)
-  if (ones || !parts.length) parts.push(`${ones}个一`)
+  if (hundreds) parts.push(`${hundreds} 个百`)
+  if (tens) parts.push(`${tens} 个十`)
+  if (ones || !parts.length) parts.push(`${ones} 个一`)
 
-  return `${props.count}颗小球，按十进制排列为${parts.join('、')}`
+  return `${props.count} 颗小球，按十进制排列为${parts.join('、')}`
 })
 
 let scene = null

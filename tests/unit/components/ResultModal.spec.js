@@ -41,4 +41,27 @@ describe('ResultModal.vue', () => {
 
     wrapper.unmount()
   })
+
+  test('uses review language and hides the leaderboard for mistake practice', async () => {
+    const wrapper = mount(ResultModal, {
+      attachTo: document.body,
+      props: {
+        show: true,
+        result: {
+          ...result,
+          isReviewRound: true
+        },
+        difficultyId: 1,
+        leaderboard: [{ durationMs: 30000, completedAt: '2026-06-29' }]
+      }
+    })
+
+    await nextTick()
+
+    expect(document.querySelector('.result-chip')?.textContent).toContain('错题复习')
+    expect(document.querySelector('.result-title')?.textContent).toBe('复习完成')
+    expect(document.querySelector('.leaderboard-panel')).toBeNull()
+
+    wrapper.unmount()
+  })
 })

@@ -39,6 +39,7 @@ const { stats } = useStorage()
 const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
+const isReviewRound = computed(() => props.result.isReviewRound === true)
 const showMistakesPanel = ref(false)
 const dialogRef = ref(null)
 const minCorrectCount = computed(() => Math.ceil((props.result.totalCount || 0) * GAME_CONFIG.PASS_ACCURACY / 100))
@@ -63,7 +64,7 @@ const growthInsight = computed(() => {
     return {
       type: 'warning',
       icon: Award,
-      text: `"${displayKey}" 已经错了 ${persistentMistake.count} 次啦，再多练练它！`
+      text: `“${displayKey}”再练一遍，就会更熟。`
     }
   }
 
@@ -75,7 +76,7 @@ const growthInsight = computed(() => {
       return {
         type: 'success',
         icon: TrendingUp,
-        text: '算得越来越快了，反应力大提升！'
+        text: '这次平均每题用时更短了！'
       }
     }
   }
@@ -85,7 +86,7 @@ const growthInsight = computed(() => {
     return {
       type: 'milestone',
       icon: Sparkles,
-      text: `哇！你已经累计答对了 ${stats.value.totalCorrect} 道题啦！`
+      text: `你已经累计答对 ${stats.value.totalCorrect} 题啦！`
     }
   }
 
@@ -93,23 +94,38 @@ const growthInsight = computed(() => {
 })
 
 const subtitleText = computed(() => {
+  if (isReviewRound.value) {
+    return hasIncorrectQuestions.value
+      ? `还有${incorrectQuestions.value.length}题需要再练。`
+      : '错题都答对啦。'
+  }
+
   if (!didPass.value) {
-    return `还差${remainingToPass.value}题。`
+    return `再答对${remainingToPass.value}题就能过关。`
   }
 
   if (!hasIncorrectQuestions.value) {
-    return '全对啦。'
+    return '这一关全部答对啦。'
   }
 
   if (props.isNewBest) {
-    return '这次更棒。'
+    return '刷新最好成绩啦。'
   }
 
-  return '过关啦。'
+  return '已经过关，错题再练一遍会更熟。'
+})
+
+const resultChipText = computed(() => {
+  if (isReviewRound.value) return '错题复习'
+  return didPass.value ? '过关啦' : '完成啦'
+})
+
+const resultTitle = computed(() => {
+  if (isReviewRound.value) return '复习完成'
+  return getRatingText(props.result.accuracy)
 })
 
 const showLeaderboardRank = computed(() => didPass.value && props.leaderboardRank)
-const leaderboardTitle = computed(() => props.leaderboard.length ? '本关计时榜' : '还没有榜单')
 
 let previousActiveElement = null
 let previousBodyOverflow = ''
@@ -251,7 +267,7 @@ function handleDialogKeydown(event) {
             <div class="topline">
               <span class="result-chip">
                 <Target :size="16" aria-hidden="true" />
-                <span>{{ didPass ? '过关啦' : '做完啦' }}</span>
+                <span>{{ resultChipText }}</span>
               </span>
               <span v-if="isNewBest" class="record-chip">
                 <Sparkles :size="14" aria-hidden="true" />
@@ -259,7 +275,7 @@ function handleDialogKeydown(event) {
               </span>
             </div>
 
-            <h2 id="result-dialog-title" class="result-title">{{ getRatingText(result.accuracy) }}</h2>
+            <h2 id="result-dialog-title" class="result-title">{{ resultTitle }}</h2>
             <p id="result-dialog-subtitle" class="result-subtitle">{{ subtitleText }}</p>
 
             <div class="star-rating">
@@ -280,11 +296,11 @@ function handleDialogKeydown(event) {
               </div>
             </Transition>
 
-            <section class="leaderboard-panel">
+            <section v-if="!isReviewRound" class="leaderboard-panel">
               <div class="leaderboard-head">
                 <div class="leaderboard-title-wrap">
                   <Clock3 :size="16" aria-hidden="true" />
-                  <strong>{{ leaderboardTitle }}</strong>
+                  <strong>本关计时榜</strong>
                 </div>
                 <span v-if="showLeaderboardRank" class="leaderboard-rank">第 {{ leaderboardRank }} 名</span>
               </div>
@@ -301,10 +317,10 @@ function handleDialogKeydown(event) {
                 </div>
               </div>
 
-              <p v-else class="leaderboard-empty">过关后会把最快时间记在这里。</p>
+              <p v-else class="leaderboard-empty">过关后，最快用时会记录在这里。</p>
             </section>
 
-            <p v-if="hasIncorrectQuestions" class="mistake-note">错了 {{ incorrectQuestions.length }} 题</p>
+            <p v-if="hasIncorrectQuestions" class="mistake-note">本次错题 {{ incorrectQuestions.length }} 题</p>
 
             <div class="actions">
               <button
@@ -313,7 +329,7 @@ function handleDialogKeydown(event) {
                 type="button"
                 @click="openMistakesPanel"
               >
-                <span>看错的</span>
+                <span>查看错题</span>
               </button>
 
               <button
@@ -326,7 +342,7 @@ function handleDialogKeydown(event) {
                 <span class="btn-icon">
                   <RotateCcw :size="18" aria-hidden="true" />
                 </span>
-                <span>练错的</span>
+                <span>重练错题</span>
               </button>
 
               <button
@@ -339,14 +355,14 @@ function handleDialogKeydown(event) {
                 <span class="btn-icon">
                   <RotateCcw :size="18" aria-hidden="true" />
                 </span>
-                <span>再来</span>
+                <span>再练本关</span>
               </button>
 
               <button class="btn-secondary ghost" data-testid="result-home-btn" @click="handleHome">
                 <span class="btn-icon">
                   <Home :size="18" aria-hidden="true" />
                 </span>
-                <span>选关</span>
+                <span>选择关卡</span>
               </button>
             </div>
           </template>
@@ -355,7 +371,7 @@ function handleDialogKeydown(event) {
             <div class="mistakes-headline">
               <div>
                 <p class="mistakes-kicker">错题</p>
-                <h2 id="result-dialog-title" class="result-title">错了这些</h2>
+                <h2 id="result-dialog-title" class="result-title">本次错题</h2>
               </div>
               <span class="mistakes-count">{{ incorrectQuestions.length }}题</span>
             </div>
@@ -396,11 +412,11 @@ function handleDialogKeydown(event) {
                 <span class="btn-icon">
                   <RotateCcw :size="18" aria-hidden="true" />
                 </span>
-                <span>再练</span>
+                <span>重练错题</span>
               </button>
 
               <button class="btn-secondary" type="button" @click="closeMistakesPanel">
-                <span>返回</span>
+                <span>返回结算</span>
               </button>
             </div>
           </template>

@@ -5,7 +5,7 @@ import DifficultyCard from '../../../src/components/DifficultyCard.vue'
 const difficulty = {
   id: 1,
   description: '0-3 加法',
-  helperText: '小数一起加一加',
+  helperText: '把两个小数字加起来',
   color: '#4A90E2'
 }
 
@@ -35,9 +35,23 @@ describe('DifficultyCard.vue', () => {
     const action = wrapper.get('[data-testid="difficulty-card-2"]')
 
     expect(action.element.disabled).toBe(true)
-    expect(action.attributes('aria-label')).toBe('第2关，尚未解锁')
+    expect(action.attributes('aria-label')).toBe('第2关，完成第1关后解锁')
 
     await action.trigger('click')
     expect(wrapper.emitted('select')).toBeUndefined()
+  })
+
+  test('distinguishes a failed attempt from a completed level', async () => {
+    const wrapper = mount(DifficultyCard, {
+      props: {
+        difficulty,
+        bestScore: { accuracy: 80 }
+      }
+    })
+
+    expect(wrapper.get('.level-status').text()).toBe('继续练')
+
+    await wrapper.setProps({ isCompleted: true })
+    expect(wrapper.get('.level-status').text()).toBe('再玩')
   })
 })

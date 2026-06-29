@@ -42,7 +42,7 @@ function retry() {
         <div class="topline">
           <span class="error-chip">
             <AlertCircle :size="16" />
-            <span>出错了</span>
+            <span>出现问题</span>
           </span>
         </div>
 
@@ -50,8 +50,8 @@ function retry() {
           <AlertCircle :size="34" class="error-icon" />
         </div>
 
-        <h2 class="error-title text-child-xl">页面出错了</h2>
-        <p class="error-message text-child-base">刷新一下，或者回到首页。</p>
+        <h2 class="error-title text-child-xl">页面暂时打不开</h2>
+        <p class="error-message text-child-base">请刷新试试，或者回到首页。</p>
 
         <div v-if="errorInfo && isDev" class="error-details">
           <p class="error-detail-text">{{ errorInfo.message }}</p>

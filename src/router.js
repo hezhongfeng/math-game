@@ -4,18 +4,21 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('./pages/Home.vue')
+    component: () => import('./pages/Home.vue'),
+    meta: { title: '首页' }
   },
   {
     path: '/difficulty',
     name: 'DifficultySelect',
-    component: () => import('./pages/DifficultySelect.vue')
+    component: () => import('./pages/DifficultySelect.vue'),
+    meta: { title: '选择关卡' }
   },
   {
     path: '/game/:id',
     name: 'Game',
     component: () => import('./pages/Game.vue'),
-    props: true
+    props: true,
+    meta: { title: '闯关' }
   },
   {
     path: '/explore',
@@ -36,6 +39,10 @@ const router = createRouter({
   scrollBehavior() {
     return { left: 0, top: 0 }
   }
+})
+
+router.afterEach((to) => {
+  document.title = `${to.meta.title || '儿童数学游戏'}｜算一算`
 })
 
 export default router

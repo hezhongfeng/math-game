@@ -138,7 +138,7 @@ export function useStorage() {
         storageData.value = createDefaultData()
       }
     } catch (error) {
-      showError('读取游戏数据失败，请检查浏览器存储设置')
+      showError('进度读取失败，请刷新后再试')
       storageData.value = createDefaultData()
     }
 
@@ -158,7 +158,7 @@ export function useStorage() {
       storageData.value = normalizedData
       isDataLoaded = true
     } catch (error) {
-      showError('保存游戏数据失败，存储空间可能已满')
+      showError('进度暂时没有保存，请稍后再试')
     }
   }
   

@@ -157,6 +157,15 @@ test.describe('E2E Smoke - Core Game Loops', () => {
     await dismissErrorFeedback(page)
   })
 
+  test('shows challenge input guidance and validation feedback', async ({ page }) => {
+    await page.goto('/explore')
+    await page.getByRole('button', { name: '猜数挑战' }).click()
+
+    await expect(page.locator('.status-copy')).toContainText('挑战范围：1–10')
+    await page.getByTestId('num-btn-0').click()
+    await expect(page.locator('.status-copy')).toHaveText('请从 1 开始，不能只输入 0。')
+  })
+
   test('complete a full session and return home', async ({ page }) => {
     test.setTimeout(120_000)
     await openFirstLevel(page)
@@ -185,6 +194,7 @@ test.describe('E2E Smoke - Core Game Loops', () => {
 
   test('PWA manifest and metadata', async ({ page }) => {
     await page.goto('/')
+    await expect(page).toHaveTitle('首页｜算一算')
     const manifestLink = page.locator('link[rel="manifest"]')
     await expect(manifestLink).toHaveAttribute('href', /manifest\.json/)
     

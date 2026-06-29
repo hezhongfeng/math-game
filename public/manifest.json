@@ -1,7 +1,7 @@
 {
-  "name": "数学运算游戏",
-  "short_name": "数学游戏",
-  "description": "专为儿童设计的数学运算游戏，包含渐进式加减法练习与26个主线关卡",
+  "name": "算一算：儿童数学游戏",
+  "short_name": "算一算",
+  "description": "适合儿童的渐进式加减法练习，包含 26 个主线关卡和数字探索",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F5F7FA",
@@ -69,9 +69,9 @@
   ],
   "shortcuts": [
     {
-      "name": "开始挑战",
-      "short_name": "开始",
-      "description": "直接进入难度选择",
+      "name": "开始闯关",
+      "short_name": "闯关",
+      "description": "进入关卡选择",
       "url": "/difficulty",
       "icons": [
         {

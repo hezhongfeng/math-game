@@ -35,7 +35,7 @@ Service Worker 只在生产构建中生成。不要用 `pnpm run dev` 判断离�
 
 当前 manifest：
 
-- 名称：数学运算游戏
+- 名称：算一算：儿童数学游戏
 - `start_url` / `scope`：`/`
 - `display`：`standalone`
 - 方向：`portrait`

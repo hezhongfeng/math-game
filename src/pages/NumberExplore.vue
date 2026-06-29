@@ -11,23 +11,23 @@ const { playClick, playSubmit } = useSound()
 
 const QUICK_COUNTS = [10, 50, 100, 500, 1000]
 const CHALLENGE_RANGES = [
-  { label: '10以内', min: 1, max: 10, hint: '先从少量小球开始，培养数量感。' },
-  { label: '10几', min: 11, max: 19, hint: '开始感受“十几”这个区间。' },
-  { label: '20几', min: 20, max: 29, hint: '先练习 20 多的数量，观察两排多一点的感觉。' },
-  { label: '30几', min: 30, max: 39, hint: '继续往上，看看 30 多和 20 多的差别。' },
-  { label: '40几', min: 40, max: 49, hint: '球阵会更满一些，试着先估整排。' },
-  { label: '50几', min: 50, max: 59, hint: '开始建立“半百左右”的数量感。' },
-  { label: '60几', min: 60, max: 69, hint: '先看大概几排，再判断剩下多少。' },
-  { label: '70几', min: 70, max: 79, hint: '数量越来越密了，先估整十会更稳。' },
-  { label: '80几', min: 80, max: 89, hint: '快接近 100 了，看看视觉上有多满。' },
-  { label: '90几', min: 90, max: 99, hint: '最后冲刺到 100 前，练习接近满格的感觉。' },
-  { label: '100-120', min: 100, max: 120, hint: '刚过 100，先感受一层和两层之间的变化。' },
-  { label: '121-150', min: 121, max: 150, hint: '继续练习 100 多，开始观察每层的大致分布。' },
-  { label: '151-199', min: 151, max: 199, hint: '接近 200 之前，试着同时看层数和单层数量。' },
-  { label: '200-300', min: 200, max: 300, hint: '进入几百个范围后，先估层数会更容易。' },
-  { label: '301-500', min: 301, max: 500, hint: '球阵更厚了，适合练“整百 + 零头”的感觉。' },
-  { label: '501-750', min: 501, max: 750, hint: '开始挑战大数量，先看大体体积再细估。' },
-  { label: '751-1000', min: 751, max: 1000, hint: '最终高阶范围，练习接近满载的数量判断。' }
+  { label: '1–10', min: 1, max: 10, hint: '先看有几颗，再试着一眼认出来。' },
+  { label: '11–19', min: 11, max: 19, hint: '先找一排 10，再数多出来的。' },
+  { label: '20–29', min: 20, max: 29, hint: '先看两排 10，再数多出来的。' },
+  { label: '30–39', min: 30, max: 39, hint: '先看三排 10，再数多出来的。' },
+  { label: '40–49', min: 40, max: 49, hint: '先数整排，再看多出来几颗。' },
+  { label: '50–59', min: 50, max: 59, hint: '先找到 50，再看多出来几颗。' },
+  { label: '60–69', min: 60, max: 69, hint: '先数有几排，再看零头。' },
+  { label: '70–79', min: 70, max: 79, hint: '先找整十，再数多出来的。' },
+  { label: '80–89', min: 80, max: 89, hint: '先看有几个十，再看几个一。' },
+  { label: '90–99', min: 90, max: 99, hint: '快到 100 了，先找 90 再数零头。' },
+  { label: '100–120', min: 100, max: 120, hint: '先找 100，再看多出来多少。' },
+  { label: '121–150', min: 121, max: 150, hint: '先看一个百，再数整十和零头。' },
+  { label: '151–199', min: 151, max: 199, hint: '先找 100，再看还多几个十和几个一。' },
+  { label: '200–300', min: 200, max: 300, hint: '先看有几个百，再看多出来多少。' },
+  { label: '301–500', min: 301, max: 500, hint: '先数有几个百，再看整十和零头。' },
+  { label: '501–750', min: 501, max: 750, hint: '先看百位，再看十位和个位。' },
+  { label: '751–1000', min: 751, max: 1000, hint: '先判断接近哪个整百，再慢慢缩小范围。' }
 ]
 
 const mode = ref('explore')
@@ -35,7 +35,7 @@ const inputNumber = ref('')
 const currentCount = ref(0)
 const showResult = ref(false)
 const isShaking = ref(false)
-const statusMessage = ref('输入 1-1000，看看它会变成多少颗小球。')
+const statusMessage = ref('输入 1–1000，看看有多少颗小球。')
 const statusTone = ref('default')
 
 const challengeTargetCount = ref(0)
@@ -47,7 +47,7 @@ const challengeLastCorrect = ref(false)
 
 const isChallengeMode = computed(() => mode.value === 'challenge')
 const currentChallengeRange = computed(() => CHALLENGE_RANGES[challengeRangeIndex.value])
-const challengeProgressText = computed(() => `本档答对 ${challengeCorrectInRange.value} 题`)
+const challengeProgressText = computed(() => `本范围答对 ${challengeCorrectInRange.value} 题`)
 const challengeStatusText = computed(() => {
   if (!isChallengeMode.value) return ''
   return `当前范围：${currentChallengeRange.value.label} · ${challengeProgressText.value}`
@@ -60,9 +60,9 @@ const numberParts = computed(() => {
   const ones = count % 10
   const parts = []
 
-  if (hundreds > 0) parts.push(`${hundreds}个百`)
-  if (tens > 0) parts.push(`${tens}个十`)
-  if (ones > 0 || parts.length === 0) parts.push(`${ones}个一`)
+  if (hundreds > 0) parts.push(`${hundreds} 个百`)
+  if (tens > 0) parts.push(`${tens} 个十`)
+  if (ones > 0 || parts.length === 0) parts.push(`${ones} 个一`)
 
   return parts.join(' + ')
 })
@@ -94,7 +94,7 @@ function prepareExploreMode() {
   currentCount.value = 0
   showResult.value = false
   challengeLastGuess.value = null
-  setStatus('输入 1-1000，看看它会变成多少颗小球。', 'default')
+  setStatus('输入 1–1000，看看有多少颗小球。', 'default')
 }
 
 function prepareChallengeRound(keepInput = false) {
@@ -151,7 +151,7 @@ function handleInput(num) {
   playClick()
 
   if (inputNumber.value === '' && num === 0) {
-    setStatus('从 1 开始输入，0 不能单独展示。', 'warning')
+    setStatus('请从 1 开始，不能只输入 0。', 'warning')
     pulseNumber()
     return
   }
@@ -168,11 +168,11 @@ function handleInput(num) {
   inputNumber.value = nextValue
 
   if (isChallengeMode.value) {
-    setStatus(`你猜的是 ${parsed}。${challengeStatusText.value}`, 'default')
+    setStatus(`你猜的是 ${parsed}。确认后看答案。`, 'default')
     return
   }
 
-  setStatus(`准备探索 ${parsed}。`, 'default')
+  setStatus(`已输入 ${parsed}，确认后查看小球。`, 'default')
 }
 
 function handleDelete() {
@@ -180,11 +180,11 @@ function handleDelete() {
   inputNumber.value = inputNumber.value.slice(0, -1)
 
   if (isChallengeMode.value) {
-    setStatus(inputNumber.value ? `你猜的是 ${inputNumber.value}。${challengeStatusText.value}` : `${challengeStatusText.value}，先看球阵再猜数字。`, 'default')
+    setStatus(inputNumber.value ? `你猜的是 ${inputNumber.value}。确认后看答案。` : `${challengeStatusText.value}，先看小球再猜数字。`, 'default')
     return
   }
 
-  setStatus(inputNumber.value ? `当前输入 ${inputNumber.value}。` : '输入 1-1000，看看它会变成多少颗小球。', 'default')
+  setStatus(inputNumber.value ? `当前输入 ${inputNumber.value}。` : '输入 1–1000，看看有多少颗小球。', 'default')
 }
 
 function handleExploreSubmit(num) {
@@ -207,12 +207,12 @@ function handleChallengeSubmit(num) {
     playSubmit()
     challengeSolvedCount.value += 1
     challengeCorrectInRange.value += 1
-    setStatus(`猜对了。答案就是 ${target}。`, 'success')
+    setStatus(`猜对啦，答案是 ${target}。`, 'success')
     return
   }
 
   playClick()
-  setStatus(`这次没猜中，正确答案是 ${target}。`, 'warning')
+  setStatus(`这次没猜中，答案是 ${target}。`, 'warning')
 }
 
 function handleSubmit() {
@@ -220,7 +220,7 @@ function handleSubmit() {
 
   if (Number.isNaN(num) || num < 1 || num > 1000) {
     playClick()
-    setStatus('请输入 1 到 1000 之间的数字。', 'warning')
+    setStatus('请输入 1–1000 之间的数字。', 'warning')
     pulseNumber()
     return
   }
@@ -236,7 +236,7 @@ function handleSubmit() {
 function applyQuickCount(num) {
   playClick()
   inputNumber.value = String(num)
-  setStatus(`已选择 ${num}，点击确认就能看结果。`, 'default')
+  setStatus(`已选择 ${num}，点确认查看小球。`, 'default')
 }
 
 function updateCurrentCount(nextCount) {
@@ -318,14 +318,14 @@ function goHome() {
               :aria-pressed="mode === 'challenge'"
               @click="switchMode('challenge')"
             >
-              挑战模式
+              猜数挑战
             </button>
           </section>
 
           <section v-if="isChallengeMode" class="range-selector-shell">
             <div class="range-selector-header">
-              <h2 class="counter-badge range-title-badge">选择训练范围</h2>
-              <p class="range-selector-copy">先选范围，再看球阵猜数字。</p>
+              <h2 class="counter-badge range-title-badge">选择数字范围</h2>
+              <p class="range-selector-copy">选一个范围，再看小球猜数字。</p>
             </div>
 
             <div class="range-selector" aria-label="挑战范围选择">
@@ -350,7 +350,7 @@ function goHome() {
             <section class="number-stage" :class="{ 'is-shaking': isShaking }">
               <div class="number-card">
                 <div class="number-card-top">
-                  <h1 class="counter-badge">{{ isChallengeMode ? '数字挑战' : '数字探索' }}</h1>
+                  <h1 class="counter-badge">{{ isChallengeMode ? '猜数挑战' : '数字探索' }}</h1>
                   <div v-if="isChallengeMode" class="counter-badge range-badge">{{ currentChallengeRange.label }}</div>
                 </div>
                 <div class="number-display font-number">
@@ -358,25 +358,18 @@ function goHome() {
                     {{ inputNumber || '?' }}
                   </div>
                 </div>
-                <p v-if="!isChallengeMode" class="helper-copy">
-                  输入一个数字，马上看看它会变成多少颗球。
-                </p>
                 <p class="status-copy" :class="`is-${statusTone}`" aria-live="polite">
-                  {{ isChallengeMode ? challengeStatusText : statusMessage }}
+                  {{ statusMessage }}
                 </p>
 
                 <div v-if="isChallengeMode" class="challenge-meta">
                   <div class="challenge-card">
-                    <span class="challenge-label">范围</span>
-                    <strong>{{ currentChallengeRange.label }}</strong>
-                  </div>
-                  <div class="challenge-card">
-                    <span class="challenge-label">本档</span>
+                    <span class="challenge-label">本范围答对</span>
                     <strong>{{ challengeCorrectInRange }}题</strong>
                   </div>
                   <div class="challenge-card">
-                    <span class="challenge-label">累计</span>
-                    <strong>{{ challengeSolvedCount }}</strong>
+                    <span class="challenge-label">累计答对</span>
+                    <strong>{{ challengeSolvedCount }}题</strong>
                   </div>
                 </div>
 
@@ -398,7 +391,7 @@ function goHome() {
             <section v-if="isChallengeMode" class="challenge-preview-shell">
               <div class="preview-copy">
                 <Target :size="18" aria-hidden="true" />
-                <span>看球阵猜数字</span>
+                <span>看小球猜数字</span>
               </div>
               <div class="challenge-ball-shell">
                 <BallArray :count="challengeTargetCount" size="compact" />
@@ -416,11 +409,11 @@ function goHome() {
         <section class="result-number-shell">
           <div class="result-number-block">
             <h1 class="counter-badge result-badge">
-              {{ isChallengeMode ? (challengeLastCorrect ? '挑战成功' : '答案公布') : '探索结果' }}
+              {{ isChallengeMode ? (challengeLastCorrect ? '猜对啦' : '看看答案') : '探索结果' }}
             </h1>
             <div class="big-number font-number">{{ currentCount }}</div>
             <p v-if="isChallengeMode" class="result-copy">
-              {{ challengeLastCorrect ? `你猜对了，答案就是 ${currentCount}。` : `你猜 ${challengeLastGuess}，正确答案是 ${currentCount}。` }}
+              {{ challengeLastCorrect ? `你猜对了，答案是 ${currentCount}。` : `你猜的是 ${challengeLastGuess}，答案是 ${currentCount}。` }}
             </p>
             <p v-else class="result-copy">{{ currentCount }} = {{ numberParts }}</p>
           </div>
@@ -437,11 +430,11 @@ function goHome() {
               <strong>{{ currentChallengeRange.label }}</strong>
             </div>
             <div class="challenge-card">
-              <span class="challenge-label">已答对</span>
-              <strong>{{ challengeSolvedCount }}</strong>
+              <span class="challenge-label">累计答对</span>
+              <strong>{{ challengeSolvedCount }}题</strong>
             </div>
             <div class="challenge-card">
-              <span class="challenge-label">本档训练</span>
+              <span class="challenge-label">本范围答对</span>
               <strong>{{ challengeCorrectInRange }}题</strong>
             </div>
           </div>
@@ -452,7 +445,7 @@ function goHome() {
           </button>
 
           <button class="secondary-btn" type="button" @click="retryChallengeRange">
-            重新练这一档
+            重练这个范围
           </button>
         </section>
 
@@ -722,18 +715,10 @@ function goHome() {
   color: var(--text-muted);
 }
 
-.helper-copy,
 .status-copy,
 .result-copy {
   margin: 0;
   text-align: center;
-}
-
-.helper-copy {
-  margin-top: 8px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
 }
 
 .status-copy {
@@ -756,9 +741,16 @@ function goHome() {
 .challenge-meta,
 .challenge-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   margin-top: 8px;
+}
+
+.challenge-meta {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.challenge-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .range-selector {
@@ -1014,7 +1006,10 @@ function goHome() {
     padding: 8px 10px;
   }
 
-  .challenge-meta,
+  .challenge-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .challenge-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

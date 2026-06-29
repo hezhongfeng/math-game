@@ -17,6 +17,10 @@ describe('difficulty config', () => {
 
     expect(getDifficultyById(17).stage).toBe('withinTenMixed')
     expect(getDifficultyById(17).description).toBe('10 以内综合')
+    expect(getDifficultyById(18).description).toBe('十几加几')
+    expect(getDifficultyById(21).description).toBe('20 以内凑十加法')
+    expect(getDifficultyById(23).description).toBe('20 以内破十减法')
+    expect(getDifficultyById(25).description).toBe('找缺数')
     expect(getDifficultyById(26).stage).toBe('withinTwentyMixedAdvanced')
     expect(getDifficultyById(26).description).toBe('20 以内综合进阶')
   })
