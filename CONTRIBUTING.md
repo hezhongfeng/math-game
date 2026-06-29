@@ -3,12 +3,12 @@
 ## 环境准备
 
 - Node.js 20 或兼容版本
-- npm（CI 使用 npm；仓库也保留 pnpm lockfile）
+- pnpm 11（本地与 CI 统一；仓库只维护 `pnpm-lock.yaml`）
 - 现代浏览器
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 ## 开发流程
@@ -62,9 +62,9 @@ test(game): 补充完整通关流程
 ## 测试
 
 ```bash
-npm run build
-npm run test:unit
-npm run test:e2e
+pnpm run build
+pnpm run test:unit
+pnpm run test:e2e
 ```
 
 按改动类型补充验证：
@@ -145,9 +145,9 @@ PWA 的事实来源：
 ## Pull Request 检查
 
 - [ ] 改动范围清晰，无无关重构
-- [ ] `npm run build` 通过
-- [ ] `npm run test:unit` 通过
-- [ ] `npm run test:e2e` 通过
+- [ ] `pnpm run build` 通过
+- [ ] `pnpm run test:unit` 通过
+- [ ] `pnpm run test:e2e` 通过
 - [ ] 手机布局和触摸交互已验证
 - [ ] 无新的控制台错误
 - [ ] LocalStorage 变化向后兼容

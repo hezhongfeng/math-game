@@ -291,7 +291,7 @@ const answerStateClass = computed(() => ({
   background: var(--bg-light);
   border: 2px solid var(--border-default);
   text-align: center;
-  transition: all var(--duration-fast) var(--ease-standard);
+  transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 
 .answer:not(.is-placeholder) {

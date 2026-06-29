@@ -144,9 +144,20 @@ PWA 只有一条实现链：
 
 ## 测试与 CI
 
+- 包管理器：pnpm 11，依赖锁定文件为 `pnpm-lock.yaml`
 - Vitest：`tests/unit/`
 - Playwright：`tests/e2e/smoke.spec.js`
 - 构建与单测：`.github/workflows/ci.yml`
 - E2E：`.github/workflows/e2e-smoke.yml`
 
 Playwright 配置包含 Pixel 7 和 iPhone 13 两套移动设备参数，但当前未显式配置 WebKit，CI 也只安装 Chromium。因此 E2E 是两套移动端 Chromium 模拟，不能替代 iOS Safari 真机验证。
+
+## 无障碍交互
+
+- `App.vue` 提供跳到主内容的链接，各路由页暴露唯一主内容目标。
+- 选关使用原生按钮语义，支持键盘选择并明确播报锁定状态。
+- 错误反馈、结算和 PWA 更新使用对话框语义；模态界面打开时隔离背景、约束焦点，关闭后恢复焦点。
+- Toast、加载和答题状态通过 live region 播报。
+- Three.js 球阵提供数量及十进制位值拆解的文字替代。
+
+浏览器缩放保持可用；触摸优化不得通过 viewport 或脚本禁用缩放。

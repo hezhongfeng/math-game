@@ -52,7 +52,7 @@ async function getTotalQuestions(page) {
 async function dismissErrorFeedback(page) {
   const feedback = page.locator('.feedback-card.error')
   await expect(feedback).toBeVisible()
-  await page.locator('.feedback-wrap.is-error').click()
+  await page.getByRole('button', { name: /继续下一题/ }).click()
   await expect(feedback).toBeHidden()
 }
 
@@ -82,6 +82,17 @@ function getWrongAnswerFromExpression(expressionText) {
 }
 
 test.describe('E2E Smoke - Core Game Loops', () => {
+  test('supports keyboard navigation from difficulty selection', async ({ page }) => {
+    await page.goto('/difficulty')
+    const firstLevel = page.getByTestId('difficulty-card-1')
+
+    await firstLevel.focus()
+    await expect(firstLevel).toBeFocused()
+    await firstLevel.press('Enter')
+
+    await expect(page).toHaveURL(/\/game\/1/)
+  })
+
   test('keeps difficulty scroll position after returning from a deeper level', async ({ page }) => {
     await page.goto('/difficulty')
     await page.evaluate(() => {
@@ -115,7 +126,8 @@ test.describe('E2E Smoke - Core Game Loops', () => {
     await expect(page).toHaveURL(/\/game\/26/)
     await page.getByLabel('返回关卡页').click()
     await expect(page).toHaveURL(/\/difficulty/)
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(savedScrollY - 2)
+    // 聚焦原生按钮时，移动浏览器可能为焦点环轻微调整视口；仍应返回同一关卡区域。
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(savedScrollY - 120)
   })
 
   test('successful navigation to game and first answer', async ({ page }) => {

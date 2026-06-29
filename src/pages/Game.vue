@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertCircle, ArrowLeft, CheckCircle2, RotateCcw, Star } from 'lucide-vue-next'
 import { getDifficultyById } from '../config/difficulty'
@@ -55,6 +55,7 @@ const streakCount = ref(0)
 const showStreakReward = ref(false)
 const streakRewardText = ref('')
 const showNumberBondHint = ref(false)
+const errorContinueButton = ref(null)
 
 watch(modalResult, (result, prev) => {
   if (result && !prev) {
@@ -62,6 +63,13 @@ watch(modalResult, (result, prev) => {
   } else if (!result && prev) {
     modalVisible.value = false
   }
+})
+
+watch(currentFeedbackState, async (state) => {
+  if (state !== 'incorrect-manual') return
+
+  await nextTick()
+  errorContinueButton.value?.focus()
 })
 
 const lastInputTime = ref(0)
@@ -424,17 +432,17 @@ onUnmounted(() => {
 <template>
   <div v-if="difficulty" class="page">
     <Transition name="fade">
-      <div v-if="isLoading" class="loading-overlay">
+      <div v-if="isLoading" class="loading-overlay" role="status" aria-live="polite">
       <div class="loading-panel">
           <div class="spinner"></div>
-          <p class="loading-text text-child-base">准备中</p>
+          <p class="loading-text text-child-base">准备中…</p>
         </div>
       </div>
     </Transition>
 
     <header class="header-panel">
       <button class="nav-btn" @click="goBack" aria-label="返回关卡页">
-        <ArrowLeft :size="20" />
+        <ArrowLeft :size="20" aria-hidden="true" />
       </button>
 
       <div class="title-group">
@@ -444,15 +452,15 @@ onUnmounted(() => {
       </div>
 
       <button class="nav-btn nav-btn-accent" title="重新开始" aria-label="重新开始" @click="handleRetry">
-        <RotateCcw :size="18" />
+        <RotateCcw :size="18" aria-hidden="true" />
       </button>
     </header>
 
-    <main class="main-layout">
+    <main id="main-content" class="main-layout">
       <section class="question-section">
         <Transition name="streak-reward">
           <div v-if="showStreakReward" class="streak-reward">
-            <Star :size="16" fill="currentColor" />
+            <Star :size="16" fill="currentColor" aria-hidden="true" />
             <span>{{ streakRewardText }}</span>
           </div>
         </Transition>
@@ -480,7 +488,12 @@ onUnmounted(() => {
             v-if="shouldShowFeedback"
             class="feedback-wrap"
             :class="{ 'is-success': isCorrect, 'is-error': isIncorrect }"
-            @click="handleFeedbackClick"
+            :role="isIncorrect ? 'dialog' : 'status'"
+            :aria-modal="isIncorrect ? 'true' : undefined"
+            :aria-labelledby="isIncorrect ? 'incorrect-feedback-title' : undefined"
+            aria-live="polite"
+            @keydown.tab.prevent="errorContinueButton?.focus()"
+            @keydown.esc.prevent="handleFeedbackClick"
           >
             <!-- 答错时的对比模态内容 -->
             <template v-if="isIncorrect">
@@ -499,20 +512,28 @@ onUnmounted(() => {
                 
                 <div class="feedback-card error">
                   <div class="feedback-icon error">
-                    <AlertCircle :size="22" />
+                    <AlertCircle :size="22" aria-hidden="true" />
                   </div>
-                  <p class="feedback-kicker">正确答案是</p>
+                  <p id="incorrect-feedback-title" class="feedback-kicker">正确答案是</p>
                   <strong class="feedback-main">{{ currentQuestion.answer }}</strong>
-                  <p class="feedback-tap-note">看清楚后，点一下继续</p>
+                  <p class="feedback-tap-note">看清楚后，继续下一题</p>
                 </div>
               </div>
+
+              <button
+                ref="errorContinueButton"
+                class="feedback-continue-action"
+                type="button"
+                :aria-label="`正确答案是${currentQuestion.answer}，继续下一题`"
+                @click="handleFeedbackClick"
+              />
             </template>
 
             <!-- 答对时的轻量反馈 -->
             <template v-else>
               <div class="feedback-card success">
                 <div class="feedback-icon success">
-                  <CheckCircle2 :size="22" />
+                  <CheckCircle2 :size="22" aria-hidden="true" />
                 </div>
                 <strong class="feedback-main">对啦</strong>
               </div>
@@ -707,6 +728,8 @@ onUnmounted(() => {
 }
 
 .error-review-container {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 440px;
   display: flex;
@@ -714,6 +737,26 @@ onUnmounted(() => {
   align-items: center;
   gap: 16px; /* 题目和答案之间的间距 */
   animation: feedbackSlideUp 0.4s var(--ease-out);
+  pointer-events: none;
+}
+
+.feedback-continue-action {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.feedback-continue-action:focus-visible {
+  outline: none;
+}
+
+.feedback-wrap.is-error:focus-within .feedback-card.error {
+  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.3), 0 0 0 4px var(--brand-alert-glow);
 }
 
 .review-question {
@@ -755,8 +798,6 @@ onUnmounted(() => {
   background: white;
   border: 4px solid var(--candy-red-dark);
   box-shadow: 0 12px 32px rgba(255, 107, 107, 0.3);
-  pointer-events: auto;
-  cursor: pointer;
 }
 
 @keyframes feedbackSlideUp {

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
 import { Award, Clock3, Home, RotateCcw, Sparkles, Star, Target, TrendingUp } from 'lucide-vue-next'
 import { GAME_CONFIG } from '../config/constants'
 import { formatPreciseTime } from '../utils/format'
@@ -40,6 +40,7 @@ const stars = computed(() => getStarCount(props.result.accuracy))
 const incorrectQuestions = computed(() => props.result.incorrectQuestions || [])
 const hasIncorrectQuestions = computed(() => incorrectQuestions.value.length > 0)
 const showMistakesPanel = ref(false)
+const dialogRef = ref(null)
 const minCorrectCount = computed(() => Math.ceil((props.result.totalCount || 0) * GAME_CONFIG.PASS_ACCURACY / 100))
 const didPass = computed(() => props.result.accuracy >= GAME_CONFIG.PASS_ACCURACY)
 const remainingToPass = computed(() => Math.max(0, minCorrectCount.value - (props.result.correctCount || 0)))
@@ -110,10 +111,63 @@ const subtitleText = computed(() => {
 const showLeaderboardRank = computed(() => didPass.value && props.leaderboardRank)
 const leaderboardTitle = computed(() => props.leaderboard.length ? '本关计时榜' : '还没有榜单')
 
-watch(() => props.show, (visible) => {
+let previousActiveElement = null
+let previousBodyOverflow = ''
+let appWasInert = false
+let dialogIsActive = false
+
+function getFocusableElements() {
+  if (!dialogRef.value) return []
+
+  return Array.from(dialogRef.value.querySelectorAll(
+    'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+  ))
+}
+
+async function activateDialog() {
+  if (dialogIsActive) return
+
+  dialogIsActive = true
+  previousActiveElement = document.activeElement
+  previousBodyOverflow = document.body.style.overflow
+
+  const app = document.querySelector('#app')
+  appWasInert = app?.inert || false
+  if (app) app.inert = true
+  document.body.style.overflow = 'hidden'
+
+  await nextTick()
+  const initialFocus = dialogRef.value?.querySelector('[data-dialog-initial-focus]')
+  initialFocus?.focus()
+  if (!initialFocus) dialogRef.value?.focus()
+}
+
+function deactivateDialog() {
+  if (!dialogIsActive) return
+
+  dialogIsActive = false
+  const app = document.querySelector('#app')
+  if (app) app.inert = appWasInert
+  document.body.style.overflow = previousBodyOverflow
+
+  if (previousActiveElement?.isConnected) {
+    previousActiveElement.focus()
+  }
+  previousActiveElement = null
+}
+
+watch(() => props.show, async (visible) => {
   if (visible) {
     showMistakesPanel.value = false
+    await activateDialog()
+    return
   }
+
+  deactivateDialog()
+}, { immediate: true })
+
+onUnmounted(() => {
+  deactivateDialog()
 })
 
 function handleRetry() {
@@ -128,17 +182,51 @@ function handleRetryMistakes() {
   emit('retry-mistakes')
 }
 
-function openMistakesPanel() {
+async function focusInitialDialogAction() {
+  await nextTick()
+  dialogRef.value?.querySelector('[data-dialog-initial-focus]')?.focus()
+}
+
+async function openMistakesPanel() {
   showMistakesPanel.value = true
+  await focusInitialDialogAction()
 }
 
-function closeMistakesPanel() {
+async function closeMistakesPanel() {
   showMistakesPanel.value = false
+  await focusInitialDialogAction()
 }
 
-function handleOverlayClick() {
-  if (showMistakesPanel.value) {
-    closeMistakesPanel()
+function handleDialogKeydown(event) {
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    if (showMistakesPanel.value) {
+      closeMistakesPanel()
+      return
+    }
+
+    handleHome()
+    return
+  }
+
+  if (event.key !== 'Tab') return
+
+  const focusableElements = getFocusableElements()
+  if (!focusableElements.length) {
+    event.preventDefault()
+    dialogRef.value?.focus()
+    return
+  }
+
+  const firstElement = focusableElements[0]
+  const lastElement = focusableElements[focusableElements.length - 1]
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault()
+    lastElement.focus()
+  } else if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault()
+    firstElement.focus()
   }
 }
 </script>
@@ -147,21 +235,32 @@ function handleOverlayClick() {
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="show" class="result-overlay">
-        <div class="result-card" data-testid="result-modal" @click.stop>
+        <div
+          ref="dialogRef"
+          class="result-card"
+          data-testid="result-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="result-dialog-title"
+          :aria-describedby="showMistakesPanel ? undefined : 'result-dialog-subtitle'"
+          tabindex="-1"
+          @click.stop
+          @keydown="handleDialogKeydown"
+        >
           <template v-if="!showMistakesPanel">
             <div class="topline">
               <span class="result-chip">
-                <Target :size="16" />
+                <Target :size="16" aria-hidden="true" />
                 <span>{{ didPass ? '过关啦' : '做完啦' }}</span>
               </span>
               <span v-if="isNewBest" class="record-chip">
-                <Sparkles :size="14" />
+                <Sparkles :size="14" aria-hidden="true" />
                 <span>新纪录</span>
               </span>
             </div>
 
-            <h2 class="result-title">{{ getRatingText(result.accuracy) }}</h2>
-            <p class="result-subtitle">{{ subtitleText }}</p>
+            <h2 id="result-dialog-title" class="result-title">{{ getRatingText(result.accuracy) }}</h2>
+            <p id="result-dialog-subtitle" class="result-subtitle">{{ subtitleText }}</p>
 
             <div class="star-rating">
               <Star
@@ -170,12 +269,13 @@ function handleOverlayClick() {
                 :size="24"
                 :class="['star-icon', n <= stars ? 'star-active' : 'star-inactive']"
                 fill="currentColor"
+                aria-hidden="true"
               />
             </div>
 
             <Transition name="insight">
               <div v-if="growthInsight" class="insight-card" :class="`is-${growthInsight.type}`">
-                <component :is="growthInsight.icon" :size="18" class="insight-icon" />
+                <component :is="growthInsight.icon" :size="18" class="insight-icon" aria-hidden="true" />
                 <p class="insight-text">{{ growthInsight.text }}</p>
               </div>
             </Transition>
@@ -183,7 +283,7 @@ function handleOverlayClick() {
             <section class="leaderboard-panel">
               <div class="leaderboard-head">
                 <div class="leaderboard-title-wrap">
-                  <Clock3 :size="16" />
+                  <Clock3 :size="16" aria-hidden="true" />
                   <strong>{{ leaderboardTitle }}</strong>
                 </div>
                 <span v-if="showLeaderboardRank" class="leaderboard-rank">第 {{ leaderboardRank }} 名</span>
@@ -220,10 +320,11 @@ function handleOverlayClick() {
                 v-if="hasIncorrectQuestions"
                 class="btn-primary"
                 data-testid="result-retry-mistakes-btn"
+                data-dialog-initial-focus
                 @click="handleRetryMistakes"
               >
                 <span class="btn-icon">
-                  <RotateCcw :size="18" />
+                  <RotateCcw :size="18" aria-hidden="true" />
                 </span>
                 <span>练错的</span>
               </button>
@@ -232,17 +333,18 @@ function handleOverlayClick() {
                 v-else
                 class="btn-primary"
                 data-testid="result-retry-btn"
+                data-dialog-initial-focus
                 @click="handleRetry"
               >
                 <span class="btn-icon">
-                  <RotateCcw :size="18" />
+                  <RotateCcw :size="18" aria-hidden="true" />
                 </span>
                 <span>再来</span>
               </button>
 
               <button class="btn-secondary ghost" data-testid="result-home-btn" @click="handleHome">
                 <span class="btn-icon">
-                  <Home :size="18" />
+                  <Home :size="18" aria-hidden="true" />
                 </span>
                 <span>选关</span>
               </button>
@@ -253,7 +355,7 @@ function handleOverlayClick() {
             <div class="mistakes-headline">
               <div>
                 <p class="mistakes-kicker">错题</p>
-                <h2 class="result-title">错了这些</h2>
+                <h2 id="result-dialog-title" class="result-title">错了这些</h2>
               </div>
               <span class="mistakes-count">{{ incorrectQuestions.length }}题</span>
             </div>
@@ -288,10 +390,11 @@ function handleOverlayClick() {
               <button
                 class="btn-primary"
                 data-testid="result-retry-mistakes-btn"
+                data-dialog-initial-focus
                 @click="handleRetryMistakes"
               >
                 <span class="btn-icon">
-                  <RotateCcw :size="18" />
+                  <RotateCcw :size="18" aria-hidden="true" />
                 </span>
                 <span>再练</span>
               </button>
@@ -323,6 +426,7 @@ function handleOverlayClick() {
   width: min(100%, 420px);
   max-height: min(88vh, 720px);
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 24px;
   border-radius: var(--radius-xl);
   background: var(--bg-panel-strong);
@@ -648,7 +752,7 @@ function handleOverlayClick() {
   border-radius: var(--radius-md);
   font-size: var(--font-md);
   font-weight: 800;
-  transition: all var(--duration-fast) var(--ease-standard);
+  transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
 
 .btn-icon {

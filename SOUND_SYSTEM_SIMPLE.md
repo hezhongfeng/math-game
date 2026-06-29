@@ -117,8 +117,8 @@ const {
 ## 验证
 
 ```bash
-npm run test:unit -- useSound
-npm run test:e2e
+pnpm run test:unit -- useSound
+pnpm run test:e2e
 ```
 
 自动化测试不能验证主观听感和 iOS 物理静音行为。音频变化需要游戏内实听。

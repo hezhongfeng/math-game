@@ -88,7 +88,7 @@
 /* Vue Transition 组件标准过渡 - 增加回弹感 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: all var(--duration-normal) var(--ease-standard);
+  transition: opacity var(--duration-normal) var(--ease-standard), transform var(--duration-normal) var(--ease-standard);
 }
 
 .fade-enter-from,
@@ -98,11 +98,11 @@
 }
 
 .slide-up-enter-active {
-  transition: all var(--duration-slow) var(--ease-standard);
+  transition: opacity var(--duration-slow) var(--ease-standard), transform var(--duration-slow) var(--ease-standard);
 }
 
 .slide-up-leave-active {
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 .slide-up-enter-from,

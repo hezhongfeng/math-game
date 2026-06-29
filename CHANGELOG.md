@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added keyboard and screen-reader coverage for level selection, feedback, result dialogs, number exploration, and PWA updates
+- Added component and E2E regressions for keyboard selection, modal focus management, and wrong-answer continuation
 - Added number exploration feature: input 1-1000 and visualize as strict decimal ball arrays
 - Added bundled local praise voice clips for round-completion feedback, improving offline and iOS playback reliability
 - Added `BallArray.vue` component with unified Three.js decimal ball-array rendering
@@ -30,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed the canonical package manager and CI workflows to pnpm 11 with a single frozen lockfile
+- Updated Vite, Vitest, PostCSS, Workbox, and PWA build dependencies to current compatible releases
+- Restored browser zoom and standardized modal focus isolation, focus trapping, and focus restoration
 - Changed question transitions to keep the card and keypad stable while only cross-fading the expression
 - Changed leaderboard comparison to include and filter by the current round question count
 - Changed PWA update flow to a single path via `vite-plugin-pwa` prompt handling
@@ -56,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Synchronized setup, CI, PWA, design, component, and architecture docs with the pnpm and accessibility changes
 - Reorganized active documentation around source-of-truth files and separated historical plans from current behavior
 - Updated README, design, component, architecture, PWA, audio, contribution, and agent guides to match the current 26-level implementation
 - Updated README with documentation navigation, capability matrix, and testing commands
@@ -75,6 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed the development server host policy by removing unrestricted host acceptance
+- Fixed non-semantic card interaction, unannounced async feedback, and inaccessible modal background focus
 - Fixed manifest and Vite PWA config drift by removing nonexistent screenshot references and pointing included assets at real files
 - Fixed legacy localStorage game data normalization so older stats records do not break result saving
 

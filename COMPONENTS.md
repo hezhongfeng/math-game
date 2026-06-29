@@ -121,6 +121,8 @@
 
 榜单由存储层按当前题量过滤。错题重练结果不会更新最佳成绩或榜单。
 
+弹窗通过 Teleport 挂载到 `body`，打开时将应用主体设为 inert，并把焦点移入弹窗。Tab/Shift+Tab 在弹窗内循环，关闭后恢复此前焦点；切换错题面板时重新聚焦当前面板的首个操作。
+
 ### DifficultyCard
 
 选关卡片。
@@ -139,6 +141,8 @@
 
 榜单非空时显示最快完成时间。
 
+整张卡片由覆盖层原生按钮承载操作。未锁定卡片可通过 Enter/Space 选择；锁定状态禁用按钮，并通过可访问名称说明当前状态。
+
 ## 数字探索
 
 ### BallArray
@@ -152,15 +156,17 @@
 
 `size="compact"` 用于紧凑场景。移动端默认自动旋转；桌面端支持 OrbitControls。
 
+画布容器使用图片语义，并提供当前数量及百、十、个位拆解的文字替代；加载提示对辅助技术隐藏，避免重复播报。
+
 ## 基础设施组件
 
 ### PWAUpdatePrompt
 
-通过 `virtual:pwa-register` 监听新 Service Worker。发现更新时显示刷新操作。
+通过 `virtual:pwa-register` 监听新 Service Worker。发现更新时显示模态刷新操作，约束焦点并隔离背景；更新失败时恢复按钮状态并显示可操作的错误提示。
 
 ### Toast / ToastContainer
 
-`Toast` 接收单个 toast 对象并发出 `remove`；`ToastContainer` 连接全局 `useToast()` 队列。
+`Toast` 接收单个 toast 对象并发出 `remove`；`ToastContainer` 连接全局 `useToast()` 队列。容器作为 polite live region 播报异步消息，关闭按钮提供明确名称和至少 44px 的触摸目标。
 
 ### ErrorBoundary
 

@@ -83,9 +83,9 @@ function selectDifficulty(event, difficulty) {
   isLeaving.value = true
   saveScrollY()
   playClick()
-  const btn = event?.currentTarget
-  if (btn) {
-    btn.classList.add('is-leaving')
+  const card = event?.currentTarget?.closest('.difficulty-card')
+  if (card) {
+    card.classList.add('is-leaving')
   }
   router.push(`/game/${difficulty.id}`)
 }
@@ -127,10 +127,10 @@ function isDifficultyLocked(difficulty) {
     <header class="header-panel">
       <div class="nav-row">
         <button class="back-btn" aria-label="返回首页" @click="goBack($event)">
-          <ArrowLeft :size="18" />
+          <ArrowLeft :size="18" aria-hidden="true" />
         </button>
         <div class="header-badge">
-          <Trophy :size="16" />
+          <Trophy :size="16" aria-hidden="true" />
           <span>{{ completedCount }}/{{ TOTAL_LEVELS }}</span>
         </div>
       </div>
@@ -148,20 +148,27 @@ function isDifficultyLocked(difficulty) {
           <span>已玩</span>
           <strong>{{ progressPercent }}%</strong>
         </div>
-        <div class="progress-track">
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="关卡完成进度"
+          aria-valuemin="0"
+          :aria-valuemax="TOTAL_LEVELS"
+          :aria-valuenow="completedCount"
+        >
           <div class="progress-fill" :style="{ width: `${progressPercent}%` }"></div>
         </div>
       </div>
     </header>
 
-    <main class="main-content">
+    <main id="main-content" class="main-content">
       <section
         v-for="group in DIFFICULTY_GROUPS"
         :key="group.name"
         class="section"
       >
         <div class="section-header">
-          <span class="section-badge" :class="`badge-${group.color}`">{{ group.name }}</span>
+          <h2 class="section-badge" :class="`badge-${group.color}`">{{ group.name }}</h2>
         </div>
 
         <div class="card-list">
@@ -240,7 +247,7 @@ function isDifficultyLocked(difficulty) {
 .back-btn.is-leaving {
   opacity: 0.7;
   transform: scale(0.96);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 @media (hover: hover) {

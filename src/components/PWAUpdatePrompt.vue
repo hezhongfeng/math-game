@@ -1,24 +1,57 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
 
 const needRefresh = ref(false)
 const isUpdating = ref(false)
 const applyUpdate = ref(null)
+const updateButtonRef = ref(null)
+let previousActiveElement = null
+let previousBodyOverflow = ''
+let appWasInert = false
 
 onMounted(async () => {
   if ('serviceWorker' in navigator) {
-    const { registerSW } = await import('virtual:pwa-register')
+    try {
+      const { registerSW } = await import('virtual:pwa-register')
 
-    applyUpdate.value = registerSW({
-      immediate: true,
-      onNeedRefresh() {
-        needRefresh.value = true
-        isUpdating.value = false
-      },
-      onOfflineReady() {}
-    })
+      applyUpdate.value = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          needRefresh.value = true
+          isUpdating.value = false
+        }
+      })
+    } catch (error) {
+      console.error('注册 PWA 更新服务失败:', error)
+    }
   }
+})
+
+watch(needRefresh, async (visible) => {
+  const app = document.querySelector('#app')
+
+  if (visible) {
+    previousActiveElement = document.activeElement
+    previousBodyOverflow = document.body.style.overflow
+    appWasInert = app?.inert || false
+    if (app) app.inert = true
+    document.body.style.overflow = 'hidden'
+    await nextTick()
+    updateButtonRef.value?.focus()
+    return
+  }
+
+  if (app) app.inert = appWasInert
+  document.body.style.overflow = previousBodyOverflow
+  if (previousActiveElement?.isConnected) previousActiveElement.focus()
+  previousActiveElement = null
+})
+
+onUnmounted(() => {
+  const app = document.querySelector('#app')
+  if (app) app.inert = appWasInert
+  document.body.style.overflow = previousBodyOverflow
 })
 
 async function handleUpdate() {
@@ -27,32 +60,52 @@ async function handleUpdate() {
   }
 
   isUpdating.value = true
-  needRefresh.value = false
 
-  if (applyUpdate.value) {
-    await applyUpdate.value(true)
-    return
+  try {
+    if (applyUpdate.value) {
+      await applyUpdate.value(true)
+      return
+    }
+
+    window.location.reload()
+  } catch (error) {
+    console.error('应用 PWA 更新失败:', error)
+    isUpdating.value = false
+    needRefresh.value = true
   }
-
-  window.location.reload()
 }
 </script>
 
 <template>
-  <Transition name="fade">
-    <div v-if="needRefresh" class="overlay">
-      <div class="modal">
-        <div class="icon-wrap">
-          <Sparkles :size="32" />
+  <Teleport to="body">
+    <Transition name="fade">
+      <div v-if="needRefresh" class="overlay">
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pwa-update-title"
+          aria-describedby="pwa-update-description"
+          @keydown.tab.prevent="updateButtonRef?.focus()"
+        >
+          <div class="icon-wrap">
+            <Sparkles :size="32" aria-hidden="true" />
+          </div>
+          <h2 id="pwa-update-title" class="title">发现新版本</h2>
+          <p id="pwa-update-description" class="desc">更新后即可使用最新内容。</p>
+          <button
+            ref="updateButtonRef"
+            class="btn-update"
+            :disabled="isUpdating"
+            :aria-busy="isUpdating"
+            @click="handleUpdate"
+          >
+            {{ isUpdating ? '更新中…' : '立即更新' }}
+          </button>
         </div>
-        <h2 class="title">更新一下</h2>
-        <p class="desc">点这里</p>
-        <button class="btn-update" :disabled="isUpdating" @click="handleUpdate">
-          {{ isUpdating ? '更新中' : '更新' }}
-        </button>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -75,6 +128,7 @@ async function handleUpdate() {
   background: var(--bg-white);
   box-shadow: var(--shadow-lg);
   text-align: center;
+  overscroll-behavior: contain;
 }
 
 .icon-wrap {

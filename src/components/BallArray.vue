@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps({
   count: {
@@ -17,6 +17,18 @@ const props = defineProps({
 const canvasRef = ref(null)
 const isLoading = ref(true)
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const ariaLabel = computed(() => {
+  const hundreds = Math.floor(props.count / 100)
+  const tens = Math.floor((props.count % 100) / 10)
+  const ones = props.count % 10
+  const parts = []
+
+  if (hundreds) parts.push(`${hundreds}个百`)
+  if (tens) parts.push(`${tens}个十`)
+  if (ones || !parts.length) parts.push(`${ones}个一`)
+
+  return `${props.count}颗小球，按十进制排列为${parts.join('、')}`
+})
 
 let scene = null
 let camera = null
@@ -630,8 +642,13 @@ watch(() => props.count, async () => {
 </script>
 
 <template>
-  <div class="ball-array" :class="{ 'ball-array--compact': size === 'compact' }">
-    <div v-if="isLoading" class="loading-indicator">
+  <div
+    class="ball-array"
+    :class="{ 'ball-array--compact': size === 'compact' }"
+    role="img"
+    :aria-label="ariaLabel"
+  >
+    <div v-if="isLoading" class="loading-indicator" aria-hidden="true">
       <span class="dot"></span>
       <span class="dot"></span>
       <span class="dot"></span>

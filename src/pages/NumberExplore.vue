@@ -296,16 +296,17 @@ function goHome() {
       <div v-if="!showResult" class="view-wrapper">
         <header class="top-bar">
           <button class="back-btn" aria-label="返回首页" @click="goHome">
-            <ArrowLeft :size="22" stroke-width="2.8" />
+            <ArrowLeft :size="22" stroke-width="2.8" aria-hidden="true" />
           </button>
         </header>
 
-        <main class="input-screen">
+        <main id="main-content" class="input-screen">
           <section class="mode-switch" aria-label="模式切换">
             <button
               class="mode-btn"
               :class="{ 'is-active': mode === 'explore' }"
               type="button"
+              :aria-pressed="mode === 'explore'"
               @click="switchMode('explore')"
             >
               自由探索
@@ -314,6 +315,7 @@ function goHome() {
               class="mode-btn"
               :class="{ 'is-active': mode === 'challenge' }"
               type="button"
+              :aria-pressed="mode === 'challenge'"
               @click="switchMode('challenge')"
             >
               挑战模式
@@ -322,7 +324,7 @@ function goHome() {
 
           <section v-if="isChallengeMode" class="range-selector-shell">
             <div class="range-selector-header">
-              <div class="counter-badge range-title-badge">选择训练范围</div>
+              <h2 class="counter-badge range-title-badge">选择训练范围</h2>
               <p class="range-selector-copy">先选范围，再看球阵猜数字。</p>
             </div>
 
@@ -333,6 +335,7 @@ function goHome() {
                 class="range-chip"
                 :class="{ 'is-active': challengeRangeIndex === index }"
                 type="button"
+                :aria-pressed="challengeRangeIndex === index"
                 @click="selectChallengeRange(index)"
               >
                 {{ range.label }}
@@ -347,7 +350,7 @@ function goHome() {
             <section class="number-stage" :class="{ 'is-shaking': isShaking }">
               <div class="number-card">
                 <div class="number-card-top">
-                  <div class="counter-badge">{{ isChallengeMode ? '数字挑战' : '数字探索' }}</div>
+                  <h1 class="counter-badge">{{ isChallengeMode ? '数字挑战' : '数字探索' }}</h1>
                   <div v-if="isChallengeMode" class="counter-badge range-badge">{{ currentChallengeRange.label }}</div>
                 </div>
                 <div class="number-display font-number">
@@ -383,6 +386,7 @@ function goHome() {
                     :key="num"
                     class="quick-chip"
                     type="button"
+                    :aria-pressed="inputNumber === String(num)"
                     @click="applyQuickCount(num)"
                   >
                     {{ num }}
@@ -393,7 +397,7 @@ function goHome() {
 
             <section v-if="isChallengeMode" class="challenge-preview-shell">
               <div class="preview-copy">
-                <Target :size="18" />
+                <Target :size="18" aria-hidden="true" />
                 <span>看球阵猜数字</span>
               </div>
               <div class="challenge-ball-shell">
@@ -408,12 +412,12 @@ function goHome() {
         </main>
       </div>
 
-      <main v-else class="result-screen view-wrapper">
+      <main v-else id="main-content" class="result-screen view-wrapper">
         <section class="result-number-shell">
           <div class="result-number-block">
-            <div class="counter-badge result-badge">
+            <h1 class="counter-badge result-badge">
               {{ isChallengeMode ? (challengeLastCorrect ? '挑战成功' : '答案公布') : '探索结果' }}
-            </div>
+            </h1>
             <div class="big-number font-number">{{ currentCount }}</div>
             <p v-if="isChallengeMode" class="result-copy">
               {{ challengeLastCorrect ? `你猜对了，答案就是 ${currentCount}。` : `你猜 ${challengeLastGuess}，正确答案是 ${currentCount}。` }}
@@ -443,7 +447,7 @@ function goHome() {
           </div>
 
           <button class="play-again-btn" @click="nextChallenge">
-            <Target :size="20" />
+            <Target :size="20" aria-hidden="true" />
             <span>下一题</span>
           </button>
 
@@ -465,6 +469,7 @@ function goHome() {
               :key="`result-${num}`"
               class="quick-chip"
               type="button"
+              :aria-pressed="currentCount === num"
               @click="jumpToCount(num)"
             >
               {{ num }}
@@ -472,7 +477,7 @@ function goHome() {
           </div>
 
           <button class="play-again-btn" @click="resetExplore">
-            <RotateCcw :size="20" />
+            <RotateCcw :size="20" aria-hidden="true" />
             <span>重新输入</span>
           </button>
         </section>

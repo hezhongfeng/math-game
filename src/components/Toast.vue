@@ -46,13 +46,13 @@ function getIcon(type) {
 </script>
 
 <template>
-  <div class="toast-item" :class="getStyle(toast.type).card" @click="emit('remove', toast.id)">
+  <div class="toast-item" :class="getStyle(toast.type).card">
     <div class="icon-wrapper" :class="getStyle(toast.type).icon">
-      <component :is="getIcon(toast.type)" :size="18" />
+      <component :is="getIcon(toast.type)" :size="18" aria-hidden="true" />
     </div>
     <span class="message">{{ toast.message }}</span>
-    <button class="close-btn" type="button" aria-label="关闭提示">
-      <X :size="16" />
+    <button class="close-btn" type="button" aria-label="关闭提示" @click="emit('remove', toast.id)">
+      <X :size="16" aria-hidden="true" />
     </button>
   </div>
 </template>
@@ -70,7 +70,6 @@ function getIcon(type) {
   box-shadow: var(--shadow-panel);
   backdrop-filter: blur(18px);
   pointer-events: auto;
-  cursor: pointer;
 }
 
 .icon-wrapper,
@@ -96,8 +95,9 @@ function getIcon(type) {
 }
 
 .close-btn {
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   border: none;
   border-radius: 10px;
   background: transparent;

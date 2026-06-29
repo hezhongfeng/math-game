@@ -60,7 +60,7 @@ onMounted(() => {
       </span>
     </div>
 
-    <div class="home-shell" :class="{ 'is-ready': isReady }">
+    <main id="main-content" class="home-shell" :class="{ 'is-ready': isReady }">
       <header class="logo-area">
         <div class="logo-circle">
           <Sparkles :size="32" class="logo-sparkle" />
@@ -118,7 +118,7 @@ onMounted(() => {
           <ArrowRight :size="20" class="btn-arrow" />
         </button>
       </section>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -177,7 +177,7 @@ onMounted(() => {
   margin-bottom: 8px;
   opacity: 0;
   transform: scale(0.9);
-  transition: all 0.6s var(--ease-out);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
 
 .is-ready .logo-area {
@@ -370,7 +370,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: 800;
   box-shadow: 0 8px 24px rgba(49, 120, 246, 0.2);
-  transition: all 0.3s var(--ease-out);
+  transition: background 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), filter 0.3s var(--ease-out), opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
   cursor: pointer;
 }
 

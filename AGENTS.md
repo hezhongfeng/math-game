@@ -34,21 +34,21 @@
 
 ## 常用命令
 
-仓库同时存在 npm 和 pnpm lockfile，但 CI 使用 npm。默认使用：
+仓库只维护 `pnpm-lock.yaml`，本地开发和 CI 统一使用 pnpm 11：
 
 ```bash
-npm install
-npm run dev
-npm run build
-npm run preview
-npm run test:unit
-npm run test:e2e
+pnpm install
+pnpm run dev
+pnpm run build
+pnpm run preview
+pnpm run test:unit
+pnpm run test:e2e
 ```
 
 首次运行 E2E：
 
 ```bash
-npm run test:e2e:install
+pnpm run test:e2e:install
 ```
 
 ## 当前产品行为
@@ -182,9 +182,9 @@ LocalStorage keys：
 合并前最低检查：
 
 ```bash
-npm run build
-npm run test:unit
-npm run test:e2e
+pnpm run build
+pnpm run test:unit
+pnpm run test:e2e
 ```
 
 Playwright 当前是 Pixel 7 与 iPhone 13 参数下的 Chromium 模拟，不等同于 iOS Safari/WebKit 真机测试。

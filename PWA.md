@@ -25,11 +25,11 @@
 生产验证：
 
 ```bash
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
-Service Worker 只在生产构建中生成。不要用 `npm run dev` 判断离线或更新行为。
+Service Worker 只在生产构建中生成。不要用 `pnpm run dev` 判断离线或更新行为。
 
 ## Manifest
 
@@ -48,7 +48,7 @@ Service Worker 只在生产构建中生成。不要用 `npm run dev` 判断离�
 修改 manifest 后运行：
 
 ```bash
-npm run test:e2e
+pnpm run test:e2e
 ```
 
 E2E 会检查 manifest link 和 theme-color 元数据，但不会完整验证安装体验。
@@ -67,7 +67,7 @@ E2E 会检查 manifest link 和 theme-color 元数据，但不会完整验证安
 重新生成 PNG：
 
 ```bash
-npm run generate-icons
+pnpm run generate-icons
 ```
 
 脚本依赖 devDependency `sharp`，无需再次安装。

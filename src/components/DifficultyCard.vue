@@ -59,13 +59,11 @@ function handleSelect(event) {
 
 <template>
   <article
-    :data-testid="`difficulty-card-${difficulty.id}`"
     class="difficulty-card"
     :class="{
       'is-locked': isLocked,
       'is-completed': isCompleted && !isLocked
     }"
-    @click="handleSelect($event)"
   >
     <div class="leading">
       <div class="level-badge" :style="{ background: levelColor }">
@@ -92,18 +90,29 @@ function handleSelect(event) {
           :size="14"
           :class="['star', n <= stars ? 'active' : '']"
           fill="currentColor"
+          aria-hidden="true"
         />
       </div>
 
-      <CheckCircle2 v-if="isCompleted && !isLocked" class="state-icon completed" />
-      <Lock v-else-if="isLocked" class="state-icon locked" />
-      <ChevronRight v-else class="state-icon arrow" />
+      <CheckCircle2 v-if="isCompleted && !isLocked" class="state-icon completed" aria-hidden="true" />
+      <Lock v-else-if="isLocked" class="state-icon locked" aria-hidden="true" />
+      <ChevronRight v-else class="state-icon arrow" aria-hidden="true" />
     </div>
+
+    <button
+      :data-testid="`difficulty-card-${difficulty.id}`"
+      class="card-action"
+      type="button"
+      :disabled="isLocked"
+      :aria-label="isLocked ? `第${difficulty.id}关，尚未解锁` : `${statusText}第${difficulty.id}关：${difficulty.description}`"
+      @click="handleSelect"
+    />
   </article>
 </template>
 
 <style scoped>
 .difficulty-card {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -113,18 +122,37 @@ function handleSelect(event) {
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--border-light);
   box-shadow: none;
-  cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
 }
 
-.difficulty-card:active:not(.is-locked) {
-  transform: scale(0.985);
+.card-action {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.card-action:disabled {
+  cursor: not-allowed;
+}
+
+.card-action:focus-visible {
+  outline: none;
+}
+
+.difficulty-card:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--brand-alert-glow);
 }
 
 .difficulty-card.is-leaving {
   opacity: 0.7;
   transform: scale(0.96);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 
 @media (hover: hover) {

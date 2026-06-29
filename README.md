@@ -16,11 +16,11 @@
 
 ## 快速开始
 
-要求 Node.js 20 或兼容版本。CI 当前使用 Node.js 20。
+要求 Node.js 20 或兼容版本，以及 pnpm 11。项目只维护 `pnpm-lock.yaml`，本地开发和 CI 使用同一套依赖解析结果。
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 开发服务器默认使用 Vite 端口，通常为 `http://localhost:5173`。
@@ -28,14 +28,14 @@ npm run dev
 常用命令：
 
 ```bash
-npm run build             # 生产构建
-npm run preview           # 预览生产构建
-npm run test:unit         # Vitest 单元测试
-npm run test:e2e          # Playwright 冒烟测试
-npm run test:e2e:headed   # 可见浏览器运行 E2E
-npm run test:e2e:ui       # Playwright UI
-npm run test:e2e:install  # 安装 Chromium
-npm run generate-icons    # 重新生成 PWA PNG 图标
+pnpm run build             # 生产构建
+pnpm run preview           # 预览生产构建
+pnpm run test:unit         # Vitest 单元测试
+pnpm run test:e2e          # Playwright 冒烟测试
+pnpm run test:e2e:headed   # 可见浏览器运行 E2E
+pnpm run test:e2e:ui       # Playwright UI
+pnpm run test:e2e:install  # 安装 Chromium
+pnpm run generate-icons    # 重新生成 PWA PNG 图标
 ```
 
 ## 路由与流程
@@ -99,15 +99,16 @@ Playwright 冒烟测试覆盖：
 - 错误反馈与恢复
 - 完整通关和返回选关页
 - PWA manifest 与页面元数据
+- 键盘选关、错误反馈继续操作和焦点恢复
 
 `playwright.config.js` 当前使用 Pixel 7 和 iPhone 13 两种移动设备配置。两者默认运行在 Playwright Chromium；配置名 `mobile-safari` 代表 iPhone 视口和用户代理模拟，不等同于 WebKit 真机测试。iOS Safari 音频、PWA 和触摸行为仍需真机验证。
 
 合并前至少运行：
 
 ```bash
-npm run build
-npm run test:unit
-npm run test:e2e
+pnpm run build
+pnpm run test:unit
+pnpm run test:e2e
 ```
 
 ## 技术栈

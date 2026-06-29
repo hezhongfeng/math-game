@@ -15,10 +15,10 @@
 开发和验证：
 
 ```bash
-npm run dev
-npm run build
-npm run test:unit
-npm run test:e2e
+pnpm run dev
+pnpm run build
+pnpm run test:unit
+pnpm run test:e2e
 ```
 
 架构、组件和课程说明：

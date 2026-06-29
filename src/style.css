@@ -113,7 +113,7 @@
     font-weight: 700;
     border: none;
     box-shadow: var(--shadow-md);
-    transition: all var(--duration-normal) var(--ease-standard);
+    transition: background var(--duration-normal) var(--ease-standard), box-shadow var(--duration-normal) var(--ease-standard), transform var(--duration-normal) var(--ease-standard);
   }
 
   .btn-primary:hover {
@@ -190,7 +190,7 @@
     font-weight: 800;
     border: 2px solid var(--border-light);
     box-shadow: var(--shadow-sm);
-    transition: all var(--duration-fast) var(--ease-standard);
+    transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
     cursor: pointer;
   }
 

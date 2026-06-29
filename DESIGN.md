@@ -44,8 +44,10 @@
 视口配置：
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 ```
+
+不得通过 viewport 或 JavaScript 禁止双指缩放。`touch-action: manipulation` 只用于减少操作延迟，不替代浏览器缩放能力。
 
 触摸要求：
 
@@ -124,6 +126,10 @@ padding-bottom: max(24px, env(safe-area-inset-bottom));
 - 数字使用稳定的 tabular figures。
 - 焦点态必须可见。
 - 不要禁用键盘交互来换取触摸体验。
+- 页面提供跳到主内容的链接，标题保持合理层级。
+- 模态界面使用 `role="dialog"`、可读标题和焦点约束；打开时隔离背景，关闭后恢复原焦点。
+- Toast、加载和练习反馈等异步状态通过合适的 live region 对辅助技术播报。
+- Three.js 等视觉教学内容必须提供等价的文字描述。
 
 ## 音频与触觉
 
