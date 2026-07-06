@@ -173,6 +173,44 @@ test.describe('E2E Smoke - Core Game Loops', () => {
     await expect(page.locator('.status-copy')).toHaveText('请从 1 开始，不能只输入 0。')
   })
 
+  test('adapts the exploration stage to the ball grid rows', async ({ page }) => {
+    await page.goto('/explore')
+
+    await page.locator('.quick-counts').getByRole('button', { name: '10', exact: true }).click()
+    await page.getByTestId('num-btn-submit').click()
+
+    const stage = page.getByTestId('result-ball-shell')
+    const resultCounts = page.locator('.result-counts')
+    const rotationToggle = page.getByTestId('rotation-toggle')
+
+    await expect(stage).toHaveClass(/result-ball-shell--wide/)
+    await expect(rotationToggle).toBeHidden()
+
+    await resultCounts.getByRole('button', { name: '50', exact: true }).click()
+    await expect(stage).toHaveClass(/result-ball-shell--landscape/)
+
+    await resultCounts.getByRole('button', { name: '100', exact: true }).click()
+    await expect(stage).toHaveClass(/result-ball-shell--square/)
+
+    const canvas = stage.locator('canvas')
+    const renderFallback = page.getByTestId('ball-render-fallback')
+
+    await expect(canvas.or(renderFallback)).toBeVisible()
+    if (await renderFallback.isVisible()) return
+
+    await expect(rotationToggle).toHaveAttribute('aria-pressed', 'false')
+    await expect(canvas).toHaveCSS('touch-action', 'pan-y')
+
+    await rotationToggle.click()
+    await expect(rotationToggle).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.getByTestId('rotation-reset')).toBeVisible()
+    await expect(canvas).toHaveCSS('touch-action', 'none')
+
+    await rotationToggle.click()
+    await expect(rotationToggle).toHaveAttribute('aria-pressed', 'false')
+    await expect(canvas).toHaveCSS('touch-action', 'pan-y')
+  })
+
   test('complete a full session and return home', async ({ page }) => {
     test.setTimeout(120_000)
     await openFirstLevel(page)

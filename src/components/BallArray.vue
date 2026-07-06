@@ -1,5 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { Move3D, RotateCcw } from 'lucide-vue-next'
 
 const props = defineProps({
   count: {
@@ -16,7 +17,14 @@ const props = defineProps({
 
 const canvasRef = ref(null)
 const isLoading = ref(true)
+const touchDevice = ref(false)
+const isRotationEnabled = ref(false)
+const renderError = ref(false)
+const isSceneReady = ref(false)
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const showRotationControls = computed(() => (
+  touchDevice.value && isSceneReady.value && props.size === 'normal' && props.count >= 100
+))
 const ariaLabel = computed(() => {
   const hundreds = Math.floor(props.count / 100)
   const tens = Math.floor((props.count % 100) / 10)
@@ -35,13 +43,11 @@ let camera = null
 let renderer = null
 let controls = null
 let instancedMesh = null
-let panelMesh = null
 let animationId = null
 let introStartTime = 0
 let resizeObserver = null
 let orbitDomElement = null
 let controlsChangeHandler = null
-let orbitTouchStartHandler = null
 let THREE = null
 let animationDummy = null
 
@@ -53,43 +59,30 @@ const colors = {
   ballLow: 0x8FD0FF,
   ballMid: 0x78AEFF,
   ballHigh: 0x5B8FF2,
-  ballPeak: 0x4D74D9,
-  ballEmissiveLow: 0x2458A3,
-  ballEmissiveHigh: 0x173A79,
-  panel: 0xEAF3FF,
-  panelEdge: 0xD5E7FF,
-  fog: 0xEDF5FF
+  ballPeak: 0x527FE2
 }
 
 function getBallPalette(count) {
   if (count <= 19) {
     return {
-      color: colors.ballLow,
-      emissive: colors.ballEmissiveLow,
-      opacity: 0.82
+      color: colors.ballLow
     }
   }
 
   if (count <= 99) {
     return {
-      color: colors.ballMid,
-      emissive: colors.ballEmissiveLow,
-      opacity: 0.88
+      color: colors.ballMid
     }
   }
 
   if (count <= 300) {
     return {
-      color: colors.ballHigh,
-      emissive: colors.ballEmissiveHigh,
-      opacity: 0.92
+      color: colors.ballHigh
     }
   }
 
   return {
-    color: colors.ballPeak,
-    emissive: colors.ballEmissiveHigh,
-    opacity: 0.95
+    color: colors.ballPeak
   }
 }
 
@@ -113,9 +106,12 @@ function getGroupedBallColor(count, index) {
 
   const hundredGroup = Math.floor(index / 100)
   const tenGroup = Math.floor((index % 100) / 10)
-  const hueShift = (hundredGroup % 2 === 0 ? -1 : 1) * 0.018
-  const saturationShift = hundredGroup === 0 ? 0.01 : 0.03
-  const lightnessShift = (tenGroup % 2 === 0 ? 1 : -1) * 0.018
+  const alternateHundred = hundredGroup % 2 === 1
+  const hueShift = alternateHundred ? 0.022 : -0.012
+  const saturationShift = alternateHundred ? -0.012 : 0.012
+  const hundredLightnessShift = alternateHundred ? 0.045 : -0.018
+  const tenLightnessShift = tenGroup % 2 === 0 ? 0.008 : -0.008
+  const lightnessShift = hundredLightnessShift + tenLightnessShift
   color.offsetHSL(hueShift, saturationShift, lightnessShift)
 
   return color
@@ -129,10 +125,6 @@ async function loadThree() {
 }
 
 function cleanupControls() {
-  if (orbitDomElement && orbitTouchStartHandler) {
-    orbitDomElement.removeEventListener('touchstart', orbitTouchStartHandler)
-  }
-
   if (orbitDomElement) {
     orbitDomElement.style.touchAction = ''
   }
@@ -142,7 +134,6 @@ function cleanupControls() {
   }
 
   controlsChangeHandler = null
-  orbitTouchStartHandler = null
   orbitDomElement = null
 
   if (controls) {
@@ -151,22 +142,46 @@ function cleanupControls() {
   }
 }
 
+function updateControlsInteraction() {
+  if (!controls || !orbitDomElement || !THREE) return
+
+  if (!touchDevice.value) {
+    controls.enabled = true
+    controls.enableRotate = true
+    controls.enableZoom = true
+    controls.enablePan = true
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY
+    }
+    orbitDomElement.style.touchAction = 'none'
+    return
+  }
+
+  const enabled = showRotationControls.value && isRotationEnabled.value
+  controls.enabled = enabled
+  controls.enableRotate = enabled
+  controls.enableZoom = false
+  controls.enablePan = false
+  controls.touches = {
+    ONE: THREE.TOUCH.ROTATE,
+    TWO: THREE.TOUCH.NONE
+  }
+  orbitDomElement.style.touchAction = enabled ? 'none' : 'pan-y'
+}
+
 async function loadOrbitControls() {
   if (controls) return
   await loadThree()
   const { OrbitControls } = await import('three/addons/controls/OrbitControls.js')
-  const touchDevice = isTouchDevice()
 
   orbitDomElement = renderer.domElement
 
   controls = new OrbitControls(camera, orbitDomElement)
   controls.enableDamping = true
   controls.dampingFactor = 0.08
-  controls.enableZoom = !touchDevice
   controls.minDistance = 3
   controls.maxDistance = 25
-  controls.enablePan = !touchDevice
-  controls.enableRotate = true
   controls.autoRotate = false
 
   controlsChangeHandler = () => { scheduleRender() }
@@ -174,24 +189,7 @@ async function loadOrbitControls() {
   controls.autoRotateSpeed = 0.7
   controls.rotateSpeed = 0.6
   controls.zoomSpeed = 0.8
-  if (!touchDevice) {
-    orbitTouchStartHandler = (e) => {
-      if (e.touches.length > 1) e.preventDefault()
-    }
-    controls.touches = {
-      ONE: THREE.TOUCH.ROTATE,
-      TWO: THREE.TOUCH.DOLLY
-    }
-    orbitDomElement.addEventListener('touchstart', orbitTouchStartHandler, { passive: false })
-    orbitDomElement.style.touchAction = 'none'
-    return
-  }
-
-  controls.touches = {
-    ONE: THREE.TOUCH.ROTATE,
-    TWO: THREE.TOUCH.NONE
-  }
-  orbitDomElement.style.touchAction = 'none'
+  updateControlsInteraction()
 }
 
 function clearContainer(container) {
@@ -203,72 +201,86 @@ function clearContainer(container) {
 async function initScene() {
   if (!canvasRef.value) return
 
-  await loadThree()
-  await nextTick()
+  renderError.value = false
+  isSceneReady.value = false
 
-  const container = canvasRef.value
-  if (!container) return
+  try {
+    await loadThree()
+    await nextTick()
 
-  const width = container.clientWidth || 320
-  const height = container.clientHeight || 320
+    const container = canvasRef.value
+    if (!container) return
 
-  cleanup()
-  cleanupControls()
+    const width = container.clientWidth || 320
+    const height = container.clientHeight || 320
 
-  scene = new THREE.Scene()
-  scene.background = null
-  scene.fog = new THREE.Fog(colors.fog, 18, 32)
+    cleanup()
+    cleanupControls()
 
-  camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 200)
+    scene = new THREE.Scene()
+    scene.background = null
 
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true,
-    powerPreference: 'high-performance'
-  })
-  renderer.setSize(width, height)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-  renderer.shadowMap.enabled = false
-  renderer.outputColorSpace = THREE.SRGBColorSpace
-  renderer.toneMapping = THREE.NoToneMapping
+    camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 200)
 
-  while (container.firstChild) {
-    container.removeChild(container.firstChild)
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    })
+    renderer.setSize(width, height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.shadowMap.enabled = false
+    renderer.outputColorSpace = THREE.SRGBColorSpace
+    renderer.toneMapping = THREE.NoToneMapping
+
+    while (container.firstChild) {
+      container.removeChild(container.firstChild)
+    }
+    container.appendChild(renderer.domElement)
+
+    const ambientLight = new THREE.HemisphereLight(0xF8FBFF, 0xDCEBFF, 1.22)
+    scene.add(ambientLight)
+
+    const keyLight = new THREE.DirectionalLight(0xFFFFFF, 1.06)
+    keyLight.position.set(6, 8, 11)
+    scene.add(keyLight)
+
+    const rimLight = new THREE.DirectionalLight(0xA8D7FF, 0.62)
+    rimLight.position.set(-7, 5, 8)
+    scene.add(rimLight)
+
+    const bounceLight = new THREE.PointLight(0xCBE6FF, 0.6, 32, 2)
+    bounceLight.position.set(0, -4, 7)
+    scene.add(bounceLight)
+
+    await loadOrbitControls()
+    isSceneReady.value = true
+    await nextTick()
+    syncRendererSize()
+    updateControlsInteraction()
+    createBalls()
+    animate()
+    isLoading.value = false
+  } catch (error) {
+    console.error('初始化 3D 小球失败:', error)
+    cleanupControls()
+    cleanup()
+    renderError.value = true
+    isLoading.value = false
   }
-  container.appendChild(renderer.domElement)
-
-  const ambientLight = new THREE.HemisphereLight(0xF8FBFF, 0xDCEBFF, 1.22)
-  scene.add(ambientLight)
-
-  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 1.06)
-  keyLight.position.set(6, 8, 11)
-  scene.add(keyLight)
-
-  const rimLight = new THREE.DirectionalLight(0xA8D7FF, 0.62)
-  rimLight.position.set(-7, 5, 8)
-  scene.add(rimLight)
-
-  const bounceLight = new THREE.PointLight(0xCBE6FF, 0.6, 32, 2)
-  bounceLight.position.set(0, -4, 7)
-  scene.add(bounceLight)
-
-  await loadOrbitControls()
-  createBalls()
-  animate()
-  isLoading.value = false
 }
 
 function getLayoutConfig(count) {
   if (count >= 1000) {
-    return { radius: 0.16, spacing: 0.4, layerGap: 0.52 }
+    return { radius: 0.16, spacing: 0.4, layerGap: 0.64 }
   }
 
   if (count >= 500) {
-    return { radius: 0.17, spacing: 0.42, layerGap: 0.56 }
+    return { radius: 0.17, spacing: 0.42, layerGap: 0.68 }
   }
 
   if (count >= 100) {
-    return { radius: 0.19, spacing: 0.46, layerGap: 0.62 }
+    return { radius: 0.19, spacing: 0.46, layerGap: 0.72 }
   }
 
   if (count >= 50) {
@@ -278,50 +290,12 @@ function getLayoutConfig(count) {
   return { radius: 0.26, spacing: 0.68, layerGap: 0.82 }
 }
 
-function createBallMaterial(count) {
-  const palette = getBallPalette(count)
-
-  return new THREE.MeshPhysicalMaterial({
-    color: palette.color,
-    emissive: palette.emissive,
-    emissiveIntensity: 0.16,
-    roughness: 0.22,
-    metalness: 0.04,
-    clearcoat: 0.72,
-    clearcoatRoughness: 0.18,
-    transparent: true,
-    opacity: palette.opacity,
-    transmission: 0.08,
-    reflectivity: 0.42
+function createBallMaterial() {
+  return new THREE.MeshStandardMaterial({
+    color: 0xFFFFFF,
+    roughness: 0.52,
+    metalness: 0.02
   })
-}
-
-function updateBackgroundPanel(bounds) {
-  if (!scene || !THREE) return
-
-  if (panelMesh) {
-    scene.remove(panelMesh)
-    panelMesh.geometry?.dispose()
-    panelMesh.material?.dispose()
-    panelMesh = null
-  }
-
-  const panelWidth = Math.max(bounds.width + 1.6, 4.8)
-  const panelHeight = Math.max(bounds.height + 1.6, 4.8)
-  const geometry = new THREE.PlaneGeometry(panelWidth, panelHeight)
-  const material = new THREE.MeshPhongMaterial({
-    color: colors.panel,
-    emissive: colors.panelEdge,
-    emissiveIntensity: 0.05,
-    transparent: true,
-    opacity: 0.28,
-    shininess: 18,
-    specular: colors.panelEdge
-  })
-
-  panelMesh = new THREE.Mesh(geometry, material)
-  panelMesh.position.set(bounds.center.x, bounds.center.y, bounds.center.z - (bounds.depth / 2 + 1.2))
-  scene.add(panelMesh)
 }
 
 function createBalls() {
@@ -340,8 +314,7 @@ function createBalls() {
   const bounds = getBounds(positions)
   const sphereGeometry = new THREE.SphereGeometry(layoutConfig.radius, 24, 24)
 
-  const palette = getBallPalette(count)
-  instancedMesh = new THREE.InstancedMesh(sphereGeometry, createBallMaterial(count), count)
+  instancedMesh = new THREE.InstancedMesh(sphereGeometry, createBallMaterial(), count)
   instancedMesh.castShadow = false
   instancedMesh.receiveShadow = false
 
@@ -368,7 +341,6 @@ function createBalls() {
     animating: true
   }
 
-  updateBackgroundPanel(bounds)
   scene.add(instancedMesh)
   fitCameraToBounds(bounds)
   
@@ -383,9 +355,12 @@ function fitCameraToBounds(bounds) {
   const fovRad = camera.fov * (Math.PI / 180)
   const vFovHalf = fovRad / 2
   const aspect = camera.aspect || 1
+  const hasDepth = bounds.depth > 0
+  const depthWidth = hasDepth ? bounds.depth * 0.45 : 0
+  const depthHeight = hasDepth ? bounds.depth * 0.16 : 0
 
-  const distV = ((bounds.height + padding) / 2) / Math.tan(vFovHalf)
-  const distH = ((bounds.width + padding) / 2) / Math.tan(vFovHalf) / aspect
+  const distV = ((bounds.height + depthHeight + padding) / 2) / Math.tan(vFovHalf)
+  const distH = ((bounds.width + depthWidth + padding) / 2) / Math.tan(vFovHalf) / aspect
 
   let baseDistance = Math.max(distV, distH) * 1.1 + (bounds.depth / 2)
   let distance = Math.max(baseDistance, 4.5)
@@ -407,7 +382,11 @@ function fitCameraToBounds(bounds) {
     lookTargetY = center.y + bounds.height * 0.04
   }
 
-  camera.position.set(center.x, center.y + heightBoost, center.z + distance)
+  const cameraYaw = props.count >= 500 ? Math.PI / 7 : hasDepth ? Math.PI / 10 : 0
+  const cameraX = center.x + Math.sin(cameraYaw) * distance
+  const cameraZ = center.z + Math.cos(cameraYaw) * distance
+
+  camera.position.set(cameraX, center.y + heightBoost, cameraZ)
   camera.lookAt(center.x, lookTargetY, center.z)
 
   if (controls) {
@@ -419,6 +398,7 @@ function fitCameraToBounds(bounds) {
 function calculatePositions(count, layoutConfig) {
   const positions = []
   const spacing = layoutConfig.spacing
+  const rowSpacing = count > 10 ? spacing * 1.12 : spacing
   const layerGap = layoutConfig.layerGap
   const centeredOffset = 4.5
 
@@ -429,7 +409,7 @@ function calculatePositions(count, layoutConfig) {
 
     positions.push({
       x: (ones - centeredOffset) * spacing,
-      y: (centeredOffset - tens) * spacing,
+      y: (centeredOffset - tens) * rowSpacing,
       z: (hundreds - (Math.max(Math.ceil(count / 100), 1) - 1) / 2) * layerGap
     })
   }
@@ -584,33 +564,49 @@ function cleanup() {
     instancedMesh = null
   }
 
-  if (panelMesh) {
-    panelMesh.geometry?.dispose()
-    panelMesh.material?.dispose()
-    panelMesh = null
-  }
-
   scene = null
   camera = null
   animationDummy = null
+  isSceneReady.value = false
 }
 
-function handleResize() {
-  if (!canvasRef.value || !renderer || !camera) return
+function syncRendererSize() {
+  if (!canvasRef.value || !renderer || !camera) return false
 
   const width = canvasRef.value.clientWidth
   const height = canvasRef.value.clientHeight
 
-  if (!width || !height) return
+  if (!width || !height) return false
 
   camera.aspect = width / height
   camera.updateProjectionMatrix()
   renderer.setSize(width, height)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+  return true
+}
+
+function handleResize() {
+  if (!syncRendererSize()) return
+  scheduleRender()
+}
+
+function toggleRotation() {
+  isRotationEnabled.value = !isRotationEnabled.value
+  updateControlsInteraction()
+  scheduleRender()
+}
+
+function resetCameraView() {
+  const positions = instancedMesh?.userData.positions
+  if (!positions?.length) return
+
+  fitCameraToBounds(getBounds(positions))
   scheduleRender()
 }
 
 onMounted(() => {
+  touchDevice.value = isTouchDevice()
   nextTick(() => {
     initScene()
     window.addEventListener('resize', handleResize)
@@ -631,12 +627,16 @@ onUnmounted(() => {
 })
 
 watch(() => props.count, async () => {
+  isRotationEnabled.value = false
+  if (renderError.value) return
   await nextTick()
   if (animationId) {
     cancelAnimationFrame(animationId)
     animationId = null
   }
+  syncRendererSize()
   createBalls()
+  updateControlsInteraction()
   animate(performance.now())
 })
 </script>
@@ -644,16 +644,52 @@ watch(() => props.count, async () => {
 <template>
   <div
     class="ball-array"
-    :class="{ 'ball-array--compact': size === 'compact' }"
-    role="img"
-    :aria-label="ariaLabel"
+    :class="{
+      'ball-array--compact': size === 'compact',
+      'ball-array--has-controls': showRotationControls
+    }"
   >
     <div v-if="isLoading" class="loading-indicator" aria-hidden="true">
       <span class="dot"></span>
       <span class="dot"></span>
       <span class="dot"></span>
     </div>
-    <div ref="canvasRef" class="canvas-wrapper"></div>
+    <div
+      v-if="renderError"
+      class="render-fallback"
+      role="img"
+      :aria-label="ariaLabel"
+      data-testid="ball-render-fallback"
+    >
+      <strong>暂时无法显示 3D 小球</strong>
+      <span>请刷新页面后再试。</span>
+    </div>
+    <div v-else ref="canvasRef" class="canvas-wrapper" role="img" :aria-label="ariaLabel"></div>
+
+    <div v-if="showRotationControls" class="view-controls" aria-label="3D 视角控制">
+      <button
+        class="view-control-btn view-control-btn--toggle"
+        :class="{ 'is-active': isRotationEnabled }"
+        type="button"
+        data-testid="rotation-toggle"
+        :aria-label="isRotationEnabled ? '结束旋转并恢复页面滚动' : '启用小球旋转查看'"
+        :aria-pressed="isRotationEnabled"
+        @click="toggleRotation"
+      >
+        <Move3D :size="18" aria-hidden="true" />
+        <span>{{ isRotationEnabled ? '完成' : '旋转查看' }}</span>
+      </button>
+      <button
+        v-if="isRotationEnabled"
+        class="view-control-btn view-control-btn--icon"
+        type="button"
+        data-testid="rotation-reset"
+        aria-label="重置小球视角"
+        @click="resetCameraView"
+      >
+        <RotateCcw :size="18" aria-hidden="true" />
+      </button>
+    </div>
   </div>
 </template>
 
@@ -665,26 +701,9 @@ watch(() => props.count, async () => {
   min-height: 236px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background:
-    radial-gradient(circle at top, rgba(142, 186, 255, 0.3) 0%, rgba(142, 186, 255, 0) 38%),
-    radial-gradient(circle at 18% 78%, rgba(107, 203, 119, 0.12) 0%, rgba(107, 203, 119, 0) 34%),
-    linear-gradient(180deg, #f8fbff 0%, #eaf3ff 52%, #dfeeff 100%);
-  border: 1px solid rgba(146, 186, 236, 0.38);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 18px 36px rgba(72, 116, 188, 0.14),
-    0 12px 28px rgba(92, 157, 255, 0.08);
-}
-
-.ball-array::before {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  border-radius: var(--radius-md);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.16) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  pointer-events: none;
+  background: #f4f8ff;
+  border: 1px solid rgba(146, 186, 236, 0.32);
+  box-shadow: 0 12px 28px rgba(72, 116, 188, 0.1);
 }
 
 .canvas-wrapper {
@@ -703,15 +722,82 @@ watch(() => props.count, async () => {
   height: 100% !important;
 }
 
+.render-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-blue-light);
+  text-align: center;
+}
+
+.render-fallback strong {
+  color: var(--text-blue-dark);
+  font-size: 15px;
+}
+
+.render-fallback span {
+  font-size: 13px;
+}
+
+.ball-array--has-controls .canvas-wrapper {
+  height: calc(100% - 56px);
+  min-height: 0;
+}
+
+.view-controls {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  z-index: 2;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.view-control-btn {
+  min-height: 44px;
+  border: 1px solid rgba(92, 157, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--text-blue-dark);
+  box-shadow: 0 6px 16px rgba(72, 116, 188, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 800;
+  touch-action: manipulation;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.view-control-btn--toggle {
+  padding: 0 13px;
+}
+
+.view-control-btn--icon {
+  width: 44px;
+  padding: 0;
+}
+
+.view-control-btn.is-active {
+  border-color: rgba(74, 144, 226, 0.28);
+  background: var(--brand-primary);
+  color: #fff;
+}
+
 .ball-array--compact,
 .ball-array--compact .canvas-wrapper {
   min-height: 138px;
   border-radius: var(--radius-md);
-}
-
-.ball-array--compact::before {
-  inset: 8px;
-  border-radius: var(--radius-xs);
 }
 
 .loading-indicator {
@@ -765,11 +851,6 @@ watch(() => props.count, async () => {
   .canvas-wrapper {
     min-height: 212px;
     border-radius: var(--radius-md);
-  }
-
-  .ball-array::before {
-    inset: 10px;
-    border-radius: var(--radius-sm);
   }
 
   .ball-array--compact,

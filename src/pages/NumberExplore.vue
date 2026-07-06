@@ -48,6 +48,13 @@ const challengeLastCorrect = ref(false)
 const isChallengeMode = computed(() => mode.value === 'challenge')
 const currentChallengeRange = computed(() => CHALLENGE_RANGES[challengeRangeIndex.value])
 const challengeProgressText = computed(() => `本范围答对 ${challengeCorrectInRange.value} 题`)
+const resultBallStageClass = computed(() => {
+  const rows = Math.max(1, Math.min(10, Math.ceil(currentCount.value / 10)))
+
+  if (rows <= 2) return 'result-ball-shell--wide'
+  if (rows <= 5) return 'result-ball-shell--landscape'
+  return 'result-ball-shell--square'
+})
 const challengeStatusText = computed(() => {
   if (!isChallengeMode.value) return ''
   return `当前范围：${currentChallengeRange.value.label} · ${challengeProgressText.value}`
@@ -419,7 +426,11 @@ function goHome() {
           </div>
         </section>
 
-        <section class="result-ball-shell">
+        <section
+          class="result-ball-shell"
+          :class="resultBallStageClass"
+          data-testid="result-ball-shell"
+        >
           <BallArray :count="currentCount" />
         </section>
 
@@ -631,7 +642,6 @@ function goHome() {
 
 .number-stage,
 .result-number-shell,
-.result-ball-shell,
 .play-again-btn,
 .step-btn,
 .challenge-preview-shell {
@@ -896,11 +906,22 @@ function goHome() {
 .result-ball-shell {
   width: 100%;
   max-width: min(100%, calc(100dvh - 320px));
-  aspect-ratio: 1 / 1;
+  min-height: 236px;
   margin: 0 auto;
   border-radius: 34px;
-  padding: 4px;
   overflow: hidden;
+}
+
+.result-ball-shell--wide {
+  aspect-ratio: 16 / 9;
+}
+
+.result-ball-shell--landscape {
+  aspect-ratio: 4 / 3;
+}
+
+.result-ball-shell--square {
+  aspect-ratio: 1 / 1;
 }
 
 .result-tools {
@@ -1023,6 +1044,10 @@ function goHome() {
     font-size: 14px;
   }
 
+  .result-ball-shell {
+    min-height: 212px;
+  }
+
   .step-controls {
     gap: 8px;
   }
@@ -1061,6 +1086,7 @@ function goHome() {
 
   .result-ball-shell {
     max-width: min(100%, calc(100dvh - 300px));
+    min-height: 196px;
   }
 }
 
