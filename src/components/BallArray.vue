@@ -605,6 +605,13 @@ function resetCameraView() {
   scheduleRender()
 }
 
+async function retryRender() {
+  isLoading.value = true
+  renderError.value = false
+  await nextTick()
+  await initScene()
+}
+
 onMounted(() => {
   touchDevice.value = isTouchDevice()
   nextTick(() => {
@@ -657,12 +664,21 @@ watch(() => props.count, async () => {
     <div
       v-if="renderError"
       class="render-fallback"
-      role="img"
+      role="group"
       :aria-label="ariaLabel"
       data-testid="ball-render-fallback"
     >
       <strong>暂时无法显示 3D 小球</strong>
-      <span>请刷新页面后再试。</span>
+      <span>可以重试显示，或刷新页面后再试。</span>
+      <button
+        class="render-retry-btn"
+        type="button"
+        data-testid="ball-render-retry"
+        @click="retryRender"
+      >
+        <RotateCcw :size="16" aria-hidden="true" />
+        <span>重试显示</span>
+      </button>
     </div>
     <div v-else ref="canvasRef" class="canvas-wrapper" role="img" :aria-label="ariaLabel"></div>
 
@@ -743,6 +759,34 @@ watch(() => props.count, async () => {
 
 .render-fallback span {
   font-size: 13px;
+}
+
+.render-retry-btn {
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 0 14px;
+  border: 1px solid rgba(92, 157, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--brand-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 800;
+  touch-action: manipulation;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.render-retry-btn:active {
+  transform: scale(0.96);
+}
+
+.render-retry-btn:focus-visible,
+.view-control-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(92, 157, 255, 0.18);
 }
 
 .ball-array--has-controls .canvas-wrapper {

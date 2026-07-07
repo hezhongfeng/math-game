@@ -196,7 +196,10 @@ test.describe('E2E Smoke - Core Game Loops', () => {
     const renderFallback = page.getByTestId('ball-render-fallback')
 
     await expect(canvas.or(renderFallback)).toBeVisible()
-    if (await renderFallback.isVisible()) return
+    if (await renderFallback.isVisible()) {
+      await expect(page.getByTestId('ball-render-retry')).toBeVisible()
+      return
+    }
 
     await expect(rotationToggle).toHaveAttribute('aria-pressed', 'false')
     await expect(canvas).toHaveCSS('touch-action', 'pan-y')

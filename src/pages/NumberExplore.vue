@@ -5,6 +5,7 @@ import { ArrowLeft, RotateCcw, Target } from 'lucide-vue-next'
 import NumberPad from '../components/NumberPad.vue'
 import BallArray from '../components/BallArray.vue'
 import { useSound } from '../composables/useSound'
+import { getResultBallStageClass } from '../utils/exploreStage'
 
 const router = useRouter()
 const { playClick, playSubmit } = useSound()
@@ -48,13 +49,7 @@ const challengeLastCorrect = ref(false)
 const isChallengeMode = computed(() => mode.value === 'challenge')
 const currentChallengeRange = computed(() => CHALLENGE_RANGES[challengeRangeIndex.value])
 const challengeProgressText = computed(() => `本范围答对 ${challengeCorrectInRange.value} 题`)
-const resultBallStageClass = computed(() => {
-  const rows = Math.max(1, Math.min(10, Math.ceil(currentCount.value / 10)))
-
-  if (rows <= 2) return 'result-ball-shell--wide'
-  if (rows <= 5) return 'result-ball-shell--landscape'
-  return 'result-ball-shell--square'
-})
+const resultBallStageClass = computed(() => getResultBallStageClass(currentCount.value))
 const challengeStatusText = computed(() => {
   if (!isChallengeMode.value) return ''
   return `当前范围：${currentChallengeRange.value.label} · ${challengeProgressText.value}`
@@ -1093,6 +1088,46 @@ function goHome() {
 @media (min-width: 768px) {
   .number-stage {
     padding: 14px 18px 18px;
+  }
+}
+
+@media (min-width: 960px) {
+  .result-screen {
+    width: min(100%, 1120px);
+    margin: 0 auto;
+    padding-inline: 24px;
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) minmax(420px, 680px);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .result-number-shell {
+    min-height: 220px;
+  }
+
+  .result-ball-shell {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    max-width: min(100%, 680px);
+    min-height: 420px;
+    align-self: stretch;
+  }
+
+  .result-ball-shell--wide,
+  .result-ball-shell--landscape {
+    min-height: 0;
+    align-self: start;
+  }
+
+  .result-tools {
+    grid-column: 1;
+  }
+
+  .result-counts {
+    justify-content: flex-start;
   }
 }
 </style>
