@@ -18,6 +18,7 @@ let currentPraiseSource = null
 let praisePlaybackToken = 0
 let visibilityChangeHandler = null
 let pageShowHandler = null
+let interactionResumeHandler = null
 
 const PRAISE_AUDIO_SOURCES = {
   newBest: '/audio/praise/new-best.mp3',
@@ -120,19 +121,132 @@ function isRecoverableAudioState(state) {
   return state === 'suspended' || state === 'interrupted'
 }
 
-function resumeAudioContext() {
+function createAudioContextInstance() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext
+  if (!AudioContextClass) {
+    return null
+  }
+
+  const ctx = new AudioContextClass()
+  audioContext.value = ctx
+  createAudioGraph(ctx)
+  warmupAudioContext(ctx)
+  return ctx
+}
+
+function resetAudioGraph(clearBuffers = false) {
+  stopLocalPraise()
+  audioContext.value = null
+  masterGainNode.value = null
+  lowpassNode.value = null
+
+  if (clearBuffers) {
+    praiseAudioBuffers.clear()
+    praiseAudioLoading.clear()
+  }
+}
+
+function recreateAudioContext() {
+  resetAudioGraph(true)
+  const ctx = createAudioContextInstance()
+
+  if (ctx) {
+    preloadPraiseAudio()
+    isInitialized.value = true
+  }
+
+  return ctx
+}
+
+function setMasterGain(targetGain) {
   const ctx = audioContext.value
+  if (!ctx || !masterGainNode.value || ctx.state === 'closed') {
+    return
+  }
+
+  masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
+}
+
+async function resumeAudioContext() {
+  let ctx = audioContext.value
+
+  if (!ctx || ctx.state === 'closed') {
+    ctx = recreateAudioContext()
+  }
+
   if (!ctx) {
-    return Promise.resolve()
+    return null
   }
 
   if (isRecoverableAudioState(ctx.state)) {
-    return ctx.resume().catch(() => {
-      // 忽略恢复失败，避免打断主流程
-    })
+    try {
+      await ctx.resume()
+    } catch (error) {
+      console.warn('恢复音频上下文失败:', error)
+      return ctx
+    }
   }
 
-  return Promise.resolve()
+  return ctx
+}
+
+function installAudioRecoveryHandlers() {
+  if (visibilityChangeHandler || pageShowHandler || interactionResumeHandler) {
+    return
+  }
+
+  visibilityChangeHandler = () => {
+    if (document.hidden) {
+      setMasterGain(AUDIO_ENGINE.MASTER_GAIN * 0.55)
+      return
+    }
+
+    resumeAudioContext().then((ctx) => {
+      if (ctx) {
+        setMasterGain(AUDIO_ENGINE.MASTER_GAIN)
+      }
+    })
+  }
+  document.addEventListener('visibilitychange', visibilityChangeHandler)
+
+  pageShowHandler = () => {
+    resumeAudioContext().then((ctx) => {
+      if (ctx) {
+        setMasterGain(AUDIO_ENGINE.MASTER_GAIN)
+      }
+    })
+  }
+  window.addEventListener('pageshow', pageShowHandler)
+
+  interactionResumeHandler = () => {
+    if (document.hidden) {
+      return
+    }
+
+    resumeAudioContext()
+  }
+  document.addEventListener('pointerdown', interactionResumeHandler, { passive: true })
+  document.addEventListener('touchstart', interactionResumeHandler, { passive: true })
+  document.addEventListener('keydown', interactionResumeHandler)
+}
+
+function removeAudioRecoveryHandlers() {
+  if (visibilityChangeHandler) {
+    document.removeEventListener('visibilitychange', visibilityChangeHandler)
+    visibilityChangeHandler = null
+  }
+
+  if (pageShowHandler) {
+    window.removeEventListener('pageshow', pageShowHandler)
+    pageShowHandler = null
+  }
+
+  if (interactionResumeHandler) {
+    document.removeEventListener('pointerdown', interactionResumeHandler)
+    document.removeEventListener('touchstart', interactionResumeHandler)
+    document.removeEventListener('keydown', interactionResumeHandler)
+    interactionResumeHandler = null
+  }
 }
 
 /**
@@ -140,45 +254,17 @@ function resumeAudioContext() {
  */
 export function initAudio() {
   if (isInitialized.value) {
+    installAudioRecoveryHandlers()
     return
   }
 
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)()
-    audioContext.value = ctx
-    createAudioGraph(ctx)
-    warmupAudioContext(ctx)
-
-    if (ctx.state === 'suspended') {
-      document.addEventListener('touchstart', () => {
-        resumeAudioContext()
-      }, { once: true, passive: true })
+    const ctx = createAudioContextInstance()
+    if (!ctx) {
+      return
     }
 
-    visibilityChangeHandler = () => {
-      if (!masterGainNode.value) {
-        return
-      }
-
-      if (!document.hidden) {
-        resumeAudioContext()
-      }
-
-      const targetGain = document.hidden ? AUDIO_ENGINE.MASTER_GAIN * 0.55 : AUDIO_ENGINE.MASTER_GAIN
-      masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
-    }
-    document.addEventListener('visibilitychange', visibilityChangeHandler)
-
-    pageShowHandler = () => {
-      if (!masterGainNode.value) {
-        return
-      }
-
-      resumeAudioContext()
-      masterGainNode.value.gain.setTargetAtTime(AUDIO_ENGINE.MASTER_GAIN, ctx.currentTime, 0.04)
-    }
-    window.addEventListener('pageshow', pageShowHandler)
-
+    installAudioRecoveryHandlers()
     preloadPraiseAudio()
 
     isInitialized.value = true
@@ -196,6 +282,9 @@ function withReadyAudioContext(callback) {
 
   const run = (hasRetriedAfterResume = false) => {
     if (audioContext.value !== ctx || !masterGainNode.value || ctx.state === 'closed') {
+      if (ctx.state === 'closed' && !hasRetriedAfterResume) {
+        resumeAudioContext().then(() => withReadyAudioContext(callback))
+      }
       return
     }
 
@@ -566,15 +655,7 @@ export function useSound() {
   })
 
   onUnmounted(() => {
-    if (visibilityChangeHandler) {
-      document.removeEventListener('visibilitychange', visibilityChangeHandler)
-      visibilityChangeHandler = null
-    }
-
-    if (pageShowHandler) {
-      window.removeEventListener('pageshow', pageShowHandler)
-      pageShowHandler = null
-    }
+    removeAudioRecoveryHandlers()
   })
 
   return {

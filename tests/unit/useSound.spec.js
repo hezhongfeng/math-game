@@ -209,4 +209,58 @@ describe('useSound audio interruption recovery', () => {
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
+
+  test('resumes suspended audio context on the next user interaction', async () => {
+    const { mockContext, resolveResume, soundModule } = await loadSoundModule('suspended')
+
+    soundModule.initAudio()
+    document.dispatchEvent(new Event('pointerdown'))
+    resolveResume()
+    await Promise.resolve()
+
+    expect(mockContext.resume).toHaveBeenCalledTimes(1)
+  })
+
+  test('recreates a closed audio context before playing again', async () => {
+    vi.resetModules()
+
+    const firstAudio = createMockAudioContext('closed')
+    const secondAudio = createMockAudioContext('running')
+    const contexts = [firstAudio.ctx, secondAudio.ctx]
+    let createCount = 0
+
+    class MockAudioContext {
+      constructor() {
+        const ctx = contexts[createCount]
+        createCount += 1
+        return ctx
+      }
+    }
+
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      writable: true,
+      value: MockAudioContext
+    })
+    Object.defineProperty(window, 'webkitAudioContext', {
+      configurable: true,
+      writable: true,
+      value: undefined
+    })
+    Object.defineProperty(window, 'fetch', {
+      configurable: true,
+      writable: true,
+      value: undefined
+    })
+
+    const soundModule = await import('../../src/composables/useSound')
+    soundModule.initAudio()
+    soundModule.playClick()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(createCount).toBe(2)
+    expect(firstAudio.ctx.createOscillator).toHaveBeenCalledTimes(1)
+    expect(secondAudio.ctx.createOscillator).toHaveBeenCalledTimes(2)
+  })
 })
