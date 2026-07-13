@@ -197,7 +197,57 @@ describe('QuestionCard.vue', () => {
     expect(slots).toHaveLength(5)
     expect(slots.filter(slot => slot.classes().includes('is-addend-one'))).toHaveLength(3)
     expect(slots.filter(slot => slot.classes().includes('is-addend-two'))).toHaveLength(2)
-    expect(hint.attributes('style')).toContain('--slot-columns: 10')
+    expect(hint.classes()).toContain('is-five-frame')
+    expect(hint.find('.model-label').text()).toBe('五格框')
+    expect(hint.find('.operation-label').text()).toBe('已有 3 · 加入 2')
+  })
+
+  test('uses a ten-frame with visible empty slots for totals from 6 to 10', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 4,
+          operand2: 3,
+          operator: '+',
+          answer: 7,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    const hint = wrapper.find('[data-testid="ball-hint"]')
+    const slots = hint.findAll('.slot')
+
+    expect(hint.classes()).toContain('is-ten-frame')
+    expect(hint.findAll('.slot-frame')).toHaveLength(1)
+    expect(slots).toHaveLength(10)
+    expect(slots.filter(slot => slot.classes().includes('is-empty'))).toHaveLength(3)
+  })
+
+  test('uses two ten-frames for quantities from 11 to 20', () => {
+    const wrapper = mount(QuestionCard, {
+      props: {
+        showNumberBondHint: true,
+        question: {
+          operand1: 13,
+          operand2: 4,
+          operator: '-',
+          answer: 9,
+          missingPart: 'answer'
+        }
+      }
+    })
+
+    const hint = wrapper.find('[data-testid="ball-hint"]')
+    const slots = hint.findAll('.slot')
+
+    expect(hint.classes()).toContain('is-double-ten-frame')
+    expect(hint.findAll('.slot-frame')).toHaveLength(2)
+    expect(slots).toHaveLength(20)
+    expect(slots.filter(slot => slot.classes().includes('is-remaining'))).toHaveLength(9)
+    expect(slots.filter(slot => slot.classes().includes('is-removed'))).toHaveLength(4)
+    expect(slots.filter(slot => slot.classes().includes('is-empty'))).toHaveLength(7)
   })
 
   test('shows subtraction balls with removed items', () => {
@@ -223,9 +273,11 @@ describe('QuestionCard.vue', () => {
     expect(slots.slice(3).every(slot => slot.classes().includes('is-removed'))).toBe(true)
     expect(slots.filter(slot => slot.classes().includes('is-removed'))).toHaveLength(2)
     expect(slots.filter(slot => slot.classes().includes('is-remaining'))).toHaveLength(3)
+    expect(hint.find('.subtraction-key').text()).toBe('划线部分表示拿走')
+    expect(hint.find('.removed-swatch').exists()).toBe(true)
   })
 
-  test('shows missing first addend as leading empty slots', () => {
+  test('shows a part-whole model when the first addend is missing', () => {
     const wrapper = mount(QuestionCard, {
       props: {
         showNumberBondHint: true,
@@ -240,14 +292,20 @@ describe('QuestionCard.vue', () => {
       }
     })
 
-    const slots = wrapper.findAll('[data-testid="ball-hint"] .slot')
+    const hint = wrapper.find('[data-testid="ball-hint"]')
+    const parts = hint.findAll('.part-block')
 
-    expect(slots).toHaveLength(5)
-    expect(slots.slice(0, 3).every(slot => slot.classes().includes('is-missing'))).toBe(true)
-    expect(slots.slice(3).every(slot => slot.classes().includes('is-known'))).toBe(true)
+    expect(hint.classes()).toContain('is-part-whole')
+    expect(hint.find('.model-label').text()).toBe('整体和部分')
+    expect(parts).toHaveLength(2)
+    expect(parts[0].classes()).toContain('is-missing')
+    expect(parts[0].text()).toContain('待补部分')
+    expect(parts[0].text()).toContain('?')
+    expect(parts[1].classes()).toContain('is-known')
+    expect(parts[1].text()).toContain('2')
   })
 
-  test('shows missing second addend as trailing empty slots', () => {
+  test('shows a part-whole model when the second addend is missing', () => {
     const wrapper = mount(QuestionCard, {
       props: {
         showNumberBondHint: true,
@@ -262,11 +320,15 @@ describe('QuestionCard.vue', () => {
       }
     })
 
-    const slots = wrapper.findAll('[data-testid="ball-hint"] .slot')
+    const hint = wrapper.find('[data-testid="ball-hint"]')
+    const parts = hint.findAll('.part-block')
 
-    expect(slots).toHaveLength(5)
-    expect(slots.slice(0, 2).every(slot => slot.classes().includes('is-known'))).toBe(true)
-    expect(slots.slice(2).every(slot => slot.classes().includes('is-missing'))).toBe(true)
+    expect(parts).toHaveLength(2)
+    expect(parts[0].classes()).toContain('is-known')
+    expect(parts[0].text()).toContain('2')
+    expect(parts[1].classes()).toContain('is-missing')
+    expect(parts[1].text()).toContain('待补部分')
+    expect(parts[1].text()).toContain('?')
   })
 
   test('caps ball visual hint at 30 balls', () => {

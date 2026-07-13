@@ -44,6 +44,7 @@ let renderer = null
 let controls = null
 let instancedMesh = null
 let animationId = null
+let renderId = null
 let introStartTime = 0
 let resizeObserver = null
 let orbitDomElement = null
@@ -259,7 +260,7 @@ async function initScene() {
     syncRendererSize()
     updateControlsInteraction()
     createBalls()
-    animate()
+    startAnimation()
     isLoading.value = false
   } catch (error) {
     console.error('初始化 3D 小球失败:', error)
@@ -298,7 +299,14 @@ function createBallMaterial() {
   })
 }
 
-function createBalls() {
+/**
+ * Rebuilds the instanced mesh while keeping balls that were already visible
+ * at their final scale. This avoids replaying the full entrance animation
+ * whenever the explored number changes.
+ *
+ * @param {number} animationStartIndex - Index of the first newly added ball.
+ */
+function createBalls(animationStartIndex = 0) {
   if (!scene || !camera || !THREE) return
 
   if (instancedMesh) {
@@ -320,12 +328,14 @@ function createBalls() {
 
   const dummy = new THREE.Object3D()
   animationDummy = dummy
+  const shouldAnimate = !prefersReducedMotion && animationStartIndex < count
 
   for (let i = 0; i < count; i++) {
     const pos = positions[i]
     const ballColor = getGroupedBallColor(count, i)
     dummy.position.set(pos.x, pos.y, pos.z)
-    dummy.scale.set(0, 0, 0)
+    const scale = shouldAnimate && i >= animationStartIndex ? 0 : 1
+    dummy.scale.set(scale, scale, scale)
     dummy.updateMatrix()
     instancedMesh.setMatrixAt(i, dummy.matrix)
     instancedMesh.setColorAt(i, ballColor)
@@ -338,7 +348,8 @@ function createBalls() {
   
   instancedMesh.userData = {
     positions: positions,
-    animating: true
+    animating: shouldAnimate,
+    animationStartIndex
   }
 
   scene.add(instancedMesh)
@@ -456,98 +467,87 @@ function getBounds(positions) {
 }
 
 function scheduleRender() {
-  if (!animationId && renderer && scene && camera) {
-    animationId = requestAnimationFrame(renderOnce)
+  if (!animationId && !renderId && renderer && scene && camera) {
+    renderId = requestAnimationFrame(renderOnce)
   }
 }
 
 function renderOnce() {
-  animationId = null
+  renderId = null
   if (renderer && scene && camera) {
     controls?.update()
     renderer.render(scene, camera)
   }
 }
 
+function easeOutElastic(t) {
+  const c4 = (2 * Math.PI) / 3
+  return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1
+}
+
 function animate(time) {
-  animationId = requestAnimationFrame(animate)
+  if (!renderer || !scene || !camera || !instancedMesh?.userData.animating) {
+    animationId = null
+    return
+  }
 
-  if (renderer && scene && camera) {
-    controls?.update()
+  controls?.update()
 
-    if (instancedMesh && instancedMesh.userData.animating) {
-      const positions = instancedMesh.userData.positions
-      const count = positions.length
+  const { positions, animationStartIndex } = instancedMesh.userData
+  let allDone = true
+  const elapsed = time - introStartTime
 
-      if (prefersReducedMotion) {
-        for (let i = 0; i < count; i++) {
-          const pos = positions[i]
-          animationDummy.position.set(pos.x, pos.y, pos.z)
-          animationDummy.scale.set(1, 1, 1)
-          animationDummy.updateMatrix()
-          instancedMesh.setMatrixAt(i, animationDummy.matrix)
-        }
-        instancedMesh.instanceMatrix.needsUpdate = true
-        instancedMesh.userData.animating = false
-        if (animationId) {
-          cancelAnimationFrame(animationId)
-          animationId = null
-        }
-        renderer.render(scene, camera)
-        return
-      }
+  for (let i = animationStartIndex; i < positions.length; i++) {
+    const delay = (positions.length - 1 - i) * 1.5
+    const ballElapsed = Math.max(0, elapsed - delay)
+    const duration = 650
+    let progress = ballElapsed / duration
 
-      let allDone = true
-      const elapsed = time - introStartTime
-
-      for (let i = 0; i < count; i++) {
-        const delay = (count - i) * 1.5
-        const ballElapsed = Math.max(0, elapsed - delay)
-        const duration = 650
-
-        let progress = ballElapsed / duration
-        if (progress < 1) {
-          allDone = false
-        } else {
-          progress = 1
-        }
-
-        const easeOutElastic = (t) => {
-          const c4 = (2 * Math.PI) / 3
-          return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1
-        }
-
-        const scale = easeOutElastic(progress)
-
-        const pos = positions[i]
-        animationDummy.position.set(pos.x, pos.y, pos.z)
-        animationDummy.scale.set(scale, scale, scale)
-        animationDummy.updateMatrix()
-        instancedMesh.setMatrixAt(i, animationDummy.matrix)
-      }
-
-      instancedMesh.instanceMatrix.needsUpdate = true
-      if (allDone) {
-        instancedMesh.userData.animating = false
-        // Stop the rAF loop — render on demand from here on
-        if (animationId) {
-          cancelAnimationFrame(animationId)
-          animationId = null
-        }
-        // Do one final render so the last frame is displayed
-        renderer.render(scene, camera)
-        return
-      }
+    if (progress < 1) {
+      allDone = false
+    } else {
+      progress = 1
     }
 
-    renderer.render(scene, camera)
+    const pos = positions[i]
+    const scale = easeOutElastic(progress)
+    animationDummy.position.set(pos.x, pos.y, pos.z)
+    animationDummy.scale.set(scale, scale, scale)
+    animationDummy.updateMatrix()
+    instancedMesh.setMatrixAt(i, animationDummy.matrix)
   }
+
+  instancedMesh.instanceMatrix.needsUpdate = true
+  renderer.render(scene, camera)
+
+  if (allDone) {
+    instancedMesh.userData.animating = false
+    animationId = null
+    return
+  }
+
+  animationId = requestAnimationFrame(animate)
+}
+
+function startAnimation() {
+  if (!instancedMesh?.userData.animating || animationId) {
+    scheduleRender()
+    return
+  }
+
+  introStartTime = performance.now()
+  animationId = requestAnimationFrame(animate)
 }
 
 function cleanup() {
   if (animationId) {
     cancelAnimationFrame(animationId)
     animationId = null
+  }
+
+  if (renderId) {
+    cancelAnimationFrame(renderId)
+    renderId = null
   }
 
   if (renderer) {
@@ -633,18 +633,26 @@ onUnmounted(() => {
   resizeObserver?.disconnect()
 })
 
-watch(() => props.count, async () => {
+watch(() => props.count, async (nextCount, previousCount) => {
   isRotationEnabled.value = false
   if (renderError.value) return
   await nextTick()
+
+  if (!scene || !renderer) return
+
   if (animationId) {
     cancelAnimationFrame(animationId)
     animationId = null
   }
+  if (renderId) {
+    cancelAnimationFrame(renderId)
+    renderId = null
+  }
   syncRendererSize()
-  createBalls()
+  const animationStartIndex = nextCount > previousCount ? previousCount : nextCount
+  createBalls(animationStartIndex)
   updateControlsInteraction()
-  animate(performance.now())
+  startAnimation()
 })
 </script>
 
