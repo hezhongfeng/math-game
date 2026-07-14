@@ -1,0 +1,9 @@
+{
+  "module_count": 6,
+  "rounds": [
+    {"round": 1, "action": "初稿生成", "issues": ["发现与本项目不符的通用业务表述和重复截图预留。"]},
+    {"round": 2, "action": "按项目真实流程重写", "issues": []},
+    {"round": 3, "action": "去除制式表达", "issues": []},
+    {"round": 4, "action": "截图与一致性复核", "issues": []}
+  ]
+}

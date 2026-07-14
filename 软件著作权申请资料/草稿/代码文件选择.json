@@ -1,0 +1,472 @@
+{
+  "project_root": "/Users/hezf/github/math-game",
+  "selection_required": true,
+  "model_selection_required": true,
+  "confirmation_required": true,
+  "user_confirmed": true,
+  "target_pages": 60,
+  "lines_per_page": 50,
+  "target_lines": 3000,
+  "estimated_selected_lines": 3241,
+  "estimated_selected_pages": 65,
+  "estimated_all_candidate_lines": 10853,
+  "estimated_all_candidate_pages": 218,
+  "supplement_rule": "模型优先选择能体现软件核心功能和真实运行逻辑的源码；不足60页时再从其他相关源码中补充；候选源码仍不足时才生成全部代码材料。",
+  "confirmation_stage": "code-selection",
+  "next_action": "请由模型填写 草稿/代码文件选择.json 的抽取选择和选择理由，再让用户确认；确认后运行 confirm_stage.py --stage code-selection。",
+  "instructions": "The script only inventories source files. The model must choose selected/model_reason before user confirmation. Selected files are extracted in full with blank-only lines removed.",
+  "files": [
+    {
+      "path": "src/App.vue",
+      "selected": true,
+      "line_count": 41,
+      "material_line_count": 37,
+      "priority": 0,
+      "selection_tier": "frontend",
+      "evidence": "入口文件证据",
+      "model_reason": "应用根组件，体现全局页面承载、错误边界和更新提示的真实运行入口。"
+    },
+    {
+      "path": "src/main.js",
+      "selected": true,
+      "line_count": 9,
+      "material_line_count": 7,
+      "priority": 0,
+      "selection_tier": "frontend",
+      "evidence": "入口文件证据",
+      "model_reason": "应用启动入口，体现 Vue 应用挂载与路由初始化。"
+    },
+    {
+      "path": "src/router.js",
+      "selected": true,
+      "line_count": 48,
+      "material_line_count": 44,
+      "priority": 10,
+      "selection_tier": "frontend",
+      "evidence": "路由文件证据",
+      "model_reason": "定义首页、关卡、作答和数字探索四类真实路由及页面标题逻辑。"
+    },
+    {
+      "path": "src/pages/DifficultySelect.vue",
+      "selected": true,
+      "line_count": 431,
+      "material_line_count": 366,
+      "priority": 20,
+      "selection_tier": "frontend",
+      "evidence": "页面文件证据",
+      "model_reason": "实现 26 关分组展示、顺序解锁、已通关进度、最佳成绩和同题量榜单入口，是主线训练的关键业务页面。"
+    },
+    {
+      "path": "src/pages/Game.vue",
+      "selected": true,
+      "line_count": 1059,
+      "material_line_count": 900,
+      "priority": 20,
+      "selection_tier": "frontend",
+      "evidence": "页面文件证据",
+      "model_reason": "实现主线随机作答、正确与错误反馈、连对提示、小球辅助、结算、成绩更新和错题重练等核心学习流程。"
+    },
+    {
+      "path": "src/pages/Home.vue",
+      "selected": false,
+      "line_count": 398,
+      "material_line_count": 348,
+      "priority": 20,
+      "selection_tier": "frontend",
+      "evidence": "页面文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/pages/NumberExplore.vue",
+      "selected": true,
+      "line_count": 1133,
+      "material_line_count": 965,
+      "priority": 20,
+      "selection_tier": "frontend",
+      "evidence": "页面文件证据",
+      "model_reason": "实现 1—1000 自由数量探索、快捷输入、百十个位结果说明及 17 个范围的猜数挑战，是第二条独立核心学习流程。"
+    },
+    {
+      "path": "src/components/BallArray.vue",
+      "selected": true,
+      "line_count": 920,
+      "material_line_count": 778,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": "实现数字探索所用的 Three.js 十进制球阵及不同数量规模的展示逻辑，直接体现本软件的数量可视化教学功能。"
+    },
+    {
+      "path": "src/components/DifficultyCard.vue",
+      "selected": false,
+      "line_count": 291,
+      "material_line_count": 250,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/ErrorBoundary.vue",
+      "selected": false,
+      "line_count": 239,
+      "material_line_count": 203,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/NumberBondHint.vue",
+      "selected": false,
+      "line_count": 532,
+      "material_line_count": 468,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/NumberPad.vue",
+      "selected": false,
+      "line_count": 286,
+      "material_line_count": 239,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/PWAUpdatePrompt.vue",
+      "selected": false,
+      "line_count": 206,
+      "material_line_count": 182,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/QuestionCard.vue",
+      "selected": false,
+      "line_count": 372,
+      "material_line_count": 327,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/ResultModal.vue",
+      "selected": false,
+      "line_count": 875,
+      "material_line_count": 749,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/ScoreBoard.vue",
+      "selected": false,
+      "line_count": 239,
+      "material_line_count": 203,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/Toast.vue",
+      "selected": false,
+      "line_count": 142,
+      "material_line_count": 122,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/components/ToastContainer.vue",
+      "selected": false,
+      "line_count": 72,
+      "material_line_count": 64,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/components/DifficultyCard.spec.js",
+      "selected": false,
+      "line_count": 57,
+      "material_line_count": 47,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/components/NumberPad.spec.js",
+      "selected": false,
+      "line_count": 64,
+      "material_line_count": 52,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/components/QuestionCard.spec.js",
+      "selected": false,
+      "line_count": 387,
+      "material_line_count": 338,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/components/ResultModal.spec.js",
+      "selected": false,
+      "line_count": 67,
+      "material_line_count": 56,
+      "priority": 50,
+      "selection_tier": "frontend",
+      "evidence": "页面组成文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/composables/useGame.js",
+      "selected": true,
+      "line_count": 159,
+      "material_line_count": 144,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": "封装题目生成、作答判定、正确率、计时、错题记录和轮次结算等主线业务状态，是页面交互背后的核心运行逻辑。"
+    },
+    {
+      "path": "src/composables/useSound.js",
+      "selected": false,
+      "line_count": 675,
+      "material_line_count": 556,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/composables/useStorage.js",
+      "selected": false,
+      "line_count": 417,
+      "material_line_count": 365,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/composables/useToast.js",
+      "selected": false,
+      "line_count": 67,
+      "material_line_count": 55,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/utils/exploreStage.js",
+      "selected": false,
+      "line_count": 21,
+      "material_line_count": 19,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/utils/format.js",
+      "selected": false,
+      "line_count": 30,
+      "material_line_count": 27,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/utils/generator.js",
+      "selected": false,
+      "line_count": 866,
+      "material_line_count": 778,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/utils/stars.js",
+      "selected": false,
+      "line_count": 46,
+      "material_line_count": 43,
+      "priority": 60,
+      "selection_tier": "frontend",
+      "evidence": "通用能力文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "index.html",
+      "selected": false,
+      "line_count": 50,
+      "material_line_count": 43,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "scripts/generate-icons.js",
+      "selected": false,
+      "line_count": 48,
+      "material_line_count": 36,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "src/config/constants.js",
+      "selected": false,
+      "line_count": 136,
+      "material_line_count": 130,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "src/config/difficulty.js",
+      "selected": false,
+      "line_count": 384,
+      "material_line_count": 381,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/e2e/smoke.spec.js",
+      "selected": false,
+      "line_count": 260,
+      "material_line_count": 203,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/difficulty.spec.js",
+      "selected": false,
+      "line_count": 33,
+      "material_line_count": 28,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/exploreStage.spec.js",
+      "selected": false,
+      "line_count": 20,
+      "material_line_count": 18,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/generator.spec.js",
+      "selected": false,
+      "line_count": 222,
+      "material_line_count": 186,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/stars.spec.js",
+      "selected": false,
+      "line_count": 23,
+      "material_line_count": 21,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/useGame.spec.js",
+      "selected": false,
+      "line_count": 158,
+      "material_line_count": 125,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/useSound.spec.js",
+      "selected": false,
+      "line_count": 266,
+      "material_line_count": 222,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "tests/unit/useStorage.spec.js",
+      "selected": false,
+      "line_count": 223,
+      "material_line_count": 194,
+      "priority": 80,
+      "selection_tier": "frontend",
+      "evidence": "普通源码文件",
+      "model_reason": ""
+    },
+    {
+      "path": "src/assets/styles/animations.css",
+      "selected": false,
+      "line_count": 112,
+      "material_line_count": 95,
+      "priority": 90,
+      "selection_tier": "frontend",
+      "evidence": "样式文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/assets/styles/variables.css",
+      "selected": false,
+      "line_count": 150,
+      "material_line_count": 126,
+      "priority": 90,
+      "selection_tier": "frontend",
+      "evidence": "样式文件证据",
+      "model_reason": ""
+    },
+    {
+      "path": "src/style.css",
+      "selected": false,
+      "line_count": 313,
+      "material_line_count": 268,
+      "priority": 90,
+      "selection_tier": "frontend",
+      "evidence": "样式文件证据",
+      "model_reason": ""
+    }
+  ],
+  "confirmation_note": "用户确认 8 个核心源码文件的抽取方案",
+  "confirmed_at": "2026-07-14T01:52:09+00:00"
+}

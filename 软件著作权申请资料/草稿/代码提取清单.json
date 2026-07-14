@@ -1,0 +1,104 @@
+{
+  "software_name": "数感闯关儿童数学启蒙训练软件",
+  "version": "V1.0",
+  "project_root": "/Users/hezf/github/math-game",
+  "file_count": 8,
+  "material_line_count": 3249,
+  "source_line_count": 3800,
+  "selected_source_line_count": 3241,
+  "lines_per_page": 50,
+  "total_pages": 65,
+  "target_pages": 60,
+  "available_candidate_line_count": 10853,
+  "available_candidate_pages": 218,
+  "supplement_status": "候选源码可达到前30页/后30页要求",
+  "mode": "front30_back30",
+  "selection_file": "软件著作权申请资料/草稿/代码文件选择.json",
+  "outputs": [
+    "代码-前30页.md",
+    "代码-后30页.md"
+  ],
+  "files": [
+    {
+      "path": "src/App.vue",
+      "source_line_count": 41,
+      "blank_line_count": 4,
+      "selected_line_start": 1,
+      "selected_line_end": 41,
+      "selected_line_count": 37,
+      "material_line_start": 1,
+      "material_line_end": 38
+    },
+    {
+      "path": "src/main.js",
+      "source_line_count": 9,
+      "blank_line_count": 2,
+      "selected_line_start": 1,
+      "selected_line_end": 9,
+      "selected_line_count": 7,
+      "material_line_start": 39,
+      "material_line_end": 46
+    },
+    {
+      "path": "src/router.js",
+      "source_line_count": 48,
+      "blank_line_count": 4,
+      "selected_line_start": 1,
+      "selected_line_end": 48,
+      "selected_line_count": 44,
+      "material_line_start": 47,
+      "material_line_end": 91
+    },
+    {
+      "path": "src/pages/DifficultySelect.vue",
+      "source_line_count": 431,
+      "blank_line_count": 65,
+      "selected_line_start": 1,
+      "selected_line_end": 431,
+      "selected_line_count": 366,
+      "material_line_start": 92,
+      "material_line_end": 458
+    },
+    {
+      "path": "src/pages/Game.vue",
+      "source_line_count": 1059,
+      "blank_line_count": 159,
+      "selected_line_start": 1,
+      "selected_line_end": 1059,
+      "selected_line_count": 900,
+      "material_line_start": 459,
+      "material_line_end": 1359
+    },
+    {
+      "path": "src/pages/NumberExplore.vue",
+      "source_line_count": 1133,
+      "blank_line_count": 168,
+      "selected_line_start": 1,
+      "selected_line_end": 1133,
+      "selected_line_count": 965,
+      "material_line_start": 1360,
+      "material_line_end": 2325
+    },
+    {
+      "path": "src/components/BallArray.vue",
+      "source_line_count": 920,
+      "blank_line_count": 142,
+      "selected_line_start": 1,
+      "selected_line_end": 920,
+      "selected_line_count": 778,
+      "material_line_start": 2326,
+      "material_line_end": 3104
+    },
+    {
+      "path": "src/composables/useGame.js",
+      "source_line_count": 159,
+      "blank_line_count": 15,
+      "selected_line_start": 1,
+      "selected_line_end": 159,
+      "selected_line_count": 144,
+      "material_line_start": 3105,
+      "material_line_end": 3249
+    }
+  ],
+  "safe_software_filename": "数感闯关儿童数学启蒙训练软件"
+}
