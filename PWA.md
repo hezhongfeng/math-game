@@ -1,4 +1,6 @@
-# PWA 说明
+# 数感闯关 PWA 说明
+
+> 软件全称：数感闯关儿童数学启蒙训练软件｜产品简称：数感闯关｜软件版本：V1.0
 
 项目通过 `vite-plugin-pwa` 和 Workbox 提供安装、离线缓存与更新提示。
 
@@ -35,7 +37,10 @@ Service Worker 只在生产构建中生成。不要用 `pnpm run dev` 判断离�
 
 当前 manifest：
 
-- 名称：算一算：儿童数学游戏
+- 应用全称：数感闯关儿童数学启蒙训练软件
+- 应用简称：数感闯关
+- 软件版本：V1.0
+- 应用描述：双模式数学启蒙训练，包含 26 关主线闯关与 1–1000 数字探索
 - `start_url` / `scope`：`/`
 - `display`：`standalone`
 - 方向：`portrait`
@@ -51,7 +56,7 @@ Service Worker 只在生产构建中生成。不要用 `pnpm run dev` 判断离�
 pnpm run test:e2e
 ```
 
-E2E 会检查 manifest link 和 theme-color 元数据，但不会完整验证安装体验。
+E2E 会检查 manifest link、应用全称和简称，以及 theme-color 元数据，但不会完整验证安装体验。
 
 ## 更新流程
 

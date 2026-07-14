@@ -32,7 +32,7 @@ const { playClick } = useSound()
         </div>
 
         <div class="hero-copy">
-          <h1 class="title">算一算</h1>
+          <h1 class="title">数感闯关</h1>
           <p class="subtitle">从简单加减法开始，一关一关练熟。</p>
         </div>
 

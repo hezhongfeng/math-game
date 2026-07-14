@@ -1,7 +1,7 @@
 {
-  "name": "算一算：儿童数学游戏",
-  "short_name": "算一算",
-  "description": "适合儿童的渐进式加减法练习，包含 26 个主线关卡和数字探索",
+  "name": "数感闯关儿童数学启蒙训练软件",
+  "short_name": "数感闯关",
+  "description": "面向学前及小学低年级儿童的双模式数学启蒙训练：26 关主线闯关与 1–1000 数字探索",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F5F7FA",

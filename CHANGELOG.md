@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Renamed the product to “数感闯关儿童数学启蒙训练软件” (short name: “数感闯关”) and aligned the app, PWA, browser title, package name, and active documentation
 - Simplified the home page to one short entrance transition, clearer primary/secondary actions, lighter panels, and safe-area-aware spacing
 - Unified child-facing copy around the “算一算” name, level progression, answer feedback, mistake review, and number exploration
 - Renamed ambiguous curriculum labels and guidance to use clearer terms such as “找缺数”, “十几”, “凑十加法”, and “破十减法”
@@ -64,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Standardized active documentation on the full product name, short name, software version V1.0, and the two-mode gameplay description
+- Added current product positioning, target users, main and exploration gameplay rules, and local-data boundaries to the active documentation
 - Synchronized setup, CI, PWA, design, component, and architecture docs with the pnpm and accessibility changes
 - Reorganized active documentation around source-of-truth files and separated historical plans from current behavior
 - Updated README, design, component, architecture, PWA, audio, contribution, and agent guides to match the current 26-level implementation

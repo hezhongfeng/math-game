@@ -242,9 +242,17 @@ test.describe('E2E Smoke - Core Game Loops', () => {
 
   test('PWA manifest and metadata', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveTitle('首页｜算一算')
+    await expect(page).toHaveTitle('首页｜数感闯关')
     const manifestLink = page.locator('link[rel="manifest"]')
     await expect(manifestLink).toHaveAttribute('href', /manifest\.json/)
+
+    const manifest = await page.evaluate(async () => {
+      const response = await fetch('/manifest.json')
+      return response.json()
+    })
+    expect(manifest.name).toBe('数感闯关儿童数学启蒙训练软件')
+    expect(manifest.short_name).toBe('数感闯关')
+    expect(manifest.description).toContain('双模式')
     
     const themeColor = page.locator('meta[name="theme-color"]').first()
     await expect(themeColor).toHaveAttribute('content', /#/)

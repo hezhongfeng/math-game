@@ -42,7 +42,7 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  document.title = `${to.meta.title || '儿童数学游戏'}｜算一算`
+  document.title = `${to.meta.title || '儿童数学启蒙训练'}｜数感闯关`
 })
 
 export default router
