@@ -160,6 +160,124 @@ describe('useStorage', () => {
     })
   })
 
+  test('tracks wrong and slow questions and lowers weight after fast review answers', async () => {
+    vi.stubGlobal('localStorage', createStorageMock())
+
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+    const completedAt = '2026-03-25T00:10:00.000Z'
+
+    storage.updateBestScore(8, {
+      score: 20,
+      correctCount: 2,
+      totalCount: 3,
+      accuracy: 67,
+      duration: 12,
+      durationMs: 12000,
+      completedAt,
+      incorrectQuestions: [
+        {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          result: 5,
+          missingPart: 'answer',
+          answer: 5,
+          userAnswer: 4
+        }
+      ],
+      questionResults: [
+        {
+          operand1: 1,
+          operand2: 1,
+          operator: '+',
+          result: 2,
+          missingPart: 'answer',
+          answer: 2,
+          userAnswer: 2,
+          isCorrect: true,
+          answerDurationMs: 2000
+        },
+        {
+          operand1: 4,
+          operand2: 1,
+          operator: '+',
+          result: 5,
+          missingPart: 'answer',
+          answer: 5,
+          userAnswer: 5,
+          isCorrect: true,
+          answerDurationMs: 8000
+        },
+        {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          result: 5,
+          missingPart: 'answer',
+          answer: 5,
+          userAnswer: 4,
+          isCorrect: false,
+          answerDurationMs: 2000
+        }
+      ]
+    })
+
+    let weakQuestions = storage.getWeakQuestions(8)
+    const wrongQuestion = weakQuestions.find((question) => question.operand1 === 2)
+    const slowQuestion = weakQuestions.find((question) => question.operand1 === 4)
+
+    expect(weakQuestions).toHaveLength(2)
+    expect(wrongQuestion).toMatchObject({ wrongCount: 1, slowCount: 0, priority: 3 })
+    expect(slowQuestion).toMatchObject({ wrongCount: 0, slowCount: 1, priority: 2 })
+    expect(storage.stats.value.difficultyStats[8]).toMatchObject({
+      avgResponseTimeMs: 5000,
+      responseSampleCount: 2
+    })
+
+    const fastReviewResult = {
+      score: 10,
+      correctCount: 1,
+      totalCount: 1,
+      accuracy: 100,
+      duration: 2,
+      durationMs: 2000,
+      completedAt,
+      incorrectQuestions: [],
+      questionResults: [
+        {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          result: 5,
+          missingPart: 'answer',
+          answer: 5,
+          userAnswer: 5,
+          isCorrect: true,
+          answerDurationMs: 2000
+        }
+      ]
+    }
+
+    storage.updatePracticeStats(8, fastReviewResult)
+    storage.updatePracticeStats(8, fastReviewResult)
+    storage.updatePracticeStats(8, fastReviewResult)
+    weakQuestions = storage.getWeakQuestions(8)
+
+    expect(weakQuestions.find((question) => question.operand1 === 2)).toMatchObject({
+      correctStreak: 3,
+      priority: 3 / 64
+    })
+    expect(storage.stats.value).toMatchObject({
+      totalAnswers: 3,
+      totalCorrect: 2
+    })
+    expect(storage.stats.value.difficultyStats[8]).toMatchObject({
+      responseSampleCount: 2,
+      totalPlayed: 1
+    })
+  })
+
   test('filters leaderboards to the requested question count', async () => {
     const storedData = JSON.stringify({
       bestScores: {},

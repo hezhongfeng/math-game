@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added per-question response tracking and automatic 50% weak-question review inside normal levels, balancing mistakes and slow answers without a separate practice entry
 - Added keyboard and screen-reader coverage for level selection, feedback, result dialogs, number exploration, and PWA updates
 - Added component and E2E regressions for keyboard selection, modal focus management, and wrong-answer continuation
 - Added number exploration feature: input 1-1000 and visualize as strict decimal ball arrays

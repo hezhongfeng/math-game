@@ -109,6 +109,36 @@ describe('useGame', () => {
     expect(duration.value).toBe(15) // 时间应该停止在完成时刻
   })
 
+  test('records response time and result for every answered question', () => {
+    const { startGame, submitAnswer, nextQuestion, getResult } = useGame(mockDifficulty)
+
+    startGame({
+      questions: [
+        { operand1: 2, operand2: 3, operator: '+', answer: 5 },
+        { operand1: 6, operand2: 2, operator: '-', answer: 4 }
+      ]
+    })
+
+    vi.advanceTimersByTime(2400)
+    submitAnswer(5)
+    nextQuestion()
+    vi.advanceTimersByTime(6100)
+    submitAnswer(3)
+
+    expect(getResult().questionResults).toEqual([
+      expect.objectContaining({
+        operand1: 2,
+        isCorrect: true,
+        answerDurationMs: 2400
+      }),
+      expect.objectContaining({
+        operand1: 6,
+        isCorrect: false,
+        answerDurationMs: 6100
+      })
+    ])
+  })
+
   test('calculates accuracy correctly', () => {
     const { accuracy, startGame, questions, submitAnswer, nextQuestion } = useGame(mockDifficulty)
     

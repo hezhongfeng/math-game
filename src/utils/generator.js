@@ -1,3 +1,5 @@
+import { GAME_CONFIG } from '../config/constants'
+
 // 题目生成器 - 按儿童计算策略分阶段出题，确保减法结果为非负数
 
 /**
@@ -159,10 +161,246 @@ function addMixBucket(questions, mixBucket) {
  * @param {Object} question - 题目对象
  * @returns {string} 唯一键
  */
-function getQuestionKey(question) {
-  const result = typeof question.result === 'number' ? question.result : 'x'
+export function getQuestionKey(question) {
   const missingPart = question.missingPart || 'answer'
+  const result = typeof question.result === 'number'
+    ? question.result
+    : question.operator === '+'
+      ? question.operand1 + question.operand2
+      : question.operand1 - question.operand2
+
   return `${question.operator}:${question.operand1}:${question.operand2}:${result}:${missingPart}:${question.answer}`
+}
+
+/**
+ * 根据错误、慢答和近期掌握情况计算抽题权重
+ * @param {Object} question - 薄弱题记录
+ * @returns {number} 正权重
+ */
+function getWeakPriority(question) {
+  if (Number.isFinite(question.priority) && question.priority > 0) {
+    return question.priority
+  }
+
+  const base = Math.max(1, (question.wrongCount || 0) * 3 + (question.slowCount || 0) * 2)
+  const streak = Math.min(question.correctStreak || 0, GAME_CONFIG.WEAK_MASTERY_STREAK)
+  return base / Math.pow(4, streak)
+}
+
+/**
+ * 按权重抽取一个元素
+ * @param {Array} items - 候选列表
+ * @returns {Object|null} 抽中的元素
+ */
+function pickWeighted(items) {
+  if (!items.length) {
+    return null
+  }
+
+  const totalWeight = items.reduce((total, item) => total + getWeakPriority(item), 0)
+  let cursor = Math.random() * totalWeight
+
+  for (const item of items) {
+    cursor -= getWeakPriority(item)
+
+    if (cursor <= 0) {
+      return item
+    }
+  }
+
+  return items[items.length - 1]
+}
+
+/**
+ * 先覆盖不同薄弱题，再按权重重复选取来源用于生成同类变式
+ * @param {Array} items - 同一原因的薄弱题
+ * @param {number} count - 需要的来源数量
+ * @returns {Array} 薄弱题来源计划
+ */
+function buildWeakSourcePlan(items, count) {
+  if (!items.length || count <= 0) {
+    return []
+  }
+
+  const remaining = [...items]
+  const selected = []
+
+  while (remaining.length && selected.length < count) {
+    const item = pickWeighted(remaining)
+    selected.push(item)
+    remaining.splice(remaining.indexOf(item), 1)
+  }
+
+  while (selected.length < count) {
+    selected.push(pickWeighted(items))
+  }
+
+  return selected
+}
+
+/**
+ * 判断持久化题目是否仍是结构完整的算术题
+ * @param {Object} question - 待检查题目
+ * @returns {boolean} 是否有效
+ */
+function isValidWeakQuestion(question) {
+  if (!question || !['+', '-'].includes(question.operator)) {
+    return false
+  }
+
+  if (![question.operand1, question.operand2, question.answer].every(Number.isFinite)) {
+    return false
+  }
+
+  const missingPart = question.missingPart || 'answer'
+  const result = question.operator === '+'
+    ? question.operand1 + question.operand2
+    : question.operand1 - question.operand2
+
+  if (missingPart === 'answer') {
+    return question.answer === result && result >= 0
+  }
+
+  if (question.operator !== '+' || !['operand1', 'operand2'].includes(missingPart)) {
+    return false
+  }
+
+  return question.answer === question[missingPart] &&
+    (typeof question.result !== 'number' || question.result === result)
+}
+
+/**
+ * 判断候选题是否是指定薄弱题的同类变式
+ * @param {Object} candidate - 正常题候选
+ * @param {Object} source - 薄弱题来源
+ * @param {boolean} strictBucket - 是否优先要求综合关题型桶一致
+ * @returns {boolean} 是否属于同类题
+ */
+function matchesWeakPattern(candidate, source, strictBucket = false) {
+  if (candidate.operator !== source.operator ||
+      (candidate.missingPart || 'answer') !== (source.missingPart || 'answer')) {
+    return false
+  }
+
+  if (strictBucket && source.mixBucket) {
+    return candidate.mixBucket === source.mixBucket
+  }
+
+  return true
+}
+
+/**
+ * 去除持久化统计字段，只保留可作答题目数据
+ * @param {Object} question - 带薄弱统计的题目
+ * @returns {Object} 题目快照
+ */
+function toQuestionSnapshot(question) {
+  return {
+    operand1: question.operand1,
+    operand2: question.operand2,
+    operator: question.operator,
+    answer: question.answer,
+    result: typeof question.result === 'number' ? question.result : undefined,
+    missingPart: question.missingPart || 'answer',
+    ...(question.mixBucket ? { mixBucket: question.mixBucket } : {})
+  }
+}
+
+/**
+ * 将错题和慢题按 50% 目标混入正常题目；记录不足时使用同题型变式补齐
+ * @param {Array} normalQuestions - 当前关卡按原规则生成的题目
+ * @param {Array} weakQuestions - 当前关卡的历史薄弱题
+ * @param {number} questionCount - 本轮总题量
+ * @returns {Array} 混合后的题目
+ */
+function mixWeakQuestions(normalQuestions, weakQuestions, questionCount) {
+  const validWeakQuestions = weakQuestions.filter((question) => (
+    isValidWeakQuestion(question) &&
+    (question.correctStreak || 0) < GAME_CONFIG.WEAK_MASTERY_STREAK
+  ))
+
+  if (!validWeakQuestions.length || !normalQuestions.length) {
+    return normalQuestions
+  }
+
+  const weakTarget = Math.ceil(questionCount * GAME_CONFIG.WEAK_QUESTION_RATIO)
+  const wrongQuestions = validWeakQuestions.filter((question) => (question.wrongCount || 0) > 0)
+  const slowQuestions = validWeakQuestions.filter((question) => (
+    (question.wrongCount || 0) <= 0 && (question.slowCount || 0) > 0
+  ))
+  let wrongTarget = wrongQuestions.length
+    ? Math.round(weakTarget * GAME_CONFIG.WEAK_WRONG_RATIO)
+    : 0
+
+  if (!slowQuestions.length) {
+    wrongTarget = weakTarget
+  }
+
+  const slowTarget = slowQuestions.length ? weakTarget - wrongTarget : 0
+  const sourcePlan = shuffle([
+    ...buildWeakSourcePlan(wrongQuestions, wrongTarget),
+    ...buildWeakSourcePlan(slowQuestions, slowTarget)
+  ])
+  const usedKeys = new Set()
+  const weakSelection = []
+
+  sourcePlan.forEach((source) => {
+    const sourceKey = getQuestionKey(source)
+    const reason = (source.wrongCount || 0) > 0 ? 'mistake' : 'slow'
+
+    if (!usedKeys.has(sourceKey)) {
+      usedKeys.add(sourceKey)
+      weakSelection.push({
+        ...toQuestionSnapshot(source),
+        isWeakReview: true,
+        weakReason: reason,
+        weakReviewKind: 'exact'
+      })
+      return
+    }
+
+    const unusedCandidates = normalQuestions.filter((question) => !usedKeys.has(getQuestionKey(question)))
+    const variant = shuffle(unusedCandidates.filter((question) => (
+      matchesWeakPattern(question, source, true)
+    )))[0] || shuffle(unusedCandidates.filter((question) => (
+      matchesWeakPattern(question, source)
+    )))[0] || shuffle(normalQuestions.filter((question) => (
+      matchesWeakPattern(question, source)
+    )))[0] || shuffle(unusedCandidates)[0] || shuffle(normalQuestions)[0]
+
+    usedKeys.add(getQuestionKey(variant))
+    weakSelection.push({
+      ...toQuestionSnapshot(variant),
+      isWeakReview: true,
+      weakReason: reason,
+      weakReviewKind: 'variant'
+    })
+  })
+
+  const normalTarget = Math.max(0, questionCount - weakSelection.length)
+  const remainingNormal = []
+  const normalKeys = new Set()
+
+  shuffle(normalQuestions).forEach((question) => {
+    const key = getQuestionKey(question)
+
+    if (remainingNormal.length >= normalTarget || usedKeys.has(key) || normalKeys.has(key)) {
+      return
+    }
+
+    normalKeys.add(key)
+    remainingNormal.push(question)
+  })
+
+  if (remainingNormal.length < normalTarget) {
+    const fallbackPool = normalQuestions.filter((question) => !usedKeys.has(getQuestionKey(question)))
+    remainingNormal.push(...sampleWithRepeats(
+      fallbackPool.length ? fallbackPool : normalQuestions,
+      normalTarget - remainingNormal.length
+    ))
+  }
+
+  return shuffle([...weakSelection, ...remainingNormal]).slice(0, questionCount)
 }
 
 /**
@@ -828,9 +1066,11 @@ export function prepareQuestion(question, index) {
 /**
  * 根据难度配置生成题目列表
  * @param {Object} difficulty - 难度配置对象
+ * @param {Object} [options] - 可选组卷参数
+ * @param {Array} [options.weakQuestions] - 当前关卡历史薄弱题
  * @returns {Array} 题目列表
  */
-export function generateQuestions(difficulty) {
+export function generateQuestions(difficulty, options = {}) {
   if (!difficulty || !difficulty.range) {
     console.warn('[generator] 无效的难度配置:', difficulty)
     return []
@@ -838,9 +1078,11 @@ export function generateQuestions(difficulty) {
 
   const { range, operation, questionCount, stage } = difficulty
   const capstoneQuestions = selectCapstoneQuestions(stage, questionCount)
+  const weakQuestions = Array.isArray(options.weakQuestions) ? options.weakQuestions : []
 
   if (capstoneQuestions) {
-    return capstoneQuestions.map((question, index) => prepareQuestion(question, index))
+    return mixWeakQuestions(capstoneQuestions, weakQuestions, questionCount)
+      .map((question, index) => prepareQuestion(question, index))
   }
 
   const [min, max] = range
@@ -852,7 +1094,8 @@ export function generateQuestions(difficulty) {
 
   const questions = selectBySegments(pool, getStageSegments(difficulty), questionCount)
 
-  return questions.map((question, index) => prepareQuestion(question, index))
+  return mixWeakQuestions(questions, weakQuestions, questionCount)
+    .map((question, index) => prepareQuestion(question, index))
 }
 
 /**

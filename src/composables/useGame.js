@@ -16,8 +16,10 @@ export function useGame(difficulty) {
   const isComplete = ref(false)
   const correctCount = ref(0)
   const incorrectQuestions = ref([])  // 记录错题
+  const questionResults = ref([])
   const startTime = ref(null)
   const endTime = ref(null)
+  const questionStartTime = ref(null)
   const currentQuestion = computed(() => questions.value[currentIndex.value])
 
   // 计算属性
@@ -51,15 +53,18 @@ export function useGame(difficulty) {
    */
   function startGame(options = {}) {
     const customQuestions = Array.isArray(options.questions) ? options.questions : null
+    const weakQuestions = Array.isArray(options.weakQuestions) ? options.weakQuestions : []
     questions.value = customQuestions
       ? customQuestions.map((question, index) => prepareQuestion(question, index))
-      : generateQuestions(difficultyValue.value)
+      : generateQuestions(difficultyValue.value, { weakQuestions })
     currentIndex.value = 0
     score.value = 0
     isComplete.value = false
     correctCount.value = 0
     incorrectQuestions.value = []  // 重置错题记录
+    questionResults.value = []
     startTime.value = Date.now()
+    questionStartTime.value = startTime.value
     endTime.value = null
   }
 
@@ -72,8 +77,28 @@ export function useGame(difficulty) {
     if (!question) return
 
     const isCorrect = checkAnswer(question, answer)
+    const answerDurationMs = questionStartTime.value === null
+      ? 0
+      : Math.max(0, Date.now() - questionStartTime.value)
     question.userAnswer = answer
     question.isCorrect = isCorrect
+    question.answerDurationMs = answerDurationMs
+
+    questionResults.value.push({
+      id: question.id,
+      operand1: question.operand1,
+      operand2: question.operand2,
+      operator: question.operator,
+      result: question.result,
+      missingPart: question.missingPart,
+      answer: question.answer,
+      userAnswer: answer,
+      isCorrect,
+      answerDurationMs,
+      mixBucket: question.mixBucket,
+      isWeakReview: question.isWeakReview === true,
+      weakReason: question.weakReason
+    })
 
     if (isCorrect) {
       score.value += 10
@@ -105,6 +130,7 @@ export function useGame(difficulty) {
       completeGame()
     } else {
       currentIndex.value++
+      questionStartTime.value = Date.now()
     }
   }
 
@@ -113,6 +139,7 @@ export function useGame(difficulty) {
    */
   function completeGame() {
     endTime.value = Date.now()
+    questionStartTime.value = null
     isComplete.value = true
   }
 
@@ -129,7 +156,8 @@ export function useGame(difficulty) {
       durationMs: durationMs.value,
       difficulty: difficultyValue.value,
       completedAt: new Date().toISOString(),
-      incorrectQuestions: incorrectQuestions.value  // 返回错题列表
+      incorrectQuestions: incorrectQuestions.value,
+      questionResults: questionResults.value
     }
   }
 
@@ -141,6 +169,7 @@ export function useGame(difficulty) {
     isComplete,
     correctCount,
     incorrectQuestions,
+    questionResults,
     startTime,
     endTime,
     // 计算属性

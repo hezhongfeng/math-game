@@ -58,7 +58,9 @@ pnpm run test:e2e:install
 - 关卡必须按顺序通过，正确率达到 `85%` 视为通过。
 - 正确答案自动进入下一题；错误答案等待用户确认。
 - 结算支持查看错题和仅重练错题。
-- 错题重练不更新最佳成绩和计时榜。
+- 有尚未掌握的薄弱记录时，正常闯关混入 50% 的错题、慢题和同题型变式；薄弱部分约按错题 50%、慢题 50% 分配，某类不存在时由另一类补足。
+- 薄弱题没有独立训练入口或题目标签，连续 3 次快速答对后不再作为自身的强化来源。
+- 错题重练会更新薄弱掌握情况，但不更新累计答题数、最佳成绩、解锁状态、关卡速度统计或计时榜。
 - 每关计时榜只比较与当前关卡题量一致的记录。
 - 小球辅助默认关闭，支持加法、减法和缺项加法。
 - 音效与振动默认开启，没有设置开关。
@@ -118,6 +120,7 @@ try {
 | 关卡、题量和分组 | `src/config/difficulty.js` |
 | 出题规则 | `src/utils/generator.js` |
 | 游戏常量与音频参数 | `src/config/constants.js` |
+| 薄弱题记录与慢题判定 | `src/composables/useGame.js`、`src/composables/useStorage.js` |
 | 星级和评级 | `src/utils/stars.js` |
 | 存储结构 | `src/composables/useStorage.js` |
 | 路由 | `src/router.js` |
@@ -162,6 +165,8 @@ LocalStorage keys：
 
 - `math-game-data`
 - `math-game-number-bond-hint-enabled`
+
+`math-game-data.stats` 同时保留旧版汇总错题 `mistakeLedger`、逐关速度统计 `difficultyStats` 和可用于自适应组卷的 `weakQuestionLedger`。
 
 修改存储 schema 时：
 

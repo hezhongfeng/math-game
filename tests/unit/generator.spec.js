@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest'
+import { TOTAL_LEVELS, getDifficultyById } from '../../src/config/difficulty'
 import { checkAnswer, generateQuestions } from '../../src/utils/generator'
 
 describe('generator', () => {
@@ -18,6 +19,94 @@ describe('generator', () => {
       expect(question.missingPart).toBe('answer')
       expect(question.result).toBe(question.answer)
     })
+  })
+
+  test('mixes weak questions and variants into half of a normal round', () => {
+    const questions = generateQuestions({
+      range: [0, 10],
+      operation: 'add',
+      questionCount: 20
+    }, {
+      weakQuestions: [
+        {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          answer: 5,
+          result: 5,
+          missingPart: 'answer',
+          wrongCount: 2,
+          slowCount: 0,
+          correctStreak: 0
+        },
+        {
+          operand1: 4,
+          operand2: 1,
+          operator: '+',
+          answer: 5,
+          result: 5,
+          missingPart: 'answer',
+          wrongCount: 0,
+          slowCount: 2,
+          correctStreak: 0
+        }
+      ]
+    })
+
+    const weakReviews = questions.filter((question) => question.isWeakReview)
+
+    expect(questions).toHaveLength(20)
+    expect(weakReviews).toHaveLength(10)
+    expect(weakReviews.filter((question) => question.weakReason === 'mistake')).toHaveLength(5)
+    expect(weakReviews.filter((question) => question.weakReason === 'slow')).toHaveLength(5)
+    expect(weakReviews.some((question) => (
+      question.operand1 === 2 && question.operand2 === 3 && question.weakReviewKind === 'exact'
+    ))).toBe(true)
+    expect(weakReviews.some((question) => question.weakReviewKind === 'variant')).toBe(true)
+  })
+
+  test('returns mastered weak questions to low-frequency normal sampling', () => {
+    const questions = generateQuestions({
+      range: [0, 10],
+      operation: 'add',
+      questionCount: 20
+    }, {
+      weakQuestions: [
+        {
+          operand1: 2,
+          operand2: 3,
+          operator: '+',
+          answer: 5,
+          result: 5,
+          missingPart: 'answer',
+          wrongCount: 2,
+          slowCount: 0,
+          correctStreak: 3
+        }
+      ]
+    })
+
+    expect(questions.filter((question) => question.isWeakReview)).toHaveLength(0)
+  })
+
+  test('keeps the 50% weak-review target across all configured levels', () => {
+    for (let id = 1; id <= TOTAL_LEVELS; id += 1) {
+      const difficulty = getDifficultyById(id)
+      const baseQuestions = generateQuestions(difficulty)
+      const weakQuestions = baseQuestions.slice(0, 2).map((question, index) => ({
+        ...question,
+        wrongCount: index === 0 ? 1 : 0,
+        slowCount: index === 1 ? 1 : 0,
+        correctStreak: 0
+      }))
+      const questions = generateQuestions(difficulty, { weakQuestions })
+
+      expect(questions, `level ${id}`).toHaveLength(difficulty.questionCount)
+      expect(
+        questions.filter((question) => question.isWeakReview),
+        `level ${id}`
+      ).toHaveLength(Math.ceil(difficulty.questionCount * 0.5))
+    }
   })
 
   test('missingAddStart only generates left-missing addition questions', () => {

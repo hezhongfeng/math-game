@@ -117,11 +117,12 @@
   difficulty,
   completedAt,
   incorrectQuestions,
+  questionResults,
   isReviewRound
 }
 ```
 
-榜单由存储层按当前题量过滤。错题重练结果不会更新最佳成绩或榜单。
+`questionResults` 保存每道题的正确状态和从题目出现到提交答案的耗时，用于更新本关薄弱记录。榜单由存储层按当前题量过滤。错题重练会更新薄弱掌握情况，但不会更新累计答题数、最佳成绩、解锁状态、关卡速度统计或榜单。
 
 弹窗通过 Teleport 挂载到 `body`，打开时将应用主体设为 inert，并把焦点移入弹窗。Tab/Shift+Tab 在弹窗内循环，关闭后恢复此前焦点；切换错题面板时重新聚焦当前面板的首个操作。
 

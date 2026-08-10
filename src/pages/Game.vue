@@ -28,7 +28,7 @@ if (!difficulty) {
   router.replace('/difficulty')
 }
 
-const { getLeaderboard, updateBestScore } = useStorage()
+const { getLeaderboard, getWeakQuestions, updateBestScore, updatePracticeStats } = useStorage()
 const { error: showError } = useToast()
 const {
   playCorrect,
@@ -152,7 +152,9 @@ function triggerHapticFeedback(level = 'medium') {
 
 function initGame() {
   isLoading.value = true
-  game.startGame(retryQuestions ? { questions: retryQuestions } : undefined)
+  game.startGame(retryQuestions
+    ? { questions: retryQuestions }
+    : { weakQuestions: getWeakQuestions(parseInt(props.id, 10)) })
   retryQuestions = null
   isLoading.value = false
 }
@@ -271,13 +273,19 @@ function handleGameComplete() {
     ...game.getResult(),
     isReviewRound: isReviewRound.value
   }
-  const updateResult = result.isReviewRound
-    ? {
-        isNewBest: false,
-        leaderboard: getLeaderboard(parseInt(props.id, 10), result.totalCount),
-        leaderboardRank: null
-      }
-    : updateBestScore(parseInt(props.id, 10), result)
+  let updateResult
+
+  if (result.isReviewRound) {
+    updatePracticeStats(parseInt(props.id, 10), result)
+    updateResult = {
+      isNewBest: false,
+      leaderboard: getLeaderboard(parseInt(props.id, 10), result.totalCount),
+      leaderboardRank: null
+    }
+  } else {
+    updateResult = updateBestScore(parseInt(props.id, 10), result)
+  }
+
   const stars = getStarCount(result.accuracy)
   const didPass = result.accuracy >= GAME_CONFIG.PASS_ACCURACY
 
