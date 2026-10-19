@@ -2,6 +2,7 @@ import { computed, shallowRef } from 'vue'
 import { useToast } from './useToast'
 import { GAME_CONFIG, STORAGE_KEYS } from '../config/constants'
 import { getQuestionKey } from '../utils/generator'
+import { getQuestionSkill } from '../utils/questionSkills'
 
 const STORAGE_KEY = STORAGE_KEYS.GAME_DATA
 
@@ -62,6 +63,29 @@ function getMedian(values) {
     : sorted[middle]
 }
 
+/** 读取非负有限统计值，损坏字段按零处理。 */
+function nonNegative(value) {
+  const number = Number(value)
+  return Number.isFinite(number) && number >= 0 ? number : 0
+}
+
+/** 兼容没有能力统计的旧存档，并隔离损坏的嵌套字段。 */
+function normalizeSkillResponseStats(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+  return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, {
+    avgResponseTimeMs: nonNegative(entry?.avgResponseTimeMs),
+    responseSampleCount: Math.floor(nonNegative(entry?.responseSampleCount)),
+    assistedCount: Math.floor(nonNegative(entry?.assistedCount)),
+    interruptedCount: Math.floor(nonNegative(entry?.interruptedCount))
+  }]))
+}
+
+/** 只有独立、未中断且计时有效的作答能用于速度与掌握判断。 */
+function hasReliableResponse(question) {
+  return question?.usedHint !== true && question?.wasInterrupted !== true &&
+    Number.isFinite(Number(question?.answerDurationMs)) && Number(question.answerDurationMs) > 0
+}
+
 /**
  * 创建可长期保存的题目快照
  * @param {Object} question - 作答题目
@@ -75,6 +99,7 @@ function createQuestionSnapshot(question) {
     result: question.result,
     missingPart: question.missingPart || 'answer',
     answer: question.answer,
+    skillId: getQuestionSkill(question),
     ...(question.mixBucket ? { mixBucket: question.mixBucket } : {})
   }
 }
@@ -245,20 +270,28 @@ export function useStorage() {
       stats.mistakeLedger[key].lastAnswer = q.userAnswer
     })
 
-    // 3. 以历史逐题均值为基线；首次记录使用本轮正确题中位数
+    // 3. 按能力建立独立速度基线；旧版整关均值只保留为汇总，不跨能力混用。
     const existingDifficultyStats = stats.difficultyStats[difficultyId] || {}
-    const previousResponseAvg = Number(existingDifficultyStats.avgResponseTimeMs) || 0
-    const correctDurations = questionResults
-      .filter((question) => question.isCorrect === true)
-      .map((question) => Number(question.answerDurationMs))
-      .filter((durationMs) => Number.isFinite(durationMs) && durationMs > 0)
-    const responseBaseline = previousResponseAvg || getMedian(correctDurations)
-    const slowThreshold = responseBaseline > 0
-      ? Math.max(
-          GAME_CONFIG.SLOW_RESPONSE_MIN_MS,
-          responseBaseline * GAME_CONFIG.SLOW_RESPONSE_MULTIPLIER
-        )
-      : Number.POSITIVE_INFINITY
+    const skillStats = normalizeSkillResponseStats(existingDifficultyStats.responseStatsBySkill)
+    const durationsBySkill = new Map()
+    const correctDurations = []
+    questionResults.forEach((question) => {
+      if (question?.isCorrect !== true || !hasReliableResponse(question)) return
+      const skillId = getQuestionSkill(question)
+      if (skillId === 'unknown') return
+      const durationMs = Number(question.answerDurationMs)
+      if (!durationsBySkill.has(skillId)) durationsBySkill.set(skillId, [])
+      durationsBySkill.get(skillId).push(durationMs)
+      correctDurations.push(durationMs)
+    })
+    const getSlowThreshold = (skillId) => {
+      const previous = skillStats[skillId]
+      const durations = durationsBySkill.get(skillId) || []
+      const baseline = previous?.responseSampleCount >= GAME_CONFIG.SLOW_RESPONSE_MIN_SAMPLES
+        ? previous.avgResponseTimeMs
+        : durations.length >= GAME_CONFIG.SLOW_RESPONSE_MIN_SAMPLES ? getMedian(durations) : 0
+      return Math.max(GAME_CONFIG.SLOW_RESPONSE_MIN_MS, baseline * GAME_CONFIG.SLOW_RESPONSE_MULTIPLIER)
+    }
 
     // 4. 更新逐题薄弱记录：同时记录错题和慢答，连续快答后降低权重
     questionResults.forEach((question) => {
@@ -268,9 +301,11 @@ export function useStorage() {
 
       const ledgerKey = `${difficultyId}:${getQuestionKey(question)}`
       const existing = stats.weakQuestionLedger[ledgerKey]
-      const answerDurationMs = Number(question.answerDurationMs)
-      const isSlow = question.isCorrect === true && Number.isFinite(answerDurationMs) &&
-        answerDurationMs >= slowThreshold
+      const skillId = getQuestionSkill(question)
+      if (skillId === 'unknown') return
+      const reliable = hasReliableResponse(question)
+      const isSlow = question.isCorrect === true && reliable &&
+        Number(question.answerDurationMs) >= getSlowThreshold(skillId)
 
       if (!existing && question.isCorrect === true && !isSlow) {
         return
@@ -279,6 +314,11 @@ export function useStorage() {
       const entry = {
         question: createQuestionSnapshot(question),
         difficultyId: Number(difficultyId),
+        skillId,
+        assistedCount: nonNegative(existing?.assistedCount) + (question.usedHint === true ? 1 : 0),
+        interruptedCount: nonNegative(existing?.interruptedCount) + (question.wasInterrupted === true ? 1 : 0),
+        lastUsedHint: question.usedHint === true,
+        lastWasInterrupted: question.wasInterrupted === true,
         wrongCount: existing?.wrongCount || 0,
         slowCount: existing?.slowCount || 0,
         correctStreak: existing?.correctStreak || 0,
@@ -293,7 +333,9 @@ export function useStorage() {
       } else if (isSlow) {
         entry.slowCount += 1
         entry.correctStreak = 0
-      } else {
+      } else if (question.usedHint === true) {
+        entry.correctStreak = 0
+      } else if (reliable) {
         entry.correctStreak = Math.min(
           GAME_CONFIG.WEAK_MASTERY_STREAK,
           entry.correctStreak + 1
@@ -318,11 +360,35 @@ export function useStorage() {
         const previousCount = Number(dStats.responseSampleCount) || 0
         const durationTotal = correctDurations.reduce((total, durationMs) => total + durationMs, 0)
         dStats.avgResponseTimeMs = (
-          previousResponseAvg * previousCount + durationTotal
+          nonNegative(dStats.avgResponseTimeMs) * previousCount + durationTotal
         ) / (previousCount + correctDurations.length)
         dStats.responseSampleCount = previousCount + correctDurations.length
       }
 
+      const nextSkillStats = { ...skillStats }
+      questionResults.forEach((question) => {
+        const skillId = getQuestionSkill(question)
+        if (skillId === 'unknown') return
+        const entry = nextSkillStats[skillId] || {
+          avgResponseTimeMs: 0, responseSampleCount: 0, assistedCount: 0, interruptedCount: 0
+        }
+        nextSkillStats[skillId] = {
+          ...entry,
+          assistedCount: entry.assistedCount + (question.usedHint === true ? 1 : 0),
+          interruptedCount: entry.interruptedCount + (question.wasInterrupted === true ? 1 : 0)
+        }
+      })
+      durationsBySkill.forEach((durations, skillId) => {
+        const previous = nextSkillStats[skillId]
+        const sampleCount = previous.responseSampleCount + durations.length
+        nextSkillStats[skillId] = {
+          ...previous,
+          avgResponseTimeMs: (previous.avgResponseTimeMs * previous.responseSampleCount +
+            durations.reduce((total, duration) => total + duration, 0)) / sampleCount,
+          responseSampleCount: sampleCount
+        }
+      })
+      dStats.responseStatsBySkill = nextSkillStats
       dStats.totalPlayed = n + 1
       stats.difficultyStats[difficultyId] = dStats
     }
@@ -364,6 +430,7 @@ export function useStorage() {
 
         return {
           ...entry.question,
+          skillId: getQuestionSkill(entry.question),
           wrongCount,
           slowCount,
           correctStreak,

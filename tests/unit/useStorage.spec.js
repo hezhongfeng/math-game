@@ -1,6 +1,20 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { getQuestionSkill } from '../../src/utils/questionSkills'
 
 const STORAGE_KEY = 'math-game-data'
+
+function answered(operand1, operand2, extra = {}) {
+  return { operand1, operand2, operator: '+', answer: operand1 + operand2,
+    result: operand1 + operand2, missingPart: 'answer', isCorrect: true, answerDurationMs: 2000, ...extra }
+}
+
+function session(questionResults) {
+  const correctCount = questionResults.filter((q) => q.isCorrect).length
+  return { questionResults, correctCount, totalCount: questionResults.length, score: correctCount * 10,
+    accuracy: Math.round(correctCount / questionResults.length * 100), duration: 30, durationMs: 30000,
+    completedAt: '2026-10-19T02:00:00.000Z',
+    incorrectQuestions: questionResults.filter((q) => !q.isCorrect) }
+}
 
 function createStorageMock(initialData = null) {
   let store = {}
@@ -276,6 +290,99 @@ describe('useStorage', () => {
       responseSampleCount: 2,
       totalPlayed: 1
     })
+  })
+
+  test('uses each ability baseline rather than the aggregate speed or a stored question tag', async () => {
+    const easy = answered(1, 2, { answerDurationMs: 6000 })
+    const bridge = answered(9, 8, { answerDurationMs: 8000, skillId: 'invalid-old-tag' })
+    vi.stubGlobal('localStorage', createStorageMock(JSON.stringify({ stats: { difficultyStats: { 26: {
+      avgResponseTimeMs: 1000, responseSampleCount: 20,
+      responseStatsBySkill: {
+        [getQuestionSkill(easy)]: { avgResponseTimeMs: 1000, responseSampleCount: 5 },
+        [getQuestionSkill(bridge)]: { avgResponseTimeMs: 8000, responseSampleCount: 5 }
+      }
+    } } } })))
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+    storage.updateBestScore(26, session([easy, bridge]))
+    expect(storage.getWeakQuestions(26)).toEqual([
+      expect.objectContaining({ operand1: 1, slowCount: 1, skillId: getQuestionSkill(easy) })
+    ])
+    expect(storage.stats.value.difficultyStats[26].responseStatsBySkill[getQuestionSkill(bridge)])
+      .toMatchObject({ responseSampleCount: 6, avgResponseTimeMs: 8000 })
+  })
+
+  test('counts assisted and interrupted answers without adding them to speed samples', async () => {
+    vi.stubGlobal('localStorage', createStorageMock())
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+    const independent = answered(3, 4)
+    storage.updateBestScore(15, session([
+      independent,
+      answered(4, 5, { usedHint: true, answerDurationMs: 20000 }),
+      answered(3, 5, { wasInterrupted: true, answerDurationMs: 60000 })
+    ]))
+    expect(storage.getWeakQuestions(15)).toHaveLength(0)
+    expect(storage.stats.value.difficultyStats[15]).toMatchObject({
+      avgResponseTimeMs: 2000, responseSampleCount: 1,
+      responseStatsBySkill: { [getQuestionSkill(independent)]: {
+        avgResponseTimeMs: 2000, responseSampleCount: 1, assistedCount: 1, interruptedCount: 1
+      } }
+    })
+  })
+
+  test('requires independent fast answers for mastery and leaves review speed stats unchanged', async () => {
+    vi.stubGlobal('localStorage', createStorageMock())
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+    storage.updateBestScore(15, session([answered(3, 4, { isCorrect: false })]))
+    const speedStats = structuredClone(storage.stats.value.difficultyStats[15])
+    const fast = () => session([answered(3, 4)])
+    storage.updatePracticeStats(15, fast())
+    storage.updatePracticeStats(15, fast())
+    expect(storage.getWeakQuestions(15)[0].correctStreak).toBe(2)
+    storage.updatePracticeStats(15, session([answered(3, 4, { usedHint: true })]))
+    expect(storage.getWeakQuestions(15)[0].correctStreak).toBe(0)
+    storage.updatePracticeStats(15, fast())
+    storage.updatePracticeStats(15, session([answered(3, 4, { answerDurationMs: null })]))
+    storage.updatePracticeStats(15, session([answered(3, 4, { wasInterrupted: true, answerDurationMs: 90000 })]))
+    expect(storage.getWeakQuestions(15)[0]).toMatchObject({ correctStreak: 1, wrongCount: 1, slowCount: 0 })
+    const record = Object.values(storage.stats.value.weakQuestionLedger)[0]
+    expect(record).toMatchObject({
+      skillId: getQuestionSkill(answered(3, 4)), assistedCount: 1, interruptedCount: 1,
+      lastWasInterrupted: true, lastUsedHint: false
+    })
+    expect(storage.stats.value.difficultyStats[15]).toEqual(speedStats)
+    expect(storage.stats.value.totalAnswers).toBe(1)
+  })
+
+  test('derives abilities for legacy weak entries and repairs damaged nested speed stats', async () => {
+    const oldQuestion = answered(8, 5)
+    vi.stubGlobal('localStorage', createStorageMock(JSON.stringify({ stats: {
+      difficultyStats: { 21: { avgResponseTimeMs: 3000, responseSampleCount: 3, responseStatsBySkill: [] } },
+      weakQuestionLedger: { legacy: { difficultyId: 21, question: oldQuestion, wrongCount: 1 } }
+    } })))
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+    expect(storage.getWeakQuestions(21)[0].skillId).toBe(getQuestionSkill(oldQuestion))
+    storage.updateBestScore(21, session([oldQuestion]))
+    expect(storage.stats.value.difficultyStats[21].responseStatsBySkill[getQuestionSkill(oldQuestion)])
+      .toMatchObject({ avgResponseTimeMs: 2000, responseSampleCount: 1 })
+  })
+
+  test('uses a within-ability median when at least three new independent samples are available', async () => {
+    vi.stubGlobal('localStorage', createStorageMock())
+    const { useStorage } = await loadUseStorage()
+    const storage = useStorage()
+    storage.updateBestScore(26, session([
+      answered(8, 5, { answerDurationMs: 6000 }),
+      answered(9, 7, { answerDurationMs: 8000 }),
+      answered(9, 8, { answerDurationMs: 20000 }),
+      answered(1, 1, { answerDurationMs: 1000 })
+    ]))
+    expect(storage.getWeakQuestions(26)).toEqual([
+      expect.objectContaining({ operand1: 9, operand2: 8, slowCount: 1 })
+    ])
   })
 
   test('filters leaderboards to the requested question count', async () => {

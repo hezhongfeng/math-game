@@ -1,5 +1,6 @@
 import { ref, computed, toValue } from 'vue'
 import { generateQuestions, checkAnswer, prepareQuestion } from '../utils/generator'
+import { getQuestionSkill } from '../utils/questionSkills'
 
 /**
  * 游戏核心逻辑 Composable
@@ -20,6 +21,11 @@ export function useGame(difficulty) {
   const startTime = ref(null)
   const endTime = ref(null)
   const questionStartTime = ref(null)
+  const isPageHidden = ref(false)
+  const roundPausedAt = ref(null)
+  const roundPausedMs = ref(0)
+  const questionPausedAt = ref(null)
+  const questionPausedMs = ref(0)
   const currentQuestion = computed(() => questions.value[currentIndex.value])
 
   // 计算属性
@@ -35,18 +41,52 @@ export function useGame(difficulty) {
   })
 
   const duration = computed(() => {
-    if (!startTime.value) return 0
-    const end = endTime.value || Date.now()
-    const result = Math.floor((end - startTime.value) / 1000)
-    return isNaN(result) ? 0 : result
+    return Math.floor(durationMs.value / 1000)
   })
 
   const durationMs = computed(() => {
-    if (!startTime.value) return 0
-    const end = endTime.value || Date.now()
-    const result = end - startTime.value
+    if (startTime.value === null) return 0
+    const end = endTime.value ?? Date.now()
+    const currentPause = roundPausedAt.value === null ? 0 : Math.max(0, end - roundPausedAt.value)
+    const result = end - startTime.value - roundPausedMs.value - currentPause
     return isNaN(result) ? 0 : Math.max(0, result)
   })
+
+  /** 开始当前题的前台计时；在后台自动切题时同时标记中断。 */
+  function startQuestionTiming() {
+    questionStartTime.value = Date.now()
+    questionPausedMs.value = 0
+    questionPausedAt.value = isPageHidden.value ? questionStartTime.value : null
+    if (currentQuestion.value && isPageHidden.value) currentQuestion.value.wasInterrupted = true
+  }
+
+  /**
+   * 响应页面前后台切换，排除后台停留时间，不重复计算同一段暂停。
+   * @param {boolean} hidden - 页面是否不可见
+   */
+  function setPageHidden(hidden) {
+    if (isPageHidden.value === hidden) return
+    isPageHidden.value = hidden
+    if (startTime.value === null || isComplete.value) return
+    const now = Date.now()
+    if (hidden) {
+      roundPausedAt.value = now
+      if (currentQuestion.value?.isCorrect === null) {
+        questionPausedAt.value = now
+        currentQuestion.value.wasInterrupted = true
+      }
+    } else {
+      if (roundPausedAt.value !== null) roundPausedMs.value += Math.max(0, now - roundPausedAt.value)
+      if (questionPausedAt.value !== null) questionPausedMs.value += Math.max(0, now - questionPausedAt.value)
+      roundPausedAt.value = null
+      questionPausedAt.value = null
+    }
+  }
+
+  /** 标记当前题作答前曾展示小球，关闭提示后仍保留使用记录。 */
+  function markHintUsed() {
+    if (currentQuestion.value?.isCorrect === null && !isPageHidden.value) currentQuestion.value.usedHint = true
+  }
 
   /**
    * 开始游戏
@@ -64,7 +104,9 @@ export function useGame(difficulty) {
     incorrectQuestions.value = []  // 重置错题记录
     questionResults.value = []
     startTime.value = Date.now()
-    questionStartTime.value = startTime.value
+    roundPausedMs.value = 0
+    roundPausedAt.value = isPageHidden.value ? startTime.value : null
+    startQuestionTiming()
     endTime.value = null
   }
 
@@ -74,12 +116,13 @@ export function useGame(difficulty) {
    */
   function submitAnswer(answer) {
     const question = currentQuestion.value
-    if (!question) return
+    if (!question || question.isCorrect === true || question.isCorrect === false) return
 
     const isCorrect = checkAnswer(question, answer)
     const answerDurationMs = questionStartTime.value === null
       ? 0
-      : Math.max(0, Date.now() - questionStartTime.value)
+      : Math.max(0, Date.now() - questionStartTime.value - questionPausedMs.value -
+        (questionPausedAt.value === null ? 0 : Math.max(0, Date.now() - questionPausedAt.value)))
     question.userAnswer = answer
     question.isCorrect = isCorrect
     question.answerDurationMs = answerDurationMs
@@ -95,6 +138,9 @@ export function useGame(difficulty) {
       userAnswer: answer,
       isCorrect,
       answerDurationMs,
+      skillId: getQuestionSkill(question),
+      usedHint: question.usedHint === true,
+      wasInterrupted: question.wasInterrupted === true,
       mixBucket: question.mixBucket,
       isWeakReview: question.isWeakReview === true,
       weakReason: question.weakReason
@@ -130,7 +176,7 @@ export function useGame(difficulty) {
       completeGame()
     } else {
       currentIndex.value++
-      questionStartTime.value = Date.now()
+      startQuestionTiming()
     }
   }
 
@@ -139,7 +185,12 @@ export function useGame(difficulty) {
    */
   function completeGame() {
     endTime.value = Date.now()
+    if (roundPausedAt.value !== null) {
+      roundPausedMs.value += Math.max(0, endTime.value - roundPausedAt.value)
+      roundPausedAt.value = null
+    }
     questionStartTime.value = null
+    questionPausedAt.value = null
     isComplete.value = true
   }
 
@@ -183,6 +234,8 @@ export function useGame(difficulty) {
     submitAnswer,
     nextQuestion,
     completeGame,
-    getResult
+    getResult,
+    setPageHidden,
+    markHintUsed
   }
 }

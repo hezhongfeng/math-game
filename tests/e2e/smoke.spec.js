@@ -16,7 +16,7 @@ async function openFirstLevel(page) {
 
 async function solveQuestion(page, isCorrect = true) {
   await expect(page.locator('.loading-overlay')).toBeHidden()
-  const expression = page.locator('.question-card:not(.review-question) [data-testid="question-expression"]').first()
+  const expression = page.locator('.question-card:not(.review-question) [data-testid="question-expression"]:not(.expression-leave-active)').first()
   await expect(expression).toBeVisible()
   
   const text = (await expression.textContent()) || ''
@@ -24,14 +24,15 @@ async function solveQuestion(page, isCorrect = true) {
   if (isCorrect) {
     // 解析题目并输入正确答案
     const answer = getAnswerFromExpression(text)
+    expect(Number.isInteger(answer) && answer >= 0, `Unable to solve "${text}"`).toBe(true)
     for (const digit of String(answer)) {
-      await page.getByTestId(`num-btn-${digit}`).click()
+      await page.getByTestId(`num-btn-${digit}`).click({ delay: 60 })
     }
   } else {
     // 输入一个显然错误的答案，避免依赖移动端对多连击的处理差异
     const wrongAnswer = getWrongAnswerFromExpression(text)
     for (const digit of String(wrongAnswer)) {
-      await page.getByTestId(`num-btn-${digit}`).click()
+      await page.getByTestId(`num-btn-${digit}`).click({ delay: 60 })
     }
   }
   
@@ -58,7 +59,7 @@ async function dismissErrorFeedback(page) {
 
 function getAnswerFromExpression(expressionText) {
   const text = expressionText.replace(/\s+/g, '')
-  // 简单解析逻辑 (省略复杂分支以保持脚本整洁，主要支持标准和缺数模式)
+  // 解析求结果与左右缺项三种问法。
   let match = text.match(/^(\d+)([+-])(\d+)=\?$/)
   if (match) return match[2] === '+' ? Number(match[1]) + Number(match[3]) : Number(match[1]) - Number(match[3])
   
@@ -66,7 +67,7 @@ function getAnswerFromExpression(expressionText) {
   if (match) return match[1] === '+' ? Number(match[3]) - Number(match[2]) : Number(match[3]) + Number(match[2])
   
   match = text.match(/^(\d+)([+-])\?=(\d+)$/)
-  if (match) return match[1] === '+' ? Number(match[3]) - Number(match[1]) : Number(match[1]) - Number(match[3])
+  if (match) return match[2] === '+' ? Number(match[3]) - Number(match[1]) : Number(match[1]) - Number(match[3])
   
   return null
 }
@@ -239,6 +240,76 @@ test.describe('E2E Smoke - Core Game Loops', () => {
     await page.getByTestId('result-home-btn').click()
     await expect(page).toHaveURL(/\/difficulty/)
   })
+
+  for (const id of [12, 20]) {
+    test(`completes mixed ten-bond questions in level ${id}`, async ({ page }) => {
+      test.setTimeout(180_000)
+      if (id === 12) {
+        await page.addInitScript(() => {
+          const realNow = Date.now
+          let offset = 0
+          Date.now = () => realNow() + offset
+          window.simulateBackgroundStay = (milliseconds) => {
+            Object.defineProperty(document, 'hidden', { configurable: true, value: true })
+            document.dispatchEvent(new Event('visibilitychange'))
+            offset += milliseconds
+            Object.defineProperty(document, 'hidden', { configurable: true, value: false })
+            document.dispatchEvent(new Event('visibilitychange'))
+          }
+        })
+      } else {
+        await page.addInitScript(() => localStorage.setItem('math-game-number-bond-hint-enabled', 'true'))
+      }
+      await page.goto(`/game/${id}`)
+      const startedAt = await page.evaluate(() => performance.now())
+      const totalQuestions = await getTotalQuestions(page)
+      const counter = page.locator('.question-card:not(.review-question) .counter-badge').first()
+      const expression = page.locator('.question-card:not(.review-question) [data-testid="question-expression"]:not(.expression-leave-active)').first()
+      const seenTypes = new Set()
+
+      if (id === 12) {
+        const toggle = page.getByTestId('number-bond-hint-toggle')
+        await toggle.click()
+        await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+        await toggle.click()
+        await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+        await page.evaluate(() => window.simulateBackgroundStay(60000))
+      } else {
+        const toggle = page.getByTestId('number-bond-hint-toggle')
+        await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+        await toggle.click()
+        await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+      }
+
+      for (let index = 0; index < totalQuestions; index++) {
+        await expect(counter).toHaveText(new RegExp(`^${index + 1}\\s*/\\s*${totalQuestions}$`))
+        const text = (await expression.textContent()).replace(/\s+/g, '')
+        expect(getAnswerFromExpression(text)).not.toBeNull()
+        if (text.startsWith('?')) seenTypes.add('left-gap')
+        else if (text.includes('+?=')) seenTypes.add('right-gap')
+        else if (text.includes('-')) seenTypes.add('subtract')
+        else seenTypes.add('add')
+        await solveQuestion(page)
+      }
+
+      await expect(page.getByTestId('result-modal')).toBeVisible()
+      await expect(page.getByTestId('result-modal')).toContainText('全部答对')
+      expect(seenTypes.has('add')).toBe(true)
+      expect(seenTypes.has('subtract')).toBe(true)
+      expect(seenTypes.has('right-gap')).toBe(true)
+      expect(seenTypes.has('left-gap')).toBe(id === 20)
+      const saved = await page.evaluate(() => ({
+        data: JSON.parse(localStorage.getItem('math-game-data')),
+        now: performance.now()
+      }))
+      const speed = saved.data.stats.difficultyStats[id]
+      const abilities = Object.values(speed.responseStatsBySkill)
+      expect(abilities.reduce((total, ability) => total + ability.assistedCount, 0)).toBe(1)
+      expect(abilities.reduce((total, ability) => total + ability.interruptedCount, 0)).toBe(id === 12 ? 1 : 0)
+      expect(speed.responseSampleCount).toBe(totalQuestions - 1)
+      expect(Math.abs(saved.data.bestScores[id].durationMs - (saved.now - startedAt))).toBeLessThan(4000)
+    })
+  }
 
   test('PWA manifest and metadata', async ({ page }) => {
     await page.goto('/')

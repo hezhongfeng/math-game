@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from '../config/constants'
+import { getQuestionSkill } from './questionSkills'
 
 // 题目生成器 - 按儿童计算策略分阶段出题，确保减法结果为非负数
 
@@ -99,7 +100,7 @@ function createMissingAdditionPool(min, max, includeSecondMissing = false) {
         missingPart: 'operand1'
       })
 
-      if (includeSecondMissing && operand1 !== operand2) {
+      if (includeSecondMissing) {
         pool.push({
           operand1,
           operand2,
@@ -139,7 +140,9 @@ function createQuestionPool(operation, min, max) {
     return createMissingAdditionPool(min, max, true)
   }
 
-  console.warn(`Unknown operation "${operation}", falling back to mixed pool`)
+  if (operation !== 'mixed') {
+    console.warn(`Unknown operation "${operation}", falling back to mixed pool`)
+  }
   return [...createAdditionPool(min, max), ...createSubtractionPool(min, max)]
 }
 
@@ -273,20 +276,10 @@ function isValidWeakQuestion(question) {
  * 判断候选题是否是指定薄弱题的同类变式
  * @param {Object} candidate - 正常题候选
  * @param {Object} source - 薄弱题来源
- * @param {boolean} strictBucket - 是否优先要求综合关题型桶一致
  * @returns {boolean} 是否属于同类题
  */
-function matchesWeakPattern(candidate, source, strictBucket = false) {
-  if (candidate.operator !== source.operator ||
-      (candidate.missingPart || 'answer') !== (source.missingPart || 'answer')) {
-    return false
-  }
-
-  if (strictBucket && source.mixBucket) {
-    return candidate.mixBucket === source.mixBucket
-  }
-
-  return true
+function matchesWeakPattern(candidate, source) {
+  return getQuestionSkill(candidate) === getQuestionSkill(source)
 }
 
 /**
@@ -307,100 +300,144 @@ function toQuestionSnapshot(question) {
 }
 
 /**
- * 将错题和慢题按 50% 目标混入正常题目；记录不足时使用同题型变式补齐
- * @param {Array} normalQuestions - 当前关卡按原规则生成的题目
- * @param {Array} weakQuestions - 当前关卡的历史薄弱题
- * @param {number} questionCount - 本轮总题量
- * @returns {Array} 混合后的题目
+ * 在教学配额内按能力复习，目标 50%；配额容量不足时保留正常题。
+ * @param {Array} normalQuestions - 按教学配额生成的题目
+ * @param {Array} weakQuestions - 历史薄弱题
+ * @param {number} questionCount - 本轮题量
+ * @param {Array} plan - 每个教学配额的候选题池
+ * @returns {Array} 保持教学配额的混合题目
  */
-function mixWeakQuestions(normalQuestions, weakQuestions, questionCount) {
-  const validWeakQuestions = weakQuestions.filter((question) => (
-    isValidWeakQuestion(question) &&
-    (question.correctStreak || 0) < GAME_CONFIG.WEAK_MASTERY_STREAK
+function mixWeakQuestions(normalQuestions, weakQuestions, questionCount, plan) {
+  const eligibleKeys = new Set(plan.flatMap(({ pool }) => pool.map(getQuestionKey)))
+  const valid = weakQuestions.filter((question) => (
+    isValidWeakQuestion(question) && eligibleKeys.has(getQuestionKey(question)) &&
+    (question.correctStreak || 0) < GAME_CONFIG.WEAK_MASTERY_STREAK &&
+    ((question.wrongCount || 0) > 0 || (question.slowCount || 0) > 0)
   ))
+  if (!valid.length || !normalQuestions.length) return normalQuestions
 
-  if (!validWeakQuestions.length || !normalQuestions.length) {
-    return normalQuestions
-  }
-
-  const weakTarget = Math.ceil(questionCount * GAME_CONFIG.WEAK_QUESTION_RATIO)
-  const wrongQuestions = validWeakQuestions.filter((question) => (question.wrongCount || 0) > 0)
-  const slowQuestions = validWeakQuestions.filter((question) => (
-    (question.wrongCount || 0) <= 0 && (question.slowCount || 0) > 0
-  ))
-  let wrongTarget = wrongQuestions.length
-    ? Math.round(weakTarget * GAME_CONFIG.WEAK_WRONG_RATIO)
-    : 0
-
-  if (!slowQuestions.length) {
-    wrongTarget = weakTarget
-  }
-
-  const slowTarget = slowQuestions.length ? weakTarget - wrongTarget : 0
+  const target = Math.ceil(questionCount * GAME_CONFIG.WEAK_QUESTION_RATIO)
+  const wrong = valid.filter((q) => (q.wrongCount || 0) > 0)
+  const slow = valid.filter((q) => (q.wrongCount || 0) <= 0 && (q.slowCount || 0) > 0)
+  const wrongTarget = !wrong.length ? 0 : !slow.length ? target : Math.round(target * GAME_CONFIG.WEAK_WRONG_RATIO)
   const sourcePlan = shuffle([
-    ...buildWeakSourcePlan(wrongQuestions, wrongTarget),
-    ...buildWeakSourcePlan(slowQuestions, slowTarget)
+    ...buildWeakSourcePlan(wrong, wrongTarget),
+    ...buildWeakSourcePlan(slow, target - wrongTarget)
   ])
-  const usedKeys = new Set()
-  const weakSelection = []
-
-  sourcePlan.forEach((source) => {
-    const sourceKey = getQuestionKey(source)
-    const reason = (source.wrongCount || 0) > 0 ? 'mistake' : 'slow'
-
-    if (!usedKeys.has(sourceKey)) {
-      usedKeys.add(sourceKey)
-      weakSelection.push({
-        ...toQuestionSnapshot(source),
-        isWeakReview: true,
-        weakReason: reason,
-        weakReviewKind: 'exact'
-      })
-      return
+  const candidatesBySkill = new Map()
+  valid.forEach((source) => {
+    const skill = getQuestionSkill(source)
+    if (!candidatesBySkill.has(skill)) {
+      candidatesBySkill.set(skill, plan.map(({ pool }) => pool.filter((q) => matchesWeakPattern(q, source))))
     }
-
-    const unusedCandidates = normalQuestions.filter((question) => !usedKeys.has(getQuestionKey(question)))
-    const variant = shuffle(unusedCandidates.filter((question) => (
-      matchesWeakPattern(question, source, true)
-    )))[0] || shuffle(unusedCandidates.filter((question) => (
-      matchesWeakPattern(question, source)
-    )))[0] || shuffle(normalQuestions.filter((question) => (
-      matchesWeakPattern(question, source)
-    )))[0] || shuffle(unusedCandidates)[0] || shuffle(normalQuestions)[0]
-
-    usedKeys.add(getQuestionKey(variant))
-    weakSelection.push({
-      ...toQuestionSnapshot(variant),
-      isWeakReview: true,
-      weakReason: reason,
-      weakReviewKind: 'variant'
-    })
   })
+  const slots = shuffle(normalQuestions.map((_, index) => index))
+  const assignments = new Map()
 
-  const normalTarget = Math.max(0, questionCount - weakSelection.length)
-  const remainingNormal = []
-  const normalKeys = new Set()
-
-  shuffle(normalQuestions).forEach((question) => {
-    const key = getQuestionKey(question)
-
-    if (remainingNormal.length >= normalTarget || usedKeys.has(key) || normalKeys.has(key)) {
-      return
+  // 必要时将已分配的来源挪到另一个兼容位置，避免占用其他能力唯一可用的配额。
+  function assignSource(source, visited = new Set()) {
+    const pools = candidatesBySkill.get(getQuestionSkill(source))
+    for (const index of slots) {
+      if (visited.has(index) || !pools[normalQuestions[index].samplingGroup]?.length) continue
+      visited.add(index)
+      if (!assignments.has(index) || assignSource(assignments.get(index), visited)) {
+        assignments.set(index, source)
+        return true
+      }
     }
-
-    normalKeys.add(key)
-    remainingNormal.push(question)
-  })
-
-  if (remainingNormal.length < normalTarget) {
-    const fallbackPool = normalQuestions.filter((question) => !usedKeys.has(getQuestionKey(question)))
-    remainingNormal.push(...sampleWithRepeats(
-      fallbackPool.length ? fallbackPool : normalQuestions,
-      normalTarget - remainingNormal.length
-    ))
+    return false
   }
 
-  return shuffle([...weakSelection, ...remainingNormal]).slice(0, questionCount)
+  sourcePlan.forEach((source) => assignSource(source))
+  while (assignments.size < target) {
+    let placed = false
+    for (const source of shuffle(valid)) {
+      if (assignSource(source)) placed = true
+      if (assignments.size >= target) break
+    }
+    if (!placed) break
+  }
+
+  const usedKeys = new Set()
+  const frequencies = new Map()
+  normalQuestions.forEach((question) => {
+    const key = getQuestionKey(question)
+    frequencies.set(key, (frequencies.get(key) || 0) + 1)
+  })
+  const maxCopies = Math.ceil(questionCount / 4)
+  function createReplacement(question, source) {
+    const originalKey = getQuestionKey(question)
+    const candidates = candidatesBySkill.get(getQuestionSkill(source))[question.samplingGroup].filter((q) => (
+      getQuestionKey(q) === originalKey || (frequencies.get(getQuestionKey(q)) || 0) < maxCopies
+    ))
+    if (!candidates.length) return null
+    const sourceKey = getQuestionKey(source)
+    const exact = candidates.find((q) => getQuestionKey(q) === sourceKey && !usedKeys.has(sourceKey))
+    const chosen = exact || shuffle(candidates.filter((q) => !usedKeys.has(getQuestionKey(q))))[0] || shuffle(candidates)[0]
+    const chosenKey = getQuestionKey(chosen)
+    usedKeys.add(chosenKey)
+    frequencies.set(originalKey, frequencies.get(originalKey) - 1)
+    frequencies.set(chosenKey, (frequencies.get(chosenKey) || 0) + 1)
+    return {
+      ...toQuestionSnapshot(chosen),
+      samplingGroup: question.samplingGroup,
+      isWeakReview: true,
+      weakReason: (source.wrongCount || 0) > 0 ? 'mistake' : 'slow',
+      weakReviewKind: chosenKey === sourceKey ? 'exact' : 'variant'
+    }
+  }
+  const result = normalQuestions.map((question, index) => (
+    assignments.has(index) ? createReplacement(question, assignments.get(index)) || question : question
+  ))
+  let weakCount = result.filter((question) => question.isWeakReview).length
+  let wrongCount = result.filter((question) => question.weakReason === 'mistake').length
+  for (const index of slots) {
+    if (weakCount >= target) break
+    if (result[index].isWeakReview) continue
+    const preferWrong = wrongCount < wrongTarget
+    const sources = shuffle(valid).sort((a, b) => (
+      Number(((b.wrongCount || 0) > 0) === preferWrong) - Number(((a.wrongCount || 0) > 0) === preferWrong)
+    ))
+    for (const source of sources) {
+      if (!candidatesBySkill.get(getQuestionSkill(source))[result[index].samplingGroup]?.length) continue
+      const replacement = createReplacement(result[index], source)
+      if (!replacement) continue
+      result[index] = replacement
+      weakCount++
+      if (replacement.weakReason === 'mistake') wrongCount++
+      break
+    }
+  }
+  return result
+}
+
+/**
+ * 优先安排剩余次数较多的题，同题先尝试隔开三道，题池不足时逐步缩短间隔。
+ * @param {Array} questions - 已完成配额和薄弱题混合的题目
+ * @returns {Array} 保留原题目及统计标记的作答顺序
+ */
+function spaceRepeatedQuestions(questions) {
+  const groups = new Map()
+  shuffle(questions).forEach((question) => {
+    const key = getQuestionKey(question)
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key).push(question)
+  })
+
+  for (let gap = 3; gap >= 0; gap--) {
+    const remaining = [...groups.values()].map((items) => ({ items: [...items], lastIndex: -Infinity }))
+    const ordered = []
+    while (ordered.length < questions.length) {
+      const available = remaining.filter((group) => group.items.length && ordered.length - group.lastIndex > gap)
+      if (!available.length) break
+      available.sort((a, b) => b.items.length - a.items.length)
+      const group = available[0]
+      group.lastIndex = ordered.length
+      ordered.push(group.items.pop())
+    }
+    if (ordered.length === questions.length) return ordered
+  }
+  return []
 }
 
 /**
@@ -436,9 +473,10 @@ function sampleWithRepeats(pool, count) {
  * @param {Array} questions - 题型桶题目
  * @param {number} count - 目标数量
  * @param {Set<string>} usedKeys - 已使用题目
+ * @param {number} samplingGroup - 本轮教学配额索引
  * @returns {Array} 抽取后的题目
  */
-function selectFromBucket(questions, count, usedKeys) {
+function selectFromBucket(questions, count, usedKeys, samplingGroup) {
   const picked = []
 
   shuffle(questions).forEach((question) => {
@@ -456,7 +494,7 @@ function selectFromBucket(questions, count, usedKeys) {
     picked.push(...sampleWithRepeats(questions, count - picked.length))
   }
 
-  return picked
+  return picked.map((question) => ({ ...question, samplingGroup }))
 }
 
 /**
@@ -489,6 +527,28 @@ function createWithinTenMixedBuckets() {
       'split'
     )
   }
+}
+
+/**
+ * 用多种提问方式练习十的组成，入门先练右侧补数，复习再加入左侧缺项。
+ * @param {string} stage - 组成或凑十复习阶段
+ * @returns {Object} 非零十组成题型桶
+ */
+function createTenBondBuckets(stage) {
+  const missingPool = createMissingAdditionPool(1, 10, true).filter((q) => (
+    q.result === 10 && q.operand1 >= 1 && q.operand2 >= 1
+  ))
+  const buckets = {
+    bondDirect: addMixBucket(createAdditionPool(1, 9).filter((q) => q.answer === 10), 'bondDirect'),
+    bondGap: addMixBucket(missingPool.filter((q) => q.missingPart === 'operand2'), 'bondGap'),
+    bondSubtract: addMixBucket(createSubtractionPool(1, 10).filter((q) => (
+      q.operand1 === 10 && q.operand2 < 10
+    )), 'bondSubtract')
+  }
+  if (stage === 'makeTenBridge') {
+    buckets.bondSplit = addMixBucket(missingPool.filter((q) => q.missingPart === 'operand1'), 'bondSplit')
+  }
+  return buckets
 }
 
 /**
@@ -551,52 +611,13 @@ function createWithinTwentyAdvancedBuckets() {
 }
 
 /**
- * 从分段规则中抽取题目
- * @param {Array} pool - 候选题池
- * @param {Array} segments - 分段配置
- * @param {number} questionCount - 题目数量
- * @returns {Array} 抽取后的题目
+ * 按教学配额抽题，并保留每道题可被替换的范围。
+ * @param {Array} plan - 包含题池、数量的教学配额
+ * @returns {Array} 基础题目
  */
-function selectBySegments(pool, segments, questionCount) {
-  const selected = []
+function selectFromPlan(plan) {
   const usedKeys = new Set()
-
-  segments.forEach(({ count, predicate }) => {
-    if (count <= 0) {
-      return
-    }
-
-    const uniqueCandidates = shuffle(pool.filter((question) => predicate(question)))
-      .filter((question) => !usedKeys.has(getQuestionKey(question)))
-      .slice(0, count)
-
-    uniqueCandidates.forEach((question) => {
-      selected.push(question)
-      usedKeys.add(getQuestionKey(question))
-    })
-
-    if (uniqueCandidates.length < count) {
-      const needed = count - uniqueCandidates.length
-      const repeatedCandidates = sampleWithRepeats(pool.filter((question) => predicate(question)), needed)
-      selected.push(...repeatedCandidates)
-    }
-  })
-
-  if (selected.length < questionCount) {
-    const fallbackPool = shuffle(pool).filter((question) => !usedKeys.has(getQuestionKey(question)))
-    const fallbackUnique = fallbackPool.slice(0, questionCount - selected.length)
-
-    fallbackUnique.forEach((question) => {
-      selected.push(question)
-      usedKeys.add(getQuestionKey(question))
-    })
-  }
-
-  if (selected.length < questionCount) {
-    selected.push(...sampleWithRepeats(pool, questionCount - selected.length))
-  }
-
-  return shuffle(selected).slice(0, questionCount)
+  return plan.flatMap(({ pool, count }, index) => selectFromBucket(pool, count, usedKeys, index))
 }
 
 /**
@@ -655,9 +676,9 @@ function getStageSegments(difficulty) {
 
     case 'pairsWithinFive':
       return [
-        { count: warmupCount, predicate: (q) => q.operand1 === q.operand2 && q.answer <= 6 },
+        { count: warmupCount, predicate: (q) => q.operand1 === q.operand2 && q.answer <= 5 },
         { count: coreCount, predicate: (q) => q.answer === 5 },
-        { count: challengeCount, predicate: (q) => Math.abs(q.operand1 - q.operand2) <= 1 && q.answer <= 6 }
+        { count: challengeCount, predicate: (q) => Math.abs(q.operand1 - q.operand2) <= 1 && q.answer <= 5 }
       ]
 
     case 'splitWithinFive':
@@ -739,13 +760,6 @@ function getStageSegments(difficulty) {
         { count: challengeCount, predicate: (q) => q.operand1 <= 10 && q.operand2 <= 4 && q.answer >= 3 }
       ]
 
-    case 'makeTen':
-      return [
-        { count: warmupCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 1 },
-        { count: coreCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 3 },
-        { count: challengeCount, predicate: (q) => q.answer === 10 }
-      ]
-
     case 'splitWithinTen':
       return [
         {
@@ -820,9 +834,9 @@ function getStageSegments(difficulty) {
 
     case 'withinTenSubtract':
       return [
-        { count: warmupCount, predicate: (q) => q.operand1 <= 7 && q.operand2 <= 2 && q.answer >= 1 },
-        { count: coreCount, predicate: (q) => q.operand1 <= 9 && q.operand2 <= 3 && q.answer >= 2 },
-        { count: challengeCount, predicate: (q) => q.operand1 <= 10 && q.operand2 <= 5 && q.answer >= 2 }
+        { count: warmupCount, predicate: (q) => q.operand2 <= 2 },
+        { count: coreCount, predicate: (q) => q.operand2 >= 3 && q.operand2 <= 5 },
+        { count: challengeCount, predicate: (q) => q.operand2 >= 6 }
       ]
 
     case 'teenAdd':
@@ -830,42 +844,35 @@ function getStageSegments(difficulty) {
         {
           count: warmupCount,
           predicate: (q) => (
-            (q.operand1 === 10 || q.operand2 === 10) &&
-            Math.min(q.operand1, q.operand2) <= 1
+            Math.max(q.operand1, q.operand2) >= 10 &&
+            Math.max(q.operand1, q.operand2) <= 14 &&
+            Math.min(q.operand1, q.operand2) <= 2 && q.answer <= 15
           )
         },
         {
           count: coreCount,
           predicate: (q) => (
             (q.operand1 >= 10 || q.operand2 >= 10) &&
-            Math.min(q.operand1, q.operand2) <= 2 &&
-            Math.max(q.operand1, q.operand2) <= 11 &&
-            q.answer <= 13
+            Math.min(q.operand1, q.operand2) <= 5 &&
+            q.answer <= 20
           )
         },
         {
           count: challengeCount,
           predicate: (q) => (
             (q.operand1 >= 10 || q.operand2 >= 10) &&
-            Math.min(q.operand1, q.operand2) <= 3 &&
-            Math.max(q.operand1, q.operand2) <= 12 &&
-            q.answer <= 15
+            Math.min(q.operand1, q.operand2) >= 6 &&
+            Math.min(q.operand1, q.operand2) <= 9 &&
+            q.answer <= 20
           )
         }
       ]
 
     case 'teenSubtract':
       return [
-        { count: warmupCount, predicate: (q) => q.operand1 <= 11 && q.operand2 <= 1 && q.answer >= 10 },
-        { count: coreCount, predicate: (q) => q.operand1 <= 12 && q.operand2 <= 2 && q.answer >= 10 },
-        { count: challengeCount, predicate: (q) => q.operand1 <= 13 && q.operand2 <= 3 && q.answer >= 10 }
-      ]
-
-    case 'makeTenBridge':
-      return [
-        { count: warmupCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 2 && Math.min(q.operand1, q.operand2) >= 1 },
-        { count: coreCount, predicate: (q) => q.answer === 10 && Math.min(q.operand1, q.operand2) <= 4 && Math.min(q.operand1, q.operand2) >= 1 },
-        { count: challengeCount, predicate: (q) => q.answer === 10 && q.operand1 >= 1 && q.operand2 >= 1 }
+        { count: warmupCount, predicate: (q) => q.operand1 <= 19 && q.operand2 >= 1 && q.operand2 <= 2 && q.answer >= 10 },
+        { count: coreCount, predicate: (q) => q.operand1 <= 19 && q.operand2 >= 3 && q.operand2 <= 5 && q.answer >= 10 },
+        { count: challengeCount, predicate: (q) => q.operand1 <= 19 && q.operand2 >= 6 && q.operand2 <= 9 && q.answer >= 10 }
       ]
 
     case 'bridgeTenAdd':
@@ -876,8 +883,8 @@ function getStageSegments(difficulty) {
             q.operand1 < 10 &&
             q.operand2 < 10 &&
             q.answer > 10 &&
-            Math.min(q.operand1, q.operand2) <= 2 &&
-            q.answer <= 11
+            Math.min(q.operand1, q.operand2) <= 3 &&
+            q.answer <= 12
           )
         },
         {
@@ -886,8 +893,8 @@ function getStageSegments(difficulty) {
             q.operand1 < 10 &&
             q.operand2 < 10 &&
             q.answer > 10 &&
-            Math.min(q.operand1, q.operand2) <= 3 &&
-            q.answer <= 13
+            Math.min(q.operand1, q.operand2) <= 6 &&
+            q.answer <= 15
           )
         },
         {
@@ -896,8 +903,8 @@ function getStageSegments(difficulty) {
             q.operand1 < 10 &&
             q.operand2 < 10 &&
             q.answer > 10 &&
-            Math.min(q.operand1, q.operand2) <= 5 &&
-            q.answer <= 15
+            Math.min(q.operand1, q.operand2) >= 6 &&
+            q.answer <= 18
           )
         }
       ]
@@ -914,28 +921,28 @@ function getStageSegments(difficulty) {
         {
           count: warmupCount,
           predicate: (q) => (
-            q.operand1 >= 10 &&
+            q.operand1 >= 11 &&
             q.answer < 10 &&
-            q.operand2 <= 2 &&
-            q.operand1 <= 12
+            q.operand2 <= 5 &&
+            q.operand1 <= 14
           )
         },
         {
           count: coreCount,
           predicate: (q) => (
-            q.operand1 >= 10 &&
+            q.operand1 >= 11 &&
             q.answer < 10 &&
-            q.operand2 <= 4 &&
-            q.operand1 <= 14
+            q.operand2 <= 7 &&
+            q.operand1 <= 16
           )
         },
         {
           count: challengeCount,
           predicate: (q) => (
-            q.operand1 >= 10 &&
+            q.operand1 >= 11 &&
             q.answer < 10 &&
-            q.operand2 <= 5 &&
-            q.operand1 <= 16
+            q.operand2 >= 8 && q.operand2 <= 9 &&
+            q.operand1 <= 18
           )
         }
       ]
@@ -1000,50 +1007,91 @@ function getStageSegments(difficulty) {
 }
 
 /**
- * 生成综合关题目
+ * 构建十组成和综合关的教学配额
  * @param {string} stage - 当前阶段
  * @param {number} questionCount - 题量
- * @returns {Array|null} 综合关题目或空
+ * @returns {Array|null} 教学配额或空
  */
-function selectCapstoneQuestions(stage, questionCount) {
-  const usedKeys = new Set()
+function getSpecialSamplingPlan(stage, questionCount) {
+  if (stage === 'makeTen' || stage === 'makeTenBridge') {
+    const buckets = createTenBondBuckets(stage)
+    const directCount = Math.floor(questionCount * 0.2)
+    const subtractCount = Math.floor(questionCount * 0.2)
+    const splitCount = stage === 'makeTenBridge' ? Math.floor(questionCount * 0.2) : 0
+    const gapCount = questionCount - directCount - subtractCount - splitCount
+    return [
+      { pool: buckets.bondDirect, count: directCount },
+      { pool: buckets.bondGap, count: gapCount },
+      { pool: buckets.bondSubtract, count: subtractCount },
+      { pool: buckets.bondSplit || [], count: splitCount }
+    ]
+  }
 
   if (stage === 'withinTenMixed') {
     const buckets = createWithinTenMixedBuckets()
 
-    return shuffle([
-      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 6 || q.operand2 <= 2), 6, usedKeys),
-      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 9 || q.operand2 <= 4), 5, usedKeys),
-      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 10), 5, usedKeys),
-      ...selectFromBucket(buckets.gap.filter((q) => q.result <= 6), 3, usedKeys),
-      ...selectFromBucket(buckets.gap.filter((q) => q.result <= 8), 3, usedKeys),
-      ...selectFromBucket(buckets.gap.filter((q) => q.result <= 10), 2, usedKeys),
-      ...selectFromBucket(buckets.split.filter((q) => q.result <= 6), 3, usedKeys),
-      ...selectFromBucket(buckets.split.filter((q) => q.result <= 8), 3, usedKeys),
-      ...selectFromBucket(buckets.split.filter((q) => q.result <= 10), 2, usedKeys)
-    ]).slice(0, questionCount)
+    return [
+      { pool: buckets.direct.filter((q) => q.answer <= 6 || q.operand2 <= 2), count: 6 },
+      { pool: buckets.direct.filter((q) => q.answer <= 9 || q.operand2 <= 4), count: 5 },
+      { pool: buckets.direct.filter((q) => q.answer <= 10), count: 5 },
+      { pool: buckets.gap.filter((q) => q.result <= 6), count: 3 },
+      { pool: buckets.gap.filter((q) => q.result <= 8), count: 3 },
+      { pool: buckets.gap.filter((q) => q.result <= 10), count: 2 },
+      { pool: buckets.split.filter((q) => q.result <= 6), count: 3 },
+      { pool: buckets.split.filter((q) => q.result <= 8), count: 3 },
+      { pool: buckets.split.filter((q) => q.result <= 10), count: 2 }
+    ]
   }
 
   if (stage === 'withinTwentyMixedAdvanced') {
     const buckets = createWithinTwentyAdvancedBuckets()
 
-    return shuffle([
-      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 12), 6, usedKeys),
-      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 16), 6, usedKeys),
-      ...selectFromBucket(buckets.direct.filter((q) => q.answer <= 20), 4, usedKeys),
-      ...selectFromBucket(buckets.bridge.filter((q) => q.answer <= 12), 3, usedKeys),
-      ...selectFromBucket(buckets.bridge.filter((q) => q.answer <= 16), 4, usedKeys),
-      ...selectFromBucket(buckets.bridge.filter((q) => q.answer <= 20), 3, usedKeys),
-      ...selectFromBucket(buckets.blank.filter((q) => q.result <= 12), 3, usedKeys),
-      ...selectFromBucket(buckets.blank.filter((q) => q.result <= 16), 3, usedKeys),
-      ...selectFromBucket(buckets.blank.filter((q) => q.result <= 20), 2, usedKeys),
-      ...selectFromBucket(buckets.bond.filter((q) => Math.min(q.operand1, q.operand2) <= 2), 2, usedKeys),
-      ...selectFromBucket(buckets.bond.filter((q) => Math.min(q.operand1, q.operand2) <= 4), 2, usedKeys),
-      ...selectFromBucket(buckets.bond, 2, usedKeys)
-    ]).slice(0, questionCount)
+    return [
+      { pool: buckets.direct.filter((q) => q.answer <= 12), count: 6 },
+      { pool: buckets.direct.filter((q) => q.answer <= 16), count: 6 },
+      { pool: buckets.direct.filter((q) => q.answer <= 20), count: 4 },
+      { pool: buckets.bridge.filter((q) => q.answer <= 12), count: 3 },
+      { pool: buckets.bridge.filter((q) => q.answer <= 16), count: 4 },
+      { pool: buckets.bridge.filter((q) => q.answer <= 20), count: 3 },
+      { pool: buckets.blank.filter((q) => q.result <= 12), count: 3 },
+      { pool: buckets.blank.filter((q) => q.result <= 16), count: 3 },
+      { pool: buckets.blank.filter((q) => q.result <= 20), count: 2 },
+      { pool: buckets.bond.filter((q) => Math.min(q.operand1, q.operand2) <= 2), count: 2 },
+      { pool: buckets.bond.filter((q) => Math.min(q.operand1, q.operand2) <= 4), count: 2 },
+      { pool: buckets.bond, count: 2 }
+    ]
   }
 
   return null
+}
+
+/**
+ * 构建关卡完整有效题池，同时约束新题和旧薄弱记录的范围与教学阶段。
+ * @param {Object} difficulty - 难度配置
+ * @returns {Array} 当前关卡允许出现的题目
+ */
+function createStageQuestionPool(difficulty) {
+  const { stage, operation, range } = difficulty
+  const [min, max] = range
+  let pool
+  if (stage === 'makeTen' || stage === 'makeTenBridge') {
+    pool = Object.values(createTenBondBuckets(stage)).flat()
+  } else if (stage === 'withinTenMixed') {
+    pool = Object.values(createWithinTenMixedBuckets()).flat()
+  } else if (stage === 'withinTwentyMixedAdvanced') {
+    pool = Object.values(createWithinTwentyAdvancedBuckets()).flat()
+  } else {
+    const segments = getStageSegments(difficulty)
+    pool = createQuestionPool(operation, min, max)
+      .filter((question) => segments.some(({ predicate }) => predicate(question)))
+  }
+
+  return pool.filter((question) => {
+    const result = question.operator === '+'
+      ? question.operand1 + question.operand2
+      : question.operand1 - question.operand2
+    return result >= min && result <= max
+  })
 }
 
 /**
@@ -1055,11 +1103,14 @@ function selectCapstoneQuestions(stage, questionCount) {
 export function prepareQuestion(question, index) {
   return {
     ...question,
+    skillId: getQuestionSkill(question),
     result: typeof question.result === 'number' ? question.result : question.answer,
     missingPart: question.missingPart || 'answer',
     id: index + 1,
     userAnswer: null,
-    isCorrect: null
+    isCorrect: null,
+    usedHint: false,
+    wasInterrupted: false
   }
 }
 
@@ -1076,25 +1127,23 @@ export function generateQuestions(difficulty, options = {}) {
     return []
   }
 
-  const { range, operation, questionCount, stage } = difficulty
-  const capstoneQuestions = selectCapstoneQuestions(stage, questionCount)
+  const { questionCount, stage } = difficulty
+  const pool = createStageQuestionPool(difficulty)
+  if (!pool.length) return []
+
+  const eligibleKeys = new Set(pool.map(getQuestionKey))
+  const plan = getSpecialSamplingPlan(stage, questionCount) || getStageSegments(difficulty)
+    .map(({ count, predicate }) => ({ count, pool: pool.filter(predicate) }))
+  let remainingCount = questionCount
+  plan.forEach((group) => {
+    group.pool = group.pool.filter((question) => eligibleKeys.has(getQuestionKey(question)))
+    group.count = Math.min(group.count, remainingCount)
+    remainingCount -= group.count
+  })
   const weakQuestions = Array.isArray(options.weakQuestions) ? options.weakQuestions : []
+  const questions = selectFromPlan(plan)
 
-  if (capstoneQuestions) {
-    return mixWeakQuestions(capstoneQuestions, weakQuestions, questionCount)
-      .map((question, index) => prepareQuestion(question, index))
-  }
-
-  const [min, max] = range
-  const pool = createQuestionPool(operation, min, max)
-
-  if (!pool.length) {
-    return []
-  }
-
-  const questions = selectBySegments(pool, getStageSegments(difficulty), questionCount)
-
-  return mixWeakQuestions(questions, weakQuestions, questionCount)
+  return spaceRepeatedQuestions(mixWeakQuestions(questions, weakQuestions, questionCount, plan))
     .map((question, index) => prepareQuestion(question, index))
 }
 

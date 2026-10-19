@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- 增加内部能力分类、逐能力速度基线，以及小球使用和作答中断记录；前后台切换扣除后台停留时间
 - Added per-question response tracking and automatic 50% weak-question review inside normal levels, balancing mistakes and slow answers without a separate practice entry
 - Added keyboard and screen-reader coverage for level selection, feedback, result dialogs, number exploration, and PWA updates
 - Added component and E2E regressions for keyboard selection, modal focus management, and wrong-answer continuation
@@ -33,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 自适应复习改为在原教学配额内安排同能力题，目标 50%，受配额与重复约束时降低比例；辅助或中断作答不作为独立快速掌握证据
+- 将两关十组成练习改为补数、加法与减法混合提问，扩展十几加减、凑十和破十的关键算式覆盖，并优先隔开重复题
 - Renamed the product to “数感闯关儿童数学启蒙训练软件” (short name: “数感闯关”) and aligned the app, PWA, browser title, package name, and active documentation
 - Simplified the home page to one short entrance transition, clearer primary/secondary actions, lighter panels, and safe-area-aware spacing
 - Unified child-facing copy around the “算一算” name, level progression, answer feedback, mistake review, and number exploration
@@ -88,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- 修复 5 以内关卡出现超范围加法、相等加数缺少右侧缺项的问题，过滤不符合当前关卡规则的历史薄弱题
 - Fixed completed-progress, failed-level, mistake-review, and challenge-status copy so each label matches the underlying state
 - Fixed the development server host policy by removing unrestricted host acceptance
 - Fixed non-semantic card interaction, unannounced async feedback, and inaccessible modal background focus

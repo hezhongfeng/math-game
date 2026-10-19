@@ -30,4 +30,9 @@ describe('difficulty config', () => {
 
     expect(flattened).toEqual(Array.from({ length: TOTAL_LEVELS }, (_, index) => index + 1))
   })
+
+  test('ten-bond levels use mixed questions while retaining their existing progression', () => {
+    expect(getDifficultyById(12)).toMatchObject({ operation: 'mixed', stage: 'makeTen', range: [0, 10], questionCount: 30 })
+    expect(getDifficultyById(20)).toMatchObject({ operation: 'mixed', stage: 'makeTenBridge', range: [0, 10], questionCount: 32 })
+  })
 })

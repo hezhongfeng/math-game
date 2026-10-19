@@ -107,6 +107,17 @@ const currentQuestionHasNumberBondHint = computed(() => {
   return ballCount > 0
 })
 
+function recordHintUsage() {
+  if (showNumberBondHint.value && currentQuestionHasNumberBondHint.value && !document.hidden) game.markHintUsed()
+}
+
+watch([currentQuestion, showNumberBondHint], recordHintUsage, { flush: 'sync' })
+
+function handleVisibilityChange() {
+  game.setPageHidden(Boolean(document.hidden))
+  recordHintUsage()
+}
+
 function loadNumberBondHintSetting() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.NUMBER_BOND_HINT)
@@ -407,12 +418,15 @@ function handleKeyPress(event) {
 onMounted(() => {
   window.scrollTo(0, 0)
   loadNumberBondHintSetting()
+  game.setPageHidden(Boolean(document.hidden))
   initGame()
   window.addEventListener('keydown', handleKeyPress)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyPress)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
   stopPraise()
 
   if (feedbackTimeout) {

@@ -185,4 +185,79 @@ describe('useGame', () => {
     startGame()
     expect(questions.value).toHaveLength(20)
   })
+
+  test('excludes repeated background intervals from question and round time', () => {
+    const game = useGame(mockDifficulty)
+    game.startGame({ questions: [{ operand1: 8, operand2: 5, operator: '+', answer: 13 }] })
+    vi.advanceTimersByTime(2000)
+    game.setPageHidden(true)
+    vi.advanceTimersByTime(60000)
+    game.setPageHidden(true)
+    vi.advanceTimersByTime(30000)
+    expect(game.durationMs.value).toBe(2000)
+    game.setPageHidden(false)
+    vi.advanceTimersByTime(1000)
+    game.setPageHidden(true)
+    vi.advanceTimersByTime(50000)
+    game.setPageHidden(false)
+    game.submitAnswer(13)
+    game.completeGame()
+    expect(game.getResult()).toMatchObject({ duration: 3, durationMs: 3000 })
+    expect(game.getResult().questionResults[0]).toMatchObject({
+      answerDurationMs: 3000, wasInterrupted: true, usedHint: false, skillId: 'within20:bridge-add'
+    })
+  })
+
+  test('records hints used before answering and resets flags on the next question or restart', () => {
+    const questions = [
+      { operand1: 2, operand2: 3, operator: '+', answer: 5 },
+      { operand1: 4, operand2: 2, operator: '-', answer: 2 }
+    ]
+    const game = useGame(mockDifficulty)
+    game.startGame({ questions })
+    game.markHintUsed()
+    vi.advanceTimersByTime(1000)
+    game.submitAnswer(5)
+    game.nextQuestion()
+    vi.advanceTimersByTime(1000)
+    game.submitAnswer(2)
+    expect(game.questionResults.value.map((q) => q.usedHint)).toEqual([true, false])
+    game.startGame({ questions: game.questions.value })
+    expect(game.currentQuestion.value.usedHint).toBe(false)
+    expect(game.currentQuestion.value.wasInterrupted).toBe(false)
+  })
+
+  test('starts a background-switched question paused and keeps answered hints immutable', () => {
+    const game = useGame(mockDifficulty)
+    game.startGame({ questions: [
+      { operand1: 2, operand2: 3, operator: '+', answer: 5 },
+      { operand1: 4, operand2: 2, operator: '-', answer: 2 }
+    ] })
+    vi.advanceTimersByTime(1000)
+    game.submitAnswer(5)
+    game.markHintUsed()
+    game.setPageHidden(true)
+    vi.advanceTimersByTime(5000)
+    game.nextQuestion()
+    vi.advanceTimersByTime(30000)
+    game.markHintUsed()
+    game.setPageHidden(false)
+    vi.advanceTimersByTime(2000)
+    game.submitAnswer(2)
+    game.completeGame()
+    expect(game.getResult().durationMs).toBe(3000)
+    expect(game.questionResults.value).toEqual([
+      expect.objectContaining({ usedHint: false, wasInterrupted: false, answerDurationMs: 1000 }),
+      expect.objectContaining({ usedHint: false, wasInterrupted: true, answerDurationMs: 2000 })
+    ])
+  })
+
+  test('does not record the same answer twice', () => {
+    const game = useGame(mockDifficulty)
+    game.startGame({ questions: [{ operand1: 2, operand2: 3, operator: '+', answer: 5 }] })
+    game.submitAnswer(5)
+    game.submitAnswer(5)
+    expect(game.questionResults.value).toHaveLength(1)
+    expect(game.score.value).toBe(10)
+  })
 })
