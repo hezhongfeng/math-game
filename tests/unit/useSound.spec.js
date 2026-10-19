@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 import { getResultPraiseKey, getResultPraiseText } from '../../src/composables/useSound'
 
 describe('useSound result praise', () => {
@@ -78,10 +79,14 @@ function createMockAudioContext(initialState = 'running', options = {}) {
       start: vi.fn(),
       stop: vi.fn()
     })),
-    decodeAudioData: vi.fn(async () => ({})),
+    createBufferSource: vi.fn(() => ({ connect: vi.fn(), start: vi.fn(), stop: vi.fn(), onended: null })),
+    decodeAudioData: vi.fn(async () => ({ duration: 1 })),
+    close: vi.fn(async () => { ctx.state = 'closed' }),
     resume: vi.fn(() => {
-      ctx.state = 'running'
-      return resumePromise
+      if (options.resumeError) return Promise.reject(options.resumeError)
+      return resumePromise.then(() => {
+        if (ctx.state !== 'closed' && !options.stayInterrupted) ctx.state = 'running'
+      })
     })
   }
 
@@ -100,9 +105,12 @@ async function loadSoundModule(initialState = 'running', options = {}) {
 
   const { ctx: mockContext, resolveResume } = createMockAudioContext(initialState, options)
 
+  const createdContexts = []
   class MockAudioContext {
     constructor() {
-      return mockContext
+      const context = createdContexts.length === 0 ? mockContext : createMockAudioContext('running').ctx
+      createdContexts.push(context)
+      return context
     }
   }
 
@@ -124,26 +132,214 @@ async function loadSoundModule(initialState = 'running', options = {}) {
 
   return {
     mockContext,
+    createdContexts,
     resolveResume,
     soundModule: await import('../../src/composables/useSound')
   }
 }
 
+const registeredListeners = []
+const soundWrappers = []
+
+beforeEach(() => {
+  Object.defineProperty(document, 'hidden', { configurable: true, value: false })
+  for (const target of [document, window]) {
+    const add = target.addEventListener.bind(target)
+    vi.spyOn(target, 'addEventListener').mockImplementation((event, handler, options) => {
+      registeredListeners.push({ target, event, handler, options })
+      add(event, handler, options)
+    })
+  }
+})
+
 afterEach(() => {
+  soundWrappers.splice(0).forEach((wrapper) => wrapper.unmount())
+  registeredListeners.splice(0).forEach(({ target, event, handler, options }) => {
+    target.removeEventListener(event, handler, options)
+  })
+  vi.useRealTimers()
   vi.restoreAllMocks()
   vi.resetModules()
+  delete document.hidden
   delete window.AudioContext
   delete window.webkitAudioContext
   delete window.fetch
 })
 
+function setPageHidden(hidden) {
+  Object.defineProperty(document, 'hidden', { configurable: true, value: hidden })
+  document.dispatchEvent(new Event('visibilitychange'))
+}
+
 describe('useSound audio interruption recovery', () => {
+  test('rebuilds a seemingly running context before the first foreground button handler', async () => {
+    const { mockContext, createdContexts, soundModule } = await loadSoundModule()
+    soundModule.initAudio()
+    setPageHidden(true)
+    soundModule.playKeyPress()
+    setPageHidden(false)
+    expect(createdContexts).toHaveLength(1)
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
+
+    const button = document.createElement('button')
+    button.addEventListener('click', (event) => {
+      event.stopPropagation()
+      soundModule.playKeyPress()
+    })
+    document.body.append(button)
+    try {
+      button.click()
+      expect(createdContexts).toHaveLength(2)
+      expect(mockContext.close).toHaveBeenCalledTimes(1)
+      expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+      button.click()
+      expect(createdContexts).toHaveLength(2)
+    } finally {
+      button.remove()
+    }
+  })
+
+  test('bounds a hanging resume and discards its delayed feedback after recovery', async () => {
+    vi.useFakeTimers()
+    const { mockContext, createdContexts, resolveResume, soundModule } = await loadSoundModule('interrupted')
+    soundModule.playKeyPress()
+    await vi.advanceTimersByTimeAsync(801)
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
+
+    document.dispatchEvent(new Event('click'))
+    soundModule.playClick()
+    expect(createdContexts).toHaveLength(2)
+    expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+    resolveResume()
+    await vi.advanceTimersByTimeAsync(1)
+    expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
+    expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+  })
+
+  test('retries within a gesture if resume resolves without actually running', async () => {
+    const { createdContexts, resolveResume, soundModule } = await loadSoundModule('interrupted', { stayInterrupted: true })
+    soundModule.playKeyPress()
+    resolveResume()
+    await flushPromises()
+    expect(createdContexts[0].createOscillator).toHaveBeenCalledTimes(1)
+    document.dispatchEvent(new Event('touchend'))
+    soundModule.playKeyPress()
+    expect(createdContexts).toHaveLength(2)
+    expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+  })
+
+  test('recovers on the next gesture after a rejected resume', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const { createdContexts, soundModule } = await loadSoundModule('interrupted', { resumeError: new Error('interrupted') })
+    soundModule.playKeyPress()
+    await flushPromises()
+    document.dispatchEvent(new Event('click'))
+    soundModule.playClick()
+    expect(createdContexts).toHaveLength(2)
+    expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+  })
+
+  test('keeps recovery pending when recreating the audio device fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const { createdContexts, soundModule } = await loadSoundModule()
+    soundModule.initAudio()
+    const AudioContext = window.AudioContext
+    window.AudioContext = class { constructor() { throw new Error('device unavailable') } }
+    setPageHidden(true)
+    setPageHidden(false)
+    expect(() => document.dispatchEvent(new Event('click'))).not.toThrow()
+    soundModule.playKeyPress()
+    expect(createdContexts).toHaveLength(1)
+
+    window.AudioContext = AudioContext
+    document.dispatchEvent(new Event('click'))
+    soundModule.playKeyPress()
+    expect(createdContexts).toHaveLength(2)
+    expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+  })
+
+  test('rebuilds once per background cycle across touchend and click events', async () => {
+    const { createdContexts, soundModule } = await loadSoundModule()
+    soundModule.initAudio()
+    for (let cycle = 0; cycle < 3; cycle += 1) {
+      setPageHidden(true)
+      setPageHidden(false)
+      document.dispatchEvent(new Event('touchend'))
+      document.dispatchEvent(new Event('click'))
+      soundModule.playKeyPress()
+      expect(createdContexts).toHaveLength(cycle + 2)
+      expect(createdContexts[cycle].close).toHaveBeenCalledTimes(1)
+      expect(createdContexts[cycle + 1].createOscillator).toHaveBeenCalledTimes(2)
+    }
+  })
+
+  test('recovers after pagehide and a cached pageshow without visibilitychange', async () => {
+    const { createdContexts, soundModule } = await loadSoundModule()
+    soundModule.initAudio()
+    window.dispatchEvent(new Event('pagehide'))
+    const pageShow = new Event('pageshow')
+    Object.defineProperty(pageShow, 'persisted', { value: true })
+    window.dispatchEvent(pageShow)
+    document.dispatchEvent(new Event('click'))
+    soundModule.playKeyPress()
+    expect(createdContexts).toHaveLength(2)
+    expect(createdContexts[1].createOscillator).toHaveBeenCalledTimes(2)
+  })
+
+  test('retains shared recovery handlers until the last consumer unmounts', async () => {
+    const { createdContexts, soundModule } = await loadSoundModule()
+    const Consumer = { setup() { soundModule.useSound(); return () => null } }
+    const first = mount(Consumer)
+    const second = mount(Consumer)
+    soundWrappers.push(first, second)
+    first.unmount()
+    setPageHidden(true)
+    setPageHidden(false)
+    document.dispatchEvent(new Event('click'))
+    expect(createdContexts).toHaveLength(2)
+    second.unmount()
+    setPageHidden(true)
+    setPageHidden(false)
+    document.dispatchEvent(new Event('click'))
+    expect(createdContexts).toHaveLength(2)
+  })
+
+  test('discards delayed praise while keeping decoded audio reusable after unlocking', async () => {
+    const { createdContexts, soundModule } = await loadSoundModule()
+    soundModule.initAudio()
+    let finishDownload
+    const downloaded = new Promise((resolve) => { finishDownload = resolve })
+    window.fetch = vi.fn(async () => ({ ok: true, arrayBuffer: () => downloaded }))
+    soundModule.playResultPraise({ accuracy: 100 })
+    await flushPromises()
+    setPageHidden(true)
+    setPageHidden(false)
+    document.dispatchEvent(new Event('click'))
+    finishDownload(new ArrayBuffer(8))
+    await flushPromises()
+    expect(createdContexts[0].createBufferSource).not.toHaveBeenCalled()
+    expect(createdContexts[1].createBufferSource).not.toHaveBeenCalled()
+
+    soundModule.playResultPraise({ accuracy: 100 })
+    await flushPromises()
+    expect(createdContexts[1].createBufferSource).toHaveBeenCalledTimes(1)
+    const downloadCount = window.fetch.mock.calls.length
+    setPageHidden(true)
+    expect(createdContexts[1].createBufferSource.mock.results[0].value.stop).toHaveBeenCalledTimes(1)
+    setPageHidden(false)
+    document.dispatchEvent(new Event('click'))
+    soundModule.playResultPraise({ accuracy: 100 })
+    await flushPromises()
+    expect(createdContexts[2].createBufferSource).toHaveBeenCalledTimes(1)
+    expect(window.fetch).toHaveBeenCalledTimes(downloadCount)
+  })
+
   test('resumes interrupted audio context when playing a sound after foregrounding', async () => {
     const { mockContext, resolveResume, soundModule } = await loadSoundModule('interrupted')
 
     soundModule.playClick()
     resolveResume()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
@@ -157,8 +353,7 @@ describe('useSound audio interruption recovery', () => {
     expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
 
     resolveResume()
-    await Promise.resolve()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(mockContext.createOscillator).toHaveBeenCalledTimes(2)
   })
@@ -175,8 +370,7 @@ describe('useSound audio interruption recovery', () => {
     expect(mockContext.createOscillator).toHaveBeenCalledTimes(1)
 
     resolveResume()
-    await Promise.resolve()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(mockContext.createOscillator).toHaveBeenCalledTimes(2)
   })
@@ -193,7 +387,7 @@ describe('useSound audio interruption recovery', () => {
     mockContext.state = 'interrupted'
     document.dispatchEvent(new Event('visibilitychange'))
     resolveResume()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
@@ -205,7 +399,7 @@ describe('useSound audio interruption recovery', () => {
     mockContext.state = 'interrupted'
     window.dispatchEvent(new Event('pageshow'))
     resolveResume()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
@@ -214,9 +408,9 @@ describe('useSound audio interruption recovery', () => {
     const { mockContext, resolveResume, soundModule } = await loadSoundModule('suspended')
 
     soundModule.initAudio()
-    document.dispatchEvent(new Event('pointerdown'))
+    document.dispatchEvent(new Event('click'))
     resolveResume()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(mockContext.resume).toHaveBeenCalledTimes(1)
   })
@@ -256,8 +450,7 @@ describe('useSound audio interruption recovery', () => {
     const soundModule = await import('../../src/composables/useSound')
     soundModule.initAudio()
     soundModule.playClick()
-    await Promise.resolve()
-    await Promise.resolve()
+    await flushPromises()
 
     expect(createCount).toBe(2)
     expect(firstAudio.ctx.createOscillator).toHaveBeenCalledTimes(1)

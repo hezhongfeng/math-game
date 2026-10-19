@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import {
   AUDIO_COOLDOWNS,
   AUDIO_ENGINE,
@@ -7,9 +7,9 @@ import {
   GAME_CONFIG
 } from '../config/constants'
 
-const audioContext = ref(null)
-const masterGainNode = ref(null)
-const lowpassNode = ref(null)
+const audioContext = shallowRef(null)
+const masterGainNode = shallowRef(null)
+const lowpassNode = shallowRef(null)
 const isInitialized = ref(false)
 const soundLastPlayedAt = new Map()
 const praiseAudioBuffers = new Map()
@@ -18,7 +18,13 @@ let currentPraiseSource = null
 let praisePlaybackToken = 0
 let visibilityChangeHandler = null
 let pageShowHandler = null
+let pageHideHandler = null
 let interactionResumeHandler = null
+let needsGestureRecovery = false
+let playbackGeneration = 0
+let soundConsumers = 0
+
+const AUDIO_INTERACTION_EVENTS = ['touchend', 'click', 'keydown']
 
 const PRAISE_AUDIO_SOURCES = {
   newBest: '/audio/praise/new-best.mp3',
@@ -95,14 +101,17 @@ async function loadPraiseAudioBuffer(key) {
 
       return response.arrayBuffer()
     })
-    .then((audioData) => decodeAudioData(ctx, audioData))
+    .then((audioData) => {
+      const activeContext = audioContext.value
+      return activeContext && activeContext.state !== 'closed' ? decodeAudioData(activeContext, audioData) : null
+    })
     .then((buffer) => {
-      praiseAudioBuffers.set(key, buffer)
-      praiseAudioLoading.delete(key)
+      if (buffer) praiseAudioBuffers.set(key, buffer)
+      if (praiseAudioLoading.get(key) === loading) praiseAudioLoading.delete(key)
       return buffer
     })
     .catch((error) => {
-      praiseAudioLoading.delete(key)
+      if (praiseAudioLoading.get(key) === loading) praiseAudioLoading.delete(key)
       console.error('加载本地鼓励语音失败:', error)
       return null
     })
@@ -147,15 +156,32 @@ function resetAudioGraph(clearBuffers = false) {
 }
 
 function recreateAudioContext() {
-  resetAudioGraph(true)
-  const ctx = createAudioContextInstance()
-
-  if (ctx) {
-    preloadPraiseAudio()
-    isInitialized.value = true
+  const previousContext = audioContext.value
+  resetAudioGraph()
+  soundLastPlayedAt.clear()
+  isInitialized.value = false
+  if (previousContext && previousContext.state !== 'closed' && typeof previousContext.close === 'function') {
+    try {
+      Promise.resolve(previousContext.close()).catch((error) => {
+        console.warn('关闭旧音频上下文失败:', error)
+      })
+    } catch (error) {
+      console.warn('关闭旧音频上下文失败:', error)
+    }
   }
 
-  return ctx
+  try {
+    const ctx = createAudioContextInstance()
+    if (ctx) {
+      preloadPraiseAudio()
+      isInitialized.value = true
+    }
+    return ctx
+  } catch (error) {
+    console.warn('重建音频上下文失败:', error)
+    resetAudioGraph(true)
+    return null
+  }
 }
 
 function setMasterGain(targetGain) {
@@ -167,11 +193,14 @@ function setMasterGain(targetGain) {
   masterGainNode.value.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.04)
 }
 
-async function resumeAudioContext() {
+/** 恢复有时间上限；锁屏后在实际点按内重建，避免 Safari 的假 running 状态。 */
+async function resumeAudioContext(fromInteraction = false) {
+  if (document.hidden) return null
   let ctx = audioContext.value
 
-  if (!ctx || ctx.state === 'closed') {
+  if (!ctx || ctx.state === 'closed' || (fromInteraction && needsGestureRecovery)) {
     ctx = recreateAudioContext()
+    needsGestureRecovery = !ctx
   }
 
   if (!ctx) {
@@ -179,42 +208,62 @@ async function resumeAudioContext() {
   }
 
   if (isRecoverableAudioState(ctx.state)) {
+    let timeoutId
     try {
-      await ctx.resume()
+      const didResume = await Promise.race([
+        ctx.resume().then(() => true),
+        new Promise((resolve) => {
+          timeoutId = setTimeout(() => resolve(false), AUDIO_ENGINE.RESUME_TIMEOUT_MS)
+        })
+      ])
+      if (audioContext.value !== ctx || document.hidden) return null
+      if (!didResume || ctx.state !== 'running') {
+        needsGestureRecovery = true
+        return null
+      }
     } catch (error) {
       console.warn('恢复音频上下文失败:', error)
-      return ctx
+      if (audioContext.value === ctx) needsGestureRecovery = true
+      return null
+    } finally {
+      clearTimeout(timeoutId)
     }
   }
 
+  if (audioContext.value !== ctx || document.hidden || ctx.state !== 'running') return null
+  setMasterGain(AUDIO_ENGINE.MASTER_GAIN)
   return ctx
 }
 
+/** 丢弃锁屏前的待播反馈，下一次点按重新取得音频输出。 */
+function markAudioInterrupted() {
+  needsGestureRecovery = true
+  playbackGeneration += 1
+  soundLastPlayedAt.clear()
+  stopLocalPraise()
+}
+
 function installAudioRecoveryHandlers() {
-  if (visibilityChangeHandler || pageShowHandler || interactionResumeHandler) {
+  if (visibilityChangeHandler || pageShowHandler || pageHideHandler || interactionResumeHandler) {
     return
   }
 
   visibilityChangeHandler = () => {
     if (document.hidden) {
-      setMasterGain(AUDIO_ENGINE.MASTER_GAIN * 0.55)
+      markAudioInterrupted()
       return
     }
 
-    resumeAudioContext().then((ctx) => {
-      if (ctx) {
-        setMasterGain(AUDIO_ENGINE.MASTER_GAIN)
-      }
-    })
+    resumeAudioContext()
   }
   document.addEventListener('visibilitychange', visibilityChangeHandler)
 
-  pageShowHandler = () => {
-    resumeAudioContext().then((ctx) => {
-      if (ctx) {
-        setMasterGain(AUDIO_ENGINE.MASTER_GAIN)
-      }
-    })
+  pageHideHandler = markAudioInterrupted
+  window.addEventListener('pagehide', pageHideHandler)
+
+  pageShowHandler = (event) => {
+    if (event.persisted) markAudioInterrupted()
+    resumeAudioContext()
   }
   window.addEventListener('pageshow', pageShowHandler)
 
@@ -223,11 +272,11 @@ function installAudioRecoveryHandlers() {
       return
     }
 
-    resumeAudioContext()
+    resumeAudioContext(true)
   }
-  document.addEventListener('pointerdown', interactionResumeHandler, { passive: true })
-  document.addEventListener('touchstart', interactionResumeHandler, { passive: true })
-  document.addEventListener('keydown', interactionResumeHandler)
+  AUDIO_INTERACTION_EVENTS.forEach((event) => {
+    document.addEventListener(event, interactionResumeHandler, { passive: true, capture: true })
+  })
 }
 
 function removeAudioRecoveryHandlers() {
@@ -241,10 +290,15 @@ function removeAudioRecoveryHandlers() {
     pageShowHandler = null
   }
 
+  if (pageHideHandler) {
+    window.removeEventListener('pagehide', pageHideHandler)
+    pageHideHandler = null
+  }
+
   if (interactionResumeHandler) {
-    document.removeEventListener('pointerdown', interactionResumeHandler)
-    document.removeEventListener('touchstart', interactionResumeHandler)
-    document.removeEventListener('keydown', interactionResumeHandler)
+    AUDIO_INTERACTION_EVENTS.forEach((event) => {
+      document.removeEventListener(event, interactionResumeHandler, true)
+    })
     interactionResumeHandler = null
   }
 }
@@ -274,36 +328,33 @@ export function initAudio() {
 }
 
 function withReadyAudioContext(callback) {
+  if (document.hidden) return
   initAudio()
+  if (needsGestureRecovery) return
   const ctx = audioContext.value
   if (!ctx || !masterGainNode.value) {
     return
   }
 
-  const run = (hasRetriedAfterResume = false) => {
-    if (audioContext.value !== ctx || !masterGainNode.value || ctx.state === 'closed') {
-      if (ctx.state === 'closed' && !hasRetriedAfterResume) {
-        resumeAudioContext().then(() => withReadyAudioContext(callback))
-      }
-      return
+  const generation = playbackGeneration
+  const run = (readyContext) => {
+    if (!readyContext || document.hidden || generation !== playbackGeneration ||
+        audioContext.value !== readyContext || !masterGainNode.value || readyContext.state !== 'running') return
+    try {
+      const result = callback(readyContext)
+      if (result?.catch) result.catch((error) => console.warn('播放音频失败:', error))
+    } catch (error) {
+      needsGestureRecovery = true
+      console.warn('播放音频失败:', error)
     }
-
-    if (isRecoverableAudioState(ctx.state)) {
-      if (hasRetriedAfterResume) {
-        return
-      }
-
-      resumeAudioContext().then(() => run(true))
-      return
-    }
-
-    callback(ctx)
   }
 
-  run()
+  if (ctx.state === 'running') run(ctx)
+  else resumeAudioContext().then(run)
 }
 
 function shouldThrottle(key) {
+  if (document.hidden || needsGestureRecovery) return true
   const now = Date.now()
   const lastTime = soundLastPlayedAt.get(key) || 0
   const cooldown = AUDIO_COOLDOWNS[key] || 0
@@ -385,15 +436,15 @@ function stopLocalPraise() {
   if (currentPraiseSource) {
     try {
       currentPraiseSource.stop()
-    } catch {
-      // 已经停止的 source 无需处理
+    } catch (error) {
+      if (error.name !== 'InvalidStateError') console.warn('停止鼓励语音失败:', error)
     }
     currentPraiseSource = null
   }
 }
 
 function schedulePraiseBuffer(ctx, buffer, token) {
-  if (token !== praisePlaybackToken) {
+  if (token !== praisePlaybackToken || audioContext.value !== ctx || document.hidden || ctx.state !== 'running') {
     return null
   }
 
@@ -651,11 +702,13 @@ export function playResultPraise(result = {}) {
 
 export function useSound() {
   onMounted(() => {
+    soundConsumers += 1
     initAudio()
   })
 
   onUnmounted(() => {
-    removeAudioRecoveryHandlers()
+    soundConsumers = Math.max(0, soundConsumers - 1)
+    if (soundConsumers === 0) removeAudioRecoveryHandlers()
   })
 
   return {

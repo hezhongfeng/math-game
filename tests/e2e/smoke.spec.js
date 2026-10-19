@@ -83,6 +83,53 @@ function getWrongAnswerFromExpression(expressionText) {
 }
 
 test.describe('E2E Smoke - Core Game Loops', () => {
+  test('restores keypad audio on the first tap after backgrounding', async ({ page }) => {
+    await page.addInitScript(() => {
+      const NativeAudioContext = window.AudioContext || window.webkitAudioContext
+      window.__audioProbe = []
+      window.AudioContext = class extends NativeAudioContext {
+        constructor(...args) {
+          super(...args)
+          const probe = { oscillators: 0, closed: false }
+          window.__audioProbe.push(probe)
+          const createOscillator = this.createOscillator.bind(this)
+          this.createOscillator = () => {
+            probe.oscillators += 1
+            return createOscillator()
+          }
+          const close = this.close.bind(this)
+          this.close = () => {
+            probe.closed = true
+            return close()
+          }
+        }
+      }
+    })
+    await openFirstLevel(page)
+    await expect(page.locator('.loading-overlay')).toBeHidden()
+    const originalCount = await page.evaluate(() => window.__audioProbe.length)
+    expect(originalCount).toBeGreaterThan(0)
+
+    for (let cycle = 1; cycle <= 2; cycle += 1) {
+      // 保留真实点按间隔，避免游戏的 45ms 输入防抖吞掉下一次操作。
+      await page.waitForTimeout(60)
+      await page.evaluate(() => {
+        Object.defineProperty(document, 'hidden', { configurable: true, value: true })
+        document.dispatchEvent(new Event('visibilitychange'))
+        Object.defineProperty(document, 'hidden', { configurable: true, value: false })
+        document.dispatchEvent(new Event('visibilitychange'))
+      })
+      await page.getByTestId('num-btn-1').tap()
+      await expect.poll(() => page.evaluate(() => window.__audioProbe.length)).toBe(originalCount + cycle)
+      await expect.poll(() => page.evaluate(() => window.__audioProbe.at(-1).oscillators)).toBeGreaterThan(1)
+      expect(await page.evaluate(() => window.__audioProbe.at(-2).closed)).toBe(true)
+      await page.getByTestId('num-btn-delete').click({ delay: 60 })
+      await expect(page.getByTestId('question-expression').first()).toContainText('?')
+    }
+    await solveQuestion(page, true)
+    await expect(page.locator('.summary-pill .stat-value')).toHaveText(/1\/\d+/)
+  })
+
   test('uses semantic links for home navigation', async ({ page }) => {
     await page.goto('/')
 

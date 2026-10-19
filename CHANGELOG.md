@@ -91,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- 修复 iPhone 锁屏或切后台后解锁继续做题无声的问题：首次点按重建音频输出，为恢复请求增加超时，并阻止旧反馈延迟播放
 - 修复 5 以内关卡出现超范围加法、相等加数缺少右侧缺项的问题，过滤不符合当前关卡规则的历史薄弱题
 - Fixed completed-progress, failed-level, mistake-review, and challenge-status copy so each label matches the underlying state
 - Fixed the development server host policy by removing unrestricted host acceptance
